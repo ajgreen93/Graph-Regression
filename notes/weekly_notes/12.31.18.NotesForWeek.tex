@@ -1,0 +1,355 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes for Week of 12/24/18 - 12/31/18}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{SETUP}
+\paragraph{Data model.}
+
+We are given two unknown distributions, $P$ and $Q$, both supported on $D \subset \Rd$, with continuous density functions $p$ and $q$, respectively. We have the capacity to sample from either distribution. Our goal is to test the nonparametric hypothesis $H_0: P = Q$ vs. the alternative $H_1: P \neq Q$. 
+
+Under the \textbf{binomial data model}, we sample data $\set{z_1, \ldots, z_n}$ as follows. For each $i$, we draw an independent Rademacher label $\ell_i \in \set{1, -1}$, $\mathbb{P}(\ell_i = 1) = \mathbb{P}(\ell_i = -1) = 1/2$. Then, if $\ell_i = 1$ we sample $z_i \sim P$, whereas if $\ell_i = -1$ we samle $z_i \sim Q$ otherwise. Define $1_X$ to be the length $n$ indicator vector for $\ell_i = 1$
+\begin{equation*}
+1_X(i) = 
+\begin{cases}
+1, \ell_i = 1\\
+0 \text{ otherwise } 
+\end{cases}
+\end{equation*}
+and similarly for $1_Y$
+\begin{equation*}
+1_Y(i) = 
+\begin{cases}
+1, \ell_i= -1 \\
+0 \text{ otherwise } 
+\end{cases}
+\end{equation*}
+Denote the number of positive labels $N = \sum_{i = 1}^{n} 1_x(i)$, and let $M$ be such that $n = N + M$. Then, let the \textbf{normalized label vector} $a$ be given by $a = \frac{1}{N}1_X - \frac{1}{M} 1_Y$. 
+
+\paragraph{Graph.}
+
+Heuristically, our graph based test will attempt to identify whether samples from the same distribution are on average more similar than samples from different distributions. As a result, we introduce $K$, a \textbf{kernel function} which measures similarity, and make the following assumptions on $K$
+\begin{itemize}
+	\item $K: [0,\infty) \to [0,\infty)$ is non-increasing.
+	\item The integral $\int_{0}^{\infty} K(r) r^d dr$ is finite.
+\end{itemize}
+
+and define 
+
+\begin{equation*}
+K_{\epsilon}(z) = \frac{1}{\epsilon^d} K\left(\frac{z}{\epsilon}\right)
+\end{equation*}
+
+
+Given a sequence $\seq{\epsilon_n}$, form the \textbf{$\epsilon$-radius neighborhood graph} $G_{n,r} = (V_n,E_n)$ with $V_n = \set{z_1, \ldots, z_n}$ and $E_n = \set{(i,j): K_{\epsilon}(\norm{z_i - z_j}) > 0}$. Let $A$ be the adjacency matrix associated with $G_{n,r}$. Take $L_n = D - A$ to be the (unnormalized) \textbf{Laplacian matrix} of $A$ (where $D$ is the diagonal degree matrix with $D_{ii} = \sum_{j \in [n]} A_{ij}$). Denote by $B$ the $\abs{E} \times n$ \textbf{incidence matrix} of $A$, where we denote the $i$th row of $B$ as $B_i$ and set $B_i$ to have entry $A_{ij}$ in position $i$, $-A_{ij}$ in position $j$, and $0$ everywhere else. 
+
+\paragraph{Test Statistic.}
+For a given neighborhood graph $G_{n,r}$, let $A$ be the adjacency matrix associated with $G_{n,r}$. Take $L_n = D - A$ to be the (unnormalized) \textbf{Laplacian matrix} of $A$ (where $D$ is the diagonal degree matrix with $D_{ii} = \sum_{j \in [n]} A_{ij}$). Denote by $B$ the $\abs{E} \times n$ \textbf{incidence matrix} of $A$, where we denote the $i$th row of $B$ as $B_i$ and set $B_i$ to have entry $A_{ij}$ in position $i$, $-A_{ij}$ in position $j$, and $0$ everywhere else. 
+Now, we can define our \textbf{Laplacian smooth} test statistic
+\begin{equation}
+\label{eqn: laplacian_smooth_statistic}
+T_2 := \left(\max_{\theta: \norm{B\theta}_2 \leq C_n} a^T \theta \right)^2
+\end{equation}
+for some sequence of positive numbers $\seq{C_n} \geq 0$.
+
+
+\paragraph{Empirical Risk Minimization.}
+To introduce the continuous limit of $T_2$, it will be useful to slightly recast the variational problem of (\ref{eqn: laplacian_smooth_statistic}) as an empirical risk minimization problem. (Really, all we are doing is introducing some new notation.) Let $\nu_n$ be the \textbf{empirical measure} induced by $\set{z_1, \ldots, z_n}$
+\begin{equation*}
+\nu_n \defeq \frac{1}{n} \sum_{i = 1}^{n} \delta_{z_i}
+\end{equation*}
+
+Then, for any mapping $u_n: \set{z_1, \ldots, z_n} \to \Reals$ such that $u_n \in L^2(\nu_n)$, let the \textbf{empirical risk functional} $R_n(u_n)$ be given by
+\begin{equation}
+\label{eqn: empirical_risk_functional}
+R_n(u_n) \defeq - \sum_{i = 1}^{N} u_n(z_i) \widetilde{\ell}_n(z_i)
+\end{equation}
+where $\widetilde{\ell}_n: \set{z_1, \ldots, z_n} \to \set{0,1}$ is the \textbf{normalized label function} defined by $\widetilde{\ell}_n(z_i) := a_i$. 
+
+To relate the risk functional of (\ref{eqn: empirical_risk_functional}) to the variational problem of (\ref{eqn: laplacian_smooth_statistic}), we introduce the \textbf{constrained empirical risk functional}, $R_n^{(con)}(u_n)$, defined by
+\begin{equation*}
+R_n^{(con)}(u_n) := 
+\begin{cases}
+R_n(u_n), \text{ if $\mathcal{E}_n^2(u_n) \leq 1$} \\
+\infty, \text{ otherwise }
+\end{cases}
+\end{equation*}
+where $\mathcal{E}_n^2(u_n)$ is the \textbf{Laplacian regularization functional} given by
+\begin{equation*}
+\mathcal{E}_n^2(u_n) \defeq \frac{1}{n^2 \epsilon_n^{d+1}} \sum_{i = 1}^{n} \sum_{j = 1}^{n} K\left(\frac{\norm{z_i - z_j}}{\epsilon_n}\right)(u_n(z_i) - u_n(z_j))^2.
+\end{equation*}
+
+Note that for $B$ the incidence matrix of the $\epsilon$-radius neighborhood graph $G_{n,\epsilon_n}$ as defined above, and for $\theta = \set{u_1(z_i), \ldots, u_n(z_i)}$, we have
+\begin{equation*}
+N^2 \epsilon_N^{d+1} \mathcal{E}_N^2(u_N) = \norm{B \theta}_2, ~~~ \mathcal{E}_N^2(u_N) \leq 1 \Leftrightarrow \norm{B \theta}_2 \leq N^2 \epsilon_N^{d+1}
+\end{equation*}
+and $a^T \theta = - R_n(u_n)$.
+As a result, letting $C_n = N^2 \epsilon_N^{d+1}$, we have that for
+\begin{equation}
+\label{eqn: minimizer_of_constrained_empirical_risk_functional}
+u_n^{\star} := \argmin_{u_n \in L^2(\nu_n)} R_n^{(con)}(u_n)
+\end{equation}
+the following relation holds:
+\begin{equation*}
+T_2^{1/2} = R_n(u_n^{\star})
+\end{equation*}
+
+\paragraph{Continuum limit.}
+
+As the preceding manipulations make clear, the statistic $T_2$ can be seen as a constrained minimization problem with constraint enforced by a regularization functional over the neighborhood graph $G_{n,\epsilon}$. It is well known that, for an appropriate schedule of $\seq{\epsilon_n}$ and data generated from a density satisfying certain regularity conditions, such regularization functionals are well behaved in the limit. 
+
+Let $\nu = \frac{p + q}{2}$. For $u \in L^2(\nu)$, define the \textbf{continuous risk functional} $R(u)$ via
+\begin{equation*}
+R(u) = -\int_{D} u(x) \bigl(p(x) - q(x) \bigr) dx
+\end{equation*}
+the \textbf{weighted $L^2$ regularization functional}
+\begin{equation*}
+\mathcal{E}_{\infty}^2(u) = \int_D \norm{\nabla u(x)}^2 \mu^2(x) dx
+\end{equation*}
+and the \textbf{constrained continuous risk functional} $R^{(con)}(u)$ as
+\begin{equation*}
+R^{(con)}(u) =
+\begin{cases}
+R(u), \text{if $\mathcal{E}_{\infty}^2(u) \leq 1$ } \\
+\infty, \text{otherwise}
+\end{cases}
+\end{equation*}
+
+Let $u^{\star}$ be defined analogously to $u_n^{\star}$,
+\begin{equation}
+\label{eqn: minimizer_of_constrained_continuous_risk_functional}
+u^{\star} = \argmin_{u \in L^2(\nu)} R^{(con)}(u)
+\end{equation}
+
+\section{RESULTS}
+\begin{theorem}
+	\label{thm: consistency_of_empirical_risk_minimizer}
+	Consider a sequence $\seq{\epsilon_n} \to 0$ satisfying
+	\begin{equation*}
+	\left(\frac{\log n}{n}\right)^{1/d} = o(\epsilon_n).
+	\end{equation*}
+	Then, for $u_n^{\star}$ satisfying (\ref{eqn: minimizer_of_constrained_empirical_risk_functional}) and likewise $u^{\star}$ satisfying (\ref{eqn: minimizer_of_constrained_continuous_risk_functional}), with probability one:
+	\begin{equation}
+	R_n(u_n^{\star}) \to R(u^{\star})
+	\end{equation}
+\end{theorem}
+
+\begin{proof}[Proof attempt of Theorem \ref{thm: consistency_of_empirical_risk_minimizer}]
+	
+We begin by restricting ourselves to the case where $\underset{n \to \infty}{\limsup}~ \E_n^2(u_n^{\star}) \leq 1$.
+As a result of Lemma 
+\end{proof}
+\subsection{Technical results.}
+
+Lemma \ref{lem: conv_of_risk_functional} is very similar to Proposition 2.7 in \textcolor{red}{cite (Garcia-Trillos 16)}.  
+\begin{lemma}
+	\label{lem: conv_of_risk_functional}
+	With probability one the following statement holds: Let $\seq{u_n}$ be a sequence of $[-1,1]$-valued functions, with $u_n \in L^1(\nu_n)$. If $u_n \overset{TL^1}{\to} u$ as $n \to \infty$, then
+	\begin{equation*}
+	\lim_{n \to \infty} R_n(u_n) = R(u).
+	\end{equation*}
+\end{lemma}
+
+Lemma \ref{lem: weak_limit_of_label_function} is needed to prove Lemma \ref{lem: conv_of_risk_functional}. It is very similar to a result from \textcolor{red}{cite (Garcia-Trillos 16)}. To understand Lemma \ref{lem: weak_limit_of_label_function}, we must introduce a notion of weak convergence of functions.
+
+\begin{definition}
+	Given a sequence of functions $g_n \in L^1(\nu)$, and $g \in L^1(\nu)$, we say \textbf{$g_n$ converges weakly to $g$}, $g_n \rightharpoonup g$ if for all $L^{\infty}(\nu)$,
+	\begin{equation*}
+	\lim_{n \to \infty} \int_D g_n(x) f(x) d\nu(x) = \int_D g(x) f(x) d\nu(x)
+	\end{equation*}
+	Given a sequence $\seq{u_n}$ with $u_n \in L^1(\nu_n)$, we say that $\seq{u_n}$ \textbf{converges weakly} to $u \in L^1(\nu)$, $u_n \rightharpoonup u$,  if the sequence of functions $\set{u_n \circ T_n} \in L^1(\nu)$ converges weakly to $u$, for $T_n$ stagnating transportation maps.
+\end{definition}
+
+\begin{lemma}
+	\label{lem: weak_limit_of_label_function}
+	For the label function $\ell_n: \set{z_1, \ldots, z_n} \to \set{-1,1}$ defined by
+	\begin{equation}
+	\label{eqn: label_function}
+	\ell_n(z_i) := \ell_i, ~~~ i \in 1,\ldots,n
+	\end{equation}
+	with probability one $\ell_n \rightharpoonup \frac{p - q}{2 \mu}$. 
+\end{lemma}
+
+\begin{lemma}
+	\label{lem: gamma_convergence_of_energy_function}
+	The Laplacian regularization functional $\E_n^2(u_n)$ satisfies the following three properties, 
+\end{lemma}
+
+\section{PROOFS}
+\begin{proof}[Proof of Lemma \ref{lem: conv_of_risk_functional}]
+	We begin by removing the effect of the random normalization in $\widetilde{\ell}_n(z_i)$ via
+	\begin{equation*}
+	- R_n(u_n) = \frac{2}{n} \sum_{i = 1}^{n} u_n(z_i) \ell_n(z_i) + \sum_{i = 1}^{n} \left(\frac{2}{n} \ell_n(z_i) - \widetilde{\ell}_n(z_i) \right)u_n(z_i)
+	\end{equation*}
+	First, we show the second term converges to zero with probability one,
+	\begin{align*}
+	\abs{\sum_{i = 1}^{n} \left(\frac{2}{n} \ell_n(z_i) - \widetilde{\ell}_n(z_i) \right)u_n(z_i)} & \leq \sum_{i = 1}^{n} \abs{\frac{2}{n} \ell_n(z_i) - \widetilde{\ell}_n(z_i)} \abs{u_n(z_i)} \\
+	& \leq \left(\abs{\frac{1}{N} - \frac{1}{n/2}} + \abs{\frac{1}{M} - \frac{1}{n/2}}\right) \sum_{i = 1}^{n} \abs{u_n(z_i)} \\
+	& \leq \left(\abs{\frac{N - n/2}{N}} + \abs{\frac{M - n/2}{M}}\right) \cdot \frac{2}{n} \sum_{i = 1}^{n}\abs{u_n(z_i)}
+	\end{align*}
+	Then, the $TL^1$ convergence of $u_n$ to $u \in L^1(\nu)$ implies
+	\begin{equation*}
+	\frac{2}{n} \sum_{i = 1}^{n}\abs{u_n(z_i)} \overset{n}{\to} 2 \norm{u}_{L^1(\nu)}
+	\end{equation*}
+	and by standard concentration results of binomial random variables, with probability one
+	\begin{equation*}
+	\abs{\frac{N - n/2}{N}}, \abs{\frac{M - n/2}{M}} \overset{n}{\to} 0,
+	\end{equation*}
+	and so with probability one
+	\begin{equation*}
+	\abs{\sum_{i = 1}^{n} \left(\frac{2}{n} \ell_n(z_i) - \widetilde{\ell}_n(z_i) \right)u_n(z_i)} \overset{n}{\to} 0.
+	\end{equation*}
+	
+	Now, we rewrite the first term in the summand on the right hand side using transportation maps,
+	\begin{align*}
+	\frac{2}{n} \sum_{i = 1}^{n} u_n(z_i) \ell_n(z_i) & = 2 \int_D u_n(z) \ell_n(z) d\nu_n(z) \\
+	& \overset{(i)}{=} 2 \int_D  \bigl(u_n \circ T_n (z) \bigr) \bigl( \ell_n \circ T_n (z)  \bigr) d\nu(z) \\
+	& = 2 \int_D  \bigl(u_n \circ T_n (z)  - u(z) \bigr) \bigl( \ell_n \circ T_n (z)  \bigr) d\nu(z) + 2 \int_D  \bigl(u(z) \bigr) \bigl( \ell_n \circ T_n (z)  \bigr) d\nu(z) \\
+	\end{align*}
+	with $(i)$ following from the change of variables formula
+	\begin{equation*}
+	\int_D f(T(x)) d \theta(x) = \int_D f(z) d T_{\sharp} \theta x
+	\end{equation*}
+	where $f: D \to \Reals$ is an arbitrary Borel function, $\theta$ a Borel measure, and $T_{\sharp} \theta$ the push-forward measure of $\theta$. 
+	
+	Now, the first term converges to zero,
+	\begin{equation*}
+	\abs{2 \int_D  \bigl(u_n \circ T_n (z)  - u(z) \bigr) \bigl( \ell_n \circ T_n (z)  \bigr) d\nu(z)} \leq 2 \int_D \abs{u_n \circ T_n (z)  - u(z)} d\nu(z) \overset{n}{\to} 0.
+	\end{equation*}
+	by the boundedness of $\ell_n$ and the $TL^1$ convergence of $u_n$ to $u$.
+	
+	By Lemma \ref{lem: weak_limit_of_label_function}, with probability one the 2nd term converges to (negative of) the risk functional,
+	\begin{equation*}
+	2 \int_D  \bigl(u(z) \bigr) \bigl( \ell_n \circ T_n (z)  \bigr) d\nu(z) \overset{n}{\to} \int_D u(z) \left(\frac{p(z) - q(z)}{\mu(z)}\right) d\nu(z) = -R(u).
+	\end{equation*}
+\end{proof}
+
+\begin{proof}[Proof of Lemma \ref{lem: conv_of_risk_functional}]
+	Lemma \ref{lem: weak_limit_of_label_function} is essentially a restatement of Lemma 2.5 from \textcolor{red}{cite (Garcia-Trillos 16)}. For completeness purposes, we restate that result here.
+	
+	\begin{lemma}
+		\label{lem: weak_conv_label_function}
+		Let $f(z) = \mathbb{E}(\ell \vert Z = z)$ be the conditional expectation of $\ell$ given $Z = z$.  
+		For the label function $\ell_n: \set{x_1, \ldots, x_n} \to \set{-1,1}$ defined as in (\ref{eqn: label_function}), with probability one $\ell_n \rightharpoonup f$.
+	\end{lemma}
+	Given Lemma \ref{lem: weak_conv_label_function}, all that is needed to show Lemma \ref{lem: weak_limit_of_label_function} is that $f = \frac{p - q}{2\mu}$. This follows from a simple application of Bayes Rule. 
+\end{proof}
+	
+\end{document}
