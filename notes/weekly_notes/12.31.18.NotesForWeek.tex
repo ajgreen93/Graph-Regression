@@ -54,6 +54,7 @@
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\seq}[1]{\set{#1}_{n \in \N}}
 \newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\Naturals}{\mathbb{N}}
 
 
 \newcommand{\Linv}{L^{\dagger}}
@@ -78,6 +79,16 @@
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\E}{\mathcal{E}}
 
+%%% Set related notation
+\newcommand{\Dset}{\mathcal{D}}
+
+%%% Distribution related notation
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+% \newcommand{\Pr}{\mathrm{Pr}}}
+
+%%% Functionals
+\newcommand{\1}{\mathbf{1}}
 \newtheoremstyle{alden}
 {6pt} % Space above
 {6pt} % Space below
@@ -123,29 +134,29 @@
 \section{SETUP}
 \paragraph{Data model.}
 
-We are given two unknown distributions, $P$ and $Q$, both supported on $D \subset \Rd$, with continuous density functions $p$ and $q$, respectively. We have the capacity to sample from either distribution. Our goal is to test the nonparametric hypothesis $H_0: P = Q$ vs. the alternative $H_1: P \neq Q$. 
+We are given two unknown distributions, $\Pbb$ and $\Qbb$, both supported on \textcolor{red}{$D \subset \Rd$}, with \textcolor{red}{continuous} density functions $p$ and $q$, respectively. We have the capacity to sample from either distribution. Our goal is to test the nonparametric hypothesis $H_0: \Pbb = \Qbb$ vs. the alternative $H_1: \Pbb \neq \Qbb$. 
 
-Under the \textbf{binomial data model}, we sample data $\set{z_1, \ldots, z_n}$ as follows. For each $i$, we draw an independent Rademacher label $\ell_i \in \set{1, -1}$, $\mathbb{P}(\ell_i = 1) = \mathbb{P}(\ell_i = -1) = 1/2$. Then, if $\ell_i = 1$ we sample $z_i \sim P$, whereas if $\ell_i = -1$ we samle $z_i \sim Q$ otherwise. Define $1_X$ to be the length $n$ indicator vector for $\ell_i = 1$
+Under the \emph{binomial data model}, we sample data $\set{z_1, \ldots, z_n}$ as follows: for $i = 1,\ldots,n$, we draw an independent Rademacher label $\ell_i \in \set{1, -1}$, $\Pr(\ell_i = 1) = \Pr(\ell_i = -1) = 1/2$. Then, if $\ell_i = 1$ we sample $z_i \sim \Pbb$, whereas if $\ell_i = -1$ we sample $z_i \sim \Qbb$. Define $\1_X$ to be the length $n$ indicator vector for $\ell_i = 1$
 \begin{equation*}
-1_X(i) = 
+\1_X(i) = 
 \begin{cases}
 1, \ell_i = 1\\
 0 \text{ otherwise } 
 \end{cases}
 \end{equation*}
-and similarly for $1_Y$
+and similarly for $\1_Y$
 \begin{equation*}
-1_Y(i) = 
+\1_Y(i) = 
 \begin{cases}
 1, \ell_i= -1 \\
 0 \text{ otherwise } 
 \end{cases}
 \end{equation*}
-Denote the number of positive labels $N = \sum_{i = 1}^{n} 1_x(i)$, and let $M$ be such that $n = N + M$. Then, let the \textbf{normalized label vector} $a$ be given by $a = \frac{1}{N}1_X - \frac{1}{M} 1_Y$. 
+Denote the number of positive labels $N = \sum_{i = 1}^{n} \1_X(i)$, for $M$ the number of negative labels we have $n = N + M$. Then the \emph{normalized label vector} $a$ is given by $a = \frac{1}{N}\1_X - \frac{1}{M}\1_Y$. 
 
 \paragraph{Graph.}
 
-Heuristically, our graph based test will attempt to identify whether samples from the same distribution are on average more similar than samples from different distributions. As a result, we introduce $K$, a \textbf{kernel function} which measures similarity, and make the following assumptions on $K$
+Heuristically, our graph-based test will attempt to identify whether samples from the same distribution are on average more similar than samples from different distributions. As a result, we introduce $K$, a \textbf{kernel function} which measures similarity, and make the following assumptions on $K$
 \begin{itemize}
 	\item $K: [0,\infty) \to [0,\infty)$ is non-increasing.
 	\item The integral $\int_{0}^{\infty} K(r) r^d dr$ is finite.
@@ -193,7 +204,7 @@ R_n(u_n), \text{ if $\mathcal{E}_n^2(u_n) \leq 1$} \\
 \end{equation*}
 where $\mathcal{E}_n^2(u_n)$ is the \textbf{Laplacian regularization functional} given by
 \begin{equation*}
-\mathcal{E}_n^2(u_n) \defeq \frac{1}{n^2 \epsilon_n^{d+1}} \sum_{i = 1}^{n} \sum_{j = 1}^{n} K\left(\frac{\norm{z_i - z_j}}{\epsilon_n}\right)(u_n(z_i) - u_n(z_j))^2.
+\mathcal{E}_n^2(u_n) \defeq \frac{1}{n^2 \epsilon_n^{d+2}} \sum_{i = 1}^{n} \sum_{j = 1}^{n} K\left(\frac{\norm{z_i - z_j}}{\epsilon_n}\right)(u_n(z_i) - u_n(z_j))^2.
 \end{equation*}
 
 Note that for $B$ the incidence matrix of the $\epsilon$-radius neighborhood graph $G_{n,\epsilon_n}$ as defined above, and for $\theta = \set{u_1(z_i), \ldots, u_n(z_i)}$, we have
@@ -251,12 +262,85 @@ u^{\star} = \argmin_{u \in L^2(\nu)} R^{(con)}(u)
 	\end{equation}
 \end{theorem}
 
-\begin{proof}[Proof attempt of Theorem \ref{thm: consistency_of_empirical_risk_minimizer}]
+\begin{proof}[Proof of Theorem \ref{thm: consistency_of_empirical_risk_minimizer}]
+	We know $\E_{\infty}^2(u^{\star}) \leq 1$ (otherwise $R^{(con)}(0) = 0 \leq R^{(con)}(u^{\star})$)
 	
-We begin by restricting ourselves to the case where $\underset{n \to \infty}{\limsup}~ \E_n^2(u_n^{\star}) \leq 1$.
-As a result of Lemma 
+	By Lemma \ref{thm: garciatrillos17}, we have that there exists some $u_n \overset{TL^2}{\to} u^{\star}$ such that
+	\begin{equation*}
+	\limsup_{n \to \infty} \E_n^2(u_n) \leq \E_{\infty}^2(u^{\star}) \leq 1
+	\end{equation*}
+	and therefore by Lemma \ref{lem: conv_of_risk_functional}
+	\begin{equation*}
+	\limsup_{n \to \infty} R_n(u_n) = R(u^{\star})
+	\end{equation*}
+	Of course, we do not know that $\E_n^2(u_n) \leq 1$, and so we do not know that the $R_n^{(con)}(u_n) < \infty$, even in the limit. However, taking $u_n' = u_n \cdot \left(\max\{1, \E_n^2(u_n) \}\right)^{-1}$, we have $\E_n^2(u_n') \leq 1$. Moreover,
+	\begin{align}
+	\label{eqn: theorem_consistency_1}
+	\lim_{n \to \infty} R_n(u_n') & = \lim_{n \to \infty} \frac{R_n(u_n)}{\bigl(\max\left\{1, \E_n^2(u_n)\right\}\bigr)} \nonumber \\
+	& = R(u^{\star})
+	\end{align}
+	where the latter equality follows from the continuous mapping theorem. 
+	Since
+	\begin{equation*}
+	 R_n(u_n^{\star}) \leq R_n^{(con)}(u_n^{\star}) \leq R_n^{(con)}(u_n') = R_n(u_n')
+	\end{equation*}
+	we have
+	\begin{equation*}
+	\lim_{n \to \infty} R_n(u_n^{\star}) \leq R(u^{\star}).
+	\end{equation*}
+	
+	Finally, the above reasoning implies
+	\begin{equation*}
+	\lim_{n \to \infty} R_n^{(con)}(u_n^{\star}) \leq R(u^{\star}) < \infty. 
+	\end{equation*}
+	As a result, clearly
+	\begin{equation*}
+	\limsup_{n \to \infty} \E_n^2(u_n^{\star}) \leq 1 < \infty 
+	\end{equation*}
+	and so by Theorem \ref{thm: garciatrillos17}, we have that every subsequence of $u_n^{\star}$ is $TL^2$ convergent. As a result, 
+	\begin{equation*}
+	\liminf_{n \to \infty} \E_n^2(u_n^{\star}) \geq \inf_{u \in L^2(\nu)} R(u) = R(u^{\star})
+	\end{equation*}
+	and so we have shown
+	\begin{equation*}
+	\lim_{n \to \infty} R_n(u_n^{\star}) = R(u^{\star}).
+	\end{equation*}
 \end{proof}
 \subsection{Technical results.}
+
+\begin{theorem}[\textcolor{red}{Garcia-Trillos 17}]
+	\label{thm: garciatrillos17}
+	Let $d \geq 2$ and let $\Dset \subset \Rd$ be an open, bounded, connected set with Lipschitz boundary. Let $\mu$ be a probability measure on $\Dset$ with continuous density $\rho$, satisfying 
+	\begin{equation*}
+	m \leq \rho(x) \leq M \tag{$\forall x \in D$}
+	\end{equation*}
+	for some $0 < m \leq M$. Let $z_1, \ldots, z_n$ be a sequence of i.i.d random points chosen according to $\mu$. Let $(\epsilon_n)$ be a sequence of positive numbers converging to $0$ and satisfying
+	\begin{align*}
+	& \lim_{n \to \infty} \frac{(\log n)^{3/4}}{n^{1/2}} \frac{1}{\epsilon_n} = 0 ~~ \text{if $d = 2$} \\
+	& \lim_{n \to \infty} \frac{(\log n)^{1/d}}{n^{1/d}} \frac{1}{\epsilon_n} = 0 ~~ \text{if $d \geq 3$}
+	\end{align*}
+	Assume the kernel $K$ satisfies conditions: 
+	\begin{align*}
+	& K(0) > 0 \text{and $K$ is continuous at $0$.} \tag{\textbf{K1}} \\
+	& K \text{is non-increasing.} \tag{\textbf{K2}} \\
+	& \text{The integral $\int_{0}^{\infty} K(r) r^{d+1} dr$ is finite.} \tag{\textbf{K3}}
+	\end{align*}
+	Then, with probability one, the following statement holds:
+	\begin{equation*}
+	\E_n^2(u_n) \overset{\Gamma}{\to} \E_{\infty}^2(u)
+	\end{equation*}
+	in the $TL^2$ sense.
+	
+	Moreover, every sequence $(u_n)$ with $u_n \in L^2(\mu_n)$ for which
+	\begin{align*}
+	\sup_{n \in \Naturals} \norm{u_n}_{\mu_n} & < \infty \\
+	\sup_{n \in \Naturals} \E_n^2(u_n) & < \infty
+	\end{align*}
+	is pre-compact in $TL^2$.
+\end{theorem}
+
+
+
 
 Lemma \ref{lem: conv_of_risk_functional} is very similar to Proposition 2.7 in \textcolor{red}{cite (Garcia-Trillos 16)}.  
 \begin{lemma}

@@ -1,0 +1,483 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\F}{\mathcal{F}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Laplacian smooth test statistic for two-sample testing}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{Goals}
+\begin{itemize}
+	\item Find an asymptotic null distribution.
+\end{itemize}
+
+\section{Setup}
+
+We observe data $X_1, \ldots, X_n \sim P$ and $Y_1, \ldots, Y_m \sim Q$. Our goal is to test the hypothesis $H_0: P = Q$ vs. the alternative $H_a: P \neq Q$. 
+
+Let $Z  = (X_1, \ldots, X_n, Y_1, \ldots, Y_m)$. Define $1_X$ to be the $n + m$ length indicator vector for $X$
+\begin{equation*}
+1_X[i] = 
+\begin{cases}
+1, i \in 0, 1, \ldots, n \\
+0 \text{ otherwise } 
+\end{cases}
+\end{equation*}
+and similarly for $1_Y$
+\begin{equation*}
+1_Y[j] = 
+\begin{cases}
+1, j \in n + 1, \ldots, m \\
+0 \text{ otherwise } 
+\end{cases}
+\end{equation*}
+and define $a = \frac{1_X}{m} - \frac{1_Y}{n}$. 
+
+Form an $n + m \times n + m$ similarity matrix $A$, where $A_{ij} = K(Z_i, Z_j)$ for some unspecified choice of $K$, and take $L = D - A$ to be Laplacian matrix of $A$ (where $D$ is a diagonal matrix with $D_{ii} = \sum_{j \in [n + m]} A_{ij}$).
+
+We are ready to define our test statistic. 
+\begin{equation*}
+T_2^2 = \left(\max_{\theta: \theta^T L \theta \leq 1} a^T \theta. \right)^2
+\end{equation*}
+
+\paragraph{Spectral properties of $L$.}
+
+Define the pseudo-inverse of $L$ to be $\Linv$. In what follows, we will assume $A$ defines a connected graph $G$. In this setting, it is well known that $L$ has exactly one $0$ eigenvalue, with corresponding eigenvector ${\bf 1}$. Let $P_{1^{\perp}}$ be the projection onto the linear subspace orthogonal to this eigenvector.
+
+\paragraph{Poissonization.}
+
+For $p \in (0,1)$, draw $U_1, \ldots, U_{N} \sim Bern(p)$. Then, draw $Z_i \sim P_{2 U_i - 1}$. Consider $a = (a_i)_{i = 1}^{N}$ with $a_i = 2 U_i - 1$. Let the null hypothesis be $H_0: P_1 = P_2$ and the alternative be $H_a: P_1 \neq P_2$.
+
+\paragraph{Distances between probability measures.} 
+
+For a function $f$, define its \textbf{Lipschitz norm} $\norm{f}_{L}$ to be
+\begin{equation*}
+\inf K : \abs{f(x) - f(y)} \leq K \norm{x - y}.
+\end{equation*}
+Define the \textbf{Wasserstein distance} between two measures $\mu$ and $\nu$ to be
+\begin{equation*}
+\mathcal{W}(\mu, \nu) := \sup \left \{ \abs{\int h \, d\mu - \int h \, d\nu}: h \text{ Lipschitz, with } \norm{h}_{L} \leq 1 \right\}.
+\end{equation*}
+
+If the measures $\mu$ and $\nu$ have corresponding cumulative distribution functions $F_{\mu}$ and $F_{\nu}$ then we can define the \textbf{Kolmogorov-Smirnov distance} to be
+\begin{equation*}
+\norm{F_\mu - F_\nu}_{\infty} := \sup_{t} \abs{F_{\mu}(t) - F_{\nu}(t)}.
+\end{equation*}
+
+
+The following lemma allows us to translate from an upper bound on Wasserstein distance to Kolmogorov distance.
+\begin{lemma}[Wasserstein to Kolmogorov distance]
+	\label{lem: wass_to_ks_distance}
+	For any probability measures $\mu$, $\nu$ with corresponding cdfs $F_{\mu}$ and $F_{\nu}$ and any $\epsilon' > 0$, there exists some $\epsilon > 0$ such that
+	\begin{equation*}
+	\mathcal{W}(\mu, \nu ) < \epsilon \implies \sup_{t} \abs{F_{\mu}(t) - F_{\nu}(t)} \leq \epsilon'.
+	\end{equation*}
+\end{lemma}
+
+
+\section{Related Work}
+
+(Bhattacharya 2018) defines a general notion of 2-sample graph-based test statistics
+\begin{definition}
+	\begin{equation*}
+	T(G) = \sum_{i = 1}^{n} \sum_{j = n + 1}^{n + m} 1( e_{ij} \in E)
+	\end{equation*}
+\end{definition}
+and letting $a_0 = \frac{1}{2} (1_X - 1_Y)$, we can write
+\begin{equation*}
+T(G) = a_0^T L a_0.
+\end{equation*}
+
+(Gretton 2012) considers the test statistic
+\begin{equation*}
+T = a^T A a.
+\end{equation*}
+
+\section{Conjectures}
+
+The following will be needed for Theorem \ref{thm: asymptotic_null_distribution}.
+
+\begin{conjecture}
+	\label{conj: spectral_measure_conv}
+	There exists a sequence of scaling factors $(\rho_n)_{n = 1}^{\infty}$ such that the \textbf{spectral measure} $\mu_n$ of $\rho_n \Linv$ converges weakly in probability
+	\begin{equation*}
+	\mu_n(\rho_n \Linv) \overset{\ast}{\rightharpoonup} \nu_{\infty}.
+	\end{equation*}
+	
+	
+	where $V \sim \nu_{\infty}$ and $V_n \sim \mu_n$ are bounded almost surely for all $n$ by some constant $C$. 
+\end{conjecture}
+
+\begin{conjecture}
+	\label{conj: diagonal_entries}
+	For all $\epsilon > 0$, there exists $N$ such that
+	\begin{equation*}
+	\Prob{\underset{i \in [n]}{\max} \, \frac{1}{n} \left(\{ \rho_n \Linv\}^2 \right)_{ii} \leq \epsilon} \geq 1 - \epsilon
+	\end{equation*}
+	for all $n \geq N$.
+\end{conjecture}
+
+\section{Results}
+
+\paragraph{Central limit theorem for quadratic forms.}
+
+\begin{theorem}[Chatterjee 08]
+	\label{thm: clt_quadratic_forms}
+	Let $a = (a_1, \ldots, a_n)$ be i.i.d random variables with with $\Prob{X_i = 1} = \Prob{X_i = -1} = 1/2$. For some fixed real valued symmetric matrix $M = (M_{ij})_{1 \leq i, j \leq n}$, define
+	\begin{equation*}
+	W = a^T M a.
+	\end{equation*}
+	with $\mu$ denoting the law of $(W - EW) / \sqrt{\Var{W}}$.
+	
+	Then, letting $\mathcal{G}$ be the standard Gaussian measure 
+	\begin{equation}
+	\label{eqn: wass_distance_to_normal}
+	\mathcal{W}(\mu, \mathcal{G} ) \leq \left(\frac{\tr(M^4)}{\tr(M^2)^2} \right)^{1/2} + \left( \frac{5 \, \underset{i}{\max} \, (M_{ii})^2}{\tr(M^2)} \right)^{1/2}.
+	\end{equation}
+\end{theorem}
+
+\paragraph{Analytic form for $T_2^2$.}
+
+The above result becomes obviously applicable thanks to the following expression for $T_2^2$. 
+
+\begin{lemma}
+	\label{lemma: T2_analytic_form}
+	\begin{equation*}
+	T_2^2 = a^T \Linv a  
+	\end{equation*}
+\end{lemma}
+
+\paragraph{Asymptotic null distribution for $T_2$.}
+
+\begin{theorem}
+	\label{thm: asymptotic_null_distribution}
+	Denote the scaled version of the Laplacian smooth test statistic
+	\begin{equation*}
+	W_n = \sqrt{\frac{2}{\tr((\Linv)^2)}}\Bigl(T_2^2 - 4\tr(\Linv) \Bigr).
+	\end{equation*}
+	
+	If Conjectures \ref{conj: spectral_measure_conv} and \ref{conj: diagonal_entries} hold,
+	\begin{equation*}
+	\lim_{n \to \infty} \sup_{t} \abs{\Prob{W_n \leq t} - \Phi(t)} = 0.
+	\end{equation*}
+\end{theorem}
+
+\begin{proof}
+	We will proceed by
+	\begin{enumerate}
+		\item Conditioning on the high-probability outcome that the Laplacian converges to a limiting object in the right sense.
+		\item Showing that, under such convergence of the Laplacian, both terms in Theorem \ref{thm: clt_quadratic_forms} grow small with $n$.
+		\item Converting from Wasserstein distance to Kolmogorov distance. 
+	\end{enumerate}
+
+	\paragraph{Step 1.}
+	Fix $\epsilon > 0$. Throughout, let $P_Z$ denote the distribution of $Z$, and likewise $P_a$ denote the distribution of $a$.
+	
+	For  $V_n \sim \nu_n(\rho_n \Linv)$, and $V \sim \nu_{\infty}$ let
+	\begin{equation*}
+	A_n = \biggl \{z \in \mathbb{R}^n: \abs{ E V_n^p - E V^p } \leq \epsilon \text{ for } p = 1, 2, 4 \biggr \} \bigcup \set{ z \in \mathbb{R}^n: \underset{i \in [n]}{\max} \, \frac{1}{n} \left(\{ \rho_n \Linv\}^2 \right)_{ii} \leq \epsilon}.
+	\end{equation*}
+	
+	It is not hard to see that our Conjectures \ref{conj: spectral_measure_conv} and \ref{conj: diagonal_entries} imply $A_n$ will eventually have high probability.
+	\begin{align}
+	\label{eqn: good_event_probability}
+	\Prob{A_n} & \geq \Prob{\biggl \{z \in \mathbb{R}^n: \abs{ E V_n^p - E V^p } \leq \epsilon \biggr \}} + \Prob{\set{ z \in \mathbb{R}^n: \underset{i \in [n]}{\max} \, \frac{1}{n} \left(\{ \rho_n \Linv\}^2 \right)_{ii} \leq \epsilon}} \nonumber \\
+	& \overset{(i)}{\geq} 1 - 2 \epsilon \text{ for all } n \geq N.
+	\end{align}
+	where $(i)$ follows from Conjecture \ref{conj: diagonal_entries} (for the second term), and Conjecture \ref{conj: spectral_measure_conv} (for the first term).
+	
+	
+	Writing $W_n := W_n(z,a)$ to emphasize that it is a function of $z$ and $a$, we have by Tonelli's theorem that
+	\begin{align}
+	\label{eqn: conditional_ks_distance}
+	\sup_{t} \abs{\Prob{W_n \leq t} - \Phi(t)} & \overset{(i)}{=} \sup_{t} \abs{ \int_{\Reals^N} \left( \int_{\{-1,1\}^N} 1(W_n(z,a) \leq t) dP_a\right) dP_z - \Phi(t) } \nonumber \\
+	& = \sup_{t} \abs{ \int_{\Reals^N} \left( \int_{\{-1,1\}^N} 1(W_n(z,a) \leq t) dP_a\right) - \Phi(t)dP_z } \nonumber \\
+	& \leq \int_{\Reals^N} \sup_{t} \abs{\left( \int_{\{-1,1\}^N} 1(W_n(z,a) \leq t)   dP_a\right) - \Phi(t) } dP_z \nonumber \\
+	& \overset{(ii)}{\leq} \int_{A_n} \sup_{t} \abs{\left( \int_{\{-1,1\}^N} 1(W_n(z,a) \leq t) dP_a\right) - \Phi(t)} dP_z + 2 \epsilon
+	\end{align}
+	where $(i)$ follows from Tonelli's theorem and $(ii)$ from (\ref{eqn: good_event_probability}).
+	
+	\paragraph{Step 2.}
+	
+	Denote as
+	\begin{equation*}
+	F_{a|z}(z, t) := \left( \int_{\{-1,1\}^N} 1(W_n(z,a) \leq t) dP_a\right)
+	\end{equation*}
+	and note that for any $z$ this defines a measure over the Borel $\sigma$-algebra $\mathcal{B}(\Reals)$, which we will call $\mu_{a|Z}(z)$.
+	
+	We wish to upper bound $\mathcal{W}(\mu_{a|Z}(z), \mathcal{G})$. To do so, we will compute upper bounds for each present in (\ref{eqn: wass_distance_to_normal}). For the first term, we have
+	\begin{align*}
+	\frac{\tr(\{\Linv \}^4)}{\tr(\{ \Linv \}^2)^2} & = \frac{1}{n} \frac{\frac{1}{n} \tr(\rho_n^4 \{\Linv \}^4)}{ \frac{1}{n^2} \rho_n^4 \tr(\{ \Linv \}^2)^2} \\
+	& \leq \frac{1}{n} \frac{\Expect{V^4} + \epsilon}{\Expect{V^2}^2 - \epsilon}.
+	\end{align*}
+	For the second term, we have
+	\begin{align*}
+	\frac{ \underset{i}{\max}(\{\Linv\}^2)_{ii} }{ \tr(\{\Linv\}^2) } & = \frac{ \frac{\rho_n^2}{n} (\{\Linv\}^2)_{ii}}{ \frac{\rho_n^2}{n} \tr(\{\Linv\}^2) } \\
+	& \leq \frac{ \epsilon }{ \Expect{V^2} - \epsilon }.
+	\end{align*}
+	By Theorem \ref{thm: clt_quadratic_forms} we therefore have
+	\begin{equation}
+	\label{eqn: wasserstein_conditional_bound}
+	\mathcal{W}(\mu_{a|Z}(z), \mathcal{G} ) \leq \frac{1}{n} \frac{\Expect{V^4} + \epsilon}{\Expect{V^2}^2 - \epsilon} + \left(\frac{ \epsilon }{ \Expect{V^2} - \epsilon } \right)^{1/2}.
+	\end{equation}
+	
+	\paragraph{Step 3.}
+	Note that the right hand side of (\ref{eqn: wasserstein_conditional_bound}) converges to 0 with $\epsilon$. Therefore, for any $\epsilon$ sufficiently small, by (\ref{eqn: wasserstein_conditional_bound}) and Lemma \ref{lem: wass_to_ks_distance} we have
+	\begin{equation*}
+	\norm{F_{Z | a} - \Phi}_{\infty} \leq \epsilon'.
+	\end{equation*}
+	Combined with (\ref{eqn: conditional_ks_distance}) we have
+	\begin{equation*}
+	\sup_{t} \abs{\Prob(W_n \leq t) - \Phi(t)} \leq 2 \epsilon + \epsilon'.
+	\end{equation*}
+	for all $n \geq n_0$.
+	
+\end{proof}
+\paragraph{Asymptotic mean.}
+
+Under the null hypothesis of the \textbf{related generative model}, we have
+\begin{align}
+\Expect{T^2} & = \Expect{a^T \Linv a} \nonumber \\
+& = \Expect{ \Expect{a^T \Linv a \mid  Z_1^{n+m}} } \nonumber \\
+& \overset{(i)}{=} \Expect{ \sum_{i = 1}^{n + m} \sum_{j = 1}^{n + m} \Expect{a_i a_j} \Linv_{ij} } \nonumber \\
+& =  \Expect{\sum_{i = 1}^{n + m} \frac{1}{p(1 - p)} \Linv_{ii}} \nonumber \\
+& = \frac{1}{N^2 p(1 - p)}\cdot \Expect{\sum_{i = 1}^{n + m} \Linv_{ii} } \nonumber \\
+& = \frac{1}{N^2 p(1 - p)} \cdot \Expect{\tr(\Linv)} \label{eqn: asymptotic_expectation}
+\end{align}
+where $(i)$ comes from the independence of $Z$ and $a$ under $H_0$. 
+
+\paragraph{Asymptotic variance.}
+
+We begin by computing $\Expect{(T^2)^2}$. We will need the following terms
+\begin{align*}
+S_4 & := \sum_{i, k} \Linv_{ii} \Linv_{kk} \\
+S_5 & := \sum_{i, j} \Linv_{ij} \Linv_{ij} \\
+S_6 & := \sum_{i} \Linv_{ii} \Linv_{ii}.
+\end{align*}
+Then
+\begin{align*}
+\Expect{(T^2)^2} & = \Expect{\sum_{i,j,k,l} \Linv_{ij} \Linv_{kl} \Expect{a_i a_j a_k a_l} } \\
+& = \Expect{\frac{1}{N^2 p^2(1 - p)^2}(S_4 + 2 S_5 - 3 S_6) + \frac{p^3 + (1 - p)^3}{N^4 p^3(1 - p)^3}S_6 } \\
+& \overset{(i)}{=} \frac{1}{N^4 p^2(1 - p)^2} \left( \Expect{tr(\Linv)}^2 + 2 \Expect {tr(\Linv \Linv)} - 3 \Expect{S_6} \right) + \frac{p^3 + (1 - p)^3}{N^4 p^3(1 - p)^3} \Expect{S_6}
+\end{align*}
+where $(i)$ follows from Lemma \ref{lem: cross_moments}. Along with (\ref{eqn: asymptotic_expectation}) we therefore obtain
+\begin{equation*}
+\Var{T^2} = \frac{1}{N^4 p^2(1 - p)^2} \left( 2 \Expect {tr(\Linv \Linv)} - 3 \Expect{S_6} \right) + \frac{p^3 + (1 - p)^3}{N^4 p^3(1 - p)^3} \Expect{S_6}
+\end{equation*} 
+
+\begin{lemma}
+	\label{lem: cross_moments}
+	\begin{align*}
+	S_4 & = tr(\Linv)^2 \\
+	S_5 & = tr(\Linv \Linv)
+	\end{align*}
+\end{lemma}
+\begin{proof}
+	\begin{align*}
+	S_4 & = \sum_{i, k} \Linv_{ii} \Linv_{kk} \\
+	& = \left(\sum_{k} \Linv_{kk} \right)  \left(\sum_{i} \Linv_{ii} \right) \\
+	& = tr(\Linv)^2.
+	\end{align*}
+	
+	\begin{align*}
+	S_5  & := \sum_{i, j} \Linv_{ij} \Linv_{ij} \\
+	& = \norm{\Linv}_F = \tr(\Linv \Linv). 
+	\end{align*}
+\end{proof}
+
+\begin{lemma}
+	\label{lem: diagonal_elements}
+	
+	Write the Laplacian in terms of its spectral decomposition
+	\begin{equation*}
+	L = \sum_{k = 2}^{n} \lambda_k u_k u_k^T 
+	\end{equation*}
+	where $\lambda_1 = 0$. Then, if $\max_{k, i} u_k[i] \leq \frac{C}{\sqrt{N}}$,
+	we have
+	\begin{equation*}
+	S_6 \leq C^4 \frac{tr(\Linv)^2}{N}.
+	\end{equation*}
+\end{lemma}
+
+\begin{proof}
+	\begin{align*}
+	\Linv_{ii} & = \sum_{k = 1}^{N} \lambda_k (u_k[i])^2 \\
+	& \leq \sum_{k = 1}^{N} \lambda_k \frac{C^2}{N} \\
+	& = C^2 \frac{tr(\Linv)}{N}.
+	\end{align*}
+	Therefore
+	\begin{align*}
+	S_6 & = \sum_{i} \Linv_{ii} \Linv_{ii} \\
+	& \leq \sum_{i} C^4 \frac{tr(\Linv)^2}{N^2} \\
+	& = C^4 \frac{tr(\Linv)^2}{N}.
+	\end{align*}
+\end{proof}
+
+\begin{theorem}
+	\label{theorem: asymptotic_null_dist}
+	Assume Conjectures \ref{conj: spectral_measure_conv}, \ref{conj: max_entry}, and \ref{conj: diagonal_max_bound} hold. Then
+	\begin{equation*}
+	\rho_n n^{3/2} (T_2^2) \overset{L}{\to} N(0, \frac{2}{p^2(1-p)^2}\mathbb{E}_{\nu_{\infty}}{V^2})  
+	\end{equation*}
+\end{theorem}
+
+\begin{proof}
+	Denote $W(n) = \rho_n n^{3/2} (T_2^2)$ and note that
+	\begin{align*}
+	W(n) & = \frac{\rho_n}{\sqrt{n}} \left(\sum_{i = 1}^{N} \sum_{j = 1}^{N} \Linv_{ij} a_ia_j \right).
+	\end{align*}
+	By the independence of $a_i$ and $a_j$, $\Expect{a_ia_j \mid a_j} = 0$ when $i \neq j$. For the diagonal terms, we have that
+	\begin{align*}
+	\Linv_{ii} \frac{\rho_n}{\sqrt{n}} & \overset{(i)}{=} \mathcal{O}(\frac{tr(\Linv) \rho_n}{n} \frac{1}{\sqrt{n}}) \\
+	& \overset{n \to \infty}{=} O(\frac{1}{\sqrt{n}}) \mathbb{E}_{\nu_\infty}(V) = 0
+	\end{align*}
+	where $(i)$ follows from Conjecture \ref{conj: max_entry} and Lemma \ref{lem: diagonal_elements}. So, asymptotically, the conditional expectation $\Expect{\Linv_{ij} a_i a_j \mid a_j} = 0 $ a.s.  
+	
+	The variance of $W(n)$ is calculated as
+	\begin{align*}
+	Var(W(n)) & = \frac{N^4 \rho_n^2}{N} Var(T_2^2) \\
+	& \overset{(i)}{=} \frac{\rho_n^2}{N p^2(1 - p)^2} \left( 2 \Expect {tr(\Linv \Linv)} - 3 \Expect{S_6} \right) + \frac{\rho_n \left(p^3 + (1 - p)^3 \right)}{N p^3(1 - p)^3} \Expect{S_6} \\
+	& \overset{(ii)}{=} \frac{1}{p^2(1 - p)^2 } (2 \mathbb{E}_{v_{\infty}}(V^2) ) + \mathcal{O}(\max_i(\Linv_{ii})^2 \rho_n^2) \\
+	& \overset{(iii)}{ = } \frac{1}{p^2(1 - p)^2 } (2 \mathbb{E}_{v_{\infty}}(V^2) ).
+	\end{align*}
+	where $(i)$ follows from our calculation for asymptotic variance, $(ii)$ follows from Conjecture \ref{conj: spectral_measure_conv} and the definition of $S_6$ and $(iii)$ from Conjecture \ref{conj: diagonal_max_bound}. 
+	
+	We compute
+	\begin{align*}
+	\lim_{n \to \infty} \frac{\rho_n^4}{n^2}tr((\Linv)^4) = \lim_{n \to \infty} \frac{1}{n}\mathbb{E}_{\nu_{\infty}}(V^4) = 0.
+    \end{align*}
+	and roughly this should imply the fourth moment is asymptotically $0$. 
+	
+	Finally, we have
+	\begin{align*}
+	\sum_{j = 1}^n \sigma_{ij}^2 & = \sum_{j = 1}^{n} \frac{\rho_n^2 (\Linv_{ij})^2}{n p^2 (1 - p)^2} \\
+	 & = \frac{\rho_n^2 }{n p^2 (1 - p)^2} (\Linv_i)^T (\Linv_i) \\
+	 & = \frac{\rho_n^2 }{n p^2 (1 - p)^2} (\Linv \Linv)_{ii} \\
+	 & \overset{(i)}{\leq} \frac{\rho_n^2 }{n p^2 (1 - p)^2} C^2 \frac{tr(\Linv \Linv)}{N} \\
+	 & = \mathcal{O}(1/n).
+	\end{align*}
+	
+	By Theorem 2.1 of (de Jong 87), we therefore have
+	\begin{equation*}
+	\rho_n n^{3/2} (T_2^2) \overset{L}{\to} N(0, \frac{2}{p^2(1-p)^2}\mathbb{E}_{\nu_{\infty}}{V^2}).
+	\end{equation*}
+\end{proof}
+
+\section{Proofs}
+\begin{proof}[Proof of Lemma \ref{lemma: T2_analytic_form}]
+	Take the Lagrangian
+	\begin{equation*}
+	L(\theta, \lambda) = - a^T \theta + \lambda \theta^T L \theta
+	\end{equation*}
+	and let
+	\begin{align*}
+	\lambda^{\star} & = \sqrt{a^T \Linv a} \\
+	\theta^{\star} & = \frac{a^T \Linv}{\lambda^{\star}}
+	\end{align*}
+	
+	The KKT conditions tell us that if
+	\begin{align}
+	\frac{\partial L}{\partial \theta}(\lambda^{\star}, \theta^{\star}) & = 0 \label{eqn: stationarity}\\
+	{\theta}^{\star^{T}} L \theta^{\star} & = 1 \label{eqn : complementary_slackness} \\
+	\lambda^{\star} & \geq 0 \label{eqn: dual_feasibility}
+	\end{align}
+	then $\theta^{\star}$ is a primal solution.
+	
+	 We can write
+	\begin{equation*}
+	\frac{\partial L}{\partial \theta} = -a^T + \lambda \theta^T L
+	\end{equation*}
+	and plugging in our choice for $\theta^{\star}$ yields
+	\begin{align*}
+	\frac{\partial L}{\partial \theta}(\lambda^{\star}, \theta^{\star}) & = -a^T + \lambda^{\star} a^T \Linv L \\
+	& \overset{(i)}{=} -a^T + a^T P_{1^{\perp}} \\
+	& \overset{(ii)}{=} -a^T + a^T = 0.
+	\end{align*}
+	where $(i)$ follows from the already stated fact that $L$ has one $0$ eigenvalue with constant eigenvector, and $(ii)$ from the fact that $a \perp {\bf 1}$. As a result, $(\lambda^{\star}, \theta^{\star})$ satisfy (\ref{eqn: stationarity}). 
+	
+	Then, we have
+	\begin{align*}
+	{\theta}^{\star^{T}} L \theta^{\star} & = \frac{a^T \Linv L \Linv a}{\lambda^{\star^2}} \\
+	& = \frac{a^T \Linv a}{\lambda^{\star^2}} = 1.
+	\end{align*}
+	satisfying (\ref{eqn : complementary_slackness}).
+	
+	Finally, because $L^{\dagger}$ is a positive-definite matrix, for any vector $v ~ v^T\Linv v > 0$, and therefore $\lambda^{\star} \geq 0$, verifying (\ref{eqn: dual_feasibility}). 
+	
+	As a result, $\theta^{\star}$ minimizes $a^T \theta$ subject to the given constraint. Plugging in our expression for $\theta^{\star}$ yields
+	\begin{equation*}
+	T = a^T \theta^{\star} = \frac{a^T \Linv a}{\lambda^{\star}} = \sqrt{a^T \Linv a}.
+	\end{equation*}	
+\end{proof}
+
+\end{document}

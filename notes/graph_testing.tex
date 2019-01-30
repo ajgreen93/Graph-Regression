@@ -1,0 +1,311 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\Bin}{\mathrm{Bin}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\Naturals}{\mathbb{N}}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+%%% Matrix related notation
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Bbf}{\mathbf{B}}
+
+%%% Vector related notation
+\newcommand{\lbf}{\bm{\ell}}
+\newcommand{\fbf}{\mathbf{f}}
+
+%%% Set related notation
+\newcommand{\Dset}{\mathcal{D}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Wset}{\mathcal{W}}
+
+%%% Distribution related notation
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+% \newcommand{\Pr}{\mathrm{Pr}}}
+
+%%% Functionals
+\newcommand{\1}{\mathbf{1}}
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{\textcolor{red}{Testing with Graphs}}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\paragraph{Two-sample non-parametric hypothesis-testing problem.}
+
+For fixed integers $n_1 + n_2 = n$, let $\Xbf = \set{x_1, \ldots, x_{n_1}} \subset \Rd$ and $\Ybf = \set{y_1, \ldots, y_{n_2}}$ be sampled i.i.d from distributions $\Pbb$ and $\Qbb$ with density functions $p$ and $q$, respectively, both with support on $D \subset \Rd$. Our statistical problem is testing the null hypothesis $H_0: \Pbb = \Qbb$ vs. the alternative $H_1: \Pbb \neq \Qbb$, where our knowledge of $\Pbb$ and $\Qbb$ come from the samples $\Xbf$ and $\Ybf$. 
+
+\paragraph{Integral Probability Metric.}
+Given $\F$ a class of real-valued bounded measurable functions on $D$, the \emph{integral probability metric} between $\Pbb$ and $\Qbb$ with respect to $\F$ is
+\begin{equation*}
+\gamma_{\F}(\Pbb,\Qbb) = \sup_{f \in \F}\abs{\int_{D} f d\Pbb - \int_{D} f d\Qbb}
+\end{equation*}
+
+One such IPM that has not received close attention until surprisingly recently is the \emph{(weighted) Sobolev IPM}. For $f \in L^2(\Dset)$ and $\rho$ a density function over $\Dset$, the ($\rho^2$-weighted) Sobolev 1,2 norm of $f$ is given by
+\begin{equation*}
+\norm{f}_{1,2,\rho^2} := 
+\begin{cases}
+\int_{\Dset}\norm{\nabla_x f(x)}^2 \rho^2 dx,~ & \text{$f \in H^1(\Dset)$} \\
+\infty,~ & \text{$f \in L^2(\Dset) \setminus H^1(\Dset)$}
+\end{cases}
+\end{equation*}
+where $H^1(\Dset)$ is \textcolor{red}{the Sobolev space of $L^2(\Dset)$ functions with weak derivative $\nabla_x f(x) \in L^2(\Dset)$.}
+
+Consider the unit ball of $\norm{\cdot}_{1,2,\rho^2}$,
+\begin{equation*}
+\Wset^{1,2}(\Dset,\rho^2) := \set{f: \norm{f}_{1,2,\rho^2} \leq 1}.
+\end{equation*}
+The weighted Sobolev IPM is simply $\gamma_{\Wset^{1,2}(\Dset,\rho^2)}(\Pbb,\Qbb)$.
+
+\paragraph{Neighborhood graph.}
+
+Let $G_{n,r_n} = (V,E,w)$ denote a weighted, undirected graph constructed from the samples $\Zbf = \set{z_1, \ldots, z_n} = (\Xbf,\Ybf)$ where $V = \set{1, \ldots, n}$, and $w_{uv} = K(z_u, z_v):= k(\frac{\norm{z_u - z_v}}{\epsilon_n}) \geq 0$ for $u,v \in V$, and a particular kernel function $k$. Here $(u,v) \in E$ if and only if $w_{uv} > 0$.
+
+Motivated by the integral probability metric, our test statistics will be of the form
+\begin{equation*}
+\gamma_{\F_n}(\Pbb_n,\Qbb_n) = \sup_{f_n \in \F_n}\abs{\int_{D} f_n d\Pbb_n - \int_{D} f_n d\Qbb_n}
+\end{equation*}
+where
+\begin{equation*}
+\Pbb_n := \frac{1}{n_1}\sum_{i = 1}^{n_1} \delta_{x_i}, ~~ \Qbb_n := \frac{1}{n_2}\sum_{i = 1}^{n_2} \delta_{y_i}
+\end{equation*}
+are the empirical distributions of $\Xbf$ and $\Ybf$, respectively, and $\F_n$ is a \textcolor{red}{class of functions $f_n: \Zbf \to \Reals$ exhibiting some regularity with respect to the neighborhood graph $G_{n,r}$.}
+
+\paragraph{Laplacian smoothing and Total Variation denoising.}
+ 
+For convenience, we number the edges $E  = (e_1, \ldots, e_m)$. We denote by $\Bbf \in \Reals^{m \times n}$ the edge incidence matrix of $G_{n,r}$, which for $k$th edge $e_k = (u,v)$ has $k$th row $\Bbf_{k} = (0,\ldots,-w_{uv},\ldots,w_{uv},\ldots,0)$ with a $-w_{uv}$ in the $u$th location, and a $w_{uv}$ in the $v$th location. The random (unnormalized) Laplacian matrix is then $\Lbf = \Bbf^T \Bbf$. We also introduce a \emph{label vector}, given by $\lbf = (\ell_1, \ldots, \ell_n)$ with
+\begin{equation}
+\label{eqn: label_vector}
+\ell_k = 
+\begin{cases}
+\frac{n}{n_1},~~~ \text{$z_k \in \Xbf$} \\
+-\frac{n}{n_2}, ~ \text{$z_k \in \Ybf$}
+\end{cases}
+\end{equation}
+
+
+Our test statistics $T_1(\lbf; G_{n,r})$ and $T_2(\lbf; G_{n,r})$ are defined as follows:
+\begin{align*}
+	T_1(\lbf; G_{n,r}) := \sup_{\fbf \in \Reals^n: \norm{\Bbf \fbf}_1 \leq C_{n,r}} ~ \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_k \\
+	T_2(\lbf; G_{n,r}) := \sup_{\fbf \in \Reals^n: \norm{\Bbf \fbf}_2^2 \leq C_{n,r}} ~ \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_k
+\end{align*}
+where \textcolor{red}{$C_{n,r} = $} and we write $\fbf = (f_1,\ldots, f_n)$. We note that, as promised, these satisfy the form
+\begin{align*}
+T_1(\lbf; G_{n,r}) & = \sup_{f_n \in TV_n}\abs{\int_{D} f_n d\Pbb_n - \int_{D} f_n d\Qbb_n} \\
+T_2(\lbf; G_{n,r}) & = \sup_{f_n \in \Wset_n}\abs{\int_{D} f_n d\Pbb_n - \int_{D} f_n d\Qbb_n}
+\end{align*}
+where $TV_n = \set{\fbf: \norm{\Bbf \fbf}_1 \leq C_{n,r}}$ and $\Wset_n = \set{\fbf: \norm{\Bbf \fbf}_2 \leq C_{n,r}}$.
+
+
+
+\section{Consistency under fixed alternative}
+
+\paragraph{Binomialized data model.}
+For technical reasons, we would like $z_1, \ldots, z_n$ to be independent and identically distributed. We consider the following generative model, which we term the \emph{binomialized data model}: 
+
+Fix $n \in \Naturals > 0$, and $n_1 \sim \Bin(n,1/2),~ n_2 = n - n_1$. Then, let $x_1, \ldots, x_{n_1} \in \Rd$ be a sequence of i.i.d random points chosen according to $\Pbb$, and $y_1, \ldots, y_{n_2} \in \Rd$ a separate sequence of i.i.d random points chosen according to $\Qbb$, with $x_j \perp y_k$ for all $j,k$. Fix $\widetilde{\Zbf} = (\widetilde{z}_1,\ldots,\widetilde{z}_n) := (x_1, \ldots, x_{n_1}, y_1, \ldots, y_{n_2})$.  Finally, for a permutation $\pi: [n] \to [n]$ chosen uniformly at random among all such permutations, let $\Zbf = (z_1,\ldots,z_n) =  (\widetilde{z}_{\pi(1)}, \ldots, \widetilde{z}_{\pi(n)})$. 
+
+The label vector $\lbf$ remains defined as in \eqref{eqn: label_vector} with respect to $\Zbf$. Note that now $z_i \overset{i.i.d}{\sim} \frac{\Pbb}{2} + \frac{\Qbb}{2}$, as we desired, with density function $\mu(x) := \frac{p(x) + q(x)}{2}$.
+
+\begin{theorem}
+	\label{thm: LLN_for_t2}
+	Let $d \geq 2$ and let $\Dset \subset \Rd$ be an open, bounded, connected set with Lipschitz boundary. Let $\mu$ satisfy
+	\begin{equation*}
+	m \leq \mu(x) \leq M \tag{$\forall x \in D$}
+	\end{equation*}
+	for some $0 < m \leq M$. Let $(r_n)$ be a sequence of positive numbers converging to $0$ and satisfying
+	\begin{align*}
+	& \lim_{n \to \infty} \frac{(\log n)^{3/4}}{n^{1/2}} \frac{1}{r_n} = 0 ~~ \text{if $d = 2$} \\
+	& \lim_{n \to \infty} \frac{(\log n)^{1/d}}{n^{1/d}} \frac{1}{r_n} = 0 ~~ \text{if $d \geq 3$}
+	\end{align*}
+	Assume the kernel $k$ satisfies conditions: 
+	\begin{align*}
+	& k(0) > 0 ~ \text{and $k$ is continuous at $0$.} \tag{\textbf{K1}} \\
+	& k~ \text{is non-increasing.} \tag{\textbf{K2}} \\
+	& \text{The integral $\int_{0}^{\infty} k(r) r^{d+1} dr$ is finite.} \tag{\textbf{K3}}
+	\end{align*}
+	
+	Then with probability one the following statement holds: For $(z_1, \ldots, z_n)$ chosen under the binomialized data model
+	\begin{equation*}
+	\lim_{n \to \infty} T_2(\lbf; G_{n,r_n}) = \gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb).
+	\end{equation*}
+\end{theorem}
+
+\section{Proofs}
+
+Fix $\mu_n = \frac{d\Pbb_n + d\Qbb_n}{2}$. \textcolor{red}{We will show a variational form of convergence of $\mu_n$ to $\mu$.}
+
+\subsection{Gamma convergence of constraint}
+
+\begin{definition}[$TL^2$ convergence]
+	Denote by $\mathfrak{B}(\Dset)$ the Borel $\sigma$-algebra of $\Dset$ and $\mathcal{P}(\Dset)$ the set of all Borel probability measures on $\Dset$. Given a Borel map $T: \Dset \to \Dset$, the \emph{push-forward} of $\mu$ by $T$ is given by
+	\begin{equation*}
+	T_{\star}\mu(\Aset) := \mu(T^{-1}(\Aset)), ~~ \Aset \in \mathfrak{B}(\Dset).
+	\end{equation*}
+	
+	Given $\widetilde{\mu} \in \mathcal{P}(\Dset)$, we say that $T$ is a \emph{transportation map} between $\mu$ and $\widetilde{\mu}$ if $T_{\star}\mu = \widetilde{\mu}$. If for a sequence $(T_n)$ of transportation maps
+	\begin{equation*}
+	\int_{\Dset} \abs{x - T_n(x)}^2 d\mu(x) \to 0,~ \text{as $n \to \infty$}
+	\end{equation*}
+	we refer to the sequence as \emph{stagnating.} 
+	
+	Take $f \in L^2(\mu)$ and a sequence $(f_n)$ with $f_n \in L^2(\mu_n)$ for $n = 1,2,\ldots$. If there exists a stagnating sequence of transportation maps $(T_n)$ such that
+	\begin{equation*}
+	\int_{\Dset} \abs{ f - T_n(f_n(x)) }^2 d\mu(x) \to 0,~ \text{as $n \to \infty$}
+	\end{equation*}
+	we say that $(f_n)$ converges $TL^2$ to $f$, and write $f_n \overset{TL^2}{\to} f$.
+\end{definition}
+
+We restate Theorem 1.4 of \cite{trillos2018}, changing notation to match the rest of this paper.
+
+\begin{theorem}[Theorem 1.4 of \cite{trillos2018}]
+	Under the setup and conditions of Theorem \ref{thm: LLN_for_t2}, with probability one the following statements hold:
+	\begin{itemize}
+		\item \emph{Liminf inequality:}
+		For all $f \in L^2(\mu)$ and all sequences $(f_n)$ with $f_n \in L^2(\mu_n)$ and $f_n \overset{TL^2}{\to} f$,
+		\begin{equation*}
+		\liminf_{n \to \infty} \frac{1}{n^2 r_n^{d + 2}} \norm{Bf}_2^2 \geq \textcolor{red}{\sigma_{k}} \norm{f}_{1,2,\rho^2}
+		\end{equation*}
+		
+		\item \emph{Limsup inequality:} For all $f \in L^2(\mu)$, there exists a sequence $(f_n)$ with $f_n \in L^2(\mu_n)$ and $f_n \overset{TL^2}{\to} f$ such that
+		\begin{equation*}
+		\limsup_{n \to \infty} \frac{1}{n^2 r_n^{d + 2}} \norm{Bf}_2^2 \leq \textcolor{red}{\sigma_{k}} \norm{f}_{1,2,\rho^2}
+		\end{equation*}
+		
+		\item \emph{Compactness property:} Every sequence $(f_n)$ with $f_n \in L^2(\mu_n)$ satisfying
+		\begin{equation*}
+		\sup_{n \in \Naturals} \frac{1}{n^2 r_n^{d + 2}} \norm{Bf}_2^2 < \infty
+		\end{equation*}
+		is precompact in $TL^2$, that is, every subsequence of $(f_n)$ has a further subsequence which converges in the $TL^2$-sense to an element of $L^2(\Dset)$.
+	\end{itemize}
+	
+\end{theorem}
+
+\subsection{Continuity of risk functional}
+
+\subsection{Proof of Theorem \ref{thm: LLN_for_t2}}
+
+\clearpage
+
+\bibliography{../graph_testing_bibliography}
+\bibliographystyle{plain}
+
+\end{document}
