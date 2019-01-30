@@ -1,0 +1,9 @@
+# LATEX #
+################
+*.aux
+*.bbl
+*.gz
+*.out
+*.blg
+*.txt
+*.log
