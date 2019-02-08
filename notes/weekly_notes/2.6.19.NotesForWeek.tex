@@ -1,0 +1,291 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\Bin}{\mathrm{Bin}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\Naturals}{\mathbb{N}}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+%%% Matrix related notation
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Bbf}{\mathbf{B}}
+
+%%% Vector related notation
+\newcommand{\lbf}{\bm{\ell}}
+\newcommand{\fbf}{\mathbf{f}}
+
+%%% Set related notation
+\newcommand{\Dset}{\mathcal{D}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Wset}{\mathcal{W}}
+
+%%% Distribution related notation
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Gbb}{\mathbb{G}}
+% \newcommand{\Pr}{\mathrm{Pr}}}
+
+%%% Functionals
+\newcommand{\1}{\mathbf{1}}
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes for Week 2/1/18 - 2/8/18}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+For fixed integers $n_1 + n_2 = n$, let $\Xbf = \set{x_1, \ldots, x_{n_1}} \subset \Rd$ and $\Ybf = \set{y_1, \ldots, y_{n_2}}$ be sampled i.i.d from distributions $\Pbb$ and $\Qbb$ with density functions $p$ and $q$, respectively, both with support on $D \subset \Rd$. Our statistical problem is testing the null hypothesis $H_0: \Pbb = \Qbb$ vs. the alternative $H_1: \Pbb \neq \Qbb$, where our knowledge of $\Pbb$ and $\Qbb$ come from the samples $\Xbf$ and $\Ybf$. 
+
+Recall the \emph{Laplacian smooth} and \emph{total variation smooth} test statistics
+\begin{align*}
+T_1(\lbf; G_{n,r}) & = \sup_{\theta: \norm{\Bbf \theta}_1 \leq C_{n,r}}\abs{\lbf^T \theta} \\
+T_2(\lbf; G_{n,r}) & = \sup_{\theta: \norm{\Bbf \theta}_2 \leq C_{n,r}}\abs{\lbf^T \theta}
+\end{align*}
+where $\Bbf$ is the incidence matrix of the $r$-neighborhood graph and $C_{n,r} = \frac{\sigma_k}{n^2 r_n^{d+2}}$. 
+
+Theorem \ref{thm: weak_convergence_null_hypothesis_T2} is the type of theorem we are looking for.
+
+\begin{theorem}
+	\label{thm: weak_convergence_null_hypothesis_T2}
+	Under \textcolor{red}{assumptions}, 
+	\begin{equation*}
+	\sqrt{n} T_2(\lbf; G_{n,r}) \rightsquigarrow \textcolor{red}{???}
+	\end{equation*}
+	under the null hypothesis $H_0: \Pbb = \Qbb$.
+\end{theorem}
+
+The rest of this document details the strategy for proving this convergence.
+
+\section{Quantization}
+
+To ease proofs, we will assume $\Dset = [0,1]^d$. 
+
+Construct $G_{lat} = (V_{lat}, E_{lat})$ a lattice graph with equal side lengths in $[0,1]^d$, where
+\begin{align*}
+V_{lat} & = P_{lat}(N) := \set{\left(\frac{i_1}{N} - \frac{1}{2N}, \cdots, \frac{i_d}{N} - \frac{1}{2N}\right): i_1, \ldots, i_d \in \set{1, \ldots, N}} \\
+(z,z') & \in E_{lat}~ \text{if and only if $\norm{z - z'} \leq \frac{1}{N}$}
+\end{align*}
+where $z$ and $z' \in P_{lat}(N)$.
+
+Denoting $I = P_{lat}$, we define
+\begin{equation*}
+P_I(x) = \argmin \set{\norm{x - z'}_{\infty}, z' \in P_{lat}(N)}
+\end{equation*}
+
+Then, let $C(z) = \set{x \in [0,1]^d: z =  P_I(x)}$ be the collection of cells associated with the mesh $P_{lat}(N)$, noting that $\set{C(z): z \in P_{lat}(N)}$ defines a partition over $[0,1]^d$.
+
+\textcolor{red}{Introduce $\bar{f}$}.
+
+\section{High-Level Proof Strategy for Theorem \ref{thm: weak_convergence_null_hypothesis_T2}}
+
+\begin{enumerate}[(i)]
+	\item \emph{Quantization:} Consider the function class
+	\begin{equation*}
+	\Wset_n = \set{\frac{\overline{f}}{\norm{Bf}_2}: f \in \Wset^{1,2}(\Dset,\rho^2)}.
+	\end{equation*}
+	Under assumptions,
+	\begin{equation*}
+	\sup_{\theta: \norm{B\theta}_2 \leq 1} \abs{\lbf^T \theta} - \sup_{\widetilde{f} \in \Wset_n} \abs{\Pbb_n \widetilde{f} - \Qbb_n \widetilde{f}} = o_{\Pbb}(n^{-1/2})
+	\end{equation*}
+	\item \emph{Donsker-convergence of empirical process:} Write 
+	\begin{equation*}
+	\widetilde{f} = \frac{\overline{f}}{\norm{Bf}_2}.
+	\end{equation*}
+	Under \textcolor{red}{assumptions},
+	\begin{equation*}
+	\set{\Gbb_{\Pbb_n}\widetilde{f}: f \in \Wset^{1,2}(\Dset,\rho^2)} \rightsquigarrow G_{\Pbb}
+	\end{equation*}
+	and 
+	\begin{equation*}
+	\set{\Gbb_{\Qbb_n}\widetilde{f}: f \in \Wset^{1,2}(\Dset,\rho^2)} \rightsquigarrow G_{\Qbb},
+	\end{equation*}
+	where \textcolor{red}{$G_{\Pbb}$ is a tight Gaussian process with support on $\Wset^{1,2}(\Dset,\rho^2)$} and for measures $P_n$ and $P$, $\Gbb_{P_n,P} = \sqrt{n}(P_n - P)$ and we suppress notational dependence on $P$ when obvious from context.
+	\item \emph{Continuous mapping:}
+	Under the null hypothesis $H_0: \Pbb = \Qbb$, for any $\widetilde{f} \in \Wset_n$, 
+	\begin{equation*}
+	\sqrt{n}(\Pbb_n \widetilde{f} - \Qbb_n \widetilde{f}) = (\Gbb_{\Pbb_n} - \Gbb_{\Qbb_n})\widetilde{f}
+	\end{equation*}
+	Thus, by i), \textcolor{red}{the independence of $\Pbb_n$ and $\Qbb_n$}, and the continuous mapping theorem,
+	\begin{equation*}
+	\set{\sqrt{n}(\Pbb_n \widetilde{f} - \Qbb_n \widetilde{f}), f \in \Wset^{1,2}(\Dset,\rho^2)} \rightsquigarrow G_{\Pbb} - G'_{\Pbb}
+	\end{equation*}
+	where $G_{\Pbb}$ and $G'_{\Pbb}$ are i.i.d. Gaussian processes.
+	
+	By the continuous mapping theorem again
+	\begin{equation*}
+	\sup_{f \in \Wset^{1,2}(\Dset,\rho^2)} \abs{\sqrt{n}(\Pbb_n \widetilde{f} - \Qbb_n \widetilde{f}) } \rightsquigarrow \sup_{f \in \Wset^{1,2}(\Dset,\rho^2)} \abs{(G_{\Pbb} - G'_{\Pbb})f}
+	\end{equation*}
+\end{enumerate}
+
+\section{Proof Strategy for \emph{Quantization}}
+
+\section{Proof Strategy for ii)}
+
+We want to exhibit a function class
+\begin{equation*}
+\overline{\Wset}_n = \set{f_{n,t}: t \in \Wset^{1,2}(\Dset,\rho^2)}
+\end{equation*}
+where $f_{n,t}: \Dset \to \Reals$ such that:  
+\begin{enumerate}[(a)]
+	\item 
+	There exists a bijection $\phi: \Wset_n \to \overline{\Wset}_n$ with
+	\begin{equation*}
+	\sqrt{n}\Pbb_n(f_n - \phi(f_n)) \rightsquigarrow 0.
+	\end{equation*}
+	\item 
+	$\overline{\Wset}_n$ is totally bounded.
+	\item
+	For every sequence $\delta_n \downarrow 0$,
+	\begin{equation*}
+	\sup_{\norm{s - t}_{1,2,\rho^2} \leq \delta_n} \Pbb(f_{n,s} - f_{n,t})^2 \to 0
+	\end{equation*}
+	\item
+	There exists a sequence of envelope functions $F_n$ satisfying the Lindeberg condition
+	\begin{align*}
+	\Pbb F_n^2 & = \mathcal{O}(1) \\
+	\Pbb F_n^2 \1{F_n > \epsilon \sqrt{n}} & \to 0 \tag{for any $\epsilon > 0$}
+	\end{align*}
+	\item The bracketing integral
+	\begin{equation*}
+	\int_{0}^{\delta} \sqrt{\log N_{[]}(\epsilon, \overline{W}_n, L_2(\Pbb))}
+	\end{equation*}
+	converges to $0$ for any $\delta_n \downarrow 0$.
+\end{enumerate}
+
+\begin{theorem}
+	\label{thm: donsker_changing_classes}
+	Let $\F_n = \set{f_{n,t}: t \in T}$ be a class of measurable functions indexed by a totally bounded semimetric space $(T,\rho)$ satisfying
+	\begin{equation*}
+	\sup_{\rho(s,t) < \delta_n} P (f_{n,s} - f_{n,t})^2 \to 0, ~~ \text{every $\delta_n \downarrow 0$}
+	\end{equation*}
+	and with envelope function $F_n$ satisfying the Lindeberg condition
+	\begin{align*}
+	PF_n^2 & = \mathcal{O}(1) \\
+	PF_n^2 \1 \set{F_n > \epsilon \sqrt{n}} & \to 0, ~~ \textrm{for every $\epsilon > 0$.}
+	\end{align*}
+	If $J_{[]}(\delta_n, \F_n, L_2(P)) \to 0$ for every $\delta_n \downarrow 0$, then the sequence $\set{\Gbb_n f_{n,t}, t \in T}$ converges in distribution to a tight Gaussian process, provided the sequence of covariance functions
+	\begin{equation*}
+	P f_{n,s} f_{n,t} - P f_{n,s} P f_{n,t} 
+	\end{equation*}
+	converges pointwise on $T \times T$. 
+\end{theorem}
+
+\end{document}

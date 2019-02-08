@@ -107,6 +107,8 @@
 
 %%% Functionals
 \newcommand{\1}{\mathbf{1}}
+
+
 \newtheoremstyle{alden}
 {6pt} % Space above
 {6pt} % Space below
@@ -207,7 +209,7 @@ Our test statistics $T_1(\lbf; G_{n,r})$ and $T_2(\lbf; G_{n,r})$ are defined as
 	T_1(\lbf; G_{n,r}) := \sup_{\fbf \in \Reals^n: \norm{\Bbf \fbf}_1 \leq C_{n,r}} ~ \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_k \\
 	T_2(\lbf; G_{n,r}) := \sup_{\fbf \in \Reals^n: \norm{\Bbf \fbf}_2^2 \leq C_{n,r}} ~ \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_k
 \end{align*}
-where \textcolor{red}{$C_{n,r} = $} and we write $\fbf = (f_1,\ldots, f_n)$. We note that, as promised, these satisfy the form
+where $C_{n,r} = \frac{\sigma_k}{n^2 r_n^{d+2}}$ and we write $\fbf = (f_1,\ldots, f_n)$. We note that, as promised, these satisfy the form
 \begin{align*}
 T_1(\lbf; G_{n,r}) & = \sup_{f_n \in TV_n}\abs{\int_{D} f_n d\Pbb_n - \int_{D} f_n d\Qbb_n} \\
 T_2(\lbf; G_{n,r}) & = \sup_{f_n \in \Wset_n}\abs{\int_{D} f_n d\Pbb_n - \int_{D} f_n d\Qbb_n}
@@ -225,7 +227,7 @@ Fix $n \in \Naturals > 0$, and $n_1 \sim \Bin(n,1/2),~ n_2 = n - n_1$. Then, let
 
 The label vector $\lbf$ remains defined as in \eqref{eqn: label_vector} with respect to $\Zbf$. Note that now $z_i \overset{i.i.d}{\sim} \frac{\Pbb}{2} + \frac{\Qbb}{2}$, as we desired, with density function $\mu(x) := \frac{p(x) + q(x)}{2}$.
 
-\begin{theorem}
+\begin{theorem}[Pointwise limit of Laplacian smooth test statistic.]
 	\label{thm: LLN_for_t2}
 	Let $d \geq 2$ and let $\Dset \subset \Rd$ be an open, bounded, connected set with Lipschitz boundary. Let $\mu$ satisfy
 	\begin{equation*}
@@ -243,7 +245,7 @@ The label vector $\lbf$ remains defined as in \eqref{eqn: label_vector} with res
 	& \text{The integral $\int_{0}^{\infty} k(r) r^{d+1} dr$ is finite.} \tag{\textbf{K3}}
 	\end{align*}
 	
-	Then with probability one the following statement holds: For $(z_1, \ldots, z_n)$ chosen under the binomialized data model
+	Then with probability one the following statement holds: For $(z_1, \ldots, z_n)$ chosen under the binomialized data model,
 	\begin{equation*}
 	\lim_{n \to \infty} T_2(\lbf; G_{n,r_n}) = \gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb).
 	\end{equation*}
@@ -277,6 +279,7 @@ Fix $\mu_n = \frac{d\Pbb_n + d\Qbb_n}{2}$. \textcolor{red}{We will show a variat
 We restate Theorem 1.4 of \cite{trillos2018}, changing notation to match the rest of this paper.
 
 \begin{theorem}[Theorem 1.4 of \cite{trillos2018}]
+	\label{thm: gamma_convergence_energy_functional}
 	Under the setup and conditions of Theorem \ref{thm: LLN_for_t2}, with probability one the following statements hold:
 	\begin{itemize}
 		\item \emph{Liminf inequality:}
@@ -287,8 +290,9 @@ We restate Theorem 1.4 of \cite{trillos2018}, changing notation to match the res
 		
 		\item \emph{Limsup inequality:} For all $f \in L^2(\mu)$, there exists a sequence $(f_n)$ with $f_n \in L^2(\mu_n)$ and $f_n \overset{TL^2}{\to} f$ such that
 		\begin{equation*}
-		\limsup_{n \to \infty} \frac{1}{n^2 r_n^{d + 2}} \norm{Bf}_2^2 \leq \textcolor{red}{\sigma_{k}} \norm{f}_{1,2,\rho^2}
+		\limsup_{n \to \infty} \frac{1}{n^2 r_n^{d + 2}} \norm{\Bbf \fbf_n }_2^2 \leq \textcolor{red}{\sigma_{k}} \norm{f}_{1,2,\rho^2}
 		\end{equation*}
+		where $\fbf_n = (f_n(z_1), \ldots, f_n(z_n))$.
 		
 		\item \emph{Compactness property:} Every sequence $(f_n)$ with $f_n \in L^2(\mu_n)$ satisfying
 		\begin{equation*}
@@ -301,7 +305,57 @@ We restate Theorem 1.4 of \cite{trillos2018}, changing notation to match the res
 
 \subsection{Continuity of risk functional}
 
+
+
+\begin{lemma}
+	\label{lem: continuity_of_risk_functional}
+	With probability one the following statement holds: If a sequence $(f_n)$ where $f_n: \set{z_1, \ldots,z_n} \to [-1,1]^{n}$ converges $TL^2$ to $f \in L^2(\mu)$, then
+	\begin{equation*}
+	\lim_{n \to \infty} \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_n(z_k) = \int_{\Dset} f d\Pbb(x) - \int_{\Dset} fd\Qbb(x).
+ 	\end{equation*}
+\end{lemma}
+
 \subsection{Proof of Theorem \ref{thm: LLN_for_t2}}
+
+Let $f^{\star}$ be the witness function for $\gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb)$, meaning
+\begin{equation*}
+\abs{\int_{\Dset}f^{\star}d\Pbb - \int_{\Dset}f^{\star}d\Qbb} = \gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb)
+\end{equation*}
+where $f^{\star} \in \Wset^{1,2}(\Dset,\mu^2)$ implies $f^{\star} \in L^2(\mu)$. By the limsup inequality in Theorem \ref{thm: gamma_convergence_energy_functional}, there exists some $(f_n) \overset{TL^2}{\to} f$ with $f_n \in L^2(\mu_n)$ such that
+\begin{equation}
+\label{eqn: limsup_discrete_energy}
+\limsup_{n \to \infty} \frac{1}{n^2 r_n^{d+2}} \norm{\Bbf \fbf_n}_2^2 \leq \textcolor{red}{\sigma_k} \norm{f}_{1,2,\mu^2} \leq \sigma_k.
+\end{equation} 
+From Lemma \ref{lem: continuity_of_risk_functional}
+\begin{equation*}
+\lim_{n \to \infty} \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_n(z_k) = \int_{\Dset} f d\Pbb(x) - \int_{\Dset} f d\Qbb(x) = \gamma_{\Wset^{1,2}(\Dset,\mu^2)}.
+\end{equation*}
+and along with \eqref{eqn: limsup_discrete_energy}, this implies
+\begin{equation*}
+\lim_{n \to \infty} T_2(\lbf; G_{n,r}) \leq \gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb).
+\end{equation*}
+
+Let $\Lbf^{\dagger}$ be the pseudoinverse of the Laplacian matrix $\Lbf$. We introduce $f_n^{\star} = \lbf^T \Lbf^{\dagger} \lbf$, which satisfies
+\begin{equation*}
+\abs{\int_{\Dset}f_n^{\star}d\Pbb_n - \int_{\Dset}f_n^{\star}d\Qbb_n} = T_2(\lbf; G_{n,r})
+\end{equation*}
+Note that
+\begin{equation*}
+\norm{\Bbf \fbf_n^{\star}}_2^2 \leq C_n \Longrightarrow \frac{1}{n^2 r_n^{d+2}} \norm{\Bbf \fbf_n^{\star}}_2^2  \leq \sigma_k < \infty
+\end{equation*}
+and so by the compactness property in Theorem \ref{thm: gamma_convergence_energy_functional}, every subsequence of $f_n^{\star}$ has a further subsequence which is $TL^2$-convergent. For simplicity, and without loss of generality, let us work along a subsequence which is convergent (and call it $f_n^{\star}$) to $f \in L^2(\mu)$. Then
+\begin{equation}
+\label{eqn: lower_bound_T2_1}
+\lim_{n \to \infty} \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_n^{\star}(z_k) = \abs{\int_{\Dset}f d\Pbb(x) - \int_{\Dset}f d\Qbb(x)}
+\end{equation}
+and by the liminf inequality of Theorem \ref{thm: gamma_convergence_energy_functional},
+\begin{equation*}
+\liminf_{n \to \infty} \frac{1}{n^2 r_n^{d+2}} \norm{\Bbf \fbf_n}_2^2 \geq \sigma_k \norm{f}_{1,2,\mu^2}
+\end{equation*}
+which implies $\norm{f}_{1,2,\mu^2} \leq 1$. This, along with \eqref{eqn: lower_bound_T2_1}, implies
+\begin{equation*}
+\lim_{n \to \infty} \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_n^{\star}(z_k) \geq \gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb)
+\end{equation*}
 
 \clearpage
 

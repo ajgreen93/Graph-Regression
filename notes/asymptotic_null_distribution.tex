@@ -39,6 +39,7 @@
 \newcommand{\defeq}{\overset{\mathrm{def}}{=}}
 \newcommand{\convweak}{\overset{w}{\rightharpoonup}}
 \newcommand{\dive}{\mathrm{div}}
+\newcommand{\Bin}{\mathrm{Bin}}
 
 \newcommand{\emC}{C_n}
 \newcommand{\emCpr}{C'_n}
@@ -68,7 +69,6 @@
 \newcommand{\Lx}{\mathcal{L}_X}
 \newcommand{\Ly}{\mathcal{L}_Y}
 \DeclareMathOperator*{\argmin}{argmin}
-\DeclareMathOperator*{\argmax}{argmax}
 
 
 \newcommand{\emG}{\mathbb{G}_n}
@@ -99,7 +99,6 @@
 \newcommand{\Dset}{\mathcal{D}}
 \newcommand{\Aset}{\mathcal{A}}
 \newcommand{\Wset}{\mathcal{W}}
-\newcommand{\Hset}{\mathcal{H}}
 
 %%% Distribution related notation
 \newcommand{\Pbb}{\mathbb{P}}
@@ -143,65 +142,17 @@
 \theoremstyle{remark}
 \newtheorem{remark}{Remark}
 
-
 \begin{document}
 	
-\title{Notes for Week of 1/28/19 - 2/1/18}
+\title{Approaches for Finding Asymptotic Null Distributions}
 \author{Alden Green}
 \date{\today}
 \maketitle
 
-\textcolor{red}{(WARNING: NOTATION IS NOT WELL-DEFINED. NO GUARANTEE OF CORRECTNESS. THESE ARE INTENDED ONLY AS RECORDS. ALL RELEVANT INFORMATION SHOULD BE TRANSFERRED TO A BETTER-WRITTEN DOCUMENT.)}
-
-We work with distributions $\Pbb$ and $\Qbb$ with support over $\Dset \subset \Reals$. Recall that our \emph{Laplacian smooth} test statistic can be written as
-\begin{equation*}
-T_2(\lbf; G_{n,r}) = \sup_{\fbf \in \Reals^n: \norm{\Bbf \fbf}_2^2 \leq C_{n,r}} ~ \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_k
-\end{equation*}
-for $G_{n,r}$ the neighborhood graph of radius $r$ over data,, and $\Bbf \in \Reals^{m \times n}$ corresponding incidence matrix.
-
-Consider the set of functions
-\begin{equation*}
-\mathcal{H}^{1,2}(\Dset,\nu) := \set{f: \Dset \to \Reals \vert ~f(0) = 0,~ \text{and $f$ is absolutely continuous with $f' \in L^2(\Dset)$} }
-\end{equation*}
-where $f'$ is the derivative of $f$, and $\nu$ is the Lebesgue measure over $\Reals$. Equip $\Hset^{1,2}(\Dset,\nu)$ with the inner product
-\begin{equation*}
-\dotp{f}{g}_{\Hset, \nu}^{1,2} := \int_{\Dset} f'(z) g'(z) dz,
-\end{equation*} 
-and denote the corresponding norm $\norm{\cdot}_{\Hset, \nu}^{1,2}$
-
-Let us consider the test statistic
-\begin{equation*}
-T_2(\lbf; \Wset^{1,2}) = \sup_{f \in \Wset^{1,2}(\Dset, \nu)} \frac{1}{n} \sum_{k=1}^{n} \ell_k f(z_k)
-\end{equation*}
-where
-\begin{equation*}
-\Wset^{1,2}(\Dset, \nu) = \set{f \in \Hset^{1,2}(\Dset,\nu): \norm{f}_{\Hset} \leq 1}
-\end{equation*}
-
-\paragraph{Hilbert-Sobolev Space.}
-The Hilbert space $\Hset^{1,2}(\Dset,\nu)$ equipped with inner product $\dotp{f}{g}_{\Hset, \nu}^{1,2}$ can be shown to be an RKHS with associated kernel
-\begin{equation*}
-K_{\mathcal{H}}(x,z) = \min\{x,z\}
-\end{equation*}
-
-As a result, results for two-sample testing in the RKHS setup can be brought to bear. The following is a (slight restatement of) Theorem 8 from \cite{gretton2007}. The restatement involved is because we the test statistic we consider is biased, whereas their results are stated only with respect to an bias-corrected test statistic.
-
-\begin{theorem}[Theorem 8 of \cite{gretton2007}]
-	Let $m = n/2$. Under $H_0: \Pbb = \Qbb$,
-	\begin{equation*}
-	m \abs{T_2(\lbf; \Wset^{1,2})}^2 \overset{D}{\to} \sum_{l = 1}^{\infty} \lambda_{l} [Z_l^2 - 2] +  \mathbb{E}_{\Pbb}[Z]
-	\end{equation*}
-	where $Z_l \sim N(0,2)$ i.i.d, $\lambda_i$ are the solutions to the eigenvalue equation
-	\begin{equation*}
-	\int_{\Dset} \tilde{k}(x,x') \chi_i(x) d\mu(x) = \lambda_i \chi_i(x')
-	\end{equation*}
-	and $\tilde{k}(x,x') := k(x,x) - \mathbb{E}_{X \sim \Pbb}[k(x, X)] - \mathbb{E}_{X \sim \Pbb}[k(X, x')] + \mathbb{E}_{X,X' \sim \Pbb}[k(X, X')]$.
-\end{theorem}
-
-Note that this is not distribution free, even asymptotically, under the null; the eigenvalues $\lambda_{l}$ are solutions to linear equations which depend on $\mu$. 
-\clearpage
-
-\bibliography{../../graph_testing_bibliography}
-\bibliographystyle{plain}
+\begin{enumerate}
+	\item \textit{IPM in unit ball of RKHS:} Test statistic can be represented as a $U$- or $V$-statistic. Standard asymptotics on $U$-statistics can then be applied.
+	\item \textit{Empirical Process Theory:} Donsker's Theorem.
+	\item \textit{Limit theorems for quadratic forms:} If the solution to the variational problem exists and can be written in closed form as a quadratic, then we can apply limit theorems for a quadratic form.
+\end{enumerate}
 
 \end{document}

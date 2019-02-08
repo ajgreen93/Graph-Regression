@@ -1,0 +1,258 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Matrices
+\newcommand{\Xbf}{\mathbf{X}}
+
+%%% Sets
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+
+\begin{document}
+	
+\title{Notes on 'Adaptive Non-Parametric Regression With the \emph{K}-NN Fused Lasso'}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $\Xbf = x_1, \ldots, x_n$ be sampled i.i.d from $\mu$ with density function $p(\cdot)$ over some subset $\Xset$ of Euclidean space, and suppose
+\begin{equation*}
+y_i = f_0(x_i) + \epsilon_i, ~~~\epsilon_i \overset{i.i.d}{\sim}SG(\sigma^2)
+\end{equation*}
+holds for some unknown $f_0$. Let $\widehat{\theta}$ be the solution to the \emph{fused lasso}
+\begin{equation*}
+\widehat{\theta} := \argmin_{\theta \in \Reals^n} \set{\frac{1}{2} \norm{y - \theta}_2^2 + \lambda \norm{\nabla_G \theta}_1} 
+\end{equation*}
+where $\lambda > 0$ is a tuning parameter, and $\nabla_G$ is an oriented incidence matrix of the graph $G$. 
+
+The \emph{$K$-NN-FL} estimator computes the fused lasso over the $K$-NN graph $G_K$ of $\Xbf$. The \emph{$\epsilon$-FL} estimator computes the fused lasso over the $\epsilon$ graph $G_{\epsilon}$.
+
+The assumptions required for Theorems \ref{thm: padilla18_theorem_1} and \ref{thm: padilla18_theorem_2} are as follows.
+\begin{enumerate}[(a)]
+	\item For all $x \in \Xset$
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty
+	\end{equation*}
+	\item The base measure $\mu$ in $\Xset$ satisfies
+	\begin{equation*}
+	r^d c_{1,d} \leq \mu(B_r(x)) \leq c_{2,d} r^d \tag{$\forall x \in \Xset$}
+	\end{equation*}
+	\item There exists a homeomorphism (continuous bijection with continuous inverse) $h: \Xset \to [0,1]^d$ such that
+	\begin{equation*}
+	L_{\min} d_{\Xset}(x,x') \leq \norm{h(x) - h(x')}_2  \leq L_{\max} d_{\Xset}(x,x') \tag{$\forall x,x' \in \Xset$}
+	\end{equation*}
+	\item The function $g_0 := f_0 \circ h^{-1}$ has bounded variation, meaning
+	\begin{equation*}
+	\abs{g_0}_{BV(\Omega)} := \sup \set{\int_{\Omega} g_0(x) \dive(g)(x)dx; g \in C_c^1(\Omega, \Rd), \norm{g}_{\infty} \leq 1} < \infty
+	\end{equation*}
+	where $\mathfrak{B}$ is the Borel $\sigma$-algebra of $\Omega = [0,1]^d$, $C_c^1(\Omega, \Rd)$ is the set of $\mathfrak{B}$-measurable, continuously differentiable functions into $\Rd$, and
+	\begin{equation*}
+	\norm{g}_{\infty} := \norm{\left(\sum_{i=1}^{d}g_i^2\right)^{1/2}}_{L_{\infty}(\Omega)}.
+	\end{equation*}
+	\item $g_0$ is piecewise Lipschitz\footnote{Technically, the requirement is slightly weaker than piecewise Lipschitz.}, meaning there exists a set $\Sset \subset (0,1)^d$ such that
+	\begin{enumerate}
+		\item $\nu(\Sset) = 0$.
+		\item $\mu\Bigl( h^{-1}\bigl(S_{\epsilon} \cup ([0,1]^d \setminus \Omega_{\epsilon})\bigr) \Bigr) \leq C_{\Sset} \epsilon$
+		\item There exists a positive constant $L_0$ such that if $z$ and $z'$ belong to the same connected component of $\Omega_{\epsilon} \setminus B_{\epsilon}(\Sset)$, then 
+		\begin{equation*}
+		\abs{g(z) - g(z')} \leq L_0 \norm{z - z'}_2
+		\end{equation*}
+	\end{enumerate}
+	where $\Omega_{\epsilon} = [0,1]^d \setminus B_{\epsilon}(\partial [0,1]^d)$.
+\end{enumerate}
+
+\begin{theorem}
+	\label{thm: padilla18_theorem_1}
+	Let $K \asymp \log^{1 + 2r} n$ for some $r > 0$, Then under Assumptions \textcolor{red}{1-3}, with an appropriate choice of the tuning parameter $\lambda$, the \textcolor{red}{$K$-NN-FL} estimator $\widehat{\theta}$ satisfies
+	\begin{equation*}
+	\norm{\widehat{\theta} - \textcolor{red}{\theta^{\star}}}_n^2 = O_{\Pbb}\left(\frac{\log^{1 + 2r} n}{n} + \frac{\log^{1.5 + r} n}{n}\norm{\nabla_{G_K} \theta^{\star}}_1 \right)
+	\end{equation*}
+	
+	This upper bound also holds for $\epsilon$-NN-FL if we replace $\norm{\nabla_{G_K} \theta^{\star}}_1 $ with $\norm{\nabla_{G_{\epsilon}} \theta^{\star}}_1$.
+\end{theorem}
+
+\begin{theorem}
+	\label{thm: padilla18_theorem_2}
+	Under Assumptions \textcolor{red}{1-5}, with an appropriate choice of the tuning parameter $\lambda$, the \textcolor{red}{$K$-NN-FL} estimator $\widehat{\theta}$ satisfies
+	\begin{equation*}
+	\norm{\widehat{\theta} - \textcolor{red}{\theta^{\star}}}_n^2 = \widetilde{O}_{\Pbb}\left( \frac{1}{n^{1/d}} \right).
+	\end{equation*}
+\end{theorem}
+
+\section{Proof of Theorem \ref{thm: padilla18_theorem_1}}
+
+To ease proofs, we will assume $\Xset = [0,1]^d$. 
+
+Construct $G_{lat} = (V_{lat}, E_{lat})$ a lattice graph with equal side lengths in $[0,1]^d$, where
+\begin{align*}
+V_{lat} & = P_{lat}(N) := \set{\left(\frac{i_1}{N} - \frac{1}{2N}, \cdots, \frac{i_d}{N} - \frac{1}{2N}\right): i_1, \ldots, i_d \in \set{1, \ldots, N}} \\
+(z,z') & \in E_{lat}~ \text{if and only if $\norm{z - z'} \leq \frac{1}{N}$}
+\end{align*}
+where $z$ and $z' \in P_{lat}(N)$.
+
+Denoting $I = P_{lat}$, we define
+\begin{equation*}
+P_I(x) = \argmin \set{\norm{x - z'}_{\infty}, z' \in P_{lat}(N)}
+\end{equation*}
+
+Then, let $C(z) = \set{x \in [0,1]^d: z =  P_I(x)}$ be the collection of cells associated with the mesh $P_{lat}(N)$, noting that $\set{C(z): z \in P_{lat}(N)}$ defines a partition over $[0,1]^d$.
+
+\paragraph{Quantization.}
+
+For a given $\theta \in \Reals^n$, the \emph{quantization} $\theta_I \in \Reals^n$
+\begin{equation*}
+(\theta_{I})_i := \theta_j,~ \text{ where }~ x_j = \argmin_{x_l, l \in [n]} \norm{P_I(x_i) - x_l}_{\infty}
+\end{equation*}
+is constant over every cell $C(z)$. We now induce a signal in $\Reals^{N^d}$ corresponding to the elements in $I$. Let $\set{z_1, \ldots, z_{N^d}} = I$. Then
+we write
+\begin{equation*}
+I_k = \set{i \in [n]: P_I(x_i) = z_k} 
+\end{equation*}
+for $k = 1,\ldots, N^d$. Define $\theta^{I} \in \Reals^{N^d}$ by
+\begin{equation*}
+(\theta^{I})_k := 
+\begin{cases}
+(\theta_I)_i, x_i \in I_k \\
+0, I_k = \emptyset
+\end{cases}
+\end{equation*}
+where we note that $(\theta^{I})$ is well-defined since $(\theta_I)_i = (\theta_I)_j$ if $x_i$ and $x_j$ are both in $I_k$.
+
+\subsection{Controlling counts of mesh}
+
+Define the event $\Omega$ as: ``If $x_i \in C(z_k)$ and $x_i \in C(z_l)$ for $z_k, z_l \in I$ with $\norm{z_k - z_l}_2 \leq \frac{1}{N}$, then $x_i$ and $x_j$ are connected in the $K$-NN graph.'' Then,
+\begin{lemma}
+	\label{lem: mesh_counts}
+	Take Assumptions \textcolor{red}{1-3}, and additionally assume that $N$ in the construction of $G_{lat}(N)$ is chosen as
+	\begin{equation}
+	\label{eqn: N_lower_bound}
+	N \geq \left[\frac{3\sqrt{d}(2 c_{2,d} p_{\max})^{1/d} n^{1/d}}{L_{\min} K^{1/d}}\right].
+	\end{equation}
+	Then,
+	\begin{equation*}
+	\Pbb(\Omega) \geq 1 - n \exp(-K / 3).
+	\end{equation*}
+\end{lemma}
+
+\subsection{Bounding Empirical Process}
+
+\begin{lemma}
+	
+\end{lemma}
+
+\subsection{Mesh embedding for $K$-NN graph}
+
+\begin{lemma}
+	Fix $N$ to satisfy \eqref{eqn: N_lower_bound}, and let us assume that the event $\Omega$ from Lemma \ref{lem: mesh_counts} holds. Denote $I = P_{lat}(N)$ to be the mesh. Then, for all $e \in \Reals^n$, it holds that
+	\begin{equation*}
+	\abs{e^T(\theta - \theta_I)} \leq 2 \norm{e}_{\infty} \norm{\nabla_{G_K} \theta}_1, \tag{$\forall \theta \in \Reals^n$}
+	\end{equation*}
+	Moreover, 
+	\begin{equation*}
+	\norm{D \theta^I}_1 \leq \norm{\nabla_{G_K} \theta}_1, \tag{$\forall \theta \in \Reals^n$}
+	\end{equation*}
+	where $D$ is the incidence matrix of $G_{lat}$.
+\end{lemma}
+
+
+\end{document}
