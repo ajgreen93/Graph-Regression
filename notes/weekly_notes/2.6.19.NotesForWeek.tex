@@ -192,22 +192,33 @@ P_I(x) = \argmin \set{\norm{x - z'}_{\infty}, z' \in P_{lat}(N)}
 
 Then, let $C(z) = \set{x \in [0,1]^d: z =  P_I(x)}$ be the collection of cells associated with the mesh $P_{lat}(N)$, noting that $\set{C(z): z \in P_{lat}(N)}$ defines a partition over $[0,1]^d$.
 
-\textcolor{red}{Introduce $\bar{f}$}.
+For a given function $f$, the \emph{quantization} $\bar{f}$ over $\set{C(z): z \in P_{lat}(N)}$ is defined by
+\begin{equation*}
+\overline{f}(x_0) = \frac{1}{\nu(C(z_0))} \int_{C(z_0)} f(x) d \nu(x)
+\end{equation*}
+where $x_0 \in C(z_0)$. 
+
 
 \section{High-Level Proof Strategy for Theorem \ref{thm: weak_convergence_null_hypothesis_T2}}
 
+For any function $f:\Dset \to \Reals$, let $\theta_{f}$ denote the evaluations of $f$ over $\Xbf$, meaning
+\begin{equation*}
+(\theta_f)_i = f(x_i)
+\end{equation*}
+
 \begin{enumerate}[(i)]
 	\item \emph{Quantization:} Consider the function class
-	\begin{equation*}
-	\Wset_n = \set{\frac{\overline{f}}{\norm{Bf}_2}: f \in \Wset^{1,2}(\Dset,\rho^2)}.
-	\end{equation*}
+	\begin{equation}
+	\label{eqn: quantized_function_class}
+	\Wset_n = \set{C_{n,r}\frac{\overline{f}}{\norm{\Bbf \theta_{\bar{f}}}_2}: f \in \Wset^{1,2}(\Dset,\rho^2)}.
+	\end{equation}
 	Under assumptions,
 	\begin{equation*}
 	\sup_{\theta: \norm{B\theta}_2 \leq 1} \abs{\lbf^T \theta} - \sup_{\widetilde{f} \in \Wset_n} \abs{\Pbb_n \widetilde{f} - \Qbb_n \widetilde{f}} = o_{\Pbb}(n^{-1/2})
 	\end{equation*}
 	\item \emph{Donsker-convergence of empirical process:} Write 
 	\begin{equation*}
-	\widetilde{f} = \frac{\overline{f}}{\norm{Bf}_2}.
+	\widetilde{f} = \frac{\overline{f}}{\norm{\Bbf \theta_{\bar{f}}}_2}.
 	\end{equation*}
 	Under \textcolor{red}{assumptions},
 	\begin{equation*}
@@ -237,41 +248,85 @@ Then, let $C(z) = \set{x \in [0,1]^d: z =  P_I(x)}$ be the collection of cells a
 
 \section{Proof Strategy for \emph{Quantization}}
 
-\section{Proof Strategy for ii)}
-
-We want to exhibit a function class
+For a given $\theta \in \Reals^n$, let the quantization of $\theta$ be given by
 \begin{equation*}
-\overline{\Wset}_n = \set{f_{n,t}: t \in \Wset^{1,2}(\Dset,\rho^2)}
+(\bar{\theta})_i = \frac{\sum_{x_j \in C(z_0)} \theta_j}{\abs{C(z_0)}}
 \end{equation*}
-where $f_{n,t}: \Dset \to \Reals$ such that:  
+where $x_i \in C(z_0)$, and $\abs{C(z_0)} = \sum_{j = 1}^{n} \1(x_j \in C(z_0))$ is the number of data points in $C(z_0)$.
+
+\begin{lemma}
+	\begin{equation*}
+	\sup_{\theta: \norm{B\theta}_2 \leq C_{n,r}} \abs{\lbf^T \theta} \geq \sup_{\widetilde{f} \in \Wset_n} \abs{\Pbb_n \widetilde{f} - \Qbb_n \widetilde{f}}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	For any $f: \Dset \to \Reals$, $\mathbb{P}_n f - \mathbb{Q}_n f = \lbf^T \theta_f$, and so
+	\begin{equation*}
+	\sup_{\widetilde{f} \in \Wset_n} \abs{\Pbb_n \widetilde{f} - \Qbb_n \widetilde{f}} = \sup_{\theta_{\widetilde{f}}: \widetilde{f} \in \Wset_n} \abs{\lbf^T \theta_{\widetilde{f}}}
+	\end{equation*}
+	Then, for $\widetilde{f} \in \Wset_n$
+	\begin{equation*}
+	\norm{B \theta_{\widetilde{f}}}_2 = \norm{B \theta_{\frac{C_{n,r}\overline{f}} {\norm{B \theta_{\overline{f}}}}_2}} = C_{n,r}.
+	\end{equation*}
+	and so $\set{\theta_{\widetilde{f}}: \widetilde{f} \in \Wset_n} \subset \set{\theta: \norm{\Bbf \theta}_2 \leq C_{n,r}}$.
+\end{proof}
+
+\begin{lemma}
+	For any $\theta \in \Reals^n$
+	\begin{equation*}
+	\lbf^T(\theta - \overline{\theta}) \leq 2 \norm{\Bbf \theta}_{\textcolor{red}{1}}
+	\end{equation*}
+\end{lemma}
+
+\begin{theorem}
+	For any $\theta \in \Reals^n$ such that $\norm{\Bbf \theta}_2 \leq C_{n,r}$, there exists some $f \in \Wset^{1,2}(\Dset,\rho^2)$ such that 
+	\begin{equation*}
+	\abs{\Pbb_n \widetilde{f} - \Qbb_n \widetilde{f} } \geq \abs{\Pbb_n \overline{\theta} - \Qbb_n \overline{\theta} } - o_{\Pbb}(n^{-1/2})
+	\end{equation*}
+\end{theorem}
+\begin{proof}
+	For $\theta \in \Reals^n$, consider the quantized extension of $\theta$, $\overline{f}_{\theta}: \Dset \to \Reals$ defined by
+	\begin{equation*}
+	\overline{f}_{\theta}(x) = (\overline{\theta})_i
+	\end{equation*}
+	for any $x_i$ in the same cell $C(z)$ as $x$. Clearly,
+	\begin{equation*}
+	\Pbb_n \overline{f}_{\theta} - \Qbb_n \overline{f}_{\theta} = \Pbb_n \overline{\theta} - \Qbb_n \overline{\theta} 
+	\end{equation*}
+	Now, we have to show that either $\overline{f}_{\theta} \in \Wset_n$, or that it can be well-approximated by some $\widetilde{f} \in \Wset_n$. 
+\end{proof}
+
+\section{Proof strategy for \emph{Donsker-convergence of empirical processes}:}
+
+Consider the function class $\Wset_n$ given by \eqref{eqn: quantized_function_class}. We wish to show
+
 \begin{enumerate}[(a)]
 	\item 
-	There exists a bijection $\phi: \Wset_n \to \overline{\Wset}_n$ with
-	\begin{equation*}
-	\sqrt{n}\Pbb_n(f_n - \phi(f_n)) \rightsquigarrow 0.
-	\end{equation*}
-	\item 
-	$\overline{\Wset}_n$ is totally bounded.
+	$\Wset_n$ is totally bounded.
 	\item
 	For every sequence $\delta_n \downarrow 0$,
 	\begin{equation*}
-	\sup_{\norm{s - t}_{1,2,\rho^2} \leq \delta_n} \Pbb(f_{n,s} - f_{n,t})^2 \to 0
+	\sup_{\norm{f - g}_{1,2,\rho^2} \leq \delta_n} \Pbb(\widetilde{f} - \widetilde{g})^2 \to 0
 	\end{equation*}
+	where $f$ and $g$ are arbitrary elements of $\Wset^{1,2}(\Dset,\rho^2)$.
 	\item
-	There exists a sequence of envelope functions $F_n$ satisfying the Lindeberg condition
+	There exists a sequence of envelope functions $F_n$ on $\Wset_n$ satisfying the Lindeberg condition
 	\begin{align*}
 	\Pbb F_n^2 & = \mathcal{O}(1) \\
 	\Pbb F_n^2 \1{F_n > \epsilon \sqrt{n}} & \to 0 \tag{for any $\epsilon > 0$}
 	\end{align*}
 	\item The bracketing integral
 	\begin{equation*}
-	\int_{0}^{\delta} \sqrt{\log N_{[]}(\epsilon, \overline{W}_n, L_2(\Pbb))}
+	\int_{0}^{\delta} \sqrt{\log N_{[]}(\epsilon, \Wset_n, L_2(\Pbb))}
 	\end{equation*}
 	converges to $0$ for any $\delta_n \downarrow 0$.
 \end{enumerate}
 
-\begin{theorem}
+Then, the desired results holds by application of Theorem \ref{thm: donsker_changing_classes}.
+
+\begin{theorem}[Donsker theorem for changing function classes]
 	\label{thm: donsker_changing_classes}
+	
 	Let $\F_n = \set{f_{n,t}: t \in T}$ be a class of measurable functions indexed by a totally bounded semimetric space $(T,\rho)$ satisfying
 	\begin{equation*}
 	\sup_{\rho(s,t) < \delta_n} P (f_{n,s} - f_{n,t})^2 \to 0, ~~ \text{every $\delta_n \downarrow 0$}
