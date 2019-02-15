@@ -1,0 +1,242 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Matrices
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 2/8/19 - 2/15/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Consider $\Xbf = (X_1, \ldots, X_n) \sim \Pbb$ and $\Ybf = (Y_1, \ldots, Y_m) \sim \Qbb$ independently generated random variables. We will assume $\Pbb$ and $\Qbb$ are supported on $\D \subset \Reals^d$ and are absolutely continuous with density functions $f$ and $g$, respectively. Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
+\begin{equation*}
+\mathbb{H}_0: f = g \text{ and } \mathbb{H}_1: f \neq g.
+\end{equation*}
+
+For a given function class $\Hclass$, some $\epsilon > 0$, and test function $\phi$ a Borel measurable function of the data with range $\set{0,1}$, we evaluate the quality of the test using \emph{worst-case risk}
+\begin{equation*}
+R_{\epsilon}^{m,n}(\phi; \Hclass) = \sup_{f \in \Hclass} \Ebb_{f,f}^{(m,n)}(\phi) + \sup_{ \substack{f,g \in \Hclass \\ \delta(f,g) \geq \epsilon } } \Ebb_{f,g}^{m,n}(1 - \phi)
+\end{equation*} 
+
+\paragraph{Total variation test.}
+
+Let $\Zbf = (X_1, \ldots, X_n, Y_1, \ldots, Y_m)$, and let $t = n + m$. As in \citep{padilla2018}, define the \emph{$K$-NN graph} $G_K = (V,E_K)$ to have vertex set $V = \set{1, \ldots, t}$ and edge set $E_K$ which contains the pair $(i,j)$ if and only if $x_i$ is among the $K$-nearest neighbors (with respect to Euclidean distance) of $x_j$, or vice versa. Let $D_K$ denote the incidence matrix of $G_K$. 
+
+Define the \emph{kNN-total variation} test statistic to be
+\begin{equation}
+\label{eqn: knn_tv_test_statistic}
+T_{TV} = \sup_{\substack{\theta \in \Reals^{t}: \\ \norm{D_{k} \theta}_1 \leq C_{n,k}} } \left(\sum_{i = 1}^{n} \theta_i - \sum_{j = n+1}^{t} \theta_j\right)
+\end{equation}
+
+Hereafter, take $\D = [0,1]^d$, and consider
+\begin{equation*}
+\Hclass_{lip}(L) = \set{f: [0,1]^d \to \Reals^{+}: \int_{\D}f = 1, f~ \text{$L$-piecewise Lipschitz, bounded above and below} }
+\end{equation*}
+where
+\begin{definition}[Piecewise Lipschitz]
+	\label{def: piecewise_lipschitz}
+	A function $f$ is $L$-\emph{piecewise lipschitz} over $[0,1]^d$ if there exists a set $\Sset \subset [0,1]^d$ such that
+	\begin{enumerate}[(a)]
+		\item $\nu(\Sset) = 0$
+		\item There exist $C_{\Sset}, \epsilon_0$ such that $\mu \Bigl( \bigl(\Sset_{\epsilon} \cup (\partial \D)_{\epsilon} \bigr) \cap [0,1]^d \Bigr) \leq C_{\Sset} \epsilon$ for all $0 < \epsilon \leq \epsilon_0$.
+		\item For any $z, z'$ in the same connected component of $[0,1]^d \setminus \bigl(\Sset_{\epsilon} \cup (\partial \D)_{\epsilon}\bigr)$,
+		\begin{equation*}
+		\abs{g(z) - g(z')}_2 \leq L\norm{z - z'}_2
+		\end{equation*}
+	\end{enumerate}
+\end{definition}
+and
+\begin{definition}[Bounded above and below]
+	\label{def: bounded}
+	A function $f: \D \to \Reals$ is \emph{bounded above and below} if there exists $p_{\min}, p_{\max}$ such that
+	\begin{equation*}
+	0 < p_{\min} < f(x) < p_{\max} < \infty \tag{$\forall x \in \D$}
+	\end{equation*}
+\end{definition}
+
+\begin{conjecture}
+	For $\tau = ???$ and $K \asymp \log^{1 + 2r}(n)$ for some $r \geq 0$, the test $\phi_{TV} = \set{T_{TV} \geq \tau}$ has worst-case risk
+	\begin{equation*}
+	R_{\epsilon}^{(m,m)}(\Hclass_{lip}(L)) \leq c_1/a^2
+	\end{equation*}
+	whenever $\epsilon \geq c_2 a \log^{\alpha}m m^{-1/d}$ where $\alpha = 3r + 5/2 + (2r + 1)/d$ and $c_1$ and $c_2$ are constants which depend only on $(d,L)$.
+\end{conjecture}
+\begin{proof}
+	Write
+	\begin{equation*}
+	\sum_{i = 1}^{m} \theta_i - \sum_{j = m + 1}^{2m} \theta_j = \dotp{\theta}{1_X - 1_Y}
+	\end{equation*}
+	where
+	\begin{equation*}
+	1_X = 
+	\begin{cases}
+	1,~ i = 1, \ldots,m \\
+	0,~ \text{otherwise}
+	\end{cases}
+	1_Y = 
+	\begin{cases}
+	1,~ i = j + 1, \ldots,2m \\
+	0,~ \text{otherwise}
+	\end{cases}
+	\end{equation*}
+	Let
+	\begin{equation*}
+	\widehat{\theta} \in \argmax_{\theta \in \Reals^{2m}} \set{\dotp{\theta}{1_X - 1_Y}: \norm{D_K \theta}_1 \leq C_{n,k}}
+	\end{equation*}
+	satisfy $T_{TV} = \dotp{\widehat{\theta}}{1_X - 1_Y}$. For $i = 1, \ldots, 2m$, introduce $\theta^{\star}$ defined by
+	\begin{equation*}
+	(\theta^{\star})_i = \left(\frac{f(z_i) - g(z_i)}{f(z_i) + g(z_i)} \right)	\end{equation*}
+	
+	We have
+	\begin{equation*}
+	T_{TV} = \dotp{\widehat{\theta} - \theta^{\star}}{1_X - 1_Y} + \dotp{\theta^{\star}}{1_X - 1_Y}
+	\end{equation*}
+	
+	We bound the first term, and begin by employing a basic inequality argument. Let
+	\begin{align*}
+	\widetilde{\theta} = \frac{\theta^{\star}}{\norm{D\theta^{\star}}_1}.
+	\end{align*}
+	Since $\widetilde{\theta}$ is feasible and $\widehat{\theta}$ optimal for \eqref{eqn: knn_tv_test_statistic}, we have
+	\begin{equation*}
+	\dotp{\widehat{\theta}}{1_X - 1_Y} \geq \dotp{\widetilde{\theta}}{1_X - 1_Y}
+	\end{equation*}
+	which, letting $w = (1_X - 1_Y) - \theta^{\star}$, means
+	\begin{equation}
+	\label{eqn: basic_inequality_1}
+	\dotp{\widehat{\theta}}{\theta^{\star}} \geq \dotp{\widetilde{\theta}}{\theta^{\star}} - \dotp{\widehat{\theta} - \widetilde{\theta}}{w}
+	\end{equation}
+	
+	As a result, we have
+	\begin{align*}
+	\abs{\dotp{\widehat{\theta} - \theta^{\star}}{1_X - 1_Y}} & \leq \abs{\dotp{\widehat{\theta} - \theta^{\star}}{\theta^{\star}} } + \abs{\dotp{\widehat{\theta} - \theta^{\star}}{w} } \\
+	& \overset{(i)}{\leq} \abs{\dotp{\widetilde{\theta} - \theta^{\star}}{\theta^{\star}} } + \abs{\dotp{\widehat{\theta} - \widetilde{\theta}}{w} } + \abs{\dotp{\widehat{\theta} - \theta^{\star}}{w} } \\
+	& \leq \abs{\dotp{\widetilde{\theta} - \theta^{\star}}{\theta^{\star}} } + 2\abs{\dotp{\widehat{\theta} - \widetilde{\theta}}{w} } + \abs{\dotp{\widetilde{\theta} - \theta^{\star}}{w}}
+	\end{align*}
+	where $(i)$ follows from \eqref{eqn: basic_inequality_1}.
+\end{proof}
+
+\clearpage
+
+\bibliography{../../graph_testing_bibliography}
+\bibliographystyle{plain}
+
+\end{document}
