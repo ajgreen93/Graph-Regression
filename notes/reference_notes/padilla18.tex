@@ -30,6 +30,7 @@
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\seq}[1]{\set{#1}_{n \in \N}}
 \newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\1}{\mathbb{I}}
 
 \newcommand{\emC}{C_n}
 \newcommand{\emCpr}{C'_n}
@@ -141,14 +142,6 @@ The assumptions required for Theorems \ref{thm: padilla18_theorem_1} and \ref{th
 	\begin{equation*}
 	L_{\min} d_{\Xset}(x,x') \leq \norm{h(x) - h(x')}_2  \leq L_{\max} d_{\Xset}(x,x') \tag{$\forall x,x' \in \Xset$}
 	\end{equation*}
-	\item The function $g_0 := f_0 \circ h^{-1}$ has bounded variation, meaning
-	\begin{equation*}
-	\abs{g_0}_{BV(\Omega)} := \sup \set{\int_{\Omega} g_0(x) \dive(g)(x)dx; g \in C_c^1(\Omega, \Rd), \norm{g}_{\infty} \leq 1} < \infty
-	\end{equation*}
-	where $\mathfrak{B}$ is the Borel $\sigma$-algebra of $\Omega = [0,1]^d$, $C_c^1(\Omega, \Rd)$ is the set of $\mathfrak{B}$-measurable, continuously differentiable functions into $\Rd$, and
-	\begin{equation*}
-	\norm{g}_{\infty} := \norm{\left(\sum_{i=1}^{d}g_i^2\right)^{1/2}}_{L_{\infty}(\Omega)}.
-	\end{equation*}
 	\item $g_0$ is piecewise Lipschitz\footnote{Technically, the requirement is slightly weaker than piecewise Lipschitz.}, meaning there exists a set $\Sset \subset (0,1)^d$ such that
 	\begin{enumerate}
 		\item $\nu(\Sset) = 0$.
@@ -179,7 +172,7 @@ The assumptions required for Theorems \ref{thm: padilla18_theorem_1} and \ref{th
 	\end{equation*}
 \end{theorem}
 
-\section{Proof of Theorem \ref{thm: padilla18_theorem_1}}
+\section{Proofs}
 
 To ease proofs, we will assume $\Xset = [0,1]^d$. 
 
@@ -243,6 +236,7 @@ Define the event $\Omega$ as: ``If $x_i \in C(z_k)$ and $x_i \in C(z_l)$ for $z_
 \subsection{Mesh embedding for $K$-NN graph}
 
 \begin{lemma}
+	\label{lem: quantization_error}
 	Fix $N$ to satisfy \eqref{eqn: N_lower_bound}, and let us assume that the event $\Omega$ from Lemma \ref{lem: mesh_counts} holds. Denote $I = P_{lat}(N)$ to be the mesh. Then, for all $e \in \Reals^n$, it holds that
 	\begin{equation*}
 	\abs{e^T(\theta - \theta_I)} \leq 2 \norm{e}_{\infty} \norm{\nabla_{G_K} \theta}_1, \tag{$\forall \theta \in \Reals^n$}
@@ -253,6 +247,76 @@ Define the event $\Omega$ as: ``If $x_i \in C(z_k)$ and $x_i \in C(z_l)$ for $z_
 	\end{equation*}
 	where $D$ is the incidence matrix of $G_{lat}$.
 \end{lemma}
+\begin{proof}
+	Clearly
+	\begin{equation*}
+	\dotp{\epsilon^T}{\theta - \theta_{I}} \leq \norm{\epsilon}_{\infty} \cdot \norm{\theta - \theta_I}_1
+	\end{equation*}
+	Then, for every $i = 1, \ldots, n$, the event $\Omega$ implies that there exists a $j \in [n]$ such that
+	\begin{equation*}
+	(\theta_I)_i = \theta_j,~~ (x_i,x_j) \in E_{G_K}
+	\end{equation*}
+	and therefore
+	\begin{equation*}
+	\norm{\theta - \theta_I}_1 \leq \norm{\nabla_{G_K} \theta}_1
+	\end{equation*}
+\end{proof}
+
+\subsection{Bounding empirical process}
+
+\begin{lemma}
+	Conditional on the event $\Omega$, we have that
+	\begin{equation*}
+	\dotp{\epsilon}{\widehat{\theta}_I - \widehat{\theta}_I^{\star}} \leq \max_{u \in I} \sqrt{\abs{C(u)}} \left( \norm{\Pi \widetilde{\epsilon}}_2 \norm{\widehat{\theta} - \theta^{\star}}_2  + \norm{(D^{\dagger})^T \widetilde{\epsilon}}_{\infty} \left[ \norm{\nabla_{G_K} \widehat{\theta} }_1 + \norm{\nabla_{G_K} \theta^{\star} }_1  \right]\right)
+	\end{equation*}
+	where $\widetilde{\epsilon}$ is an independent, mean-zero vector of subgaussian random variables, $\abs{C(u)} := \sum_{i \in [n]} \1(x_i \in C(u))$, and $D^{\dagger}$ is the pseudoinverse of the incidence matrix $D$ of $G_{lat}$.
+\end{lemma}
+\begin{proof}
+	Writing
+	\begin{equation*}
+	\widetilde{\epsilon}_l = \left[\max_{u \in I} \abs{C(u)} \right]^{-1/2} \sum_{x_j \in I_l} \epsilon_j
+	\end{equation*}
+	we have
+	\begin{align*}
+	\dotp{\epsilon}{\widehat{\theta}_I - \theta_I^{\star}} = \left[\max_{u \in I} \abs{C(u)}\right]^{1/2} \dotp{\widetilde{\epsilon}}{\widehat{\theta}^{I} - \theta^{\star,I}}
+	\end{align*}
+	Now, divide up $\widetilde{\epsilon}$ into 
+	\begin{equation*}
+	\widetilde{\epsilon} = P_{1}(\widetilde{\epsilon}) + P_{1^{\perp}}(\widetilde{\epsilon})
+	\end{equation*}
+	where $P_1$ is the projection onto the span of $\mathbf{1}$ the constant vector, and $P_{1^{\perp}}$ the projection onto the space orthogonal to $\mathbf{1}$. Note that $P_{1^{\perp}}(x) = (D^{\dagger} D)^T x$. Then, we have
+	\begin{align*}
+	\dotp{P_{1^{\perp}}(\widetilde{\epsilon})}{\widehat{\theta}^{I} - \theta^{\star,I}} & = \dotp{(D^{\dagger} D)^T \widetilde{\epsilon}}{\widehat{\theta}^{I} - \theta^{\star,I}} \\
+	& = \dotp{(D^{\dagger})^T \widetilde{\epsilon}}{D(\widehat{\theta}^{I} - \theta^{\star,I})} \\
+	& \leq \norm{(D^{\dagger})^T \widetilde{\epsilon}}_{\infty} \norm{ D(\widehat{\theta}^{I} - \theta^{\star,I})  }_1
+	& \leq \norm{(D^{\dagger})^T \widetilde{\epsilon}}_{\infty} \left[ \norm{\nabla_{G_K} \widehat{\theta} }_1 + \norm{\nabla_{G_K} \theta^{\star} }_1 \right]
+	\end{align*}
+	where the last inequality follows from the triangle inequality and Lemma \ref{lem: quantization_error}.
+	
+	On the other hand,
+	\begin{equation*}
+	\dotp{P_{1}(\widetilde{\epsilon})}{\widehat{\theta}^{I} - \theta^{\star,I}} \leq \norm{P_{1}(\widetilde{\epsilon})}_2 \norm{\widehat{\theta}^{I} - \theta^{\star,I}}_2
+	\end{equation*}
+	and so the desired result follows.
+\end{proof}
+
+\subsection{Proof of Theorem \ref{thm: padilla18_theorem_1}}
+We begin with a basic inequality
+\begin{equation*}
+\frac{1}{2} \norm{\widehat{\theta} - \theta^*}_n^2 \leq \frac{1}{n} \dotp{\epsilon}{\widehat{\theta} - \theta^{\star}} + \lambda_n \left(\norm{\nabla_G \theta^*}_1 - \norm{\nabla_G \widehat{\theta}}_1 \right)
+\end{equation*}
+
+We split up the \textcolor{red}{empirical process},
+\begin{equation*}
+\dotp{\epsilon}{\widehat{\theta} - \theta^{\star}} = \dotp{\epsilon}{\widehat{\theta} - \widehat{\theta}_I} + \dotp{\epsilon}{\widehat{\theta}_I - \theta_I^{\star}} + \dotp{\epsilon}{\theta_I^{\star} - \theta^{\star}}
+\end{equation*}
+Hereafter in the proof, we condition on the event $\Omega$. Lemma \ref{lem: quantization_error} gives us bounds on the first and third terms
+\begin{align*}
+\dotp{\epsilon}{\widehat{\theta} - \widehat{\theta}_I} & \leq 2 \norm{\epsilon}_{\infty} \cdot \norm{\nabla_{G_K} \widehat{\theta} }_1 \\
+\dotp{\epsilon}{\theta^{\star} - \theta_I^{\star}} & \leq 2 \norm{\epsilon}_{\infty} \cdot \norm{\nabla_{G_K} \theta^{\star} }_1
+\end{align*}
+
+
 
 
 \end{document}

@@ -127,24 +127,47 @@
 \date{\today}
 \maketitle
 
-Consider $\Xbf = (X_1, \ldots, X_n) \sim \Pbb$ and $\Ybf = (Y_1, \ldots, Y_m) \sim \Qbb$ independently generated random variables. We will assume $\Pbb$ and $\Qbb$ are supported on $\D \subset \Reals^d$ and are absolutely continuous with density functions $f$ and $g$, respectively. Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
+Consider distributions $\Pbb$ and $\Qbb$ supported on $\D \subset \Reals^d$ which are absolutely continuous with density functions $f$ and $g$, respectively. For fixed $t \geq 0$, Let $\Zbf = (z_1, \ldots,z_t)$, where for $i = 1,\ldots,t$, $z_i \sim \frac{\Pbb + \Qbb}{2}$ are independent. Given $\Zbf$, for $i = 1,...,t$ let
+\begin{equation*}
+\ell_i = 
+\begin{cases}
+1~ \text{with probability $\frac{f(z_i)}{f(z_i) + g(z_i)}$} \\
+-1~ \text{with probability $\frac{g(z_i)}{f(z_i) + g(z_i)}$}
+\end{cases}
+\end{equation*} 
+be conditional independent labels, and write
+\begin{equation*}
+1_X = 
+\begin{cases}
+1,~ l_i = 1\\
+0,~ \text{otherwise}
+\end{cases}
+1_Y = 
+\begin{cases}
+1,~ l_i = -1 \\
+0,~ \text{otherwise.}
+\end{cases}
+\end{equation*}
+We will write $\Xbf = \set{x_1, \ldots,x_{N_1}} := \set{z_i: \ell_i = 1}$ and similarly $\Ybf = \set{y_1, \ldots,y_{N_2}} := \set{y_i: \ell_i = -1}$, where $N_1$ and $N_2$ are random.
+
+Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
 \begin{equation*}
 \mathbb{H}_0: f = g \text{ and } \mathbb{H}_1: f \neq g.
 \end{equation*}
 
 For a given function class $\Hclass$, some $\epsilon > 0$, and test function $\phi$ a Borel measurable function of the data with range $\set{0,1}$, we evaluate the quality of the test using \emph{worst-case risk}
 \begin{equation*}
-R_{\epsilon}^{m,n}(\phi; \Hclass) = \sup_{f \in \Hclass} \Ebb_{f,f}^{(m,n)}(\phi) + \sup_{ \substack{f,g \in \Hclass \\ \delta(f,g) \geq \epsilon } } \Ebb_{f,g}^{m,n}(1 - \phi)
+R_{\epsilon}^{(t)}(\phi; \Hclass) = \sup_{f \in \Hclass} \Ebb_{f,f}^{(t)}(\phi) + \sup_{ \substack{f,g \in \Hclass \\ \delta(f,g) \geq \epsilon } } \Ebb_{f,g}^{(t)}(1 - \phi)
 \end{equation*} 
 
 \paragraph{Total variation test.}
 
-Let $\Zbf = (X_1, \ldots, X_n, Y_1, \ldots, Y_m)$, and let $t = n + m$. As in \citep{padilla2018}, define the \emph{$K$-NN graph} $G_K = (V,E_K)$ to have vertex set $V = \set{1, \ldots, t}$ and edge set $E_K$ which contains the pair $(i,j)$ if and only if $x_i$ is among the $K$-nearest neighbors (with respect to Euclidean distance) of $x_j$, or vice versa. Let $D_K$ denote the incidence matrix of $G_K$. 
+As in \citep{padilla2018}, define the \emph{$K$-NN graph} $G_K = (V,E_K)$ to have vertex set $V = \set{1, \ldots, t}$ and edge set $E_K$ which contains the pair $(i,j)$ if and only if $x_i$ is among the $K$-nearest neighbors (with respect to Euclidean distance) of $x_j$, or vice versa. Let $D_K$ denote the incidence matrix of $G_K$. 
 
 Define the \emph{kNN-total variation} test statistic to be
 \begin{equation}
 \label{eqn: knn_tv_test_statistic}
-T_{TV} = \sup_{\substack{\theta \in \Reals^{t}: \\ \norm{D_{k} \theta}_1 \leq C_{n,k}} } \left(\sum_{i = 1}^{n} \theta_i - \sum_{j = n+1}^{t} \theta_j\right)
+T_{TV} = \sup_{\substack{\theta \in \Reals^{t}: \\ \norm{D_{k} \theta}_1 \leq C_{n,k}} } \left(\sum_{i: (1_X)_i = 1} \theta_i - \sum_{j:(1_Y)_j = 1} \theta_j\right)
 \end{equation}
 
 Hereafter, take $\D = [0,1]^d$, and consider
@@ -176,29 +199,16 @@ and
 \begin{conjecture}
 	For $\tau = ???$ and $K \asymp \log^{1 + 2r}(n)$ for some $r \geq 0$, the test $\phi_{TV} = \set{T_{TV} \geq \tau}$ has worst-case risk
 	\begin{equation*}
-	R_{\epsilon}^{(m,m)}(\Hclass_{lip}(L)) \leq c_1/a^2
+	R_{\epsilon}^{(t)}(\Hclass_{lip}(L)) \leq c_1/a^2
 	\end{equation*}
 	whenever $\epsilon \geq c_2 a \log^{\alpha}m m^{-1/d}$ where $\alpha = 3r + 5/2 + (2r + 1)/d$ and $c_1$ and $c_2$ are constants which depend only on $(d,L)$.
 \end{conjecture}
 \begin{proof}
 	Write
 	\begin{equation*}
-	\sum_{i = 1}^{m} \theta_i - \sum_{j = m + 1}^{2m} \theta_j = \dotp{\theta}{1_X - 1_Y}
+	\left(\sum_{i: (1_X)_i = 1} \theta_i - \sum_{j:(1_Y)_j = 1} \theta_j\right) = \dotp{\theta}{1_X - 1_Y}
 	\end{equation*}
-	where
-	\begin{equation*}
-	1_X = 
-	\begin{cases}
-	1,~ i = 1, \ldots,m \\
-	0,~ \text{otherwise}
-	\end{cases}
-	1_Y = 
-	\begin{cases}
-	1,~ i = j + 1, \ldots,2m \\
-	0,~ \text{otherwise}
-	\end{cases}
-	\end{equation*}
-	Let
+	and let
 	\begin{equation*}
 	\widehat{\theta} \in \argmax_{\theta \in \Reals^{2m}} \set{\dotp{\theta}{1_X - 1_Y}: \norm{D_K \theta}_1 \leq C_{n,k}}
 	\end{equation*}
@@ -211,10 +221,14 @@ and
 	T_{TV} = \dotp{\widehat{\theta} - \theta^{\star}}{1_X - 1_Y} + \dotp{\theta^{\star}}{1_X - 1_Y}
 	\end{equation*}
 	
-	We bound the first term, and begin by employing a basic inequality argument. Let
+	 Let
 	\begin{align*}
 	\widetilde{\theta} = \frac{\theta^{\star}}{\norm{D\theta^{\star}}_1}.
 	\end{align*}
+	We bound the first term, dividing into two cases.
+	\paragraph{Case 1:} First, suppose $\abs{\dotp{\widehat{\theta} - \theta^{\star}}{1_X - 1_Y}} \geq \norm{\theta - \widetilde{\theta}}_2^2$.
+	
+	We begin by employing a basic inequality argument.
 	Since $\widetilde{\theta}$ is feasible and $\widehat{\theta}$ optimal for \eqref{eqn: knn_tv_test_statistic}, we have
 	\begin{equation*}
 	\dotp{\widehat{\theta}}{1_X - 1_Y} \geq \dotp{\widetilde{\theta}}{1_X - 1_Y}
@@ -231,7 +245,46 @@ and
 	& \overset{(i)}{\leq} \abs{\dotp{\widetilde{\theta} - \theta^{\star}}{\theta^{\star}} } + \abs{\dotp{\widehat{\theta} - \widetilde{\theta}}{w} } + \abs{\dotp{\widehat{\theta} - \theta^{\star}}{w} } \\
 	& \leq \abs{\dotp{\widetilde{\theta} - \theta^{\star}}{\theta^{\star}} } + 2\abs{\dotp{\widehat{\theta} - \widetilde{\theta}}{w} } + \abs{\dotp{\widetilde{\theta} - \theta^{\star}}{w}}
 	\end{align*}
-	where $(i)$ follows from \eqref{eqn: basic_inequality_1}.
+	where $(i)$ follows from \eqref{eqn: basic_inequality_1}. 
+	
+	$w$ are mean-zero, bounded random variables, and are therefore subgaussian with parameter $2$. Then, from \citep{padilla2018}, we have
+	\begin{lemma}[Approximate restatement of \citep{padilla2018}]
+		\begin{equation}
+		\label{eqn: empirical_process_lower_bound}
+		\abs{\dotp{\widehat{\theta} - \theta^{\star}}{w}} \lesssim \sqrt{K \log n} \left[ \norm{D_K \widetilde{\theta}}_1 + \norm{D_K \widehat{\theta}} \right] + \sqrt{K} \cdot \left(\norm{\widehat{\theta} - \widetilde{\theta}}_2 \right)
+		\end{equation}
+		with probability at least 
+		\begin{equation*}
+		\Omega \left(1 - \frac{n}{K} \exp\left(-K\right) - n \exp(-K)  \right)
+		\end{equation*}
+	\end{lemma}
+	Condition on the event of \eqref{eqn: empirical_process_lower_bound} holding. As a result, we have
+	\begin{align*}
+	\abs{\dotp{\widehat{\theta} - \theta^{\star}}{1_X - 1_Y}} & \lesssim  \abs{\dotp{\widetilde{\theta} - \theta^{\star}}{\theta^{\star}} } + \sqrt{K \log n} \left[ \norm{D_K \widetilde{\theta}}_1 + \norm{D_K \widehat{\theta}} \right] + \sqrt{K} \cdot \left(\norm{\widehat{\theta} - \widetilde{\theta}}_2 \right) \\
+	& \leq \abs{\dotp{\widetilde{\theta} - \theta^{\star}}{\theta^{\star}} } + \sqrt{K \log n} \left[ \norm{D_K \widetilde{\theta}}_1 + \norm{D_K \widehat{\theta}} \right] + \sqrt{K} \cdot \left(\sqrt{\abs{\dotp{\widehat{\theta} - \theta^{\star}}{1_X - 1_Y}}} \right)
+	\end{align*}
+	which, along with the inequality $ab - b^2/4 \leq a^2$, implies
+	\begin{equation*}
+	\abs{\dotp{\widehat{\theta} - \theta^{\star}}{1_X - 1_Y}} \leq \abs{\dotp{\widetilde{\theta} - \theta^{\star}}{\theta^{\star}} } + \sqrt{K \log n} \left[ \norm{D_K \widetilde{\theta}}_1 + \norm{D_K \widehat{\theta}} \right] + K
+	\end{equation*}
+	
+	\textcolor{red}{Continue from here.}
+
+
+	\paragraph{Case 2:} Otherwise, we may assume $\abs{\dotp{\widehat{\theta} - \theta^{\star}}{1_X - 1_Y}} \leq \norm{\theta - \widetilde{\theta}}_2^2$.
+	
+	To upper bound $\norm{\theta - \widetilde{\theta}}_2^2$, we use the relation
+	\begin{equation*}
+	\dotp{\widehat{\theta}}{1_X - 1_Y} \leq  \dotp{\widetilde{\theta}}{1_X - 1_Y}
+	\end{equation*}
+	and therefore
+	\begin{equation*}
+	\norm{\widehat{\theta} - (1_X - 1_Y)}_2^2 \leq \norm{\widetilde{\theta} - (1_X - 1_Y)}_2^2 + \left(\norm{\widehat{\theta}}_2^2 - \norm{\widetilde{\theta}}_2^2\right)
+	\end{equation*}
+	
+	\textcolor{red}{Continue from here using standard basic inequality + Poincare bound on the second term.}
+	
+	
 \end{proof}
 
 \clearpage
