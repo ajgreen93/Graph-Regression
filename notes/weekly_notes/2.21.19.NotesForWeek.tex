@@ -371,7 +371,7 @@ with associated incidence matrix $D_{grid}$.
 
 \begin{lemma}[Spectral similarity of $r$-graph to grid]
 	\label{lem: spectral_similarity_rgraph_grid}
-	Fix $r \geq 2 \left(\frac{\log t}{t}\right)^{1/d} + (\frac{1}{t})^{1/d}$, and Let $\ell(t) = \sqrt{d} r t^{1/d} + 2\sqrt{d}(\log t)^{1/d}$. For any $\theta \in \Reals^t$, the following relations hold:
+	Fix $r \geq 2 \left(\frac{\log t}{t}\right)^{1/d} + (\frac{1}{t})^{1/d}$, and let $\ell(t) = \sqrt{\sqrt{d} r t^{1/d} + 2\sqrt{d}(\log t)^{1/d}}$. For any $\theta \in \Reals^t$, the following relations hold:
 	\begin{equation}
 	\label{eqn: spectral_similarity_rgraph_grid}
 	\frac{\norm{D_{G_r}\theta}_2}{\ell(t)} \leq \norm{D_{grid}\theta}_2 \leq \norm{D_{G_r}\theta}_2
@@ -409,7 +409,7 @@ with associated incidence matrix $D_{grid}$.
 	\begin{equation*}
 		\frac{\sqrt{d}(2C\left(\frac{\log t}{t}\right)^{1/d} + r)}{t^{1/d}}
 	\end{equation*}
-	edges. The bound follows by Lemma
+	edges. The bound follows by Lemma \ref{lem: graph_ordering}.
 	\begin{lemma}[Graph ordering]
 	\label{lem: graph_ordering}
 	Fix $m \geq 0$. For vertices $V = \set{1, \ldots,m}$, we have
