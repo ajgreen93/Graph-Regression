@@ -1,0 +1,442 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Matrices
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 2/16/19 - 2/22/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Consider distributions $\Pbb$ and $\Qbb$ supported on $\D \subset \Reals^d$ which are absolutely continuous with density functions $f$ and $g$, respectively. For fixed $t \geq 0$, Let $\Zbf = (z_1, \ldots,z_t)$, where for $i = 1,\ldots,t$, $z_i \sim \frac{\Pbb + \Qbb}{2}$ are independent. Given $\Zbf$, for $i = 1,...,t$ let
+\begin{equation*}
+\ell_i = 
+\begin{cases}
+1~ \text{with probability $\frac{f(z_i)}{f(z_i) + g(z_i)}$} \\
+-1~ \text{with probability $\frac{g(z_i)}{f(z_i) + g(z_i)}$}
+\end{cases}
+\end{equation*} 
+be conditional independent labels, and write
+\begin{equation*}
+1_X = 
+\begin{cases}
+1,~ l_i = 1\\
+0,~ \text{otherwise}
+\end{cases}
+1_Y = 
+\begin{cases}
+1,~ l_i = -1 \\
+0,~ \text{otherwise.}
+\end{cases}
+\end{equation*}
+We will write $\Xbf = \set{x_1, \ldots,x_{N_X}} := \set{z_i: \ell_i = 1}$ and similarly $\Ybf = \set{y_1, \ldots,y_{N_Y}} := \set{y_i: \ell_i = -1}$, where $N_X$ and $N_Y$ are of course random.
+
+Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
+\begin{equation*}
+\mathbb{H}_0: f = g \text{ and } \mathbb{H}_1: f \neq g.
+\end{equation*}
+
+For a given function class $\Hclass$, some $\epsilon > 0$, and test function $\phi$ a Borel measurable function of the data with range $\set{0,1}$, we evaluate the quality of the test using \emph{worst-case risk}
+\begin{equation*}
+R_{\epsilon}^{(t)}(\phi; \Hclass) = \sup_{f \in \Hclass} \Ebb_{f,f}^{(t)}(\phi) + \sup_{ \substack{f,g \in \Hclass \\ \delta(f,g) \geq \epsilon } } \Ebb_{f,g}^{(t)}(1 - \phi)
+\end{equation*} 
+where 
+\begin{equation*}
+\delta^2(f,g) = \int_{\D} (f - g)^2 dx.
+\end{equation*}
+
+\section{Total variation test}
+
+As in \citep{padilla2018}, define the \emph{$K$-NN graph} $G_K = (V,E_K)$ to have vertex set $V = \set{1, \ldots, t}$ and edge set $E_K$ which contains the pair $(i,j)$ if and only if $x_i$ is among the $K$-nearest neighbors (with respect to Euclidean distance) of $x_j$, or vice versa. Let $D_K$ denote the incidence matrix of $G_K$. 
+
+Define the \emph{kNN-total variation} test statistic to be
+\begin{equation}
+\label{eqn: knn_tv_test_statistic}
+T_{TV} = \sup_{\substack{\theta \in \Reals^{t}: \\ \mathcal{T}(C_{n,k})} } \left(\frac{1}{N_X}\sum_{i: (1_X)_i = 1} \theta_i - \frac{1}{N_Y}\sum_{j:(1_Y)_j = 1} \theta_j\right)
+\end{equation}
+where $\mathcal{T}(C_{n,k}) = \set{\theta: \norm{D_{G_K}\theta}_1 \leq C_{n,k},
+\norm{\theta}_2 \leq C'_{n,k}}$. 
+Hereafter, take $\D = [0,1]^d$, and consider
+\begin{equation*}
+\Hclass_{lip}(L) = \set{f: [0,1]^d \to \Reals^{+}: \int_{\D}f = 1, f~ \text{$L$-piecewise Lipschitz, bounded above and below} }
+\end{equation*}
+
+\begin{definition}[Piecewise Lipschitz]
+	\label{def: piecewise_lipschitz}
+	A function $f$ is $L$-\emph{piecewise lipschitz} over $[0,1]^d$ if there exists a set $\Sset \subset [0,1]^d$ such that
+	\begin{enumerate}[(a)]
+		\item $\nu(\Sset) = 0$
+		\item There exist $C_{\Sset}, \epsilon_0$ such that $\mu \Bigl( \bigl(\Sset_{\epsilon} \cup (\partial \D)_{\epsilon} \bigr) \cap [0,1]^d \Bigr) \leq C_{\Sset} \epsilon$ for all $0 < \epsilon \leq \epsilon_0$.
+		\item For any $z, z'$ in the same connected component of $[0,1]^d \setminus \bigl(\Sset_{\epsilon} \cup (\partial \D)_{\epsilon}\bigr)$,
+		\begin{equation*}
+		\abs{g(z) - g(z')}_2 \leq L\norm{z - z'}_2
+		\end{equation*}
+	\end{enumerate}
+\end{definition}
+
+\begin{definition}[Bounded above and below]
+	\label{def: bounded}
+	A function $f: \D \to \Reals$ is \emph{bounded above and below} if there exists $p_{\min}, p_{\max}$ such that
+	\begin{equation*}
+	0 < p_{\min} < f(x) < p_{\max} < \infty \tag{$\forall x \in \D$}
+	\end{equation*}
+\end{definition}
+
+\begin{conjecture}
+	For $\tau = ???$ and $K \asymp \log^{1 + 2r}(n)$ for some $r \geq 0$, the test $\phi_{TV} = \set{T_{TV} \geq \tau}$ has worst-case risk
+	\begin{equation*}
+	R_{\epsilon}^{(t)}(\Hclass_{lip}(L)) \leq 1/2
+	\end{equation*}
+	whenever $\epsilon \geq c_2 \log^{\alpha}m m^{-1/d}$ where $\alpha = 3r + 5/2 + (2r + 1)/d$ and $c_1$ and $c_2$ are constants which depend only on $(d,L)$.
+\end{conjecture}
+\begin{proof}
+	Write
+	\begin{equation*}
+	\left(\frac{1}{N_X}\sum_{i: (1_X)_i = 1} \theta_i - \frac{1}{N_Y}\sum_{j:(1_Y)_j = 1} \theta_j\right) = \dotp{\theta}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}
+	\end{equation*}
+	and let
+	\begin{equation*}
+	\widehat{\theta} \in \argmax_{\theta \in \Reals^{t}} \set{\dotp{\theta}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}: \theta \in \mathcal{T}(C_{n,K})}
+	\end{equation*}
+	satisfy $T_{TV} = \dotp{\widehat{\theta}}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}$. 
+	
+	\paragraph{Random denominators}
+	
+	We will first account for the dependence on random denominators $N_X$ and $N_Y$. For arbitrary $\theta \in \mathcal{T}(C_{n,K})$
+	\begin{align*}
+	\dotp{\theta}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}} = \frac{2}{t}\dotp{\theta}{1_X - 1_Y} + 2\left(\frac{N_X - t/2}{(N_X)t}\right) \dotp{\theta}{1_X} + 2\left(\frac{t/2 - N_Y}{(N_Y)t}\right) \dotp{\theta}{1_Y}
+	\end{align*}
+	A simple application of Holder's inequality, and standard concentration results for binomial random variables, will show the latter two terms to be $O_{P}\left(\frac{C'_{n,k}}{t}\right)$.
+	
+	We turn to analyzing the first term. For $i = 1, \ldots, t$, introduce $\theta^{\star}$ defined by
+	\begin{equation*}
+	(\theta^{\star})_i = \left(\frac{f(z_i) - g(z_i)}{f(z_i) + g(z_i)} \right)	\end{equation*}
+	Letting $w = (1_X - 1_Y) - \theta^{\star}$, note that $w$ is a vector of i.i.d bounded random variables with $\Ebb(w) = 0$.
+	
+	\paragraph{Type I error.}
+	Under the case $f = g$, we have $\theta^{\star} = 0$, and therefore
+	\begin{equation*}
+	\dotp{\theta}{1_X - 1_Y} = \dotp{\theta}{w}
+	\end{equation*}
+	
+	\textcolor{red}{Proceed using the empirical process bound of Lemma \ref{lem: empirical_process_TV_denoising}.}
+\end{proof}
+\section{Bounding the empirical process}
+
+We collect here the bound on the empirical process from \cite{padilla2018}.
+\begin{lemma}
+	\label{lem: empirical_process_TV_denoising}
+	Let $w$ be a vector of mean zero independent random variables with ${w}_{\infty} \leq 1$. Then, for any $\delta > 0$ such that $K \geq 3 \log(n/\delta)$
+	\begin{equation*}
+	\sup_{\theta \in \mathcal{T}(C_{n,K})} \dotp{\theta}{w} \leq 2 C_{n,K} + \sqrt{(1 + \frac{C(p_{\max}, \delta)}{K})K p_{\max}} \cdot \left( 2 \sqrt{2 \log(e/ \delta)} C'_{n,K} + 2 C(d) \sqrt{\log(en/\delta)}C_{n,K} \right)
+	\end{equation*}
+	with probability at least $1 - 4 \delta$.
+\end{lemma}
+\begin{proof}
+	Set 
+	\begin{equation*}
+	\kappa = \lceil \frac{3\sqrt{d} p_{\max}^{1/d}t^{1/d}}{2 K^{1/d}} \rceil
+	\end{equation*}
+	and let 
+	\begin{equation*}
+	I = \set{\biggl(\frac{k - 1}{\kappa}, \frac{k}{\kappa}\biggr]: k \in [\kappa]^d},~ M_{k, \kappa} = \# \set{i \in [t]: z_i \in \biggl(\frac{k - 1}{\kappa}, \frac{k}{\kappa}\biggr]}
+	\end{equation*}
+	be a partition of $\D$ into cells, and the count in each cell, respectively. From \citep{padilla2018} we have that with probability at least
+	\begin{equation*}
+	1 - t \exp(-K/3) \geq 1 - \delta
+	\end{equation*}
+	the following statement holds:
+	\begin{equation*}
+	\sup_{\theta \in \mathcal{T}(C_{n,K})} \leq 2 \norm{w}_{\infty} \norm{D_{G_K} \theta}_1 + \max_{k} \sqrt{M_{k,\kappa}} \left( \norm{\Pi \widetilde{w}}_2 \norm{\theta}_2 + \norm{(D^{\dagger})^T \widetilde{w}}_{\infty} \norm{D_{G_K} \theta}_1 \right)
+	\end{equation*}
+	where $\Pi$ is the projection onto the span of $1_{\kappa^d}$, $D$ is the incidence matrix of the grid graph $\kappa^d$, and $\widetilde{w}$ is defined by
+	\begin{equation*}
+	(\widetilde{w})_k = \left[\max_{k \in [\kappa]^d} M_{k,\kappa}\right]^{-1/2} \sum_{l: z_l \in (\frac{k - 1}{\kappa}, \frac{k}{\kappa}]} w_{l}
+	\end{equation*}
+	\textcolor{red}{Take care of random denominator again.}
+	
+	\citep{hutter2016} derive the following bounds, which hold with probability at least $1 - 2\delta$:
+	\begin{equation*}
+	\norm{(D^{\dagger})^T w}_{\infty} \leq 2 C(d) \sqrt{\log(en/\delta)}, ~~ \norm{\Pi w}_2 \leq 2 \sqrt{2 \log(e / \delta)}
+	\end{equation*}
+	
+	Then, a simple concentration inequality for binomial random variables, along with a union bound, gives
+	\begin{equation*}
+	\max_{k \in [\kappa]^d} \sqrt{M_{k, \kappa}} \leq \sqrt{(1 + \frac{C(p_{\max}, \delta)}{K})\frac{tp_{\max}}{\kappa^d}}
+	\end{equation*}
+	with probability at least $1 - \delta$. The statement follows from our choice of $\kappa$.
+\end{proof}
+
+\section{Laplacian smooth test--Attempt 1}
+Let
+\begin{equation*}
+\widehat{\theta}_{LS} = \sup_{\theta \in \mathcal{S}(C_{n,K}, C'_{n,K})} \dotp{\theta}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}
+\end{equation*}
+where $\mathcal{S}(C_{n,K}, C'_{n,K}) = \set{\theta \in \Reals^n: \norm{D_{G_K\theta}}_2 \leq C_{n,K}, \norm{\theta}_2 \leq C'_{n,K}}$.
+
+\paragraph{Random Denominator.}
+\begin{lemma}
+	Let $\norm{\theta}_2 \leq c$ and $\delta > 0$. Then,
+	\begin{equation*}
+	\abs{ \dotp{\theta}{1_X} \left(\frac{1}{N_X} - \frac{2}{t}\right) } \vee \abs{ \dotp{\theta}{1_Y} \left(\frac{1}{N_Y} - \frac{2}{t}\right) } \leq \frac{c \sqrt{\log(2 / \delta)}}{t (1 - \log(2/\delta)/\sqrt{t})}
+	\end{equation*}
+	with probability at least $1 - \delta$.
+\end{lemma}
+\begin{proof}
+	By the Cauchy-Schwarz inequality,
+	\begin{equation*}
+	\abs{\dotp{\theta}{1_X}} \leq \norm{\theta}_2 \norm{1_X}_2 \leq c \sqrt{N_X}.
+	\end{equation*}
+	Rearranging $1/N_X - 2/t$, we obtain
+	\begin{equation}
+	\label{eqn: random_denominator_1}
+	\abs{ \dotp{\theta}{1_X} \left(\frac{1}{N_X} - \frac{2}{t}\right) } \leq 2 \frac{c \sqrt{N_X} \abs{N_X - \frac{2}{t}}}{tN_X} = \frac{c \abs{N_X - \frac{2}{t}}}{t\sqrt{N_X}} 
+	\end{equation}
+	$N_X \sim Bin(t,1/2)$, and so application of Hoeffding's inequality gives
+	\begin{equation}
+	\label{eqn: hoeffding_bound_nx}
+	\abs{N_X - \frac{t}{2}} \leq \sqrt{t} \sqrt{\log(2/\delta)}
+	\end{equation}
+	with probability at least $1 - \delta$. Plugging this in to \eqref{eqn: random_denominator_1} yields the desired bound with respect to $1_X,N_X$. However, if \eqref{eqn: hoeffding_bound_nx} holds for $N_X$ it holds for $N_Y$ as well. All other steps hold for $1_Y$, and therefore the desired bound holds with respect to $1_Y, N_Y$ as well.
+\end{proof}
+
+\section{Laplacian smooth test: Attempt 2}
+Let
+\begin{equation*}
+T_{LS} = \sup_{\theta \in \mathcal{S}(C_{n,K}, C'_{n,K})} \dotp{\theta}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}
+\end{equation*}
+where $\mathcal{S}(C_{n,K}, C'_{n,K}) = \set{\theta \in \Reals^n: \norm{D_{G_K\theta}}_2 \leq C_{n,K}}$. We can find a closed-form solution to this problem,
+\begin{align*}
+T_{LS} & = C_{n,k} a^T \Linv a
+\end{align*}
+where $a = (\frac{1_X}{N_X} - \frac{1_Y}{N_Y})$. 
+
+\paragraph{Type I error.}
+
+To begin, we write $w = (1_X - 1_Y)\frac{2}{t}$, and rewrite
+\begin{equation*}
+T_{LS} = C_{n,k} w^T \Linv w + C_{n,k} (w + \ell)^T \Linv (\ell - w)
+\end{equation*}
+
+We turn our attention to the second term, which we wish to show contributes negligibly to the overall sum. We have
+\begin{align*}
+(w + \ell)^T \Linv (\ell - w) & = (D(w + \ell))^T (D(\ell - w)) \\
+& \leq \norm{D(w + \ell)}_2 \norm{D(w - \ell)}_2 \\
+& \leq K \norm{w + \ell}_2 \norm{w - \ell}_2
+\end{align*}
+Then, based on Lemma \textcolor{red}{make a `random denominators` Lemma}, with probability at least $1 - \delta$,
+\begin{equation*}
+\norm{w + \ell}_2 \leq \frac{1}{\sqrt{t}}, ~~ \norm{w - \ell}_2 \leq 2 \frac{\log(2/\delta)}{t \left(1 - \frac{\log(2/\delta)}{\sqrt{t}}\right)}
+\end{equation*}
+and as a result
+\begin{equation*}
+(w + \ell)^T \Linv (\ell - w) \leq K \frac{\log(2/\delta)}{t^{3/2} \left(1 - \frac{\log(2/\delta)}{\sqrt{t}}\right)}
+\end{equation*}
+
+Now, we have that the entries of $w$ are i.i.d random variables with mean $0$ and absolute value of $2/t$.
+
+	
+\section{Laplacian Smooth Test-Attempt 3}
+Define the \emph{$r$-graph} $G_r = (V,E_r)$ to have vertex set $V = \set{1,\ldots,t}$ and edge set $E_r$ which contains the pair $(i,j)$ if and only if $\norm{z_i - z_j}_2 \leq r$. Let $D_{G_r}$ denote the incidence matrix of $G_r$. 
+
+Define the \emph{$r$-Laplacian smooth} test statistic to be
+\begin{equation*}
+T_{LS} = \sup_{\theta: \norm{D_{G_r}\theta}_2 \leq C_{n,r}} \dotp{\theta}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}
+\end{equation*}
+
+We would like to relate the graph $G_r$ to a graph with a more easily accessible spectrum. For $\kappa = t^{1/d}$, consider the \emph{grid graph}
+\begin{equation*}
+G_{grid} = (V_{grid},E_{grid}),~~ V_{grid} = \set{\frac{k}{\kappa}: k \in [\kappa]^d},~~ E_{grid} = \set{(k,k'): k, k' \in V_{grid}, \norm{k - k'}_1 = \frac{1}{\kappa^d}}
+\end{equation*}
+with associated incidence matrix $D_{grid}$.
+
+\begin{lemma}[Spectral similarity of $r$-graph to grid]
+	\label{lem: spectral_similarity_rgraph_grid}
+	Fix $r \geq 2 \left(\frac{\log t}{t}\right)^{1/d} + (\frac{1}{t})^{1/d}$, and Let $\ell(t) = \sqrt{d} r t^{1/d} + 2\sqrt{d}(\log t)^{1/d}$. For any $\theta \in \Reals^t$, the following relations hold:
+	\begin{equation}
+	\label{eqn: spectral_similarity_rgraph_grid}
+	\frac{\norm{D_{G_r}\theta}_2}{\ell(t)} \leq \norm{D_{grid}\theta}_2 \leq \norm{D_{G_r}\theta}_2
+	\end{equation}
+	with probability at least $1 - n^{-\alpha}$ where $\alpha = c_1 (\log n)^{1/2}$ for some constant $c_1 > 0$.
+\end{lemma}
+\begin{proof}
+	We begin by mapping the data $\Zbf$ to the grid points $[\kappa]^d$ in such a way that as little mass as possible is disturbed:
+	\begin{lemma}
+		\label{lem: mass_transport_mapping}
+		There exists a bijective mapping $T: \Zbf \to [\kappa]^d$ for $\kappa = t^{1/d}$ such that
+		\begin{equation*}
+		\max_{i} \norm{T(z_i) - z_i}_2 \leq C\left(\frac{\log t}{t}\right)^{1/d}
+		\end{equation*}
+		with probability at least $1 - n^{-\alpha}$ where $\alpha = c_1 (\log n)^{1/2}$ for some constant $c_1 > 0$.
+	\end{lemma}
+	Hereafter, we assume there exists $T$ such that Lemma \ref{lem: mass_transport_mapping} holds.
+	
+	We first prove the second bound in \eqref{eqn: spectral_similarity_rgraph_grid}.  Consider grid points $k ~ k'$ connected in the grid graph. Then, there exist $z_i$ and $z_j$ such that $T(z_i) = k$ and $T(z_j) = k'$. By the triangle inequality,
+	\begin{align*}
+	\norm{z_i - z_j}_2 & \leq \norm{T(z_i) - z_i}_2 + \norm{T(z_i) - T(z_j)}_2 + \norm{T(z_j) - z_j}_2 \\
+	& \leq 2C\left(\frac{\log t}{t}\right)^{1/d} + \frac{1}{t^{1/d}}
+	\end{align*}
+	and so by our choice of $r$, $i \sim j$ in $G_r$.
+	
+	Now, we turn to the first bound. Assume $i \sim j$ in the graph $G_r$. By a similar set of steps to the above, we have
+	\begin{equation*}
+	\norm{T(z_i) - T(z_j)}_2 \leq 2C\left(\frac{\log t}{t}\right)^{1/d} + r
+	\end{equation*}
+	As a result, using the simple relation $\norm{x}_1 \leq \sqrt{d} \norm{x}_2$ for any $x \in \Rd$, we have
+	\begin{equation*}
+	\norm{T(z_i) - T(z_j)}_1 \leq \sqrt{d}(2C\left(\frac{\log t}{t}\right)^{1/d} + r)
+	\end{equation*}
+	Since each edge in the grid graph is of length $n^{1/d}$, it is easy to see that there exists a path between $T(z_i)$ and $T(z_j)$ in $G_{grid}$, $P(T(Z_i) \to T(Z_j))$ with no more than
+	\begin{equation*}
+		\frac{\sqrt{d}(2C\left(\frac{\log t}{t}\right)^{1/d} + r)}{t^{1/d}}
+	\end{equation*}
+	edges. The bound follows by Lemma
+	\begin{lemma}[Graph ordering]
+	\label{lem: graph_ordering}
+	Fix $m \geq 0$. For vertices $V = \set{1, \ldots,m}$, we have
+	\begin{enumerate}
+		\item $\frac{1}{m - 1}P(1 \to m) \succeq G_{1,m}$
+		\item If $A \succeq B$ and $C \succeq D$, then $A + B \succeq C + D$. 
+	\end{enumerate}
+	\end{lemma}
+\end{proof}
+
+Decompose $\frac{1_X}{N_X} - \frac{1_Y}{N_Y} := \theta^{\star} + w$, where
+\begin{equation*}
+(\theta^{\star})_i := \frac{f(x) - g(x)}{f(x) + g(x)}
+\end{equation*}
+
+The upper bound in Lemma \ref{lem: spectral_similarity_rgraph_grid} allows us the following upper bound on the empirical process
+\begin{equation*}
+\sup_{\theta: \norm{D_{r}\theta}_2 \leq C_{n,r}} \dotp{\theta}{w} \leq  \sup_{\theta: \norm{D_{grid}\theta}_2 \leq C_{n,r}} \dotp{\theta}{w} = C_{n,r} w^T{\Linv_{grid}}w 
+\end{equation*}
+whereas the lower bound helps us with the approximation error term,
+\begin{equation*}
+\sup_{\widetilde{\theta}: \norm{D_{r}\theta}_2 \leq C_{n,r}} \dotp{\widetilde{\theta}}{\theta^{\star}} \geq \sup_{\theta: \norm{D_{grid}\theta}_2 \leq C_{n,r}/ \ell(n,r)} \dotp{\theta}{\theta^{\star}} \geq \frac{C_{n,r}}{\ell(n,r)} \theta^{\star}\Linv_{grid} \theta^{\star}
+\end{equation*}
+
+\clearpage
+
+\bibliography{../../graph_testing_bibliography}
+\bibliographystyle{plain}
+
+\end{document}
