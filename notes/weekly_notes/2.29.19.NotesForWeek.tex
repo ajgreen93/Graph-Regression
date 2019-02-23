@@ -1,0 +1,282 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Matrices
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 2/23/19 - 2/29/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Consider distributions $\Pbb$ and $\Qbb$ supported on $\D \subset \Reals^d$ which are absolutely continuous with density functions $f$ and $g$, respectively. For fixed $n \geq 0$, Let $\Zbf = (z_1, \ldots,z_n)$, where for $i = 1,\ldots,t$, $z_i \sim \frac{\Pbb + \Qbb}{2}$ are independent. Given $\Zbf$, for $i = 1,...,t$ let
+\begin{equation*}
+\ell_i = 
+\begin{cases}
+1~ \text{with probability $\frac{f(z_i)}{f(z_i) + g(z_i)}$} \\
+-1~ \text{with probability $\frac{g(z_i)}{f(z_i) + g(z_i)}$}
+\end{cases}
+\end{equation*} 
+be conditional independent labels, and write
+\begin{equation*}
+1_X = 
+\begin{cases}
+1,~ l_i = 1\\
+0,~ \text{otherwise}
+\end{cases}
+1_Y = 
+\begin{cases}
+1,~ l_i = -1 \\
+0,~ \text{otherwise.}
+\end{cases}
+\end{equation*}
+We will write $\Xbf = \set{x_1, \ldots,x_{N_X}} := \set{z_i: \ell_i = 1}$ and similarly $\Ybf = \set{y_1, \ldots,y_{N_Y}} := \set{y_i: \ell_i = -1}$, where $N_X$ and $N_Y$ are of course random but $N_X + N_Y = n$. 
+
+Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
+\begin{equation*}
+\mathbb{H}_0: f = g \text{ and } \mathbb{H}_1: f \neq g.
+\end{equation*}
+
+For a given function class $\Hclass$, some $\epsilon > 0$, and test function $\phi$ a Borel measurable function of the data with range $\set{0,1}$, we evaluate the quality of the test using \emph{worst-case risk}
+\begin{equation*}
+R_{\epsilon}^{(t)}(\phi; \Hclass) = \sup_{f \in \Hclass} \Ebb_{f,f}^{(t)}(\phi) + \sup_{ \substack{f,g \in \Hclass \\ \delta(f,g) \geq \epsilon } } \Ebb_{f,g}^{(t)}(1 - \phi)
+\end{equation*} 
+where 
+\begin{equation*}
+\delta^2(f,g) = \int_{\D} (f - g)^2 dx.
+\end{equation*}
+
+\section{Laplacian smooth test statistic}
+
+For $r \geq 0$, define the \emph{$r$-graph} $G_r = (V,E_r)$ to have vertex set $V = \set{1,\ldots,t}$ and edge set $E_r$ which contains the pair $(i,j)$ if and only if $\norm{z_i - z_j}_2 \leq r$. Let $D_{G_r}$ denote the incidence matrix of $G_r$. 
+
+Define the \emph{$r$-Laplacian Smooth} test statistic to be
+\begin{equation*}
+T_{LS} = \sup_{\theta: \norm{D_{G_r}\theta}_2 \leq C_{n,r}} \dotp{\theta}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}
+\end{equation*}
+
+We would like to relate the graph $G_r$ to a graph with a more easily accessible spectrum. For $\kappa = n^{1/d}$, consider the \emph{grid graph}
+\begin{equation*}
+G_{grid} = (V_{grid},E_{grid}),~~ V_{grid} = \set{\frac{k}{\kappa}: k \in [\kappa]^d},~~ E_{grid} = \set{(k,k'): k, k' \in V_{grid}, \norm{k - k'}_1 = \frac{1}{\kappa^d}}
+\end{equation*}
+with associated incidence matrix $D_{grid}$.
+
+\begin{lemma}[Spectral similarity of $r$-graph to grid]
+	\label{lem: spectral_similarity_rgraph_grid}
+	Fix $r \geq 2 \left(\frac{\log t}{n}\right)^{1/d} + (\frac{1}{n})^{1/d}$, and let $\ell(r,n) = \biggl(\sqrt{d} r n^{1/d} + 2\sqrt{d}(\log n)^{1/d}\biggr)^{1/2}$. For any $\theta \in \Reals^n$, the following relations hold:
+	\begin{equation}
+	\label{eqn: spectral_similarity_rgraph_grid}
+	\frac{\norm{D_{G_r}\theta}_2}{\ell(t)} \leq \norm{D_{grid}\theta}_2 \leq \norm{D_{G_r}\theta}_2
+	\end{equation}
+	with probability at least $1 - n^{-\alpha}$ where $\alpha = c_1 (\log n)^{1/2}$ for some constant $c_1 > 0$.
+\end{lemma}
+\begin{proof}
+	We begin by mapping the data $\Zbf$ to the grid points $[\kappa]^d$ in such a way that as little mass as possible is disturbed:
+	\begin{lemma}
+		\label{lem: mass_transport_mapping}
+		There exists a bijective mapping $T: \Zbf \to [\kappa]^d$ for $\kappa = t^{1/d}$ such that
+		\begin{equation*}
+		\max_{i} \norm{T(z_i) - z_i}_2 \leq C\left(\frac{\log t}{t}\right)^{1/d}
+		\end{equation*}
+		with probability at least $1 - n^{-\alpha}$ where $\alpha = c_1 (\log n)^{1/2}$ for some constant $c_1 > 0$.
+	\end{lemma}
+	Hereafter, we assume there exists $T$ such that Lemma \ref{lem: mass_transport_mapping} holds.
+	
+	We first prove the second bound in \eqref{eqn: spectral_similarity_rgraph_grid}.  Consider grid points $k ~ k'$ connected in the grid graph. Then, there exist $z_i$ and $z_j$ such that $T(z_i) = k$ and $T(z_j) = k'$. By the triangle inequality,
+	\begin{align*}
+	\norm{z_i - z_j}_2 & \leq \norm{T(z_i) - z_i}_2 + \norm{T(z_i) - T(z_j)}_2 + \norm{T(z_j) - z_j}_2 \\
+	& \leq 2C\left(\frac{\log t}{t}\right)^{1/d} + \frac{1}{t^{1/d}}
+	\end{align*}
+	and so by our choice of $r$, $i \sim j$ in $G_r$.
+	
+	Now, we turn to the first bound. Assume $i \sim j$ in the graph $G_r$. By a similar set of steps to the above, we have
+	\begin{equation*}
+	\norm{T(z_i) - T(z_j)}_2 \leq 2C\left(\frac{\log t}{t}\right)^{1/d} + r
+	\end{equation*}
+	As a result, using the simple relation $\norm{x}_1 \leq \sqrt{d} \norm{x}_2$ for any $x \in \Rd$, we have
+	\begin{equation*}
+	\norm{T(z_i) - T(z_j)}_1 \leq \sqrt{d}(2C\left(\frac{\log t}{t}\right)^{1/d} + r)
+	\end{equation*}
+	Since each edge in the grid graph is of length $n^{1/d}$, it is easy to see that there exists a path between $T(z_i)$ and $T(z_j)$ in $G_{grid}$, $P(T(Z_i) \to T(Z_j))$ with no more than
+	\begin{equation*}
+	\frac{\sqrt{d}(2C\left(\frac{\log t}{t}\right)^{1/d} + r)}{t^{1/d}}
+	\end{equation*}
+	edges. The bound follows by Lemma \ref{lem: graph_ordering}.
+\end{proof}
+
+\section{Poincare inequalities}
+
+Let $G$ and $\widetilde{G}$ be undirected, unweighted graphs over vertex set $V$, with edge sets $E_G$ and $E_{\widetilde{G}}$, respectively. Let $\widetilde{\mathcal{P}}$ be the space of all paths over $E_{\widetilde{G}}$; that is, $\mathcal{P}$ consists of $\widetilde{P} \in \widetilde{\mathcal{P}}$
+\begin{equation*}
+P = (\widetilde{e}_1, \ldots, \widetilde{e}_m) \tag{$\widetilde{e_i} \in E_{\widetilde{G}}$}
+\end{equation*}
+for some integer $m \geq 1$. We say $\abs{P} = m$ is the \emph{path length}.
+
+\begin{lemma}[Poincare inequality for general graphs.]
+	Define a mapping $\gamma: E_G \to \mathcal{P}$ where for each $e = (\ell,\ell')$ in $E_G$
+	\begin{equation*}
+	\gamma(e) = ((\ell,u), \ldots, (v,\ell'))
+	\end{equation*}
+	meaning $e$ is mapped to a path which begins at $\ell$ and ends at $\ell'$. Then
+	\begin{equation*}
+	G \preceq \widetilde{G} \cdot \max_{e \in E_G} \abs{\gamma(e)}  \cdot b_{\gamma}
+	\end{equation*}
+	where $b_{\gamma}$ is a bottleneck parameter given by
+	\begin{equation*}
+	b_{\gamma} = \max_{\widetilde{e} \in E_{\widetilde{G}}} \abs{\set{e \in E: \widetilde{e} \in \widetilde{P}_e}}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Let $G_e = (V, \set{e})$ and $P_e = (V, \set{\widetilde{e}: \widetilde{e} \in \gamma(e)})$ be the graphs associated with $e$ and $\gamma(e)$, respectively. By Lemma \ref{lem: path_poincare}, we have
+	\begin{equation*}
+	G_{e} \preceq \abs{P_e} P_e
+	\end{equation*}
+	Summing over all $e \in E_G$, we obtain
+	\begin{align*}
+	G & \preceq \sum_{e \in E_G} \abs{P_e} P_e \\
+	& \preceq \max_{e \in E_G} \abs{\gamma(e)} \sum_{e \in E_G} P_e \\
+	& \preceq \max_{e \in E_G} \abs{\gamma(e)} b_{\gamma}\cdot \widetilde{G}
+	\end{align*}
+\end{proof}
+
+\begin{lemma}[Poincare inequality for path graphs.]
+	\label{lem: path_poincare}
+	Fix $m \geq 0$. For vertices $V = \set{1, \ldots,m}$ define the path $P(1 \to m) = ((1,2),(2,3),\ldots, (m-1,m))$ and $G_{(1,m)}$ to be the graph consisting only of an edge between $1$ and $m$. Then,
+	\begin{equation*}
+	(m - 1) \cdot P(1 \to m) \succeq G_{(1,m)}
+	\end{equation*}
+\end{lemma}
+
+Decompose $\frac{1_X}{N_X} - \frac{1_Y}{N_Y} := \theta^{\star} + w$, where
+\begin{equation*}
+(\theta^{\star})_i := \frac{f(x) - g(x)}{f(x) + g(x)}
+\end{equation*}
+
+The upper bound in Lemma \ref{lem: spectral_similarity_rgraph_grid} allows us the following upper bound on the empirical process
+\begin{equation*}
+\sup_{\theta: \norm{D_{r}\theta}_2 \leq C_{n,r}} \dotp{\theta}{w} \leq  \sup_{\theta: \norm{D_{grid}\theta}_2 \leq C_{n,r}} \dotp{\theta}{w} = C_{n,r} w^T{\Linv_{grid}}w 
+\end{equation*}
+whereas the lower bound helps us with the approximation error term,
+\begin{equation*}
+\sup_{\widetilde{\theta}: \norm{D_{r}\theta}_2 \leq C_{n,r}} \dotp{\widetilde{\theta}}{\theta^{\star}} \geq \sup_{\theta: \norm{D_{grid}\theta}_2 \leq C_{n,r}/ \ell(n,r)} \dotp{\theta}{\theta^{\star}} \geq \frac{C_{n,r}}{\ell(n,r)} \theta^{\star}\Linv_{grid} \theta^{\star}
+\end{equation*}
+
+\end{document}
