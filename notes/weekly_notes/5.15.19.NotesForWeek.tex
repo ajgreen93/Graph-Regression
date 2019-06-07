@@ -1,0 +1,389 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 5/15/19 - 5/17/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Consider absolutely continuous distributions $\Pbb$ and $\Qbb$ with density functions $f$ and $g$, respectively. For fixed $n \geq 0$, let $\Z = (z_1, \ldots,z_n)$, where for $i = 1,\ldots,n$, $z_i \sim \frac{\Pbb + \Qbb}{2}$ are independent. Given $\Z$, for $i = 1,...,n$ let
+\begin{equation*}
+\ell_i = 
+\begin{cases}
+1~ \text{with probability $\frac{f(z_i)}{f(z_i) + g(z_i)}$} \\
+-1~ \text{with probability $\frac{g(z_i)}{f(z_i) + g(z_i)}$}
+\end{cases}
+\end{equation*} 
+be conditionally independent labels, and write
+\begin{equation*}
+1_X = 
+\begin{cases}
+1,~ l_i = 1\\
+0,~ \text{otherwise}
+\end{cases}
+1_Y = 
+\begin{cases}
+1,~ l_i = -1 \\
+0,~ \text{otherwise.}
+\end{cases}
+\end{equation*}
+We will write $\X = \set{x_1, \ldots,x_{N_X}} := \set{z_i: \ell_i = 1}$ and similarly $\Y = \set{y_1, \ldots,y_{N_Y}} := \set{z_i: \ell_i = -1}$, where $N_X$ and $N_Y$ are of course random but $N_X + N_Y = n$. 
+
+Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
+\begin{equation*}
+\mathbb{H}_0: f = g \text{ and } \mathbb{H}_1: f \neq g.
+\end{equation*}
+
+For a given function class $\Hclass$, some $\epsilon > 0$, and test function $\phi$ a Borel measurable function of the data with range $\set{0,1}$, we evaluate the quality of the test using \emph{worst-case risk}
+\begin{equation*}
+R_{\epsilon}^{(t)}(\phi; \Hclass) = \sup_{f \in \Hclass} \Ebb_{f,f}^{(t)}(\phi) + \sup_{ \substack{f,g \in \Hclass \\ \delta(f,g) \geq \epsilon } } \Ebb_{f,g}^{(t)}(1 - \phi)
+\end{equation*} 
+where 
+\begin{equation*}
+\delta^2(f,g) = \int_{\D} (f - g)^2 dx.
+\end{equation*}
+
+\paragraph{Test statistic.}
+
+For $r \geq 0$, define the \emph{$r$-graph} $G_r = (V,E_r)$ to have vertex set $V = \set{1,\ldots,t}$ and edge set $E_r$ which contains the pair $(i,j)$ if and only if $\norm{z_i - z_j}_2 \leq r$. Let $D_{r}$ denote the incidence matrix of $G_r$.
+
+Define the \emph{Laplacian Smooth} test statistic over the neighborhood graph to be
+\begin{equation*}
+T_{LS} = \sup_{\theta: \norm{D_{r}\theta}_2 \leq C(n,r)} \dotp{\theta }{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}
+\end{equation*}
+where we note that the test statistic is implicitly a function of $r$ and $C(n,r)$. 
+
+\paragraph{General assumptions.}
+We will need to make the following assumptions in order to obtain meaningful theoretical results.
+
+\begin{assumption}[General assumptions.]
+	\label{asmp: general}
+	For each $f \in \mathcal{H}$, assume $\mathrm{supp}(f)$ is an open connected, bounded subset of $\Rd$ with $l$-Lipschitz boundary. Further assume $\mathcal{H}$ is uniformly bounded above and below: that is, there exists $f_{\min} < f_{\max}$ such that for each $f \in \mathcal{H}$, 
+	\begin{equation*}
+	0 < f_{\min} < f(x) < f_{\max} < \infty, \quad \textrm{for all $x \in \mathrm{supp}(f)$}
+	\end{equation*}
+\end{assumption}
+
+We motivate these assumptions through the following theorem relating the $r$-neighborhood graph to the $d$-dimensional grid, a useful result as the spectrum of grid graphs is well known.
+
+Formally, for $\kappa = n^{1/d}$, consider the \emph{grid graph}
+\begin{equation*}
+G_{grid} = (V_{grid},E_{grid}),~~ V_{grid} = \set{k: k \in [\kappa]^d},~~ E_{grid} = \set{(k,k'): k, k' \in V_{grid}, \norm{k - k'}_1 = 1}
+\end{equation*}
+with associated incidence matrix $D_{grid}$.
+
+\begin{lemma}
+	Let $z_1, \ldots,z_n \sim p$ for some density function $p \in \mathcal{H}$ which satisfies Assumption \ref{asmp: general}.
+	
+	Fix $a > 2$. There exists $c_1 > 0$ (potentially depending on $d, l, f_{\min}, f_{\max}$ and $a$) such that for any $r \geq c_1 \left(\frac{\log n}{n}\right)^{1/d}$, the following statement holds with probability at least $1 - n^{-a}$: there exists a bijection $T: [n] \to [\kappa]^d$ such that for all $\theta = (\theta_1, \ldots, \theta_n) \in \Reals^n$, letting
+	\begin{equation*}
+	(\theta_{T})_{k} = \theta_{T^{-1}(k)}, \textrm{for all $k \in [\kappa]^d$}
+	\end{equation*}
+	we have
+	\begin{equation*}
+	\norm{D_{\grid}\theta_{T}}_2 \leq \norm{D_r \theta}_2.
+	\end{equation*}
+\end{lemma}
+\textcolor{red}{Prove this.}
+
+We use this to control the empirical process $T_{LS}$ under the null hypothesis.
+\begin{lemma}
+	Assume $\mathcal{H}$ satisfies Assumption \ref{asmp: general}, and fix $a \geq 2$. Then, there exists $c_1 > 0$ (potentially depending on $d, l, f_{\min}$, $f_{\max}$, and $a$) and $c_2$ (potentially depending on $d$) such that for any $r \geq c_1 \left(\frac{\log n}{n}\right)^{1/d}$, and any $C_{n,r} > 0$,
+	\begin{equation*}
+	\Pbb_{\mathbb{H}_0}\left(T_{LS} \leq \frac{c_2 C(n,r)\sqrt{\log n} }{a \sqrt{n}} \right) \leq 1 - 2\exp(2a) - a
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We write
+	\begin{align*}
+	T_{LS} & \leq \abs{T_{LS} - \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C(n,r), \\ \theta^T \mathbf{1} = 0} } \frac{1}{n/2}\dotp{\theta}{1_X - 1_Y}} + \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C(n,r), \\ \theta^T \mathbf{1} = 0} } \frac{1}{n/2}\dotp{\theta}{1_X - 1_Y} \\
+	& \leq \abs{T_{LS} - \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C(n,r), \\ \theta^T \mathbf{1} = 0} } \frac{1}{n/2}\dotp{\theta}{1_X - 1_Y}} + \sup_{\substack{\theta: \norm{D_{\grid} \theta}_2 \leq C(n,r), \\ \theta^T \mathbf{1} = 0} } \frac{1}{n/2}\dotp{\theta}{1_X - 1_Y} \tag{Lemma \ref{lem: closed_form_ls_statistic} } \\
+	& \leq \abs{T_{LS} - \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C(n,r), \\ \theta^T \mathbf{1} = 0} } \frac{1}{n/2}\dotp{\theta}{1_X - 1_Y}} + C(n,r) \frac{1}{n/2} \sqrt{\sigma^T L_{\grid}^{\dagger} \sigma}
+	\end{align*}
+	whence the statement follows by Lemmas \ref{lem: normalization_error} and \ref{lem: noise_quadratic_form_on_grid}.
+\end{proof}
+
+\section{Additional Theory}
+
+The Laplacian smooth test statistic has a closed form solution. Let $L = D^T D$ be the Laplacian of $G$, and write $\Linv$ for the pseudoinverse of $L$. 
+
+\begin{lemma}
+	\label{lem: closed_form_ls_statistic}
+	For any unweighted, undirected, connected graph $G = (V,E)$ with incidence matrix $D$, number $C > 0$, and any vector $v \in \Reals^n$ with $\sum_{i = 1}^{n} v_i = 0$,
+	\begin{equation*}
+	\sup_{\theta: \norm{D\theta}_2 \leq C} \dotp{\theta}{v} = C \sqrt{v^T \Linv v}
+	\end{equation*}
+	Additionally, for any vector $v \in \Reals^n$ (not necessarily $\sum_{i = 1}^{n} v_i = 0$), under the additional constraint $\theta^T \mathbf{1} = 0$, the same statement holds. That is,
+	\begin{equation*}
+	\sup_{ \substack{\theta: \norm{D\theta}_2 \leq C, \\ \theta^T \mathbf{1} = 0} } \dotp{\theta}{v} = C \sqrt{v^T \Linv v}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Note that the condition $\norm{D \theta}_2 \leq C$ is equivalent to $\theta^T L \theta \leq C$. The solution then follows from the KKT conditions.
+\end{proof}
+
+\begin{lemma}
+	\label{lem: normalization_error}
+	Under the general assumptions,
+	\begin{equation*}
+	\abs{T_{LS} - \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C(n,r), \\ \theta^T \mathbf{1} = 0} } \frac{1}{n/2}\dotp{\theta}{1_X - 1_Y}} \leq \frac{8C(n,r)}{a n^{1 - 1/d}\pi}
+	\end{equation*}
+	with probability at least $1 - 2 \exp(2a)$. 
+\end{lemma}
+\begin{proof}
+	Note that as $(1_X/N_X - 1_Y/X_Y)^T \mathbf{1} = 0$, we may write
+	\begin{align*}
+	T_{LS} & = \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq 1, \\ \theta^T \mathbf{1} = 0} } \dotp{\theta}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}
+	\end{align*}
+	and therefore by Cauchy-Schwarz,
+	\begin{align*}
+	\abs{T_{LS} - \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C, \\ \theta^T \mathbf{1} = 0} } \frac{1}{n/2}\dotp{\theta}{1_X - 1_Y}}  & \leq \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C, \\ \theta^T \mathbf{1} = 0} } \set{\norm{\theta}} \cdot \norm{1_X(2/n - 1/N_X) - 1_Y(1/N_Y - 2/n)} \\
+	& \leq \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C, \\ \theta^T \mathbf{1} = 0} } \set{\norm{\theta}} \cdot \norm{1_X(2/n - 1/N_X) - 1_Y(1/N_Y - 2/n)} \\
+	& \leq \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C, \\ \theta^T \mathbf{1} = 0} } \set{\norm{\theta}} \cdot \left(\norm{1_X} \frac{\abs{n/2 - N_X}}{n/2 N_X} + \norm{1_Y} \frac{\abs{n/2 - N_Y}}{n/2 N_Y}\right) \\
+	& \leq \sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C, \\ \theta^T \mathbf{1} = 0} } \set{\norm{\theta}} \cdot \left(\frac{2\abs{n/2 - N_X}}{\sqrt{N_X} n} + \frac{2\abs{n/2 - N_Y}}{\sqrt{N_Y} n} \right).
+	\end{align*}
+	The reasoning in the proof of Lemma \ref{lem: noise_quadratic_form_on_grid} leads to the bound
+	\begin{equation*}
+	\sup_{\substack{\theta: \norm{D_r \theta}_2 \leq C, \\ \theta^T \mathbf{1} = 0} } \set{\norm{\theta}} \leq \frac{C n^{1/d}}{\pi},
+	\end{equation*}
+	and a standard application of Hoeffding's inequality to the quantities $N_X$ and $N_Y$ yields, for any $a > 0$
+	\begin{equation*}
+	\abs{N_X - n/2}, \abs{N_Y - n/2} \leq  a \sqrt{n}
+	\end{equation*}
+	with probability at least $1 - 2 \exp(-2a)$. As a result,
+	\begin{equation*}
+	\sup_{\substack{\theta: \norm{D_r \theta}_2 \leq 1, \\ \theta^T \mathbf{1} = 0} } \set{\norm{\theta}} \cdot \left(\frac{2\abs{n/2 - N_X}}{\sqrt{N_X} n} + \frac{2\abs{n/2 - N_Y}}{\sqrt{N_Y} n} \right) \leq \frac{8a C n^{1/d}}{n\pi} 
+	\end{equation*}
+	with probability at least $1 - 2 \exp(-2a)$, which proves the claim.
+\end{proof}
+
+\subsection{Type I error.}
+
+Denote the eigenvalues and eigenvectors of $\Lgrid = \Dgrid^T \Dgrid$ as $\set{\lambda_{k}: k \in [\kappa]^d}$ and $\set{u_{k}: k \in [\kappa]^d}$, respectively.
+
+\begin{lemma}
+	\label{lem: noise_quadratic_form_on_grid}
+	Let $\sigma_1, \ldots, \sigma_n \sim \mathrm{Rademacher}(1/2)$ be independent random variables, and write $\sigma = (\sigma_1, \ldots, \sigma_n)$. Then, 
+	\begin{equation*}
+	\sigma^T \Linvgrid \sigma \leq \frac{(2d)^d\kappa^2}{a\pi^2} \left(8 + 2\pi \log(\sqrt{2} \kappa) \left(\sum_{p = 2}^{d}\kappa^{p}\right) \right)
+	\end{equation*}
+	with probability at least $1  - a$.
+\end{lemma}
+\begin{proof}
+	Taking the eigendecomposition $\Lgrid = U \Lambda U^T$, we can then write $\Linvgrid = U \Lambda^{\dagger} U^T$. Therefore
+	\begin{equation*}
+	\Ebb \bigl(\sigma^T \Linvgrid \sigma\bigr) = \sum_{k \in [\kappa]^d} \frac{\Ebb \bigl(u_{k}^T \sigma\bigr)^2}{\lambda_k}
+	\end{equation*}
+	and as 
+	\begin{equation*}
+	\Ebb \bigl(u_{k}^T \sigma\bigr)^2 = \sum_{i,j = 1}^{n} \Ebb(u_{k_i} u_{k_j} \sigma_i \sigma_j) = \sum_{i = 1}^{n} u_{k_i}^2 = 1
+	\end{equation*}
+	we are left with
+	\begin{equation}
+	\label{eqn: noise_quadratic_form_on_grid_1}
+	\Ebb \bigl(\sigma^T \Linvgrid \sigma\bigr) = \sum_{\substack{k \in [\kappa]^d, \\ k \neq \bf{0}}} \frac{1}{\lambda_k}.
+	\end{equation}
+	
+	It is well known \textcolor{red}{HR, CB}, that the $d$-dimensional grid can be written as the Kronecker product of $d$ path graphs, and exploiting this fact as in \textcolor{red}{SWT} we obtain
+	\begin{align*}
+	\lambda_{k} = 4 \sin^2\left(\frac{\pi(k_1 - 1)}{2 \kappa}\right) + \cdots + 4 \sin^2\left(\frac{\pi(k_d - 1)}{2 \kappa}\right).
+	\end{align*}
+	The inequality $\sin(x) \geq x/2$ holds for $x \in [0,\pi/2]$, and so we have
+	\begin{align*}
+	\sum_{\substack{k \in [\kappa]^d, \\ k \neq \bf{0}}} \frac{1}{\lambda_k} & \leq \frac{\kappa^2}{\pi^2} \sum_{\substack{k \in [\kappa]^d, \\ k \neq \bf{0}}} \left(\sum_{j = 1}^{d} (k_j - 1)^2\right)^{-1} \\
+	& \leq \frac{(2d)^d\kappa^2}{\pi^2} \left(8 + 2\pi \log(\sqrt{2} \kappa) \left(\sum_{p = 2}^{d}\kappa^{p - 2}\right) \right) \\
+	& = \frac{(2d)^d\kappa^2}{\pi^2} \left(8 + 2\pi \log(\sqrt{2} \kappa) \left(\sum_{p = 2}^{d}\kappa^{p}\right) \right) \tag{Lemma \ref{lem: grid_eigenvalues}}
+	\end{align*}
+	whence the claim follows by Markov's inequality.
+\end{proof}
+
+\begin{lemma}
+	\label{lem: grid_eigenvalues}
+	There exists a universal constant $c_1 > 0$ such that for any $\kappa \geq 1$ and for all integers $d \geq 3$,
+	\begin{equation*}
+	\sum_{\substack{k \in [\kappa]^d, \\ k \neq \bf{0}}} \left(\sum_{j = 1}^{d} (k_j - 1)^2\right)^{-1} \leq (2d)^d \Biggl(8 + 2 \pi \log (\sqrt{2} \kappa) \biggl(\sum_{p = 2}^{d} \kappa^{p - 2}\biggr) \Biggr)
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We will prove by induction on $d$. As a base case, consider $d  = 2$. Rewrite
+	\begin{equation*}
+	\sum_{\substack{k \in [\kappa]^d, \\ k \neq \bf{0}}} \left(\sum_{j = 1}^{d} (k_j - 1)^2\right)^{-1} \leq 4 \sum_{k_1 = 1}^{\kappa - 1} \frac{1}{k_1^2}  + \sum_{k_1 =2}^{\kappa - 1} \sum_{k_2 = 2}^{\kappa - 1} (k_1^2 + k_2^2)^{-1}.
+	\end{equation*}
+	Then, upper bounding sums by integrals, we obtain
+	\begin{equation*}
+	\sum_{k_1 = 1}^{\kappa - 1} \frac{1}{k_1^2} \leq 1 +  \int_{x = 1}^{\kappa} \frac{1}{x^2} \dif x \leq 2,
+	\end{equation*}
+	and 
+	\begin{align*}
+	\sum_{k_1 = 2}^{\kappa - 1} \sum_{k_2 = 2}^{\kappa - 1} (k_1^2 + k_2^2)^{-1} & \leq \int_{x = 1}^{\kappa} \int_{y = 1}^{\kappa} \frac{1}{x^2 + y^2} \dif x \dif y \\
+	& \leq 2 \pi \log(\sqrt{2} \kappa),
+	\end{align*}
+	so that
+	\begin{equation*}
+	\sum_{\substack{k \in [\kappa]^d, \\ k \neq \bf{0}}} \left(\sum_{j = 1}^{d} (k_j - 1)^2\right)^{-1} \leq 8 + 2 \pi \log(\sqrt{2} \kappa).
+	\end{equation*}
+	and the base case is shown. 
+	
+	We proceed by induction. For $d \geq 3$ we write
+	\begin{align*}
+	\sum_{\substack{k \in [\kappa]^d, \\ k \neq \bf{0}}} \left(\sum_{j = 1}^{d} (k_j - 1)^2\right)^{-1} & \leq 2d \sum_{\substack{k \in [\kappa]^{d - 1}, \\ k \neq \bf{0}}} \left(\sum_{j = 1}^{d - 1} (k_j - 1)^2\right)^{-1} + \sum_{k_1 = 2}^{\kappa - 1} \cdots \sum_{k_d = 2}^{\kappa - 1} \left(\sum_{j = 1}^{d} k_j^2\right)^{-1} \\
+	& \leq 2d \left( (2d)^{d - 1}\Biggl(8 + 2 \pi \log \sqrt{2} \kappa \biggl(\sum_{p = 2}^{d - 1} \kappa^{p - 2}\biggr) \Biggr)\right) + \sum_{k_1 = 2}^{\kappa - 1} \cdots \sum_{k_d = 2}^{\kappa - 1} \left(\sum_{j = 1}^{d} k_j^2\right)^{-1} \\
+	& = \left( (2d)^{d}\Biggl(8 + 2 \pi \log \sqrt{2} \kappa \biggl(\sum_{p = 2}^{d - 1} \kappa^{p - 2}\biggr) \Biggr)\right) + \sum_{k_1 = 2}^{\kappa - 1} \cdots \sum_{k_d = 2}^{\kappa - 1} \left(\sum_{j = 1}^{d} k_j^2\right)^{-1} 
+	\end{align*}
+	and again upper bounding sums by integrals, we obtain
+	\begin{align*}
+	\sum_{k_1 = 2}^{\kappa - 1} \cdots \sum_{k_d = 2}^{\kappa - 1} \left(\sum_{j = 1}^{d} (k_j)^2\right)^{-1} & \leq \int_{1}^{\kappa} \cdots \int_{1}^{\kappa} \frac{1}{x_1^2 + \cdots + x_d^2} \dif x_d \ldots \dif x_1 \\
+	& \leq \kappa^{d-2} \int_{1}^{\kappa} \int_{1}^{\kappa} \frac{1}{x^2 + y^2} \dif x \dif y \\
+	& \leq \kappa^{d-2} 2 \pi \log(\sqrt{2} \kappa)
+	\end{align*}
+	and the proof is complete.
+\end{proof}
+
+\paragraph{Type II error.}
+
+Lemma \ref{lem: approx_error_lb_1} will be useful in lower bounding the \textcolor{red}{approximation error} of the $T_{LS}$ test statistic. Write $P_1^{\perp}$ for the projection operator onto the subspace of $\Reals^n$ orthogonal to the constant vector $\mathbf{1}$.
+
+\begin{lemma}
+	\label{lem: approx_error_lb_1}
+	For any vector $v \in \Reals^n$ and Laplacian matrix $L$ of a connected graph $G$,
+	\begin{equation*}
+	v^T \Linv v \geq \frac{(v^T P_{1}^{\perp}v)^2}{v^T L v}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We can expand $v^T P_1^{\perp} v  = v^T (L)^{1/2}(\Linv)^{1/2} v$, for any matrix square root of $L$ and $\Linv$. The statement follows by Cauchy-Schwarz.
+\end{proof}
+
+\end{document}

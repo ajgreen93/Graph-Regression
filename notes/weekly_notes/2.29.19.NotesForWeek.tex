@@ -8,6 +8,7 @@
 \usepackage{algorithm}
 \usepackage{enumerate}
 \usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
 
 \usepackage{natbib}
 \renewcommand{\bibname}{REFERENCES}
@@ -61,9 +62,9 @@
 \newcommand{\Rd}{\Reals^d}
 
 %%% Matrices
-\newcommand{\Xbf}{\mathbf{X}}
-\newcommand{\Ybf}{\mathbf{Y}}
-\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
 
 %%% Sets and classes
 \newcommand{\Xset}{\mathcal{X}}
@@ -79,6 +80,9 @@
 %%% Operators
 \newcommand{\Tadj}{T^{\star}}
 \newcommand{\dive}{\mathrm{div}}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
 
 % \newcommand{\span}{\textrm{span}}
 
@@ -127,7 +131,7 @@
 \date{\today}
 \maketitle
 
-Consider distributions $\Pbb$ and $\Qbb$ supported on $\D \subset \Reals^d$ which are absolutely continuous with density functions $f$ and $g$, respectively. For fixed $n \geq 0$, Let $\Zbf = (z_1, \ldots,z_n)$, where for $i = 1,\ldots,t$, $z_i \sim \frac{\Pbb + \Qbb}{2}$ are independent. Given $\Zbf$, for $i = 1,...,t$ let
+Consider distributions $\Pbb$ and $\Qbb$ supported on $\D \subset \Reals^d$ which are absolutely continuous with density functions $f$ and $g$, respectively. For fixed $n \geq 0$, let $\Z = (z_1, \ldots,z_n)$, where for $i = 1,\ldots,n$, $z_i \sim \frac{\Pbb + \Qbb}{2}$ are independent. Given $\Z$, for $i = 1,...,n$ let
 \begin{equation*}
 \ell_i = 
 \begin{cases}
@@ -135,7 +139,7 @@ Consider distributions $\Pbb$ and $\Qbb$ supported on $\D \subset \Reals^d$ whic
 -1~ \text{with probability $\frac{g(z_i)}{f(z_i) + g(z_i)}$}
 \end{cases}
 \end{equation*} 
-be conditional independent labels, and write
+be conditionally independent labels, and write
 \begin{equation*}
 1_X = 
 \begin{cases}
@@ -148,7 +152,7 @@ be conditional independent labels, and write
 0,~ \text{otherwise.}
 \end{cases}
 \end{equation*}
-We will write $\Xbf = \set{x_1, \ldots,x_{N_X}} := \set{z_i: \ell_i = 1}$ and similarly $\Ybf = \set{y_1, \ldots,y_{N_Y}} := \set{y_i: \ell_i = -1}$, where $N_X$ and $N_Y$ are of course random but $N_X + N_Y = n$. 
+We will write $\X = \set{x_1, \ldots,x_{N_X}} := \set{z_i: \ell_i = 1}$ and similarly $\Y = \set{y_1, \ldots,y_{N_Y}} := \set{z_i: \ell_i = -1}$, where $N_X$ and $N_Y$ are of course random but $N_X + N_Y = n$. 
 
 Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
 \begin{equation*}
@@ -166,11 +170,11 @@ where
 
 \section{Laplacian smooth test statistic}
 
-For $r \geq 0$, define the \emph{$r$-graph} $G_r = (V,E_r)$ to have vertex set $V = \set{1,\ldots,t}$ and edge set $E_r$ which contains the pair $(i,j)$ if and only if $\norm{z_i - z_j}_2 \leq r$. Let $D_{G_r}$ denote the incidence matrix of $G_r$. 
+For $r \geq 0$, define the \emph{$r$-graph} $G_r = (V,E_r)$ to have vertex set $V = \set{1,\ldots,t}$ and edge set $E_r$ which contains the pair $(i,j)$ if and only if $\norm{z_i - z_j}_2 \leq r$. Let $D_{r}$ denote the incidence matrix of $G_r$.
 
-Define the \emph{$r$-Laplacian Smooth} test statistic to be
+For a critical radius $C_{n,r}$ to be determined later, define the \emph{$r$-Laplacian Smooth} test statistic to be
 \begin{equation*}
-T_{LS} = \sup_{\theta: \norm{D_{G_r}\theta}_2 \leq C_{n,r}} \dotp{\theta}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}
+T_{LS} = \sup_{\theta: \norm{D_{r}\theta}_2 \leq C_{n,r}} \dotp{\theta}{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}
 \end{equation*}
 
 We would like to relate the graph $G_r$ to a graph with a more easily accessible spectrum. For $\kappa = n^{1/d}$, consider the \emph{grid graph}
@@ -181,33 +185,88 @@ with associated incidence matrix $D_{grid}$.
 
 \begin{lemma}[Spectral similarity of $r$-graph to grid]
 	\label{lem: spectral_similarity_rgraph_grid}
-	Fix $r \geq 2 \left(\frac{\log t}{n}\right)^{1/d} + (\frac{1}{n})^{1/d}$, and let $\ell(r,n) = \biggl(\sqrt{d} r n^{1/d} + 2\sqrt{d}(\log n)^{1/d}\biggr)^{1/2}$. For any $\theta \in \Reals^n$, the following relations hold:
+	Fix $r \geq 2 C\left(\frac{\log n}{n}\right)^{1/d} + \left(\frac{1}{n}\right)^{1/d}$, where $C > 0$ is a universal constant, and let 
+	\begin{equation*}
+	\sigma_{r,n} =  d^{d + 1/2} n^{2 + 1/d} \left(2C\left(\frac{\log n}{n}\right)^{1/d} + r \right)^{2d + 1}
+	\end{equation*}
+	
+	For any $\theta \in \Reals^n$, there exists a permutation $\Pi: \Reals^d \to \Reals^d$ such that the following relations hold:
 	\begin{equation}
 	\label{eqn: spectral_similarity_rgraph_grid}
-	\frac{\norm{D_{G_r}\theta}_2}{\ell(t)} \leq \norm{D_{grid}\theta}_2 \leq \norm{D_{G_r}\theta}_2
+	\frac{\norm{D_{G_r}\theta}_2}{\sigma_{r,n}} \leq \norm{D_{grid} (\Pi \theta)}_2 \leq \norm{D_{G_r}\theta}_2
 	\end{equation}
 	with probability at least $1 - n^{-\alpha}$ where $\alpha = c_1 (\log n)^{1/2}$ for some constant $c_1 > 0$.
 \end{lemma}
-\begin{proof}
-	We begin by mapping the data $\Zbf$ to the grid points $[\kappa]^d$ in such a way that as little mass as possible is disturbed:
-	\begin{lemma}
-		\label{lem: mass_transport_mapping}
-		There exists a bijective mapping $T: \Zbf \to [\kappa]^d$ for $\kappa = t^{1/d}$ such that
-		\begin{equation*}
-		\max_{i} \norm{T(z_i) - z_i}_2 \leq C\left(\frac{\log t}{t}\right)^{1/d}
-		\end{equation*}
-		with probability at least $1 - n^{-\alpha}$ where $\alpha = c_1 (\log n)^{1/2}$ for some constant $c_1 > 0$.
-	\end{lemma}
-	Hereafter, we assume there exists $T$ such that Lemma \ref{lem: mass_transport_mapping} holds.
+
+Lemma \ref{eqn: spectral_similarity_rgraph_grid} relies heavily on theory regarding optimal transportation matchings between two sets of discrete points, this case $\Z$ and $V_{grid}$.
+
+\begin{lemma}
+	\label{lem: mass_transport_mapping}
+	There exists a bijection $T: \Z \to V_{\grid}$ such that
+	\begin{equation*}
+	\max_{i \in [n]} \norm{T(z_i) - z_i}_2 \leq C\left(\frac{\log n}{n}\right)^{1/d}
+	\end{equation*}
+	with probability at least $1 - n^{-\alpha}$, where $\alpha = c_1 (\log n)^{1/2}$ and $c_1, C > 0$ are universal constants.
+\end{lemma}
+
+The upper bound of \eqref{eqn: spectral_similarity_rgraph_grid} follows easily.
+\begin{proof}[Upper bound of \eqref{eqn: spectral_similarity_rgraph_grid}]
+	Assume there exists $T$ such that Lemma \ref{lem: mass_transport_mapping} holds.
 	
-	We first prove the second bound in \eqref{eqn: spectral_similarity_rgraph_grid}.  Consider grid points $k ~ k'$ connected in the grid graph. Then, there exist $z_i$ and $z_j$ such that $T(z_i) = k$ and $T(z_j) = k'$. By the triangle inequality,
+	Let $k, k' \in [\kappa]^d$ satisfy $\frac{k}{\kappa} ~ \frac{k'}{\kappa}$  in the grid graph. There exist $z_i$ and $z_j$ such that $T(z_i) = \frac{k}{\kappa}$ and $T(z_j) = \frac{k'}{\kappa}$. By the triangle inequality,
 	\begin{align*}
 	\norm{z_i - z_j}_2 & \leq \norm{T(z_i) - z_i}_2 + \norm{T(z_i) - T(z_j)}_2 + \norm{T(z_j) - z_j}_2 \\
-	& \leq 2C\left(\frac{\log t}{t}\right)^{1/d} + \frac{1}{t^{1/d}}
+	& \leq 2C\left(\frac{\log n}{n}\right)^{1/d} + \frac{1}{n^{1/d}}
 	\end{align*}
 	and so by our choice of $r$, $i \sim j$ in $G_r$.
-	
-	Now, we turn to the first bound. Assume $i \sim j$ in the graph $G_r$. By a similar set of steps to the above, we have
+\end{proof}
+
+To show the lower bound of \eqref{eqn: spectral_similarity_rgraph_grid}, we will make use of a technique from spectral graph theory known as Poincare's inequality.
+
+\paragraph{Poincare inequality}
+
+Let $G$ and $\widetilde{G}$ be undirected, unweighted graphs over vertex set $V$, with edge sets $E_G$ and $E_{\widetilde{G}}$, respectively. Let $\widetilde{\mathcal{P}}$ be the space of all paths over $E_{\widetilde{G}}$; that is, $\mathcal{P}$ consists of $\widetilde{P} \in \widetilde{\mathcal{P}}$ with
+\begin{equation*}
+\widetilde{P} = (\widetilde{e}_1, \ldots, \widetilde{e}_m) \tag{$\widetilde{e_i} \in E_{\widetilde{G}}$}
+\end{equation*}
+for some integer $m \geq 1$.
+
+\begin{lemma}[Poincare inequality]
+	\label{lem: poincare}
+	Define a mapping $\gamma: E_G \to \mathcal{P}$ where for each $e = (\ell,\ell')$ in $E_G$
+	\begin{equation*}
+	\gamma(e) = ((\ell,u), \ldots, (v,\ell'))
+	\end{equation*}
+	meaning $e$ is mapped to a path which begins at $\ell$ and ends at $\ell'$. Then
+	\begin{equation*}
+	G \preceq \widetilde{G} \cdot \max_{e \in E_G} \abs{\gamma(e)}  \cdot b_{\gamma}
+	\end{equation*}
+	where $b_{\gamma}$ is a bottleneck parameter given by
+	\begin{equation*}
+	b_{\gamma} = \max_{\widetilde{e} \in E_{\widetilde{G}}} \abs{\set{e \in E: \widetilde{e} \in \gamma(e)}}
+	\end{equation*}
+\end{lemma}
+
+Lemma \ref{lem: mass_transport_mapping} will allow us to construct such a mapping $\gamma$ from $E_r$ to $E_{\grid}$ and appropriately control parameters $\max_{e \in E_G} \abs{\gamma(e)}$ and $b_{\gamma}$.
+
+\begin{lemma}
+	There exists a mapping $\gamma: E_r \to \mathcal{P}_{\grid}$, the set of paths over $G_{\grid}$, such that the following quantities are bounded:
+	\begin{enumerate}[(i)]
+		\item \textit{Maximum path length.} 
+		\begin{equation*}
+		\max_{e \in E_G} \abs{\gamma(e)} \leq n^{1/d} \sqrt{d} \left(2C\left(\frac{\log n}{n}\right)^{1/d} + r \right)
+		\end{equation*}
+		\item \textit{Bottleneck.}
+		\begin{equation*}
+		b_{\gamma} \leq \left(n^{1/d} \sqrt{d} \left(2C\left(\frac{\log n}{n}\right)^{1/d} + r \right) \right)^{2d}
+		\end{equation*}
+	\end{enumerate}
+	with probability at least $1 - n^{-\alpha}$ where $\alpha = c_1 (\log n)^{1/2}$ and $C, c_1 > 0$ are universal constants.
+\end{lemma}
+
+
+\begin{proof}	
+	Assume $i \sim j$ in the graph $G_r$. By a similar set of steps to the above, we have
 	\begin{equation*}
 	\norm{T(z_i) - T(z_j)}_2 \leq 2C\left(\frac{\log t}{t}\right)^{1/d} + r
 	\end{equation*}
@@ -222,40 +281,9 @@ with associated incidence matrix $D_{grid}$.
 	edges. The bound follows by Lemma \ref{lem: graph_ordering}.
 \end{proof}
 
-\section{Poincare inequalities}
+\section{Additional Theory and Proofs}
 
-Let $G$ and $\widetilde{G}$ be undirected, unweighted graphs over vertex set $V$, with edge sets $E_G$ and $E_{\widetilde{G}}$, respectively. Let $\widetilde{\mathcal{P}}$ be the space of all paths over $E_{\widetilde{G}}$; that is, $\mathcal{P}$ consists of $\widetilde{P} \in \widetilde{\mathcal{P}}$
-\begin{equation*}
-P = (\widetilde{e}_1, \ldots, \widetilde{e}_m) \tag{$\widetilde{e_i} \in E_{\widetilde{G}}$}
-\end{equation*}
-for some integer $m \geq 1$. We say $\abs{P} = m$ is the \emph{path length}.
-
-\begin{lemma}[Poincare inequality for general graphs.]
-	Define a mapping $\gamma: E_G \to \mathcal{P}$ where for each $e = (\ell,\ell')$ in $E_G$
-	\begin{equation*}
-	\gamma(e) = ((\ell,u), \ldots, (v,\ell'))
-	\end{equation*}
-	meaning $e$ is mapped to a path which begins at $\ell$ and ends at $\ell'$. Then
-	\begin{equation*}
-	G \preceq \widetilde{G} \cdot \max_{e \in E_G} \abs{\gamma(e)}  \cdot b_{\gamma}
-	\end{equation*}
-	where $b_{\gamma}$ is a bottleneck parameter given by
-	\begin{equation*}
-	b_{\gamma} = \max_{\widetilde{e} \in E_{\widetilde{G}}} \abs{\set{e \in E: \widetilde{e} \in \widetilde{P}_e}}
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	Let $G_e = (V, \set{e})$ and $P_e = (V, \set{\widetilde{e}: \widetilde{e} \in \gamma(e)})$ be the graphs associated with $e$ and $\gamma(e)$, respectively. By Lemma \ref{lem: path_poincare}, we have
-	\begin{equation*}
-	G_{e} \preceq \abs{P_e} P_e
-	\end{equation*}
-	Summing over all $e \in E_G$, we obtain
-	\begin{align*}
-	G & \preceq \sum_{e \in E_G} \abs{P_e} P_e \\
-	& \preceq \max_{e \in E_G} \abs{\gamma(e)} \sum_{e \in E_G} P_e \\
-	& \preceq \max_{e \in E_G} \abs{\gamma(e)} b_{\gamma}\cdot \widetilde{G}
-	\end{align*}
-\end{proof}
+\subsection{Proof of Lemma \ref{lem: poincare}}
 
 \begin{lemma}[Poincare inequality for path graphs.]
 	\label{lem: path_poincare}
@@ -264,6 +292,18 @@ for some integer $m \geq 1$. We say $\abs{P} = m$ is the \emph{path length}.
 	(m - 1) \cdot P(1 \to m) \succeq G_{(1,m)}
 	\end{equation*}
 \end{lemma}
+
+\paragraph{Proof of Lemma \ref{lem: poincare}}
+Let $G_e = (V, \set{e})$ and $P_e = (V, \set{\widetilde{e}: \widetilde{e} \in \gamma(e)})$ be the graphs associated with $e$ and $\gamma(e)$, respectively. By Lemma \ref{lem: path_poincare}, we have
+\begin{equation*}
+G_{e} \preceq \abs{P_e} P_e
+\end{equation*}
+Summing over all $e \in E_G$, we obtain
+\begin{align*}
+G & \preceq \sum_{e \in E_G} \abs{P_e} P_e \\
+& \preceq \max_{e \in E_G} \abs{\gamma(e)} \sum_{e \in E_G} P_e \\
+& \preceq \max_{e \in E_G} \abs{\gamma(e)} b_{\gamma}\cdot \widetilde{G}
+\end{align*}
 
 Decompose $\frac{1_X}{N_X} - \frac{1_Y}{N_Y} := \theta^{\star} + w$, where
 \begin{equation*}

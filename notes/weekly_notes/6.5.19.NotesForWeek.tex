@@ -1,0 +1,349 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 6/1/19 - 6/5/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $f,g$ be $L^2$ density functions supported on the $d$-dimensional unit cube $[0,1]^d$, meaning
+\begin{equation*}
+\int_{[0,1]^d} f(x)^2 dx, \int_{[0,1]^d} g(x)^2 dx < \infty, \quad \text{and} \quad \int_{[0,1]^d} f(x) dx, \int_{[0,1]^d} g(x) dx = 1.
+\end{equation*}
+with $f(x), g(x) > 0$ for all $x \in [0,1]^d$.
+
+We observe data $(X,\ell)$, a design matrix and associated labels, specified as follows. We consider a fixed design setting, and more precisely we fix $X$ to be a grid over the unit cube. Formally, for a given sample size $n \in \mathbb{N}$ and $\kappa = n^{1/d}$, let $X = \set{x_k: k \in [\kappa]^d}$ with $x_k = k/\kappa$. Our labels are then $\ell = \set{\ell_k: k \in [\kappa]^d}$, with $\ell_k$ independent random variables sampled according to
+\begin{equation*}
+\ell_k = 
+\begin{cases}
+1, ~ & \textrm{with probability}~ \frac{f(x_k)}{f(x_k) + g(x_k)}, \\
+-1 ~ & \textrm{with probability}~ \frac{g(x_k)}{f(x_k) + g(x_k)}
+\end{cases}
+\end{equation*}
+where dividing by $f(x) + g(x)$ is permissible as $f(x), g(x) > 0$ for all $x \in [0,1]^d$.
+
+Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
+\begin{equation*}
+\mathbb{H}_0: f = g \text{ and } \mathbb{H}_1: f \neq g.
+\end{equation*}
+
+For a given function class $\Hclass$, some $\epsilon > 0$, and test function $\phi$ a Borel measurable function of the data with range $\set{0,1}$, we evaluate the quality of the test using \emph{worst-case risk}
+\begin{equation*}
+R_{\epsilon}^{(t)}(\phi; \Hclass) = \sup_{f \in \Hclass} \Ebb_{f,f}^{(t)}(\phi) + \sup_{ \substack{f,g \in \Hclass \\ \delta(f,g) \geq \epsilon } } \Ebb_{f,g}^{(t)}(1 - \phi)
+\end{equation*} 
+where 
+\begin{equation*}
+\delta^2(f,g) = \int_{\D} (f - g)^2 dx.
+\end{equation*}
+We will consider those density functions which belong to $\mathcal{H} := \mathcal{H}_{1}^d(L)$, the $d$-dimensional Lipschitz ball with norm $L$. Formally, a function $f \in \mathcal{H}$ if for all $x,y \in [0,1]^d$, $\abs{f(x) - f(y)} \leq L \norm{x - y}$.\footnote{Note that the Lipschitz requirement, along with the restriction that $f$ be a density function over a bounded domain, imply that $f$ has finite $L^2$ norm.}
+
+\section{Discretization error in fixed design setting.}
+Our first result is a lower bound. We exhibit density functions $f,g \in \mathcal{H}_1^{d}(\pi/2)$ such that $\delta^2(f,g) = n^{-2/d}$ for which, assuming fixed design $X$ as we have done, no test can distinguish $f - g$ from the $0$ function. For simplicity, assume $\kappa$ is an odd integer.
+\begin{proposition}
+	\label{prop: discretization_error}
+	For $x \in [0,1]^d$, let $f,g \in \mathcal{H}_1^d(\pi/2)$ be density functions given by
+	\begin{equation*}
+	f(x) = 1 + \frac{1}{2\kappa}\prod_{i = 1}^{d} \sin(\kappa \pi x_i), \quad g(x) = 1 - \frac{1}{2\kappa}\prod_{i = 1}^{d} \sin(\kappa \pi x_i)
+	\end{equation*}
+	Then, $\delta^2(f,g) = n^{-2/d}$, and $f(x_k) = g(x_k)$ for every $k \in [\kappa]^d$.
+\end{proposition}
+As a result, $(f - g)(x_k) = 0$ for every $x_k \in X$, and so the labels $\ell$ have the same distribution as they would under the null hypothesis $f = g$. 
+\begin{proof}[Proof of Proposition \ref{prop: discretization_error}]
+	We begin by showing that $f$ and $g$ are density functions with Lipschitz norm bounded by $1$. We compute the integral of $f$ over its support,
+	\begin{align*}
+	\int_{[0,1]^d} f(x) \dx & = 1 + \frac{1}{2\kappa} \int_{[0,1]^d} \prod_{i = 1}^{d} \sin(\kappa \pi x_i) \dx_i \\
+	& = 1 + \frac{1}{2\kappa} \left(\int_{0}^{1} \sin(\kappa \pi x) \dx\right)^d \\
+	& = 1 + \frac{1}{2 \kappa} \left(-\cos(\kappa \pi x) \Bigr|_{0}^{1}\right) = 1.
+	\end{align*}
+	where the last equality follows as $\kappa$ is an odd integer. Similar calculations follow for $g$, and therefore $f$ and $g$ are density functions.
+	
+	Next, we upper bound the Lipschitz norm of $f$ (again, similar calculations will hold for $g$). Taking the partial derivative of $f$ along any coordinate $x_i$, we obtain
+	\begin{align*}
+	\abs{\frac{\partial f}{\partial x_i}} & = \abs{\frac{\kappa \pi}{2 \kappa} \cos(\pi \kappa x_i) \prod_{j \neq i}^{d} \sin(\kappa \pi x_j)} \\
+	& \leq \frac{\pi}{2}.
+	\end{align*}
+	Since this holds for each $i = 1, \ldots, d$, $f$ has Lipschitz norm upper bounded by $\pi/2$. 
+	
+	Now, we show $\delta^2(f - g) \geq 2^{-(d + 2)} n^{-2/d}$,
+	\begin{align*}
+	\int_{[0,1]^d} (f(x) - g(x))^2 \dx & = \frac{1}{4 \kappa^2} \int_{[0,1]^d} \left(\prod_{i = 1}^{d} \sin(\kappa \pi x_i)\right)^2 \dx_i \\
+	& = \frac{1}{4\kappa^2} \left( \int_{0}^{1} \sin^2(\kappa \pi x) \dx \right)^d \\
+	& = \frac{1}{4\kappa^2} \left( \int_{0}^{1} \frac{1 - \cos(2 \kappa \pi x)}{2} \dx \right)^d \\ 
+	& = \frac{1}{4\kappa^2} \left(\frac{1 - \frac{\sin(2 \kappa \pi x)}{2 \kappa \pi}}{2} \biggr|_{0}^{1} \right)^d \\
+	& = \frac{1}{4 2^d \kappa^2}
+	\end{align*}
+	with the last equality following from the fact $\kappa$ is an integer.
+	
+	Finally, for any $k \in [\kappa]^d$ and $x_k = k/\kappa$, we have
+	\begin{equation*}
+	\sin(\kappa \pi (x_k)_i) = \sin(\pi k_i) = 0
+	\end{equation*}
+	and so $f(x_k) = 1 = g(x_k)$. 
+\end{proof}
+
+\begin{remark}
+	We note that by \citep{ariascastro2018}, the \textcolor{red}{minimax rate} for hypothesis testing over the Holder ball $\mathcal{H}_{\beta}^d(L)$ is of order $n^{-4\beta/(4\beta + d)}$. In particular, the aforementioned Lipschitz ball is simply $\mathcal{H}_1^d(L)$, and the minimax rate becomes $n^{-4/(4 + d)}$. We note that this is faster than the lower bound $n^{-2/d}$ provided by Proposition \ref{prop: discretization_error}. The correct interpretation is that the discretization error due to considering fixed grid design (and choosing negative examples with knowledge of that design) dominates other forms of error (i.e. squared bias and variance). Interestingly, this appears not to be true for estimation in the analogous case. Here, the minimax rate of estimation over the Lipschitz ball with $L^2$ risk is $n^{-2/(2 + d)}$, which dominates the exhibited discretization error $n^{-2/d}$. 
+\end{remark}
+
+\section{Sub-optimality of the discrete Sobolev IPM for fixed design.}
+
+For a function $h: [0,1]^d \to \Reals$, write $\theta^{h} := (h(x_k): x_k \in X)$ for the evaluation of $h$ at the data. In the previous section, we exhibited a function $h := f - g$ such that $||h||_{L^2} \soom n^{-1/d}$, but $\norm{\theta^{h}}_2 = 0$. To avoid this issue, let us shift slightly our requirements on $f,g$, to be placed directly on discrete norms rather than continuous norms. In particular, let $D$ be the incidence matrix of a lattice graph $G = (V,E)$ over the design points $X$, where $V = [\kappa]^d$ and $(k,k') \in E$ if $\norm{k - k'}_1 = 1$. Now, we will consider those density functions $f: [0,1]^d \to \Reals$ such that the discrete Sobolev norm is bounded $\norm{D\theta^f}_2 \leq n^{1/2 - 1/d}$. In particular, letting
+\begin{equation*}
+\overline{\mathcal{W}}_{1}^d(L) = \set{f: \norm{D \theta_f}_2 \leq n^{1/2 - 1/d}}
+\end{equation*}
+for $f, g \in \overline{\mathcal{W}}_{1}^d(L)$ we now wish to test whether $\norm{\theta^f - \theta^g}_2 = 0$. 
+
+A potential test statistic in this context is the discrete Sobolev integral probability metric (IPM), formally defined as
+\begin{equation*}
+T_{S} := \sup_{\theta: ||D\theta||_2 \leq C, \theta^T \mathbf{1} = 0} 
+\frac{1}{n}\dotp{\theta}{\ell}
+\end{equation*}
+Letting $L = D^T D$ be the discrete Laplacian over the lattice, and $\Linv$ be the pseudoinverse of $L$, a quick calculation yields $T_S = \frac{C}{n} \sqrt{\ell^T \Linv \ell}$. Is $T_{S}$ an optimal test over vectors $\theta^f, \theta^g$ in the discrete Sobolev ball, with respect to the empirical norm $\norm{\theta^f - \theta^g}_2$? Propositions \ref{prop: suboptimal_IPM}, \ref{prop: type_I_error} and \ref{prop: k_eigenvector_test} show that it is not. Hereafter, we let $\sqrt{\kappa}$ be an integer.
+\begin{proposition}
+	\label{prop: suboptimal_IPM}
+	Let $f,g \in \overline{\mathcal{W}}_1^d(\pi/2)$ be functions given by
+	\begin{equation*}
+	f(x) = 1 + \frac{1}{2\sqrt{\kappa}}\prod_{i = 1}^{d} \cos\left(x_i \sqrt{\kappa} \pi - \frac{\pi}{2 \sqrt{\kappa}}\right), \quad g(x) =  1 - \frac{1}{2\sqrt{\kappa}}\prod_{i = 1}^{d} \cos\left(x_i \sqrt{\kappa} \pi - \frac{\pi}{2 \sqrt{\kappa}}\right)
+	\end{equation*}
+	Then the following statements hold:
+	\begin{itemize}
+		\item $\norm{\theta^f - \theta^g}_2 = 2^{-(d+2)/2} n^{1/2 - 1/2d}$.
+		\item $\norm{D \theta^f}_2 \leq (2^{-(d+2)/2}\sqrt{d}\pi) n^{1/2 - 1/d}$.
+		\item $\sup_{\theta: ||D\theta||_2 \leq C, \theta^T \mathbf{1} = 0} 
+		\frac{1}{n}\dotp{\theta}{\theta^f - \theta^g} \leq C(d^{-1/2} 2^{-d/2}) n^{-1/2}$
+	\end{itemize}
+\end{proposition}
+\begin{proof}
+	Write $\theta^h : = \theta^f - \theta^g$. In the one-dimensional case (i.e $G$ being the path graph), it is well known that for any $k \in 1,\ldots, \kappa$, the vector 
+	\begin{equation*}
+	v = (v_k)_{j=1}^{\kappa}, v_k = \cos\left(\frac{(j - 1/2)k\pi}{\kappa}\right)
+	\end{equation*}
+	is a (scaled) eigenvector of $L$ with eigenvalue $4 \sin^2(k \pi/2\kappa)$; precisely
+	\begin{equation*}
+	L v = (4 \sin^2(j \pi/2 \kappa)) v,~ \text{and} \norm{v} = (\kappa/2)^{1/2}
+	\end{equation*}
+	As $\sqrt{\kappa}$ is an integer, one can use standard facts about Cartesian product graphs to derive that $\theta^h$ is itself a (scaled) eigenvector of $L$; precisely
+	\begin{equation*}
+	L \theta^h = (4d \sin^2(\pi \sqrt{\kappa}/2{\kappa})) \theta^h,~ \textrm{and} \norm{\theta^h}_2 = \frac{1}{2 \sqrt{\kappa}}\left(\frac{\kappa}{2}\right)^{d/2}.
+	\end{equation*}
+	The second equality proves the first claim. Both equalities together yield
+	\begin{align*}
+	\norm{D \theta^h}_2 & = 2 \sqrt{d} \sin(\pi \sqrt{\kappa}/2\kappa) \frac{1}{2 \sqrt{\kappa}} \left(\frac{\kappa}{2}\right)^{d/2} \\
+	& \leq \frac{1}{2 \kappa}\sqrt{d} \pi \left(\frac{\kappa}{2}\right)^{d/2}
+	\end{align*}
+	which proves the second claim. Finally, as we have noted $\sup_{\theta: ||D\theta||_2 \leq C, \theta^T \mathbf{1} = 0} 
+	\frac{1}{n}\dotp{\theta}{\theta^f - \theta^g} = \frac{C}{n} \sqrt{(\theta^h)^T \Linv \theta^h}$, and since
+	\begin{align*}
+	\sqrt{(\theta^h)^T \Linv \theta^h} & = \frac{\norm{\theta^h}_2}{2 \sqrt{d} \sin(\pi \sqrt{\kappa}/2{\kappa})} \\
+	& \leq \frac{1}{\sqrt{d}}\left(\frac{\kappa}{2}\right)^{d/2}
+	\end{align*}
+	the third claim follows.
+\end{proof}
+
+Proposition \ref{prop: type_I_error} demonstrates that under the null hypothesis, $T_S$ scales at approximately the same rate, $n^{-1/2}$, as it does for the choice of $f$ and $g$ in Proposition \ref{prop: suboptimal_IPM}.
+\begin{proposition}
+	\label{prop: type_I_error}
+	Fix $0 < \delta < 1$. If $\theta^f - \theta^g = 0$, there exists a constant $C(d,\delta)$ based only on $d$ and $\delta$, such that with probability at least $1 - \delta$,
+	\begin{equation*}
+	T_{S} \geq C(d,\delta) \frac{C}{\sqrt{n}}.
+	\end{equation*}
+\end{proposition}
+
+To prove Proposition \ref{prop: type_I_error}, it will be helpful to introduce multiindex notation to refer to the eigenvalues and eigenvectors of $L$. Specifically, for $k,j \in [\kappa]^d, k = (k_1, \ldots, k_d), j = (j_1, \ldots, j_d)$, it is well known that the eigenvector $v_k$ has coordinates $(v_k)_j$ and corresponding eigenvalue $\lambda_k$ given by
+\begin{align*}
+(v_k)_j & = \left(\frac{2}{\kappa}\right)^{d/2} \prod_{i = 1}^{d} \cos\left(\frac{(j_i - 1/2) k_i \pi}{\kappa}\right) \\
+\lambda_k & = 4 \sum_{i = 1}^{d} \sin^2\left(\frac{\pi(k_i - 1)}{2\kappa}\right).
+\end{align*}
+\begin{proof}
+	Throughout, let $c$ be a constant which depends only on $d$ and $\delta$, which may change from line to line. We will show that under the null hypothesis $\theta^f - \theta^g = 0$, $\Ebb(\ell^T \Linv \ell) = c n$, in which case the result follows from (e.g.) an application of Markov's inequality.
+	
+	Under the null hypothesis $\theta^f - \theta^g = 0$, we note that $\ell$ consists of $n$ i.i.d Rademacher random variables. Hence
+	\begin{align*}
+	\Ebb(\ell^T \Linv \ell) & = \sum_{k \in [\kappa]^d} \frac{(\ell^T v_k)^2}{\lambda_k} \\
+	& = \sum_{k \in [\kappa]^d} \frac{1}{\lambda_k} \\
+	& = \frac{1}{4} \sum_{k \in [\kappa]^d} \frac{1}{\sum_{i = 1}^{d} \sin^2\left(\frac{\pi(k_i - 1)}{2\kappa}\right)} \\
+	& \geq \frac{\kappa^2}{\pi^2} \sum_{k \in [\kappa]^d} \frac{1}{\sum_{i = 1}^{d} (k_i - 1)^2} \\
+	& \geq \frac{\kappa^2}{\pi^2} \int_{x \in [1,\kappa]^d} \frac{1}{\sum_{i = 1}^d x_i^2} \dx \\
+	& = c \kappa^2 \int_{0}^{\kappa} \frac{1}{r^2} r^{d - 1} \dr \\
+	& = c \kappa^2 \kappa^{d - 2} = c \kappa^d. 
+	\end{align*}
+	and the claim follows since $\kappa^d = n$.
+\end{proof}
+
+Together, Propositions \ref{prop: suboptimal_IPM} and \ref{prop: type_I_error} show that there exists functions $f,g \in \overline{\mathcal{W}}_1^d$ with empirical norm $\norm{\theta^f - \theta^g}_2 \gtrsim n^{1/2 - 1/2d}$ such that $T_S$ cannot distinguish $\theta^f - \theta^g$ from the zero vector. 
+
+Now, we turn our attention to a different test. Denote by $V_m = [v_1 \ldots v_k]$ the $n \times m$ matrix containing the first $m$ eigenvectors of $L$ (that is, the eigenvectors corresponding to the smallest $m$ eigenvalues of $L$, excluding the eigenvalue $\lambda = 0$). The \emph{Laplacian eigenmaps} estimate of $\Ebb(\ell) = \frac{\theta^f - \theta^g}{\theta^f + \theta^g}$ is the projection of $\ell$ onto the first $m$ eigenvectors of $L$, 
+\begin{equation*}
+\widehat{\theta}^{LE} = (V_m V_m^T) y.
+\end{equation*}
+
+Proposition \ref{prop: k_eigenvector_test} shows that a test based on $\norm{\widehat{\theta}^{LE}}_2$ can distinguish any two $f,g \in \overline{\mathcal{W}}_1^d$ such that $\norm{\theta^f - \theta^g}_2$ is at least roughly $n^{1/2 - 1/(d + 2)}$. It is a consequence of the estimation results derived in \cite{sadhanala2016}.
+
+\begin{proposition}
+	\label{prop: k_eigenvector_test}
+	Fix $0 < \delta < 1$, and write $\widetilde{\theta}^h := (\theta^f - \theta^g)/(\theta^f - \theta^g)$. Assume $f,g \in \overline{\mathcal{W}}_1^d(L)$ satisfy some lower bound $f(x), g(x) \geq p_{\min}$ for all $x \in [0,1]^d$. Then, there exists a constant $C(L, d,\delta,p_{\min})$ such that
+	\begin{itemize}
+		\item $\norm{\widehat{\theta}^{LE}}_2 \geq \norm{\widetilde{\theta}^h}_2 -  C(L, d,\delta, p_{\min})n^{1/2 -1/(d + 2)}$
+		\item $\norm{\widehat{\theta}^{LE}}_2 \leq \norm{\widetilde{\theta}^h}_2 +  C(L, d,\delta, p_{\min})n^{1/2 -1/(d + 2)}$
+	\end{itemize}
+	each with probability at least $1 - \delta$.
+\end{proposition}
+\begin{proof}
+	We begin by noting that
+	\begin{equation*}
+	\norm{D \widetilde{\theta}^h}_2 \leq \frac{L}{p_{\min}}
+	\end{equation*}
+	In \cite{sadhanala2016}, it is shown that for $y = \widetilde{\theta}^h + w$, where $w$ is i.i.d Normal noise with unit variance,
+	\begin{equation*}
+	\norm{\widehat{\theta}^{LE} - \widetilde{\theta}^h}_2^2 \leq c n \frac{1}{n^{\frac{2}{d+2}}}
+	\end{equation*}
+	where $c$ is a constant depending on $d$, $L$, and $p_{\min}$. We take for granted that this result can be extended to the case $\ell = \widetilde{\theta}^h + w$, where $w$ consists of independent but not necessarily identically distributed noise with mean zero and variance no greater than $1$. Both claims then follow from the triangle inequality.
+\end{proof}
+
+
+
+\clearpage
+\bibliographystyle{plain}
+\bibliography{../../graph_testing_bibliography}
+\end{document}

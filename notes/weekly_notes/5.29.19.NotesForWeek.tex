@@ -1,0 +1,286 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 5/29/19 - 5/31/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Consider absolutely continuous distributions $\Pbb$ and $\Qbb$ with density functions $f$ and $g$, respectively. For fixed $n \geq 0$, let $\Z = (z_1, \ldots,z_n)$, where for $i = 1,\ldots,n$, $z_i \sim \frac{\Pbb + \Qbb}{2}$ are independent. Given $\Z$, for $i = 1,...,n$ let
+\begin{equation*}
+\ell_i = 
+\begin{cases}
+1~ \text{with probability $\frac{f(z_i)}{f(z_i) + g(z_i)}$} \\
+-1~ \text{with probability $\frac{g(z_i)}{f(z_i) + g(z_i)}$}
+\end{cases}
+\end{equation*} 
+be conditionally independent labels, and write
+\begin{equation*}
+1_X = 
+\begin{cases}
+1,~ l_i = 1\\
+0,~ \text{otherwise}
+\end{cases}
+1_Y = 
+\begin{cases}
+1,~ l_i = -1 \\
+0,~ \text{otherwise.}
+\end{cases}
+\end{equation*}
+We will write $\X = \set{x_1, \ldots,x_{N_X}} := \set{z_i: \ell_i = 1}$ and similarly $\Y = \set{y_1, \ldots,y_{N_Y}} := \set{z_i: \ell_i = -1}$, where $N_X$ and $N_Y$ are of course random but $N_X + N_Y = n$. 
+
+Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
+\begin{equation*}
+\mathbb{H}_0: f = g \text{ and } \mathbb{H}_1: f \neq g.
+\end{equation*}
+
+For a given function class $\Hclass$, some $\epsilon > 0$, and test function $\phi$ a Borel measurable function of the data with range $\set{0,1}$, we evaluate the quality of the test using \emph{worst-case risk}
+\begin{equation*}
+R_{\epsilon}^{(t)}(\phi; \Hclass) = \sup_{f \in \Hclass} \Ebb_{f,f}^{(t)}(\phi) + \sup_{ \substack{f,g \in \Hclass \\ \delta(f,g) \geq \epsilon } } \Ebb_{f,g}^{(t)}(1 - \phi)
+\end{equation*} 
+where 
+\begin{equation*}
+\delta^2(f,g) = \int_{\D} (f - g)^2 dx.
+\end{equation*}
+
+\paragraph{Test statistic.}
+
+For $r \geq 0$, define the \emph{$r$-graph} $G_r = (V,E_r)$ to have vertex set $V = \set{1,\ldots,t}$ and edge set $E_r$ which contains the pair $(i,j)$ if and only if $\norm{z_i - z_j}_2 \leq r$. Let $D_{r}$ denote the incidence matrix of $G_r$.
+
+Define the \emph{Laplacian Smooth} test statistic over the neighborhood graph to be
+\begin{equation*}
+T_{LS} = \sup_{\theta: \norm{D\theta}_2 \leq C(n,r)} \dotp{\theta }{\frac{1_X}{N_X} - \frac{1_Y}{N_Y}}
+\end{equation*}
+where we note that the test statistic is implicitly a function of $r$ and $C(n,r)$. 
+
+\section{Additional Theory}
+Let $\theta^{\star} = (\thetast_i)_{i = 1}^n$, with $\thetast_i := f(z_i) - g(z_i)$. Write $L = D^T D$ for the Laplacian matrix of the $r$-neighborhood graph, $\gradient f$ for the gradient of a function $f$, and $\Hessian f$ for the Hessian of a function $f$. We write $C^{2}(L)$ for the set of functions $f$ twice continuously differentiable over $\Rd$, with bounded Hessian $\norm{\Hessian f}_{\infty} \leq L$.
+\begin{lemma}
+	\label{lem: approx_error}
+	For all density functions $f,g \in C^2(L)$ with $\int (f - g)^2 \geq \epsilon^2$, if $r \geq c_1 (\log n / n)^{1/d}$ and $\epsilon \geq c_2 n r^{d + 1} $ then
+	\begin{equation*}
+	\sup_{\norm{D\theta}_2 \leq 1} \dotp{\theta}{\thetast} \geq \frac{c_2}{2} (\log n)^{1 + 2/d} n^{-2/d}
+	\end{equation*}
+	with probability at least $1 - \delta$.
+\end{lemma}
+\begin{proof}
+	By Lemmas \ref{lem: closed_form_ls_statistic} and \ref{lem: lin_alg_1}, we have
+	\begin{align}
+	\label{eqn: approx_error_1}
+	\sup_{\norm{D\theta}_2 \leq 1} \dotp{\theta}{\thetast} & = \frac{1}{n} \sqrt{(\thetast)^T \Linv \thetast} \nonumber \\
+	& \geq \frac{1}{\lambda_k}\left(\dotp{\thetast}{\thetast} - \dotp{P_k^{\perp} \thetast}{P_k^{\perp}\thetast}\right)^2 
+	\end{align}
+	where the latter inequality holds for any $k = 1, \ldots, n - 1$. We upper bound $\dotp{P_k^{\perp} \thetast}{P_k^{\perp}\thetast}$ using the following relations
+	\begin{equation*}
+	(\thetast)^T L \thetast \geq (P_k^{\perp}\thetast)^T \Linv ( P_k^{\perp}\thetast) \geq \lambda_k \dotp{P_k^{\perp} \thetast}{P_k^{\perp} \thetast}
+	\end{equation*}
+	and obtain
+	\begin{align*}
+	\frac{1}{\lambda_k}\left(\dotp{\thetast}{\thetast} - \dotp{P_k^{\perp} \thetast}{P_k^{\perp}\thetast}\right)^2  & \geq \frac{1}{\lambda_k}\left(\dotp{\thetast}{\thetast} - \frac{(\thetast)^T L \thetast}{\lambda_k} \right)^2 \\
+	& \geq \frac{1}{\lambda_k}\left(c_1 n \epsilon^2 - \frac{c_2 n^2 r^{d + 2}}{\lambda_k} \right)^2 \tag{Lemmas \ref{lem: witness_inner_product} and \ref{lem: witness_discrete_energy}}
+	\end{align*}
+	where the latter inequality occurs with probability at least $1 - 2\delta$. Choose $k = n - 1$. As $r \geq c_1 (\log n / n)^{1/d}$, we have that $G \preceq \mathrm{Grid}$, and as a result \textcolor{red}{$4 \geq \lambda_{n - 1} \geq 1$}. Therefore,
+	\begin{align*}
+	\frac{1}{\lambda_k}\left(c_1 n \epsilon^2 - \frac{c_2 n^2 r^{d + 2}}{\lambda_k} \right)^2 & \geq \frac{1}{4} \left(c_1 n \epsilon^2 - c_2 n^2 r^{d + 2} \right)^2 \\
+	& \geq \frac{1}{4} \left(c_2 n^2 r^{d + 2}\right)^2 \\
+	& \geq \frac{1}{4} \left(c_2 n^{1 - 2/d} \log(n)^{1 + 2/d}\right)^2 = \frac{c_2^2}{4} n^{2 - 4/d} \log(n)^{2 + 4/d},
+	\end{align*}
+	and the proof is complete.
+\end{proof}
+
+\begin{lemma}
+	\label{lem: witness_inner_product}
+	For any $f, g \in L^2(\Rd)$ satisfying the \textcolor{red}{regularity conditions}, such that $\int_{\Rd} (f - g)^2 dx \geq \epsilon^2$ there exists constant $c_1$ such that 
+	\begin{equation*}
+	\dotp{\thetast}{\thetast} \geq c_1 n \epsilon^2
+	\end{equation*}
+	with probability at least $1 - \delta$.
+\end{lemma}
+
+\begin{lemma}
+	\label{lem: witness_discrete_energy}
+	For any $f, g \in C^2(L)$ satisfying the \textcolor{red}{regularity conditions}, there exists a constant $c_2$ such that
+	\begin{equation*}
+	(\thetast)^T L \thetast \leq c_2 n^2 r^{d + 2}
+	\end{equation*}
+	with probability at least $1 - \delta$.
+\end{lemma}
+
+\section{Linear Algebra}
+
+\begin{lemma}
+	\label{lem: closed_form_ls_statistic}
+	For any unweighted, undirected, connected graph $G = (V,E)$ with incidence matrix $D$, and any vector $v \in \Reals^n$ with $\sum_{i = 1}^{n} v_i = 0$,
+	\begin{equation*}
+	\sup_{\theta: \norm{D\theta}_2 \leq C} \dotp{\theta}{v} = C \sqrt{v^T \Linv v}
+	\end{equation*}
+	Additionally, for any vector $v \in \Reals^n$ (not necessarily $\sum_{i = 1}^{n} v_i = 0$), under the additional constraint $\theta^T \mathbf{1} = 0$, the same statement holds. That is,
+	\begin{equation*}
+	\sup_{ \substack{\theta: \norm{D\theta}_2 \leq C, \\ \theta^T \mathbf{1} = 0} } \dotp{\theta}{v} = C \sqrt{v^T \Linv v}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Note that the condition $\norm{D \theta}_2 \leq C$ is equivalent to $\theta^T L \theta \leq C$. The solution then follows from the KKT conditions.
+\end{proof}
+
+Let $L$ be the Laplacian matrix of a connected graph, and $\Linv$ be the pseudo-inverse $L$. Write the eigendecomposition of $\Linv = U\Lambda^{\dagger}U^{T}$, where $\Lambda$ is an $n \times n$ diagonal matrix with entries $0 = \lambda_0 < \lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_{n-1}$ and $U$ is an orthogonal matrix with columns $U =\left(u_0 \ldots u_{n-1}\right)$. For each $k = 0, \ldots, n - 1$, write $U_{k} = (u_0 \ldots u_{k-1})$ for the first $k$ columns of $U$, $P_k$ as the projection operator onto the span of $U_k$, and $P_k^{\perp}$ for the projection operator onto the subspace orthogonal to the span of $U_k$.
+\begin{lemma}
+	\label{lem: lin_alg_1}
+	For any $k = 1, \ldots, n$, 
+	\begin{equation*}
+	(\thetast)^T \Linv \thetast \geq \frac{1}{\lambda_k}\left(\dotp{\thetast}{\thetast} - \dotp{P_k^{\perp} \thetast}{P_k^{\perp}\thetast}\right)^2
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Note that $\Lambda^{\dagger}$ is a diagonal matrix, with entries $\rho_{1,1} = 0$ and $\rho_{k,k} = \frac{1}{\lambda_k}$ for $k = 1, \ldots, n$. Therefore,
+	\begin{equation*}
+	(\thetast)^T \Linv \thetast = \sum_{k = 1}^{n} \frac{\dotp{\thetast}{u_k}^2}{\lambda_k}.
+	\end{equation*}
+	Clearly, for any $k = 1, \ldots, n$,
+	\begin{equation*}
+	\sum_{k = 1}^{n} \frac{\dotp{\thetast}{u_k}^2}{\lambda_k} \geq \frac{\dotp{P_k \thetast}{P_k \thetast}^2}{\lambda_k}
+	\end{equation*}
+	and as $\dotp{P_k \thetast}{P_k \thetast} + \dotp{P_k^{\perp} \thetast}{P_k^{\perp} \thetast} = \dotp{\thetast}{\thetast}$, we obtain
+	\begin{align*}
+	\frac{\dotp{P_k \thetast}{P_k \thetast}^2}{\lambda_k} & =  \frac{1}{\lambda_k}\left(\dotp{\thetast}{\thetast} - \dotp{P_k^{\perp} \thetast}{P_k^{\perp}\thetast}\right)^2.
+	\end{align*}
+\end{proof}
+
+\end{document}
