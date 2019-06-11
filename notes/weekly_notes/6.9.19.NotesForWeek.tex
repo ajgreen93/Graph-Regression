@@ -1,0 +1,416 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 6/9/19 - 6/11/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $f,g$ be $L^2$ density functions supported on the $d$-dimensional unit cube $[0,1]^d$, meaning
+\begin{equation*}
+\int_{[0,1]^d} f(x)^2 dx, \int_{[0,1]^d} g(x)^2 dx < \infty, \quad \text{and} \quad \int_{[0,1]^d} f(x) dx, \int_{[0,1]^d} g(x) dx = 1.
+\end{equation*}
+with $f$,$g$ bounded away from $0$, $f(x), g(x) > p_{\min}$ for all $x \in [0,1]^d$.
+
+We observe data $(X,\ell)$, a design matrix and associated labels, specified as follows. We let $x_1, \ldots, x_n$ be the rows of $X$, each sampled independently from $\mu = (f + g)/2$. For each $i = 1,\ldots,n$, we then sample $\ell_i$ according to
+\begin{equation*}
+\ell_i =
+\begin{cases}
+1,~ \textrm{with probability} \frac{f(x_i)}{f(x_i) + g(x_i)} \\
+-1,~ \textrm{with probability} \frac{g(x_i)}{f(x_i) + g(x_i)}
+\end{cases}
+\end{equation*}
+and let $\ell = (\ell_i)$. 
+
+Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
+\begin{equation*}
+\mathbb{H}_0: f = g \text{ and } \mathbb{H}_1: f \neq g.
+\end{equation*}
+
+For a given function class $\Hclass$, some $\epsilon > 0$, and test function $\phi$ a Borel measurable function of the data with range $\set{0,1}$, we evaluate the quality of the test using \emph{worst-case risk}
+\begin{equation*}
+R_{\epsilon}^{(t)}(\phi; \Hclass) = \sup_{f \in \Hclass} \Ebb_{f,f}^{(t)}(\phi) + \sup_{ \substack{f,g \in \Hclass \\ \delta(f,g) \geq \epsilon } } \Ebb_{f,g}^{(t)}(1 - \phi)
+\end{equation*} 
+where 
+\begin{equation*}
+\delta^2(f,g) = \int_{\D} (f - g)^2 dx.
+\end{equation*}
+We will consider those density functions which belong to $\mathcal{H} := \mathcal{H}_{1}^d(L)$, the $d$-dimensional Lipschitz ball with norm $L$. Formally, a function $f \in \mathcal{H}$ if for all $x,y \in [0,1]^d$, $\abs{f(x) - f(y)} \leq L \norm{x - y}$.\footnote{Note that the Lipschitz requirement, along with the restriction that $f$ be a density function over a bounded domain, imply that $f$ has finite $L^2$ norm.}
+
+\section{Sieve-based test.}
+
+For a radius $r > 0$ to be determined later, the $r$-neighborhood graph $G = (V,E)$ consists of vertices $V = [n]$ corresponding to the $n$ data points, and edges $E = \set{(u,v): \norm{x_u - x_v} \leq r}$. Write $D$ for the incidence matrix of this graph, and $L = D^T D$ for the graph Laplacian. Denote the singular value decomposition of $D$ by $D = U \Lambda^{1/2} V^T$, where $U$ and $V$ are orthonormal matrices and $\Lambda$ is a diagonal matrix with entries $0 = \lambda_1 \leq \lambda_2 \leq \lambda_3 \leq \ldots \leq \lambda_n$, so that $L = V \Lambda V^T$. For $k = 1,\ldots,n$, write $V_k = (v_1 \ldots v_k)$ for the $n \times k$ matrix containing the first $k$ columns of $V$--that is, the first $k$ eigenvectors of $L$. Our first test statistic will be as follows:
+
+\begin{equation}
+\label{eqn: laplacian_eigenmaps_statistic}
+T_{LE}^{(k)} := \sup_{\substack{\theta \in \mathrm{col}(V_k), \\ \norm{\theta} = 1} } \dotp{\theta}{\ell}^2 = \ell^T V_k V_k^T \ell.
+\end{equation}
+
+\subsection{Assumptions}
+The following are statements I wish to hold in order for the later theory to follow, but I cannot yet prove:
+\begin{enumerate}
+	\item There exists a constant $c_1 > 0$ -- which may depend on dimension $d$ but not on $n$ --  such that for all $h \in 1, \ldots,k$ and all $i = 1,\ldots,n$, 
+	\begin{equation}
+	\label{eqn: asmp_1}
+	\abs{v_{hi}} \leq \frac{c}{\sqrt{n}}
+	\end{equation}
+\end{enumerate}
+
+If $v_k$ were eigenvectors of the grid--rather than of the neighborhood graph--the first item would hold with $c = 2^{d/2}$.
+
+\subsection{Main result.}
+Let $d = 3,4$, choose $r = c(\log(n)/n)^{1/d}$ to satisfy the condition of Lemma \ref{lem: approximation_error}, and let $k = n^{2d/(d + 4)}$. Let 
+\begin{equation*}
+\phi_{LE} =
+\begin{cases}
+1,~ & \text{if}~ T_{LE}^{(k)} \geq k + a\sqrt{2k + c^4\left(k + \frac{k^2}{n}\right)} \\
+0,~ & \text{otherwise}.
+\end{cases}
+\end{equation*}
+The following theorem holds.
+\begin{theorem}
+	There exists some number $c > 0$ constant in sample size $n$ such that for any $\epsilon \geq c n^{-2/(4 + d)}$, we have
+	\begin{equation*}
+	R_{\epsilon}^{(t)}(\phi_{LE}; \Hclass_1^{d}(L)) \leq \frac{1}{a^2}.
+	\end{equation*}
+	when $d = 3$ or $4$. 
+\end{theorem}
+\begin{proof}
+	
+\end{proof}
+
+\subsection{Type I error}
+
+Under the null hypothesis, $\ell$ consists of $n$ independent and identically distributed Rademacher random variables. Using this fact, we can bound the first two moments of $T_{LE}$ under the null hypothesis.
+
+\begin{lemma}
+	If $f = g$, then
+	\begin{equation}
+	\Ebb(T_{LE}^{(k)}) = k
+	\end{equation}
+	and
+	\begin{equation}
+	\label{eqn: variance_noise_typeI}
+	\Var(T_{LE}^{(k)}) \leq 2k + c_1^4\left(k + \frac{2k^2}{n}\right)
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	Taking the expectation first, we have
+	\begin{align*}
+	\Ebb(T_{LE}^{(k)}) & = \sum_{j = 1}^{k} \Ebb((\ell^T v_j)^2) \\
+	& = \sum_{j = 1}^{k} \sum_{i = 1}^{n} \sum_{i' = 1}^{n} \Ebb(\ell_i \ell_{i'}) v_{ji} v_{ji'} \\
+	& =  \sum_{j = 1}^{k} \sum_{i = 1}^{n} v_{ji}^2 = k.
+	\end{align*}
+	
+	We defer the proof of \eqref{eqn: variance_noise_typeI} until the following subsection, where we show it in greater generality.
+\end{proof}
+
+\subsection{Type II error.}
+
+Write $\ell =: \thetast + w$, where $\thetast = (\thetast_i)$ is defined by
+\begin{equation*}
+\thetast_i = \frac{f(x_i) - g(x_i)}{f(x_i) + g(x_i)}
+\end{equation*}
+and $w = (w_i)$ therefore consists of $n$ independent (although not identically distributed) zero-mean noise terms. We expand
+\begin{equation}
+\label{eqn: LE_expansion}
+\ell^T V_k V_k^T \ell = (\thetast)^T V_k V_k^T \thetast + w^T V_k V_k w + 2 w^T V_k V_k^T \thetast,
+\end{equation}
+and focus at first our attention on the second term in \eqref{eqn: LE_expansion}.
+
+\begin{lemma}
+	Assuming \eqref{eqn: asmp_1} holds,
+	\begin{equation}
+	\label{eqn: expectation_noise_typeII}
+	\Ebb \left( w^T V_k V_k w\right) \geq k - \frac{kc_1^2 \delta^2(f,g)}{p_{\min}^2}
+	\end{equation}
+	and
+	\begin{equation}
+	\label{eqn: variance_noise}
+	\Var(T_{LE}^{(k)}) \leq 2k + c_1^4\left(k + \frac{2k^2}{n}\right)
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	We note that, conditional on $X$,
+	\begin{equation*}
+	w_i = 
+	\begin{cases}
+	2\frac{g(x_i)}{f(x_i) + g(x_i)},~ & \text{with probability}~ \frac{f(x_i)}{f(x_i) + g(x_i)} \\
+	-2\frac{f(x_i)}{f(x_i) + g(x_i)},~ & \text{with probability}~ \frac{g(x_i)}{f(x_i) + g(x_i)}
+	\end{cases}
+	\end{equation*}
+	
+	We first show \eqref{eqn: expectation_noise_typeII}. Expanding the quadratic form as a double sum, and using the law of iterated expectation, we have
+	\begin{align}
+	\label{eqn: expectation_noise_typeII_1}
+	\Ebb \left( w^T V_k V_k w\right) & = \sum_{h = 1}^{k} \sum_{i = 1}^{n} \sum_{j = 1}^n \Ebb \bigl(w_i w_j v_{hi} v_{hj} \bigr) \nonumber \\
+	& = \sum_{h = 1}^{k} \sum_{i = 1}^{n} \sum_{j = 1}^n \Ebb \biggl( \Ebb\Bigl(w_i w_j \bigl\vert x_i, x_j\Bigr) v_{hi} v_{hj}\biggr) \nonumber \\
+	& = \sum_{h = 1}^{k} \sum_{i = 1}^{n} \Ebb \biggl( \Ebb\Bigl(w_i^2 \bigl\vert x_i\Bigr) v_{hi}^2\biggr).
+	\end{align}
+	The conditional expectation $\Ebb\Bigl(w_i^2 \bigl\vert x_i\Bigr)$ can be directly computed,
+	\begin{align*}
+	\Ebb\Bigl(w_i^2 \bigl\vert x_i\Bigr) & = 4\left(\frac{g(x_i)}{f(x_i) + g(x_i)}\right)^2 \frac{f(x_i)}{f(x_i) + g(x_i)} + 4\left(\frac{f(x_i)}{f(x_i) + g(x_i)}\right)^2 \frac{g(x_i)}{f(x_i) + g(x_i)} \\
+	& = 4 \frac{f(x_i)g(x_i)(f(x_i) + g(x_i))}{(f(x_i) + g(x_i))^3} \\
+	& = 4 \frac{f(x_i)g(x_i)}{(f(x_i) + g(x_i))^2}.
+	\end{align*}
+	and plugging this back into \eqref{eqn: expectation_noise_typeII_1}, we obtain
+	\begin{align*}
+	\Ebb \left( w^T V_k V_k w\right) & = \sum_{h = 1}^{k} \sum_{i = 1}^{n} \Ebb \left(4 \frac{f(x_i) g(x_i)}{(f(x_i) + g(x_i))^2} v_{hi}^2\right) \\
+	& = \sum_{h = 1}^{k} \sum_{i = 1}^{n} \Ebb \left(v_{hi}^2 \left(1 - \left(\frac{f(x_i) - g(x_i)}{f(x_i) + g(x_i)} \right)^2 \right)\right) \\
+	& \geq k - \frac{c^2}{n}\sum_{h = 1}^{k} \sum_{i = 1}^{n} \Ebb \left(\frac{f(x_i) - g(x_i)}{f(x_i) + g(x_i)} \right)^2 \\
+	& \geq k - \frac{kc_1^2 \delta^2(f,g)}{p_{\min}^2}
+	\end{align*}
+	and \eqref{eqn: expectation_noise_typeII} is shown.
+	
+	We now show \eqref{eqn: variance_noise}. It will be helpful to note that for all $i,i',j,j' \in [n]$,
+	\begin{equation*}
+	\mathrm{Cov}(w_iw_j, w_{i'}w_{j'} | X) = 
+	\begin{cases}
+	0, & \text{if}~ \set{i,i',j,j'}~ \textrm{has four distinct elements} \\
+	0, & \text{if}~ \set{i,i',j,j'}~ \textrm{has three distinct elements} \\
+	0, & \text{if}~ \set{i,i',j,j'}~ \textrm{has two distinct elements and}~ i = j \\
+	\Ebb(w_i^2|X) \Ebb(w_j^2|X), & \text{if}~ \set{i,i',j,j'}~ \textrm{has two distinct elements and}~ i \neq j \\
+	\Var(w_i^4|X), & \text{if}~ \set{i,i',j,j'}~ \textrm{has one distinct element.}
+	\end{cases}
+	\end{equation*}
+	and additionally
+	\begin{equation*}
+	\Ebb(w_iw_j|X) =
+	\begin{cases}
+	0, & \text{if}~ i \neq j \\
+	E(w_i^2|X), & \text{if}~ i = j.
+	\end{cases}
+	\end{equation*}
+	Then, by the law of total covariance,
+	\begin{align*}
+	\mathrm{Var}(w^T V_k V_k^T w) & = \sum_{h,h' = 1}^{k} \sum_{i,i' = 1}^{n} \sum_{j,j' = 1}^{n} \mathrm{Cov} \bigl(w_iw_jv_{hi} v_{hj}, w_{i'}w_{j'}v_{h'i'} v_{h'j'}\bigr) \\
+	& = \sum_{h,h' = 1}^{k} \sum_{i,i' = 1}^{n} \sum_{j,j' = 1}^{n} \Ebb \Bigl(  v_{hi} v_{hj} v_{h'i'} v_{h'j'} \mathrm{Cov} \bigl(w_iw_j, w_{i'}w_{j'} |X\bigr)\Bigr) + \\
+	& \quad \quad \mathrm{Cov} \Bigl( v_{hi}v_{hj} \Ebb(w_iw_j|X), v_{h'i'}v_{h'j'} \Ebb(w_i'w_j'|X)  \Bigr) \\
+	& = 2 \sum_{h,h' = 1}^{k} \sum_{i \neq j}^{n} \Ebb\Bigl( v_{hi} v_{hj} v_{h'i} v_{h'j} \Ebb(w_i^2|X) \Ebb(w_j^2|X) \Bigr) + \\
+	& \quad \quad \sum_{h,h' = 1}^{k} \sum_{i = 1}^{n} \Ebb \left(v_{hi}^2 v_{h'i}^2 \Var(w_i^4|X)\right) +  \\
+	& \quad \quad \quad \sum_{h,h' = 1}^{k} \sum_{i,i' = 1}^{n} \mathrm{Cov} \bigl( v_{hi} ^2 \Ebb(w_i^2|X), v_{h'i'}^2 \Ebb(w_{i'}^2|X)\bigr)
+	\end{align*}
+	Then, using the upper bound $\Ebb(w_i^2|X),\Ebb(w_j^2|X) \leq 1$, we can bound the first term
+	\begin{align*}
+	\sum_{h,h' = 1}^{k} \sum_{i \neq j}^{n} \Ebb\Bigl( v_{hi} v_{hj} v_{h'i} v_{h'j} \Ebb(w_i^2|X) \Ebb(w_j^2|X) \Bigr) & \leq \sum_{h,h' = 1}^{k} \sum_{i \neq j}^{n} \Ebb\Bigl( v_{hi} v_{hj} v_{h'i} v_{h'j} \Bigr) \\
+	& \leq \sum_{h,h' = 1}^{k} \Ebb\Bigl( \sum_{i = 1}^{n}v_{h'i} v_{hi} \sum_{j = 1}^{n} v_{h'j} v_{hj} \Bigr) \\
+	& = \sum_{h = 1}^{k} 1 = k.
+	\end{align*}
+	
+	To bound the second term, we note that $\Var(w_i^4|X) \leq 1$, and along with \eqref{eqn: asmp_1} this yields
+	\begin{align*}
+	\sum_{h,h' = 1}^{k} \sum_{i = 1}^{n} \Ebb \left(v_{hi}^2 v_{h'i}^2 \Var(w_i^4|X)\right) \leq \sum_{h,h' = 1}^{n} \sum_{i = 1}^{n} \frac{c_1^4}{n^2} = \frac{c_1^4k^2}{n}.
+	\end{align*}
+	
+	Finally, to bound the third term we note that if $h \neq h'$ and $i \neq i'$,
+	$\mathrm{Cov} \bigl( v_{hi} ^2 \Ebb(w_i^2|X), v_{h'i'}^2 \Ebb(w_{i'}^2|X)\bigr) = 0$. Therefore,
+	\begin{align*}
+	\sum_{h,h' = 1}^{k} \sum_{i,i' = 1}^{n} \mathrm{Cov} \bigl( v_{hi} ^2 \Ebb(w_i^2|X), v_{h'i'}^2 \Ebb(w_{i'}^2|X)\bigr) & = \sum_{h = 1}^{k} \sum_{i = 1}^{n} \sum_{j = 1}^{n} \mathrm{Cov} \bigl( v_{hi} ^2 \Ebb(w_i^2|X), v_{hi'}^2 \Ebb(w_{i'}^2|X)\bigr) + \\
+	& \quad \quad \sum_{h \neq h'}^{k} \sum_{i = 1}^{n} \mathrm{Cov} \bigl( v_{hi} ^2 \Ebb(w_i^2|X), v_{h'i}^2 \Ebb(w_{i}^2|X)\bigr) \\
+	& \leq \sum_{h = 1}^{k} \sum_{i = 1}^{n} \sum_{j = 1}^{n} \frac{c_1^4}{n^2} + \sum_{h \neq h'}^{k} \sum_{i = 1}^{n} \frac{c_1^4}{n^2} \\
+	& = c_1^4 k + c_1^4 \frac{k^2}{n},
+	\end{align*}
+	and putting the pieces together yields \eqref{eqn: variance_noise}.
+\end{proof}
+
+Now, we turn our attention to the third term of \eqref{eqn: LE_expansion}.
+\begin{lemma}
+	\begin{equation}
+	\Ebb(w^T V_k V_k^T \thetast) = 0
+	\end{equation}
+	and assuming \eqref{eqn: asmp_1} holds,
+	\begin{equation*}
+	\Var(w^T V_k V_k^T \thetast) \leq k \frac{c_1^2 \delta^2(f,g)}{p_{\min}^2}
+	\end{equation*}
+\end{lemma}
+
+Finally, we examine the first term in \eqref{eqn: LE_expansion}. We will need the following result.
+\begin{lemma}
+	For any $0 < \delta < 1$, there exists a number $c_2 > 0$ depending only on $d$ and $\delta$ such that, if $r \geq c_2(\log n/n)^{1/d}$, then
+	\begin{equation*}
+	\norm{D \thetast}^2 \leq \frac{16 L^4}{p_{\min}^2} n^2 r^{d + 2}
+	\end{equation*}
+	and
+	\begin{equation*}
+	\lambda_k \geq \frac{4 k^{2/d}}{\pi^2 n^{2/d}}
+	\end{equation*}
+	with probability at least $1 - \delta$.
+\end{lemma}
+\begin{lemma}
+	\label{lem: approximation_error}
+	For any $\delta > 0$, there exists a number $c_2 > 0$ constant in sample size such that if $r \geq c_2 (\log n / n)^{1/d}$,
+	\begin{equation*}
+	(\thetast)^T V_k V_k^T \thetast \geq n (\delta(f,g))^2 - \frac{n^2r^{d + 2} n^{2/d}}{k^{2/d}}
+	\end{equation*}
+	with probability at least $1 - \delta$.
+\end{lemma}
+\begin{proof}
+	Letting $z = D \thetast$, we have
+	\begin{align*}
+	(\thetast)^T V_k V_k^T \thetast & = \norm{\thetast}^2 - (\thetast)^T \left(I - V_k V_k^T \right) \thetast \\
+	& = \norm{\thetast}^2- z^T (D^{\dagger})^T (I - V_k V_k^T) D^{\dagger} z \\
+	& \geq \norm{\thetast}^2 - z^T z \lambda_{\max} \Bigl((D^{\dagger})^T (I - V_k V_k^T) D^{\dagger} \Bigr) \\
+	& \geq \norm{\thetast}^2 - \frac{z^T z}{\lambda_{k}}
+	\end{align*}
+	Examining $\norm{\thetast}^2$, we have that
+	\begin{equation*}
+	\Ebb(\norm{\thetast}^2) = n \delta^2(f,g) \quad \text{and} \quad \Var(\norm{\thetast}^2) \leq n \delta^2(f,g)
+	\end{equation*}
+	Turning to the second term, we have given our choice of $r$, along with the fact $f - g \in \mathcal{H}_1^{d}(2L)$,
+	\begin{equation*}
+	z^T z = \norm{D \thetast}^2 \leq \frac{16 L^4}{p_{\min}^2} n^2 r^{d + 2}
+	\end{equation*}
+	and additionally
+	\begin{equation*}
+	\lambda_k \geq \frac{4 k^{2/d}}{\pi^2 n^{2/d}},
+	\end{equation*}
+	each with probability $1 - \delta$.
+\end{proof}
+
+
+
+
+
+
+\end{document}
