@@ -1,0 +1,339 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 6/13/19 - 6/18/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $f,g$ be $L^2$ density functions supported on the $d$-dimensional unit cube $[0,1]^d$, meaning
+\begin{equation*}
+\int_{[0,1]^d} f(x)^2 dx, \int_{[0,1]^d} g(x)^2 dx < \infty, \quad \text{and} \quad \int_{[0,1]^d} f(x) dx, \int_{[0,1]^d} g(x) dx = 1.
+\end{equation*}
+with $f$,$g$ bounded above and below, $0 < p_{\min} < f(x), g(x) < p_{\max} < \infty$ for all $x \in [0,1]^d$.
+
+We observe data $(X,\ell)$, a design matrix and associated labels, specified as follows. We let $x_1, \ldots, x_n$ be the rows of $X$, each sampled independently from $\mu = (f + g)/2$. For each $i = 1,\ldots,n$, we then sample $\ell_i$ according to
+\begin{equation*}
+\ell_i =
+\begin{cases}
+1,~ \textrm{with probability} \frac{f(x_i)}{f(x_i) + g(x_i)} \\
+-1,~ \textrm{with probability} \frac{g(x_i)}{f(x_i) + g(x_i)}
+\end{cases}
+\end{equation*}
+and let $\ell = (\ell_i)$. 
+
+Our statistical goal is hypothesis testing: that is, we wish to construct a test function $\phi$ which differentiates between
+\begin{equation*}
+\mathbb{H}_0: f = g \text{ and } \mathbb{H}_1: f \neq g.
+\end{equation*}
+
+For a given function class $\Hclass$, some $\epsilon > 0$, and test function $\phi$ a Borel measurable function of the data with range $\set{0,1}$, we evaluate the quality of the test using \emph{worst-case risk}
+\begin{equation*}
+R_{\epsilon}^{(t)}(\phi; \Hclass) = \sup_{f \in \Hclass} \Ebb_{f,f}^{(t)}(\phi) + \sup_{ \substack{f,g \in \Hclass \\ \delta(f,g) \geq \epsilon } } \Ebb_{f,g}^{(t)}(1 - \phi)
+\end{equation*} 
+where 
+\begin{equation*}
+\delta^2(f,g) = \int_{\D} (f - g)^2 dx.
+\end{equation*}
+We will consider the function class $\mathcal{H} := \mathcal{H}_{1}^d(L)$, the $d$-dimensional Lipschitz ball with norm $L$. Formally, a function $f \in \mathcal{H}$ if for all $x,y \in [0,1]^d$, $\abs{f(x) - f(y)} \leq L \norm{x - y}$.\footnote{Note that the Lipschitz requirement, along with the restriction that $f$ be a density function over a bounded domain, imply that $f$ has finite $L^2$ norm.}
+
+\section{Test Statistic}
+
+Let $r > 0$ be a bandwidth parameter, let $\eta_r: \mathcal{X} \times \mathcal{X} \to [0,\infty)$ be a Mercer kernel given by
+\begin{equation*}
+\eta_r(x,y) =
+\begin{cases}
+1, \quad & \textrm{$\norm{x - y} \leq r$} \\
+0, \quad & \textrm{$\norm{x - y} > r$},
+\end{cases}
+\end{equation*}
+and let $\widetilde{A}$ be an $n \times n$ matrix with entries $\widetilde{A}_{ij} = n^{-1}\eta(x_i,x_j)$. We obtain $A$ from $\widetilde{A}$ be setting all diagonal entries of $\widetilde{A}$ to be zero. Our test statistic is then
+\begin{equation*}
+T_{\eta} := \ell^T A \ell.
+\end{equation*}
+
+\section{Theory}
+
+\begin{theorem}
+	
+\end{theorem}
+
+\section{Supporting Theory}
+
+We begin by recalling Chebyshev's inequality, which we will use to bound deviations of $T_{\eta}$ from its expectation.
+\begin{lemma}[Chebyshev]
+	\label{lem: chebyshev}
+	Let $X$ be a random variable with $\Ebb X < \infty$ and $0 < \Var(X) < \infty$. Then,
+	\begin{equation*}
+	\Pbb(\abs{X - \Ebb X} \geq a) \leq \frac{\Var(X)}{a^2}.
+	\end{equation*}
+\end{lemma}
+
+In order to employ Lemma \ref{lem: chebyshev}, we must bound the expectation and variance of $T_{\eta}$ under the null and alternative hypotheses. We begin with the expectation $\Ebb T_{\eta}$. 
+\begin{lemma}
+	\label{lem: mmd_expectation}
+	Under the null hypothesis $h = g$, for any $h, g \in \mathcal{H}_{1}^{d}(L)$,
+	\begin{equation*}
+	\Ebb T_{\eta} = 0.
+	\end{equation*}
+	
+	Under the alternative hypothesis $h \neq g$, for any $h, g \in \mathcal{H}_{1}^{d}(L)$, 
+	\begin{equation*}
+	\Ebb T_{\eta} \geq \frac{(n - 1)p_{\min}^2}{ p_{\max}^2} \left(\delta^2(f,g)\frac{r^d}{2^d} - L\delta(f,g)r^{d + 1}\right)
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Let $\thetast$ be a vector in $\Reals^{n}$, with entries $ \thetast_i = \Ebb(\ell_i|x_i)$. Letting $w = \ell - \thetast$, we note that conditional on $X$, the noise component $w$ consists of $n$ independent and zero mean terms.
+	
+	We expand the test statistic
+	\begin{equation*}
+	T_{\eta} = (\thetast)^T A \thetast + w^T A w + 2 w^T A \thetast
+	\end{equation*}
+	and note that by the law of iterated expectation, 
+	\begin{equation*}
+	\Ebb(T_{\eta}) = \Ebb(T_{\eta}|X) = \Ebb\left( (\thetast)^T A \thetast \right)
+	\end{equation*}
+	
+	Now, let $X$ and $Y$ be independent random variables with distribution $\mu$, and let $\Delta(x) := f(x) - g(x)$. By the linearity of expectation,
+	\begin{align*}
+	\Ebb (\thetast)^T A \thetast & = \sum_{i \neq j = 1}^{n} \Ebb( \thetast_i \thetast_j A_{ij}) \\
+	& = (n - 1) \Ebb \bigl(\thetast_1 \thetast_2 \eta_r(x_1, x_2) \bigr) \\
+	& \geq \frac{4(n - 1)}{p_{\max}^2} \Ebb(\Delta(x) \Delta(y) \eta_r(X,Y))
+	\end{align*} 
+	
+	We can lower bound $\Ebb(\Delta(x) \Delta(y) \eta_r(X,Y))$ by $\delta^2(f,g)$, minus a remainder term, as follows
+	\begin{align*}
+	\Ebb(\Delta(x) \Delta(y) \eta_r(X,Y)) & = \iint \Delta(x) \Delta(y) \eta_r(x,y) d\mu(x) d\mu(x) \\
+	& \geq \frac{p_{\min}^2}{4} \iint \Delta(x) \Delta(y) \eta_r(x,y) dx dy \\
+	& \geq \frac{p_{\min}^2}{4} \left( \iint \Delta^2(x) \eta_r(x,y) dx dy - \iint \abs{\Delta(x)} \abs{\Delta(x) - \Delta(y)} \eta(x,y) dx dy \right)
+	\end{align*}
+	To lower bound the first term, observe that for any $x \in [0,1]^d$,
+	\begin{equation*}
+	\int_{[0,1]^d} \eta_r(x,y) dx \geq \frac{r^d}{2^d}
+	\end{equation*}
+	and therefore
+	\begin{equation*}
+	\iint \Delta^2(x) \eta_r(x,y) dx dy \geq \frac{r^d}{2^d} \int_{[0,1]^d} \Delta^2(x) dx \geq \frac{r^d}{2^d} \delta^2(f,g).
+	\end{equation*}
+	
+	To upper bound the remainder term, observe that $\Delta \in \mathcal{H}_{1}^{d}(2L)$. Using this fact, we obtain the upper bound
+	\begin{align*}
+	\iint \abs{\Delta(x)} \abs{\Delta(x) - \Delta(y)} \eta(x,y) dx dy & \leq : \iint \abs{\Delta(x)} \norm{x - y} \eta(x,y) dx dy \\
+	& \leq L r^{d + 1} \int_{[0,1]^d} \abs{\Delta(x)} dx \\
+	& \leq L r^{d + 1} \delta(f,g).
+	\end{align*}
+	where the last inequality follows from Jensen's inequality.
+\end{proof}
+
+\begin{lemma}
+	\label{lem: var_mmd}
+	For any $h,g \in \mathcal{H}_1^{d}(L)$,
+	\begin{equation*}
+	\Var(T_{\eta}) \leq 2n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right) + 2r^d
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We begin by computing the second moment $\Ebb T_{\eta}^2$. Expanding the quadratic form, we obtain
+	\begin{align}
+	\Ebb T_{\eta}^2 =  \sum_{i,i' = 1}^{n} \sum_{j,j' = 1}^{n} \Ebb(\ell_i \ell_{i'} \ell_{j} \ell_{j'} A_{ii'} A_{jj'})
+	\end{align}
+	
+	We next compute this expectation, based on the number of distinct indices $i,i',j,j'$. Let $X, X', Y, Y'$ be four independent random variables, each with distribution $\mu$, and write $\widetilde{\Delta} := 2 \Delta / \mu$.  Then, applying the law of conditional expectation, we obtain
+	\begin{equation*}
+	n^2 \Ebb(\ell_i \ell_{i'} \ell_{j} \ell_{j'} A_{ii'} A_{jj'}) = 
+	\begin{cases}
+	\Ebb(\widetilde{\Delta}(X) \wt{\Delta}(X') \eta_r(X,X'))^2, \quad & \textrm{if}~ \set{i,i',j,j'} ~\textrm{contains four distinct elements}, \\
+	\Ebb(\widetilde{\Delta}(X') \wt{\Delta}(Y') \eta_r(X,X') \eta_r(X,Y')), \quad & \textrm{if}~ \set{i,i',j,j'} ~\textrm{contains three distinct elements and}~ i = j, \\
+	\Ebb\biggl(\eta_r(X,Y)^2\biggr), \quad  & \textrm{if}~ \set{i,i',j,j'} ~\textrm{contains two distinct elements and}~ i = j. \\
+	0, \quad & \textrm{if}~ i = i' ~\textrm{or}~ j = j'.
+	\end{cases}
+	\end{equation*}
+	and as a result we obtain
+	\begin{align}
+	\label{eqn: var_mmd_1}
+	n^2 \Ebb T_{\eta}^2 = & n(n-1)(n-2)(n-3)\Ebb\biggl(\widetilde{\Delta}(X) \wt{\Delta}(X') \eta_r(X,X')\biggr) + \nonumber \\
+	& \quad 2n(n-1)(n-2) \Ebb \biggl(\widetilde{\Delta}(X') \wt{\Delta}(Y') \eta_r(X,X') \eta_r(X,Y') \biggr) + \nonumber \\
+	& \quad \quad 2n(n-1) \Ebb\biggl(\eta_r(X,Y)^2\biggr).
+	\end{align}
+	
+	The first term -- covering the case when $\set{i,i',j,j'}$ contains four distinct elements --  will be canceled out by the mean, as we will see, and we do not simplify it further. 
+	
+	The second term we upper bound by methods similar to those used to obtain the upper bound in Lemma \ref{lem: mmd_expectation}. We will need the following upper bound,
+	\begin{align*}
+	\int \eta(x,x') \eta(x,y') \dx & \leq r^d \1(\norm{x' - y'} \leq 2r) \\
+	& = r^d \eta_{2r}(x',y').
+	\end{align*}
+	We proceed,
+	\begin{align}
+	\label{eqn: var_mmd_2}
+	\Ebb \biggl(\widetilde{\Delta}(X') \wt{\Delta}(Y') \eta_r(X,X') \eta_r(X,Y') \biggr) & \leq \frac{p_{\max}^2}{p_{\min}^2} \iiint \Delta(x') \Delta(y') \eta(x,x') \eta(x,y') \dx \dypr \dxpr \nonumber\\
+	& \leq \frac{p_{\max}^2}{p_{\min}^2} r^d \iint \Delta(x') \Delta(y') \eta_{2r}(x',y') \dypr \dxpr \nonumber \\
+	& \leq \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right).
+	\end{align}
+	
+	The following upper bound on the third term is a straightforward consequence of the fact $\eta_r^2 = \eta_r$, and therefore
+	\begin{equation}
+	\label{eqn: var_mmd_3}
+	\Ebb(\eta_r(X,Y)^2) = \Ebb(\eta_r(X,Y)) = r^d. 
+	\end{equation}
+	
+	Finally, we have that
+	\begin{equation}
+	\label{eqn: var_mmd_4}
+	n^2 \Ebb(T_{\eta}^2) = \left(n(n-1) \Ebb(\widetilde{\Delta}(X) \wt{\Delta}(X') \eta_r) \right)^2 .
+	\end{equation}
+	
+	Combining \eqref{eqn: var_mmd_1}-\eqref{eqn: var_mmd_4}, we obtain
+	\begin{equation*}
+	\Var(T_\eta) \leq 2n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right) + 2r^d.
+	\end{equation*}
+\end{proof}
+
+
+
+
+\end{document}
