@@ -1,0 +1,580 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 7/4/19 - 7/9/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $s \geq 0$. Suppose $\theta \in \ell^2(\mathbb{Z}^d)$ is a sequence such that
+\begin{equation*}
+\sum_{k \in \mathbb{Z}^d} \theta_k^2 c_k^2 \leq 1
+\end{equation*}
+where for $k = (k_1, \ldots, k_d) \in \mathbb{Z}^d$
+\begin{equation*}
+c_k = \left(\sum_{i = 1}^{d} (2\pi k_i)^2\right)^{s/2}.
+\end{equation*}
+Our goal is hypothesis testing; precisely, we would like to determine whether
+\begin{equation*}
+\mathbf{H_0}: \norm{\theta} = 0, \quad \textrm{or}~ \mathbf{H_a}: \norm{\theta} \neq 0.
+\end{equation*}
+
+\section{Testing in the Gaussian Sequence Model}
+
+We observe
+\begin{equation*}
+y_k = \theta_k + \frac{1}{\sqrt{n}}\epsilon_k, \quad k \in \mathbb{Z}^d
+\end{equation*}
+where $\epsilon_k \sim \mathcal{N}(0,1)$ are independent and identically distributed for all $k \in \mathbb{Z}^d$. To test whether $\theta$ belongs to $\mathbf{H}_0$ or $\mathbf{H}_a$, we consider the test statistic
+\begin{equation*}
+T_C = \sum_{k: c_k \leq C} y_k^2.
+\end{equation*}
+
+\subsection{Supplemental Theory}
+Let $N(C) := \sharp\set{k \in \mathbb{Z}^d: c_k \leq C}$. Recall that $\ell^2(\mathbb{Z}^d)$ is a normed space, where for $\theta \in \ell^2$
+\begin{equation*}
+\norm{\theta}^2 = \sum_{k \in \mathbb{Z}^d} \theta_k^2
+\end{equation*}
+\begin{lemma}
+	\label{lem: expectation}
+	Under $\mathbf{H}_0$, $\Ebb(T_C) = N_C/n$. Under $\mathbf{H}_a$,
+	\begin{equation*}
+	\Ebb(T_C) \geq \frac{N_C}{n} + \norm{\theta}^2 - (2\pi C)^{-2}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We have that
+	\begin{align*}
+	\Ebb(T_C) & = \sum_{k: c_k  \leq C} \Ebb(y_k^2) \\
+	& = \frac{N(C)}{n} + \sum_{k:  c_k \leq C} \theta_k^2
+	\end{align*}
+	whence the expectation under the null hypothesis is obvious. Under $\mathbf{H}_a$, we have
+	\begin{align*}
+	\sum_{k:  c_k \leq C} \theta_k^2 & \geq \norm{\theta}^2 - \sum_{k:  c_k > C} \theta_k^2 \\
+	& \geq \norm{\theta}^2 - (2 \pi C)^{-2} \sum_{k:  c_k > C} \theta_k^2 c_k^2 \\
+	& \geq  \norm{\theta}^2 - (2 \pi C)^{-2}.
+	\end{align*}
+\end{proof}
+
+\begin{lemma}
+	\label{lem: var_test_statistic}
+	Under either $\mathbf{H}_0$ or $\mathbf{H}_a$, we have
+	\begin{equation*}
+	\Var(T_C) \leq 2\frac{N(C)}{n^2} + 4\frac{\Ebb(T_C)}{n}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	\begin{align*}
+	\Var(T_C) & = \Var \bigl(\sum_{k: c_k \leq C} y_k^2 \bigr) \\
+	& = \sum_{k:  c_k \leq C} \Var(y_k^2) \\
+	& = \sum_{k:  c_k \leq C} \frac{\Var(\epsilon_k^2)}{n^2} + \frac{4 \theta_k^2 \Var(\epsilon_k)}{n}
+	\end{align*}
+	and the statement follows from properties of the standard normal distribution.
+\end{proof}
+
+For $b \geq 1$, let $\tau(b) := b \sqrt{6N(C)/n^2}$. From here forward, let $C = n^{2s/(4s + d)}$. Our test will be
+\begin{equation*}
+\Gamma = \1\set{T_C \geq N(C)/n + \tau(b)}
+\end{equation*}
+The following bound on the Type I error of our test follows immediately from Chebyshev's inequality.
+\begin{lemma}
+	Under the null hypothesis $\mathbf{H}_0$
+	\begin{equation*}
+	\Pbb_0(T_C \geq N(C)/n + \tau(b)) \leq \frac{1}{b^2}
+	\end{equation*}
+\end{lemma}
+
+More technical work will be required to show the desired bound on type II error, which holds when $\norm{\theta}^2$ is sufficiently large.
+\begin{lemma}
+	\label{lem: type_2_error}
+	Suppose
+	\begin{equation*}
+	\norm{\theta}^2 \geq (2\pi C)^{-2} + 2\tau(b)
+	\end{equation*}
+	Then
+	\begin{equation*}
+	\Pbb_{a}(T_C \leq N(C)/n + \tau(b)) \leq 2 \left(\frac{1}{6b^2N(C)} + 2\frac{1}{b\sqrt{6N(C)}} +  \frac{1}{4b^2}\right)
+	\end{equation*}
+\end{lemma}
+Before proving Lemma \ref{lem: type_2_error}, we note that $N(C) \leq C^{d/s}$. (In fact, tighter bounds exist, but we will not need them.) Therefore
+\begin{equation*}
+(2\pi C)^{-2} + 2\tau(b) \leq \frac{1}{4\pi^2}n^{-4s/(4s + d)} + \sqrt{24}bn^{-4s/(4s + d)}
+\end{equation*}
+and so the critical radius $\norm{\theta}^2 \geq (2\pi C)^{-2} + 2\tau(b)$ is minimax optimal. We turn now to the proof of Lemma \ref{lem: type_2_error}.
+\begin{proof}[Proof of Lemma \ref{lem: type_2_error}]
+	We note that by hypothesis, we have that
+	\begin{equation}
+	\label{eqn:type_2_error_1}
+	\Ebb_a(T_C) \geq \frac{N(C)}{n} + 2\tau(b).
+	\end{equation}
+	By Chebyshev's inequality, we therefore have
+	\begin{align*}
+	\Pbb_{a}(T_C \leq N(C)/n + \tau(b)) & = \Pbb_{a}(T_C - \Ebb_a(T) \leq N(C)/n + \tau(b) - E_a(T)) \\
+	& \leq \frac{\Var_a(T_c)}{(\Ebb_a(T) - \tau(b) - N(C)/n)^2} \\
+	& \leq 4\frac{\Var_a(T_c)}{(\Ebb_a(T) - N(C)/n)^2} \tag{\ref{eqn:type_2_error_1}}\\
+	& \leq 8\frac{N(C)/n^2 + \Ebb_a(T_C)/n}{(\Ebb_a(T) - N(C)/n)^2} \tag{Lemma \ref{lem: var_test_statistic}} \\
+	\end{align*}
+	Letting $\Delta = \Ebb_a(T) - N(C)/n$, and noting that $\Delta \geq 2\tau(b)$, we obtain
+	\begin{align*}
+	8\frac{N(C)/n^2 + \Ebb_a(T_C)/n}{(\Ebb_a(T) - N(C)/n)^2} & = 8 \frac{N(C)/n^2 + \Delta/n + N(C)/n}{\Delta^2} \\
+	& \geq 2 \left(\frac{N(C)}{\tau^2(b)n^2} + 2\frac{1}{\tau(b) n} + \frac{N(C)}{n\tau^2(b)}\right) \\
+	& = 2 \left(\frac{1}{6b^2N(C)} + 2\frac{1}{b\sqrt{6N(C)}} +  \frac{1}{4b^2}\right)
+	\end{align*}
+\end{proof}
+
+\section{Testing in the Nonparametric Regression Model}
+Let $\mathcal{D} = [0,1]^d$ and consider the Sobolev unit ball $W^{s,2}_d(1)$ of functions supported over $\mathcal{D}$. Let $\set{\phi_k: k \in \mathbb{Z}^d}$ be the tensor product Fourier basis of $W^{s,2}_d$. Note that for any $f \in W^{s,2}_d(1)$, letting
+\begin{align*}
+f(x) := \sum_{k \in \mathbb{Z}^d} \theta_k \phi_k(x)
+\end{align*}
+we can show that
+\begin{equation*}
+\norm{f}_{L^2} = \norm{\theta}_{2}, ~ \norm{f}_{W^{2,s}}^2 = \sum_{k \in \mathbb{Z}^d} \theta_k^2 c_k^2.
+\end{equation*}
+Therefore, testing whether $\norm{f}_{L^2} = 0$ or $\norm{f}_{L^2} > 0$ is exactly the same as testing whether $\norm{\theta}_2 = 0$. 
+
+Now, however, for $i \in [n]$, assume we observe
+\begin{equation*}
+z_i = f(x_i) + \varepsilon_i,\quad x_i \overset{\mathrm{i.i.d}}{\sim} \mathrm{Unif}\bigl([0,1]^d\bigr), \quad \varepsilon_i \overset{\mathrm{i.i.d}}{\sim} \mathcal{N}(0,1)
+\end{equation*}
+To test whether $\norm{\theta}_2 = 0$, we consider the test statistic
+\begin{equation*}
+T_C = \sum_{k: c_k \leq C} \widetilde{y}_k^2
+\end{equation*}
+where for $k \in \mathbb{Z}^d$,
+\begin{equation*}
+\widetilde{y}_k := \frac{1}{n} \sum_{i = 1}^{n} z_i \phi_k(x_i).
+\end{equation*}
+
+\subsection{Supplemental Theory}
+We will need to make a pair of additional regularity assumptions beyond $f \in W^{k,2}_d(1)$. 
+\begin{enumerate}[label = (A\arabic*)]
+	\item 
+	\label{asmp:L2_basis}
+	For every $x \in [0,1]^d$ and for all $C > 0$,
+	\begin{equation*}
+	\sum_{k: c_k \leq C} \phi_k^2(x) = N(C)
+	\end{equation*}
+	\item 
+	\label{asmp:L4_regression_function} The regression function $f \in L^4$.
+\end{enumerate}
+It is not hard to check that the tensor product Fourier basis satisfies \ref{asmp:L2_basis}.
+\begin{lemma}
+	Under $\mathbf{H}_0$, $\Ebb(T_C) = N(C)/n$. Under $\mathbf{H}_a$, 
+	\begin{equation*}
+	\Ebb(T_C) \geq \frac{N(C)}{n} + \frac{\norm{\theta}^2N(C)}{n} + \frac{(n-1)}{n}\left(\norm{\theta}^2 - (2\pi C)^{-2}\right)
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We write
+	\begin{equation*}
+	\widetilde{y}_k = \frac{1}{n} \sum_{i = 1}^{n} f(x_i) \phi_k(x_i) + \frac{1}{n} \sum_{i = 1}^{n} \varepsilon_i \phi_k(x_i) =: \widetilde{\theta}_k + \widetilde{\epsilon}_k.
+	\end{equation*}
+	To compute the expectation of $\widetilde{y}_k^2$, we therefore must compute the expectation of each of $\widetilde{\theta}_k^2$ and $\widetilde{\epsilon}_k^2$. (It is not hard to see that $\Ebb(\widetilde{\theta}_k \widetilde{\epsilon}_k) = 0$). We have
+	\begin{align*}
+	\Ebb(\widetilde{\theta}_k^2) & = \Ebb \left(\frac{1}{n^2} \sum_{i,j = 1}^{n} f(x_i) f(x_j) \phi_k(x_i) \phi_k(x_j)\right) \\
+	& = \frac{1}{n} \Ebb(f^2(x_1) \phi_k^2(x_1)) + \frac{(n-1)}{n} \Ebb\bigl(f(x_1)\phi_k(x_1)\bigr)^2 \\
+	& = \frac{1}{n} \Ebb(f^2(x_1) \phi_k^2(x_1)) + \frac{(n-1)}{n} \theta_k^2.
+	\end{align*}
+	In addition,
+	\begin{equation*}
+	\Ebb(\widetilde{\epsilon}_k^2) = \frac{1}{n} \Ebb(\varepsilon_1^2 \phi_k^2(x_1)) = \frac{1}{n}. 
+	\end{equation*}
+	Therefore,
+	\begin{equation*}
+	\Ebb(T_C) = \sum_{k: c_k \leq C} \frac{1}{n} \Ebb(f^2(x_1) \phi_k^2(x_1)) + \frac{(n-1)}{n} \theta_k^2 + \frac{1}{n}
+	\end{equation*}
+	Under the null hypothesis $\norm{f} = 0$, the first two terms are zero, and we are left with
+	\begin{equation*}
+	\Ebb(T_C) = \frac{N(C)}{n}
+	\end{equation*}
+	Under the alternative, calculations similar to those used in the proof of Lemma \ref{lem: expectation} along with assumption \ref{asmp:L2_basis} lead to the desired conclusion.
+\end{proof}
+For any $C > 0$, let the projection operator $P_C: \ell_2(\mathbb{Z}^d) \to \ell_2(\mathbb{Z}^d)$ be given by:
+\begin{equation*}
+(P_C \theta)_k = \theta_k \mathbf{1}\set{c_k \leq C}.
+\end{equation*}
+\begin{lemma}
+	\label{lem:regression}
+	Under either $\mathbf{H}_0$ or $\mathbf{H}_a$, we have
+	\begin{equation}
+	\label{eqn:variance_regression}
+	\Var(T_C) \leq \frac{1}{n} \left(\norm{P_C\theta}^2 + N(C) \norm{\theta}^2 \norm{P_C\theta}^2\right) + \frac{1}{n^2}\left(N(C) + N(C)^2 \norm{\theta}^4 + 2N(C)\norm{\theta}^2\right) + \frac{\mu_4 N(C)^2}{n^3}
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	We seek to upper bound $\Cov(\widetilde{y}_k, \widetilde{y}_{k'})$. We begin with the following decomposition:
+	\begin{align*}
+	\Cov(\widetilde{y}_k, \widetilde{y}_{k'}) = \frac{1}{n^4} \sum_{i,i',j,j' = 1}^{n} \Cov\bigl(z_iz_j\phi_k(x_i)\phi_k(x_j), z_{i'}z_{j'}\phi_{k'}(x_{i'})\phi_{k'}(x_{j'})\bigr)
+	\end{align*}
+	We split the summand into six cases based on the number of distinct elements $\set{i,j,i',j'}$, and analyze each case separately. Let
+	\begin{equation*}
+	\chi_k^2 := \Ebb(f^2(x_1)\phi_k(x_1)^2), \quad \mu_4 := \Ebb(f^4(x_1))
+	\end{equation*}
+	and note that by assumption \ref{asmp:L2_basis}, $\sum_{k: c_k \leq C}\chi_k^2 = \norm{\theta}^2 N(C)$ and by assumption \ref{asmp:L4_regression_function}, $\mu_4 < \infty$.
+	
+	\paragraph{Case 1: $\set{i,j,i',j'}$ has 4 distinct elements}
+	$$\Cov\bigl(z_iz_j\phi_k(x_i)\phi_k(x_j), z_{i'}z_{j'}\phi_{k'}(x_{i'})\phi_{k'}(x_{j'})\bigr) = 0$$.
+	
+	\paragraph{Case 2: $\set{i,j,i',j'}$ has 3 distinct elements, $i = j$}
+	$$\Cov\bigl(z_iz_j\phi_k(x_i)\phi_k(x_j), z_{i'}z_{j'}\phi_{k'}(x_{i'})\phi_{k'}(x_{j'})\bigr) = 0$$.
+	
+	\paragraph{Case 3: $\set{i,j,i',j'}$ has 3 distinct elements, $i = i'$ or $i = j'$}
+	\begin{align*}
+	\Cov\bigl(z_iz_j\phi_k(x_i)\phi_k(x_j), z_{i'}z_{j'}\phi_{k'}(x_{i'})\phi_{k'}(x_{j'})\bigr) & = \Cov\bigl( z_1z_2 \phi_k(x_1)\phi_k(x_2) , z_1z_3 \phi_{k'}(x_1)\phi_{k'}(x_3) \bigr) \\
+	& = \Ebb\bigl(z_1^2z_2z_3 \phi_k(x_1) \phi_{k'}(x_1) \phi_k(x_2) \phi_{k'}(x_1) \bigr) - \theta_k^2 \theta_{k'}^2 \\
+	& = \Ebb \Bigl( \bigl(\varepsilon_1^2 + f^2(x_1) \bigr) \phi_k(x_1) \phi_{k'}(x_1) \Bigr) \theta_k \theta_{k'}  - \theta_k^2 \theta_{k'}^2 \tag{independence properties} \\
+	& = \Bigl(\mathbf{1}\set{k = k'} + \Ebb\bigl(  f^2(x_1) \phi_k(x_1) \phi_{k'}(x_1) \bigr) \Bigr) \theta_k \theta_{k'} -  \theta_k^2 \theta_{k'}^2 \\
+	& \leq \Bigl(\mathbf{1}\set{k = k'} + \sqrt{\Ebb\bigl(  f^2(x_1) \phi_k^2(x_1)\bigr) \Ebb\bigl(  f^2(x_1) \phi_{k'}^2(x_1)\bigr)}  \bigr) \Bigr) \theta_k \theta_{k'}  - \theta_k^2 \theta_{k'}^2 \\
+	& = \Bigl(\mathbf{1}\set{k = k'} + \chi_k \chi_{k'} \Bigr) \theta_k \theta_{k'}  - \theta_k^2 \theta_{k'}^2
+	\end{align*}
+	
+	\paragraph{Case 4: $\set{i,j,i',j'}$ has 2 distinct elements, $i = j$}
+	$$
+	\Cov\bigl(z_iz_j\phi_k(x_i)\phi_k(x_j), z_{i'}z_{j'}\phi_{k'}(x_{i'})\phi_{k'}(x_{j'})\bigr) = 0
+	$$
+	
+	\paragraph{Case 5: $\set{i,j,i',j'}$ has 2 distinct elements, $i = i'$ or $i = j'$.}
+	\begin{align*}
+	\Cov\bigl(z_iz_j\phi_k(x_i)\phi_k(x_j), z_{i'}z_{j'}\phi_{k'}(x_{i'})\phi_{k'}(x_{j'})\bigr) & = \Cov\bigl( z_1z_2\phi_k(x_1)\phi_k(x_2), z_1z_2\phi_{k'}(x_1)\phi_{k'}(x_2) \bigr) \\
+	& = \Ebb(z_1^2 z_2^2 \phi_k(x_1) \phi_k(x_2) \phi_{k'}(x_1) \phi_{k'}(x_2)) - \theta_k^2 \theta_{k'}^2 \\
+	& = \Ebb(z_1^2 \phi_k(x_1) \phi_{k'}(x_1))^2 - \theta_k^2 \theta_{k'}^2 \\
+	& \leq \left(\mathbf{1}\set{k = k'} + \chi_k \chi_{k'} \right)^2 - \theta_k^2 \theta_{k'}^2
+	\end{align*}
+	
+	\paragraph{Case 6: $\set{i,j,i',j'}$ has 1 distinct element.}
+	\begin{align*}
+	\Cov\bigl(z_iz_j\phi_k(x_i)\phi_k(x_j), z_{i'}z_{j'}\phi_{k'}(x_{i'})\phi_{k'}(x_{j'})\bigr) & \leq \Ebb\bigl(z_1^4 \phi_k^2(x_1) \phi_{k'}^2(x_1)\bigr)
+	\end{align*}
+	
+	Putting the cases together, we obtain the following upper bound on $\Cov(\widetilde{y}_k, \widetilde{y}_{k'})$:
+	\begin{align*}
+	\Cov(\widetilde{y}_k, \widetilde{y}_{k'}) \leq \frac{1}{n} \left[\bigl(\mathbf{1}\set{k = k'} + \chi_k \chi_{k'}\bigr)\theta_k\theta_{k'}\right] + \frac{1}{n^2} \bigl(\mathbf{1}\set{k = k'} + \chi_k \chi_{k'}\bigr)^2 + \frac{1}{n^3} \Ebb(z_1^4 \phi_k^2(x_1) \phi_{k'}^2(x_1))
+	\end{align*}
+	We compute the sum over $k,k'$ of each term in the summand on the right hand side separately. 
+	
+	\paragraph{1st term.}
+	Observe that
+	\begin{align*}
+	\sum_{k,k': c_k,c_k' \leq C} \chi_k \chi_{k'} \theta_k \theta_{k'} & =  \left(\sum_{k:c_k \leq C} \chi_k \theta_k\right)^2 \\
+	& \leq \left(\sum_{k: c_k \leq C} \chi_k^2\right) \left(\sum_{k:c_k \leq C} \theta_k^2\right) \\
+	& = N(C) \norm{\theta}^2 \norm{P_C \theta}^2;
+	\end{align*}
+	therefore
+	\begin{equation*}
+	\sum_{k,k': c_k,c_k' \leq C} \frac{1}{n} \left[\bigl(\mathbf{1}\set{k = k'} + \chi_k \chi_{k'}\bigr)\theta_k\theta_{k'}\right] \leq \frac{1}{n} \left(\norm{P_C\theta}^2 + N(C) \norm{\theta}^2 \norm{P_C\theta}^2\right).
+	\end{equation*}
+	
+	\paragraph{2nd term.}
+	\begin{align*}
+	\sum_{k,k': c_k,c_k' \leq C} \frac{1}{n^2} \left(\mathbf{1}\set{k = k'} + \chi_k \chi_{k'}\right)^2 & = \frac{1}{n^2} \left(\sum_{k:c_k \leq C} 1 + \sum_{k,k': c_k,c_k' \leq C} \chi_k^2 \chi_{k'}^2 + 2 \sum_{k:c_k \leq C} \chi_k^2\right) \\
+	& \leq  \frac{1}{n^2} \left(N(C) + N(C)^2 \norm{\theta}^4 + 2 N(C) \norm{\theta}^2\right)
+	\end{align*}
+	
+	\paragraph{3rd term.}
+	\begin{align*}
+	\sum_{k,k': c_k, c_{k'} \leq C} \frac{1}{n^3}\Ebb(z_1^4 \phi_k^2(x_1) \phi_{k'}^2(x_1)) & = \Ebb \left(z_1^4 \sum_{k,k': c_k, c_{k'} \leq C} \phi_k^2(x_1) \phi_{k'}^2(x_1) \right)  \\
+	& = \Ebb \left(z_1^4 \left\{ \sum_{k:c_k \leq C}\phi_k^2(x_1) \right\} \right) \\
+	& \leq \mu_4 N(C)^2
+	\end{align*}
+	
+	We can therefore write
+	\begin{align*}
+	\sum_{k,k': c_k, c_{k'} \leq C} \Cov(\widetilde{y}_k, \widetilde{y}_{k'}) & \leq \frac{1}{n} \left(\norm{P_C\theta}^2 + N(C) \norm{\theta}^2 \norm{P_C\theta}^2\right) + \frac{1}{n^2}\left(N(C) + N(C)^2 \norm{\theta}^4 + 2N(C)\norm{\theta}^2\right) \\
+	& \quad \quad + \frac{\mu_4 N(C)^2}{n^3}
+	\end{align*}
+	which is the desired result.
+\end{proof}
+From now on, we will fix $C = n^{2s/(4s + d)}$, and recall that $N(C) \leq C^{d/s}$. Let $\tau(b) = b \sqrt{N(C)/n}$. We will consider the following test:
+\begin{equation*}
+\Gamma(T_C) = \mathbf{1}\set{T_C \geq N(C)/n + \tau(b)}
+\end{equation*}
+The following bound on Type I error follows immediately from Chebyshev's inequality.
+\begin{lemma}
+	For any $b \geq 1$,
+	\begin{equation*}
+	\Pbb_0(T_C \geq N(C)/n + \tau(b)) \leq \frac{1}{b^2}.
+	\end{equation*}
+\end{lemma}
+Similar as before, a bound on Type II error is more subtle, and will require that $\norm{f}_{L^2} = \norm{\theta}_2$ be sufficiently far from zero.
+\begin{lemma}
+	\label{lem:type_II_error_regression}
+	Suppose that for some $b \geq 1$, 
+	\begin{equation}
+	\label{eqn:type_II_error_regression_1}
+	\norm{\theta}^2 \geq 2(2\pi C)^{-2} + 2\tau(b)
+	\end{equation}
+	Then, there exist universal constants $c_1, c_2$ and $c_3 > 0$ such that
+	\begin{equation}
+	\label{eqn:type_II_error_regression_2}
+	\Pbb_a\left(T_C \leq \frac{N(C)}{n} + \tau(b) \right) \leq \frac{1}{4b^2} +  c_1 n^{-d/(4s + d)} + c_2 \min\set{\frac{N(C)}{n - 1},\frac{n}{N(C)}} + c_3 \frac{N(C)}{n^2}
+	\end{equation}
+\end{lemma}
+Before proving Lemma \ref{lem:type_II_error_regression}, we remark that i): the critical radius is the same as in the Gaussian white noise setting, and ii): except for $1/(4b^2)$, each summand on the right hand side of \eqref{eqn:type_II_error_regression_2} is neglible for sufficiently large $n$, assuming $4s \neq d$. 
+
+\begin{proof}[Proof of Lemma~\ref{lem:type_II_error_regression}]
+We derive two important facts from~\eqref{eqn:type_II_error_regression_1}. The first is that by Lemma~\ref{lem: expectation},
+\begin{equation*}
+\Delta := \Ebb_a(T_C) - \frac{N(C)}{N} \geq 2\tau(b)
+\end{equation*}
+and therefore $(\Delta - \tau(b))^2 \geq \frac{\Delta^2}{4}$. The second is that
+\begin{equation*}
+\norm{P_C\theta}^2 \geq \norm{\theta}^2 - (2\pi C)^{-2} \geq \frac{\norm{\theta}^2}{2}.
+\end{equation*}
+We now proceed to use Chebyshev's inequality, obtaining
+\begin{align*}
+\Pbb_a\left(T_C \leq \frac{N(C)}{n} + \tau(b) \right) & = \Pbb\left(T_C - E_a(T_C )\leq \frac{N(C)}{n} + \tau(b) - E_a(T_C) \right) \\
+& \leq \frac{\Var_a(T_C)}{(E_a(T_C) - N(C)/n - \tau(b))^2} \\
+& \leq 4\frac{\Var_a(T_C)}{\Delta^2}
+\end{align*}
+There are six terms in the summand on the right hand side of \eqref{eqn:variance_regression}, which jointly upper bound $\Var_a(T_C)$ We bound the ratio of each over $\Delta^2$ in turn.
+\paragraph{Term 1:}
+Note that $\Delta^2 \geq (n - 1)/n \norm{P_C\theta}^2$. Therefore,
+\begin{align*}
+\frac{\norm{P_C\theta}^2}{n\Delta^2} & \leq \frac{1}{(n - 1)\norm{P_C\theta}^2} \\
+& \leq \frac{2}{(n - 1)\norm{\theta}^2} \\
+& \leq 4\pi^2\frac{C^2}{n} \\
+& \leq 4\pi^2n^{-d/(4s+d)}.
+\end{align*}
+
+\paragraph{Term 2:}
+Note that $\Delta^2 \geq \max\set{N(C)\norm{\theta}^2/n, (n-1)/n\norm{P_C\theta}^2}^2$. Therefore,
+\begin{align*}
+\frac{N(C) \norm{\theta}^2 \norm{P_C\theta}^2}{n \Delta^2} & \leq \min\set{ \frac{N(C)\norm{\theta}^2}{(n - 1) \norm{P_C\theta}^2}, \frac{n \norm{P_C\theta}^2}{N(C) \norm{\theta}^2}} \\
+& \leq \min \set{ 4 \frac{N(C)}{(n - 1)} , \frac{n}{N(C)} }
+\end{align*}
+
+\paragraph{Term 3:}
+\begin{equation*}
+\frac{N(C)}{n^2 \Delta^2} \leq \frac{1}{4b^2}
+\end{equation*}
+
+\paragraph{Term 4:}
+By similar analysis to term 2, we obtain
+\begin{equation*}
+\frac{N(C)^2 \norm{\theta}^4}{n^2 \Delta^2} \leq \min \set{ 4 \frac{N(C)}{(n - 1)} , \frac{n}{N(C)} }^2
+\end{equation*}
+
+\paragraph{Term 5:}
+As $\norm{\Delta} \geq \norm{P_C\theta}^2 \geq \norm{\theta}^2/2$, we obtain
+\begin{equation*}
+\frac{N(C) \norm{\theta}^2}{n^2 \Delta^2} \leq 2 \frac{N(C)}{n^2}
+\end{equation*}
+
+\paragraph{Term 6:}
+By similar analysis to term 1, we obtain
+\begin{equation*}
+\frac{\mu_4N(C)^2}{n^3\Delta^2} \leq \mu_4n^{-d/(4s + d)}.
+\end{equation*}
+
+Combining terms, we have that 
+\begin{align*}
+\Pbb_a\left(T_C \leq \frac{N(C)}{n} + \tau(b) \right) & \leq 4\pi^2n^{-d/(4s+d)} + \min \set{ 4 \frac{N(C)}{(n - 1)} , \frac{n}{N(C)} } + \frac{1}{4b^2} + \min \set{ 4 \frac{N(C)}{(n - 1)} , \frac{n}{N(C)} }^2 + \\ 
+& \quad \quad 2 \frac{N(C)}{n^2} + \mu_4n^{-d/(4s + d)}.
+\end{align*}
+\end{proof}
+
+\section{Testing with Eigenvectors in the Nonparametric Regression Model}
+
+Consider the same setup as in the previous section. We now use a modified test statistic. Let $\eta: \mathcal{D} \times \mathcal{D} \to \Reals$ be a Mercel kernel with the expansion
+\begin{equation*}
+\eta(x,y) := \sum_{k \in \mathcal{Z}^d} c_k \phi_k(x) \phi_k(y)
+\end{equation*}
+with associated operator $H$. Let $H_n$ be an $n \times n$ matrix with entries $(H_n)_{ij} = \frac{1}{n} \eta(x_i,x_j)$. (We will interchangeably refer to the operator associated with $H_n$ as $H_n$; in other words, $H_n: L^2(P_n) \to L^2(P_n)$
+\begin{equation*}
+H_ng = \int \eta(x,y) g(x) dP_n(x).
+\end{equation*}
+Write $H_n := V\Lambda V^T$ for the spectral decomposition of $H_n$, where $\Lambda$ is a diagonal matrix of eigenvalues with $\lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n$, and $V = (v_1 \ldots v_n)$ is an orthonormal matrix.
+
+Our test statistic will be
+\begin{equation*}
+T(C) = n \sum_{k:\lambda_k \leq C} \widehat{y}_k^2
+\end{equation*}
+where $\widehat{y}_k := \dotp{z}{v_k}_{L^2(P_n)}$. Note the normalization by $n$.
+
+\subsection{Supplemental Theory}
+
+Given a compact linear operator $L$ from a Hilbert space $\mathcal{H}$ into itself, let $P_C(L)$ be the projection operator onto the linear subspace of $\mathcal{H}$ spanned by all eigenvectors of $L$ with eigenvalue no greater than $C$. For example, given $H$ the operator associated with the kernel $\eta$, we have that
+\begin{equation*}
+P_C(H) \phi_k =
+\begin{cases}
+\phi_k,& ~ c_k \leq C \\
+0,& ~ \text{otherwise}
+\end{cases}
+\end{equation*}
+Additionally, let $\widehat{N}(C) = \sharp\set{k: \lambda_k \leq C}$, and write $\widetilde{f} = (f(x_1),\ldots,f(x_n)$ for the evaluations of $f$ at the data $x_1, \ldots, x_n$.  
+
+\begin{lemma}
+	Under the null hypothesis $\mathbf{H}_0$, $\Ebb(T_C) = \widehat{N}(C)/n$. Under the alternative hypothesis $\mathbf{H}_a$
+	\begin{equation*}
+	\Ebb_a(T_C) = \frac{N(C)}{n} + n \Ebb\left(\norm{P_C(H_n)f}_{L_2(P_n)}^2\right)
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Similar to before, we write
+	\begin{equation*}
+	\widehat{y}_k = \frac{1}{n}\sum_{i = 1}^{n} f(x_i) v_{ki} + \frac{1}{n} \sum_{i = 1}^{n} \varepsilon_i v_{ki} =: \widehat{\theta}_k + \widehat{\epsilon}_k.
+	\end{equation*}
+	We note that
+	\begin{equation*}
+	\sum_{k:c_k \leq C} \widehat{\theta}_k^2 = \norm{P_C(H_n)\widetilde{f}}_{L^2(P_n)}^2
+	\end{equation*}
+	Additionally, we have that
+	\begin{align*}
+	\Ebb(\widehat{\epsilon}_k^2) & = \frac{1}{n^2}\Ebb\bigl(\sum_{i,j = 1}^{n} \varepsilon_i \varepsilon_j v_{ki} v_{kj}\bigr) \\
+	& \overset{(i)}{=} \frac{1}{n^2} \sum_{i = 1}^{n} v_{ki}^2 \\
+	& = \frac{1}{n^2}.
+	\end{align*}
+	where $(i)$ follows from the law of iterated expectation, conditioning on $x_1,\ldots, x_n$. In addition, $\Ebb(\widehat{\epsilon}_k\widehat{\theta}_k | x_1,\ldots,x_k) = 0.$ Therefore,
+	\begin{align*}
+	\Ebb(T_C) & = \sum_{k:\lambda_k \leq C} \frac{1}{n^2} + \Ebb(\widehat{\theta}_k^2) \\
+	& = \frac{\widehat{N}(C)}{n^2} + \Ebb \left(\sum_{k:\lambda_k \leq C} \widehat{\theta}_k^2\right) \\
+	& = \frac{\widehat{N}(C)}{n^2}  + \Ebb \left(\norm{P_C(H_n)\widetilde{f}}_{L^2(P_n)}^2\right).
+	\end{align*}
+\end{proof}
+\end{document}
