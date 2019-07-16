@@ -1,0 +1,423 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 7/10/19 - 7/16/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{Testing over graphs.}
+
+Suppose we observe $G = (V,E)$, an undirected graph over $V = [n]$. Let $D$ be the $m \times n$ incidence matrix of $G$, with singular value decomposition $D = U\Lambda^{1/2}V^T$, so that the Laplacian matrix $L = V \Lambda V^T$. For $i \in [n]$, we observe
+\begin{equation*}
+z_i = \beta_i + \varepsilon_i, \quad \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)
+\end{equation*}
+Our statistical goal is hypothesis testing. We wish to distinguish
+\begin{equation*}
+\mathbf{H}_0: \norm{\beta}_2 = 0 \quad \textrm{vs.} \quad \mathbf{H}_a: \norm{\beta}_2 > 0.
+\end{equation*}
+We will evaluate our performance using the notion of \emph{worst-case error}. For a given ``function'' class $\mathcal{H}$, test function $\phi: \Reals^n \to \set{0,1}$, and $\epsilon > 0$, let
+\begin{equation*}
+\mathcal{R}_{\epsilon}(\phi;\mathcal{H})= \Ebb_{0}(\phi) + \sup_{\beta \in \mathcal{H}:\norm{\beta}_2 > \epsilon} \Ebb_{\beta}(1 - \phi)
+\end{equation*}
+
+An example function class we will consider will be unit balls in discrete Sobolev norms, with known smoothness. For $s,d$ positive integers, and radius $C_n > 0$, let
+\begin{equation*}
+\mathcal{S}^{s}_{d}(C_n) = \set{\beta: \norm{D^{(s)}\beta}_2 \leq C_n}
+\end{equation*}
+where
+\begin{equation*}
+D^{(s)} = 
+\begin{cases}
+L^{s/2}, & \text{$s$ even} \\
+DL^{(s-1)/2}, & \text{$s$ odd}.
+\end{cases}
+\end{equation*}
+We note that the constraint is equivalent to $\beta^T V \Lambda^s V \beta \leq C_n^2$.
+\subsection{Test statistic}
+Let $0 = \lambda_0 \leq \lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_{n - 1}$ denote the ordered eigenvalues of $L$, and let $v_k$ denote the eigenvector corresponding to $\lambda_k$. For a constant $C > 0$ to be specified later, let 
+\begin{equation*}
+T_C = \sum_{k: \lambda_k^{s} \leq C^2} y_k^2
+\end{equation*}
+where
+\begin{equation*}
+y_k = \frac{1}{\sqrt{n}} \dotp{z}{v_k}.
+\end{equation*}
+
+We first compute the expectation $\Ebb(T_C)$. Let $\theta \in \Reals^n$ represent the expectation of $(y_k)$, meaning
+\begin{equation*}
+\theta_k = \frac{1}{\sqrt{n}}\dotp{\beta}{v_k}
+\end{equation*}
+and let $\Pi_C\theta$ have entries $(\Pi_C \theta)_k = \1(\lambda_k^{s} \leq C^2) \theta_k$. Finally, let $N(C) = \sharp\set{k: \lambda_k^{s} \leq C^2}$. 
+
+\begin{lemma}
+	\label{lem:expectation}
+	For any $\beta \in \Reals^n$,
+	\begin{equation}
+	\label{eqn:expectation_1}
+	\Ebb(T_C) = \frac{N(C)}{n} + \norm{\Pi_C \theta}_2^2 
+	\end{equation}
+	If additionally $\beta \in \mathcal{H}$, the following lower bound holds:
+	\begin{equation}
+	\label{eqn:expectation_2}
+	\Ebb(T_C) \geq \frac{N(C)}{n} + \frac{\norm{\beta}^2}{n}  - \frac{C_n^2}{nC^{2}}
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	We can write
+	\begin{align*}
+	\Ebb(T_C) & = \sum_{k: \lambda_k^s \leq C} \Ebb(y_k^2) \\
+	& = \frac{1}{n}\sum_{k: \lambda_k^s \leq C} \Ebb\bigl(\dotp{\beta}{v_k}^2 + \dotp{\varepsilon}{v_k}^2 + 2 \dotp{\varepsilon}{v_k} \dotp{\beta}{v_k}\bigr) \\
+	& = \sum_{k: \lambda_k^s \leq C}\theta_k^2 + \frac{1}{n} \\
+	& = \norm{\Pi_C \theta}^2 + \frac{N(C)}{n},
+	\end{align*}
+	showing \eqref{eqn:expectation_1}. Now, assuming, $\norm{D^{(s)}\beta}_2 \leq C_n$, we can further obtain
+	\begin{align*}
+	\norm{\Pi_C \theta}^2 & = \norm{\theta}^2 - \sum_{k:\lambda_k^s > C^2} \theta_k^2 \\
+	& \geq \norm{\theta}^2 - \frac{1}{C^{2}}\sum_{k:\lambda_k^s > C^2} \theta_k^2 \lambda_k^s \\
+	& \geq \norm{\theta}^2 -\frac{1}{nC^2} \beta^T V \Lambda^s V^T \beta \\
+	& \geq \norm{\theta}^2  - \frac{C_n^2}{nC^{2}}
+	\end{align*}
+	and \eqref{eqn:expectation_2} is shown.
+\end{proof}
+
+We now turn to computing the variance $\Var(T_C)$.
+\begin{lemma}
+	\label{lem:variance}
+	\begin{equation*}
+	\Var(T_C) = \frac{2N(C)}{n^2} + \frac{4 \norm{\Pi_C \theta}_2^2}{n}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	To begin, we rewrite
+	\begin{align*}
+	T_C & = \sum_{k:\lambda_k^s \leq C^2} y_k^2 \\
+	& = \frac{1}{n} \sum_{k: \lambda_k^s \leq C^2} \dotp{z}{v_k}^2 \\
+	& = \frac{1}{n} \sum_{k: \lambda_k^s \leq C^2} z^T v_k v_k^T z \\
+	& =: \frac{1}{n} z^T P_{C} z.
+	\end{align*}
+	where $P_C := \sum_{k: \lambda_k^s \leq C^2} v_k v_k^T$. Therefore $\Var(T_C) = \Var(z^T P_{C} z)/n^2$. We expand $z = \beta + \varepsilon$ to obtain
+	\begin{align}
+	\Var(z^T P_{C} z) & = \Var((\beta + \epsilon)^T P_{C} (\beta + \epsilon)) \nonumber \\
+	& = \Var(\beta^T P_{C} \beta + 2 \epsilon P_{C} \beta + \epsilon^T P_{C} \epsilon) \nonumber \\
+	& = 4 \beta^T P_{C} I P_{C} \beta + \Var(\epsilon^T P_{C} \epsilon) + 4 \Cov(\epsilon P_{C} \beta, \epsilon^T P_{C} \epsilon) \nonumber \\
+	& = 4 n \norm{\Pi_C \theta}_2^2 + \Var(\epsilon^T P_{C} \epsilon) \label{eqn:variance_1}
+	\end{align}
+	where the last equality follows from the Gaussianity of $\epsilon$, as
+	\begin{equation*}
+	\Ebb\bigl( (\epsilon P_{C} \beta) (\epsilon^T P_{C} \epsilon) \bigr) = \sum_{i = 1}^{n} \sum_{j = 1}^{n} \sum_{k = 1}^{n} (P_C\beta)_k (P_C)_{ij} \Ebb(\epsilon_i \epsilon_j \epsilon_k) = 0.
+	\end{equation*}
+	Also by the Gaussianity of $\epsilon$, $\epsilon^T P_C \epsilon \sim \chi_{N(C)}^2$, and therefore $\Var(\epsilon^T P_{C} \epsilon) = 2N(C)$. Plugging back into \eqref{eqn:variance_1}, we obtain
+	\begin{equation*}
+	\Var(z^T P_{C} z) = 4 n \norm{\Pi_C \theta}_2^2 + 2N(C) 
+	\end{equation*}
+	and therefore the desired result is proved.
+\end{proof}
+
+We will consider now the test $\phi_C = \mathbf{1}\{T(C) \geq N(C)/n + \tau(b)\}$, where for $b \geq 1$, $\tau(b) = b \sqrt{2N(C)/n^2}$. We first upper bound the type I error.
+
+\begin{lemma}
+	\label{lem:type_I_error}
+	Under the null hypothesis $\beta = 0$, and for any $C > 0$,
+	\begin{equation*}
+	\Ebb_{\beta = 0}(\phi_C) \leq \frac{1}{b^2}. 
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	The desired result follows from Chebyshev's inequality,
+	\begin{align*}
+	\Ebb_{\beta = 0}(\phi) & = \Pbb_{\beta = 0}\bigl(T(C) \geq N(C)/n + \tau(b)\bigr) \\ 
+	& = \Pbb_{\beta = 0}\bigl(T(C) - \frac{N(C)}{n} \geq \tau(b)\bigr) \\
+	& \leq \Pbb_{\beta = 0}\bigl(\abs{T(C) - \frac{N(C)}{n}} \geq \tau(b)\bigr) \\
+	& \leq \frac{\Var_{\beta = 0}(T_C)}{\tau(b)^2} = \frac{1}{b^2}.
+	\end{align*}
+\end{proof}
+The calculation for the type II error will be slightly more involved.
+\begin{lemma}
+	\label{lem:type_II}
+	Let $b \geq 1$ be fixed. For every $\beta \in \mathcal{S}_d^s$ such that
+	\begin{equation}
+	\label{eqn:type_II}
+	\frac{\norm{\beta}^2}{n} \geq 2b\sqrt{2\frac{N(C)}{n^2}} + \frac{C_n^2}{nC^2}
+	\end{equation}
+	we have that
+	\begin{equation*}
+	\Ebb_{\beta}(1 - \phi) \leq \frac{2}{b^2} + \frac{2}{b\sqrt{2N(C)}}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Let $\Delta = \Ebb_{\beta}(T_C) - N(C)/n = \norm{\Pi_C \theta}^2$, and observe that by Lemma \ref{lem:expectation} and \eqref{eqn:type_II},
+	\begin{equation*}
+	\Delta \geq \frac{\norm{\beta}_2^2}{n} - \frac{C_n^2}{nC^2} \geq 2 \tau(b).
+	\end{equation*}
+	An application of Chebyshev's inequality yields
+	\begin{align*}
+	\Ebb_{\beta}\bigl(1 - \phi\bigr) & = \Pbb_{\beta}\bigl(T_C \leq N(C)/n + \tau(b)\bigr) \\
+	& = \Pbb_{\beta}\bigl(T_C - \Ebb_{\beta}(T_C) \leq \tau(b) - \Delta \bigr) \\
+	& \leq \Pbb_{\beta}\bigl(\abs{T_C - \Ebb_{\beta}(T_C)} \leq \Delta - \tau(b) \bigr) \tag{since $\Delta \geq \tau(b)$}	\\
+	& \leq \frac{\Var_{\beta}(T_C)}{(\Delta - \tau(b))^2} \\
+	& \leq 4\frac{\Var_{\beta}(T_C)}{\Delta^2} \tag{since $\Delta \geq 2\tau(b)$} \\
+	& \leq 4\frac{2N(C)/n^2 + \norm{\Pi_C\theta}_2^2/n}{\Delta^2}.
+	\end{align*}
+	
+	We now handle each summand separately. For the first term, since $\Delta \geq 2 \tau(b)$, we have
+	\begin{equation*}
+	\frac{2N(C)}{n^2\Delta^2} \leq \frac{1}{2b^2}.
+	\end{equation*}
+	
+	For the second term, since $\Delta = \norm{\Pi_C\theta}^2$, we have
+	\begin{align*}
+	\frac{\norm{\Pi_C\theta}_2^2/n}{\Delta^2} & \leq \frac{1}{n\Delta^2} \\
+	& \leq \frac{1}{2n\tau(b)} \\
+	& = \frac{1}{2b\sqrt{2N(C)}}.
+	\end{align*}
+\end{proof}
+
+To more explicitly specify the critical radius $\epsilon: \norm{\beta}_2 \geq \epsilon$, we will need to make an assumption on the relation between $N(C)$ and $C$. In particular, let $C = C^*$, where
+\begin{equation*}
+C^* = \frac{(C_n n^{s/d})^{4s/(4s + d)}}{n^{s/d}}.
+\end{equation*}
+We will assume the following bounds on $N(C^*)$:
+\begin{enumerate}[label=(A\arabic*)]
+	\item Tail decay:
+	\label{asmp:tail_decay}
+	\begin{equation*}
+	N(C^*) \leq (C^*)^{d/s}n
+	\end{equation*}
+	\item Asymptotic consistency:
+	\label{asmp:asymp_consistency}
+	\begin{equation*}
+	\lim_{n \to \infty} N(C^*) = \infty
+	\end{equation*}
+\end{enumerate}
+
+\begin{corollary}
+	\label{cor:critical_radius}
+	Under \ref{asmp:asymp_consistency} and \ref{asmp:tail_decay}, 
+	letting
+	\begin{equation*}
+	\epsilon^2 = (2\sqrt{2}b + 1) \left(\frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}\right)
+	\end{equation*}
+	we have that
+	\begin{equation*}
+	\mathcal{R}_{\epsilon}(\phi_{C^*};\mathcal{S}_d^s) \leq \frac{2}{b^2} + o(1)
+	\end{equation*}
+\end{corollary}
+\begin{proof}
+	Recall that
+	\begin{equation*}
+	\mathcal{R}_{\epsilon}(\phi_{C^*};\mathcal{S}_d^s) = \Ebb_{\beta = 0}(\phi_{C^*}) + \sup_{\beta \in \mathcal{H}:\norm{\beta}_2/n > \epsilon} \Ebb_{\beta}(1 - \phi_{C^*})
+	\end{equation*} 
+	By Lemma \ref{lem:type_I_error}, we have that
+	\begin{equation*}
+	\Ebb_{\beta = 0}(\phi_{C^*}) \leq \frac{1}{b^2}.
+	\end{equation*}
+	Now, we verify that $\epsilon^2 \geq 2b\sqrt{2N(C^*)/n^2} + C_n^2/n(C^*)^2$. By Assumption \ref{asmp:tail_decay} and the choice of $C^{\star}$, we have
+	\begin{equation*}
+	N(C^*) \leq (C^*)^{d/s}n = (C_n n^{s/d})^{4d/(4s + d)}
+	\end{equation*}
+	and therefore
+	\begin{equation*}
+	2b\sqrt{\frac{N(C^*)}{n^2}} \leq \frac{2b}{n} (C_n n^{s/d})^{2d/(4s+d)}
+	\end{equation*}
+	Moving on to the second term, we have
+	\begin{align*}
+	\frac{C_n^2}{n(C^{\star})^2} & = \frac{C_n^2n^{2s/d}}{n(C_nn^{s/d})^{8s/(4s+d)}} \\
+	& = \frac{C_n^{2d/(4s + d)}n^{(s/d)2d/(4s + d)}}{n} \\
+	& = \frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}
+	\end{align*}
+	and therefore $\epsilon \geq 2b\sqrt{2N(C^*)/n^2} + C_n^2/n(C^*)^2$. As a result, by Lemma \ref{lem:type_II} for any $\beta \in \mathcal{S}^s_d$ such that $\norm{\beta}/n \geq \epsilon$, 
+	\begin{equation*}
+	\Ebb_{\beta}(1 - \phi_{C^{\star}}) \geq \frac{2}{b^2} + \frac{2}{b\sqrt{2N(C)}}
+	\end{equation*}
+	and by Assumption \ref{asmp:asymp_consistency}, the latter term tends to infinity with $n$.
+\end{proof}
+
+\section{Applications}
+
+\subsection{Grid}
+Let $G$ be the $d$-dimensional grid graph, and let $C_n = n^{1/2 - s/d}$, so that
+\begin{equation*}
+C^{\star} = \frac{n^{2s/(4s + d)}}{n^{s/d}}
+\end{equation*}
+The following bound holds for eigenvalues of the Laplacian $L$ of the grid graph:
+\begin{equation*}
+\lambda_k^s \geq 4\sin^{2s}(\pi k^{1/d}/(2n^{1/d})) \geq \frac{\pi^{2s} k^{2s/d}}{4^{s}n^{2s/d}}
+\end{equation*}
+Therefore, for any $C > 0$, if $\lambda_k^s < C^2$, then
+\begin{align*}
+\frac{\pi^{2s} k^{2s/d}}{4^sn^{2s/d}} & < C^2 \Longrightarrow \\
+k & < \frac{4^s C^{d/s}n}{\pi^{2s}}
+\end{align*}
+Since this holds in particular with respect to $C = C^{\star}$, assumption \ref{asmp:tail_decay} is satisfied. One can similarly shown \ref{asmp:asymp_consistency} holds as well. By Corollary \ref{cor:critical_radius}, we therefore have that when
+\begin{equation*}
+\epsilon^2 = (2b + 1)\left(\frac{n^{d/(4s + d)}}{n}\right) = (2b + 1)n^{-4s/(4s + d)}
+\end{equation*}
+we have
+\begin{equation*}
+\mathcal{R}_{\epsilon}(\phi_{C^*};\mathcal{S}_d^s) \leq \frac{2}{b^2} + o(1).
+\end{equation*}
+
+\section{Additional Theory}
+We consider now a naive test statistic,
+\begin{equation*}
+T = \frac{\norm{z}^2}{n}
+\end{equation*}
+with associated test $\Phi_b(T) = \mathbf{1}(T \leq 1 + 2b/\sqrt{n})$.
+and prove an upper bound showing that when $\epsilon \geq n^{-1/4}$, the worst-case error is bounded for all $\beta \in L^2(V)$. 
+
+\begin{lemma}
+	Let $\epsilon = n^{-1/4}$. Then
+	\begin{equation*}
+	\mathcal{R}_{\epsilon}(\Phi_b;L^2(V)) \leq \frac{2}{b^2} + \frac{1}{n}
+	\end{equation*}
+\end{lemma}
+
+\end{document}
