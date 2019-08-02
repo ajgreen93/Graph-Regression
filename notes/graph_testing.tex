@@ -1,22 +1,21 @@
 \documentclass{article}
 \usepackage{amsmath}
 \usepackage{amsfonts, amsthm, amssymb}
-\usepackage{bm}
 \usepackage{graphicx}
 \usepackage[colorlinks]{hyperref}
 \usepackage[parfill]{parskip}
 \usepackage{algpseudocode}
 \usepackage{algorithm}
 \usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
 
 \usepackage{natbib}
 \renewcommand{\bibname}{REFERENCES}
 \renewcommand{\bibsection}{\subsubsection*{\bibname}}
 
-\makeatletter
-\newcommand{\leqnomode}{\tagsleft@true}
-\newcommand{\reqnomode}{\tagsleft@false}
-\makeatother
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
 
 \newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
 \newcommand{\Graph}{\mathcal{G}}
@@ -27,19 +26,20 @@
 \newcommand{\convdist}{\overset{w}{\to}}
 \newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
 \newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
-\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
 \newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
 \newcommand{\iset}{\mathbf{i}}
 \newcommand{\jset}{\mathbf{j}}
 \newcommand{\myexp}[1]{\exp \{ #1 \}}
-\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
-\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
 \newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
 \newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
-\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
-\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
-\newcommand{\dive}{\mathrm{div}}
-\newcommand{\Bin}{\mathrm{Bin}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
 
 \newcommand{\emC}{C_n}
 \newcommand{\emCpr}{C'_n}
@@ -49,65 +49,64 @@
 \newcommand{\estC}{\widehat{C}_n}
 \newcommand{\hC}{\hat{C^{\sigma}_n}}
 \newcommand{\vol}{\text{vol}}
-\newcommand{\Bal}{\textrm{Bal}}
-\newcommand{\Cut}{\textrm{Cut}}
-\newcommand{\Ind}{\textrm{Ind}}
-\newcommand{\set}[1]{\left\{#1\right\}}
-\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
-\newcommand{\Perp}{\perp \! \! \! \perp}
-\newcommand{\Naturals}{\mathbb{N}}
-
-
-\newcommand{\Linv}{L^{\dagger}}
-\newcommand{\tr}{\text{tr}}
-\newcommand{\h}{\textbf{h}}
-% \newcommand{\l}{\ell}
-\newcommand{\x}{\textbf{x}}
-\newcommand{\y}{\textbf{y}}
-\newcommand{\bl}{\bm{\ell}}
-\newcommand{\bnu}{\bm{\nu}}
-\newcommand{\Lx}{\mathcal{L}_X}
-\newcommand{\Ly}{\mathcal{L}_Y}
-\DeclareMathOperator*{\argmin}{argmin}
-
-
-\newcommand{\emG}{\mathbb{G}_n}
-\newcommand{\A}{\mathcal{A}}
-\newcommand{\F}{\mathcal{F}}
-\newcommand{\G}{\mathcal{G}}
-\newcommand{\X}{\mathcal{X}}
-\newcommand{\Rd}{\Reals^d}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\E}{\mathcal{E}}
-
-%%% Matrix related notation
-\newcommand{\Xbf}{\mathbf{X}}
-\newcommand{\Ybf}{\mathbf{Y}}
-\newcommand{\Zbf}{\mathbf{Z}}
-\newcommand{\Abf}{\mathbf{A}}
-\newcommand{\Dbf}{\mathbf{D}}
-\newcommand{\Wbf}{\mathbf{W}}
-\newcommand{\Lbf}{\mathbf{L}}
-\newcommand{\Ibf}{\mathbf{I}}
-\newcommand{\Bbf}{\mathbf{B}}
-
-%%% Vector related notation
-\newcommand{\lbf}{\bm{\ell}}
-\newcommand{\fbf}{\mathbf{f}}
-
-%%% Set related notation
-\newcommand{\Dset}{\mathcal{D}}
-\newcommand{\Aset}{\mathcal{A}}
-\newcommand{\Wset}{\mathcal{W}}
-
-%%% Distribution related notation
-\newcommand{\Pbb}{\mathbb{P}}
-\newcommand{\Qbb}{\mathbb{Q}}
-% \newcommand{\Pr}{\mathrm{Pr}}}
-
-%%% Functionals
+\newcommand{\spansp}{\mathrm{span}~}
 \newcommand{\1}{\mathbf{1}}
 
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
 
 \newtheoremstyle{alden}
 {6pt} % Space above
@@ -120,7 +119,7 @@
 {} % Theorem head spec (can be left empty, meaning `normal')
 
 \theoremstyle{alden} 
-\newtheorem{definition}{Definition}[section]
+
 
 \newtheoremstyle{aldenthm}
 {6pt} % Space above
@@ -140,226 +139,355 @@
 \newtheorem{corollary}{Corollary}
 \newtheorem{proposition}{Proposition}
 \newtheorem{assumption}{Assumption}
-
-\theoremstyle{remark}
 \newtheorem{remark}{Remark}
 
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
 \begin{document}
-	
-\title{\textcolor{red}{Testing with Graphs}}
+\title{Graph Testing}
 \author{Alden Green}
 \date{\today}
 \maketitle
 
-\paragraph{Two-sample non-parametric hypothesis-testing problem.}
+\section{Fixed graph testing.}
 
-For fixed integers $n_1 + n_2 = n$, let $\Xbf = \set{x_1, \ldots, x_{n_1}} \subset \Rd$ and $\Ybf = \set{y_1, \ldots, y_{n_2}}$ be sampled i.i.d from distributions $\Pbb$ and $\Qbb$ with density functions $p$ and $q$, respectively, both with support on $D \subset \Rd$. Our statistical problem is testing the null hypothesis $H_0: \Pbb = \Qbb$ vs. the alternative $H_1: \Pbb \neq \Qbb$, where our knowledge of $\Pbb$ and $\Qbb$ come from the samples $\Xbf$ and $\Ybf$. 
-
-\paragraph{Integral Probability Metric.}
-Given $\F$ a class of real-valued bounded measurable functions on $D$, the \emph{integral probability metric} between $\Pbb$ and $\Qbb$ with respect to $\F$ is
+Suppose we observe $G = (V,E)$, an undirected graph over $V = [n]$. Let $B$ be the $m \times n$ incidence matrix of $G$, with singular value decomposition $B = U\Lambda^{1/2}V^T$, so that the Laplacian matrix $L = V \Lambda V^T$. For $i \in [n]$, we observe
 \begin{equation*}
-\gamma_{\F}(\Pbb,\Qbb) = \sup_{f \in \F}\abs{\int_{D} f d\Pbb - \int_{D} f d\Qbb}
+z_i = \beta_i + \varepsilon_i, \quad \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)
+\end{equation*}
+Our statistical goal is hypothesis testing. We wish to distinguish
+\begin{equation*}
+\mathbf{H}_0: \norm{\beta}_2 = 0 \quad \textrm{vs.} \quad \mathbf{H}_a: \norm{\beta}_2 > 0.
+\end{equation*}
+We will evaluate our performance using the notion of \emph{worst-case error}. For a given ``function'' class $\mathcal{H}$, test function $\phi: \Reals^n \to \set{0,1}$, and $\epsilon > 0$, let
+\begin{equation*}
+\mathcal{R}_{\epsilon}(\phi;\mathcal{H})= \Ebb_{0}(\phi) + \sup_{\beta \in \mathcal{H}:\norm{\beta}_2 > \epsilon} \Ebb_{\beta}(1 - \phi)
 \end{equation*}
 
-One such IPM that has not received close attention until surprisingly recently is the \emph{(weighted) Sobolev IPM}. For $f \in L^2(\Dset)$ and $\rho$ a density function over $\Dset$, the ($\rho^2$-weighted) Sobolev 1,2 norm of $f$ is given by
+\subsection{Discrete Sobolev Classes.}
+
+The first ``function'' class we will consider will be balls in discrete Sobolev norms, with known smoothness. For $s,d$ positive integers, and radius $C_n > 0$, let
 \begin{equation*}
-\norm{f}_{1,2,\rho^2} := 
-\begin{cases}
-\int_{\Dset}\norm{\nabla_x f(x)}^2 \rho^2 dx,~ & \text{$f \in H^1(\Dset)$} \\
-\infty,~ & \text{$f \in L^2(\Dset) \setminus H^1(\Dset)$}
-\end{cases}
-\end{equation*}
-where $H^1(\Dset)$ is \textcolor{red}{the Sobolev space of $L^2(\Dset)$ functions with weak derivative $\nabla_x f(x) \in L^2(\Dset)$.}
-
-Consider the unit ball of $\norm{\cdot}_{1,2,\rho^2}$,
-\begin{equation*}
-\Wset^{1,2}(\Dset,\rho^2) := \set{f: \norm{f}_{1,2,\rho^2} \leq 1}.
-\end{equation*}
-The weighted Sobolev IPM is simply $\gamma_{\Wset^{1,2}(\Dset,\rho^2)}(\Pbb,\Qbb)$.
-
-\paragraph{Neighborhood graph.}
-
-Let $G_{n,r_n} = (V,E,w)$ denote a weighted, undirected graph constructed from the samples $\Zbf = \set{z_1, \ldots, z_n} = (\Xbf,\Ybf)$ where $V = \set{1, \ldots, n}$, and $w_{uv} = K(z_u, z_v):= k(\frac{\norm{z_u - z_v}}{\epsilon_n}) \geq 0$ for $u,v \in V$, and a particular kernel function $k$. Here $(u,v) \in E$ if and only if $w_{uv} > 0$.
-
-Motivated by the integral probability metric, our test statistics will be of the form
-\begin{equation*}
-\gamma_{\F_n}(\Pbb_n,\Qbb_n) = \sup_{f_n \in \F_n}\abs{\int_{D} f_n d\Pbb_n - \int_{D} f_n d\Qbb_n}
+\mathcal{S}^{s}_{d}(C_n) = \set{\beta: \norm{D^{(s)}\beta}_2 \leq C_n}
 \end{equation*}
 where
 \begin{equation*}
-\Pbb_n := \frac{1}{n_1}\sum_{i = 1}^{n_1} \delta_{x_i}, ~~ \Qbb_n := \frac{1}{n_2}\sum_{i = 1}^{n_2} \delta_{y_i}
-\end{equation*}
-are the empirical distributions of $\Xbf$ and $\Ybf$, respectively, and $\F_n$ is a \textcolor{red}{class of functions $f_n: \Zbf \to \Reals$ exhibiting some regularity with respect to the neighborhood graph $G_{n,r}$.}
-
-\paragraph{Laplacian smoothing and Total Variation denoising.}
- 
-For convenience, we number the edges $E  = (e_1, \ldots, e_m)$. We denote by $\Bbf \in \Reals^{m \times n}$ the edge incidence matrix of $G_{n,r}$, which for $k$th edge $e_k = (u,v)$ has $k$th row $\Bbf_{k} = (0,\ldots,-w_{uv},\ldots,w_{uv},\ldots,0)$ with a $-w_{uv}$ in the $u$th location, and a $w_{uv}$ in the $v$th location. The random (unnormalized) Laplacian matrix is then $\Lbf = \Bbf^T \Bbf$. We also introduce a \emph{label vector}, given by $\lbf = (\ell_1, \ldots, \ell_n)$ with
-\begin{equation}
-\label{eqn: label_vector}
-\ell_k = 
+D^{(s)} = 
 \begin{cases}
-\frac{n}{n_1},~~~ \text{$z_k \in \Xbf$} \\
--\frac{n}{n_2}, ~ \text{$z_k \in \Ybf$}
+L^{s/2}, & \text{$s$ even} \\
+DL^{(s-1)/2}, & \text{$s$ odd}.
 \end{cases}
-\end{equation}
+\end{equation*}
+We note that the constraint is equivalent to $\beta^T V \Lambda^s V \beta \leq C_n^2$.
+\subsection{Test statistic}
+Let $0 = \lambda_0 \leq \lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_{n - 1}$ denote the ordered eigenvalues of $L$, and let $v_k$ denote the eigenvector corresponding to $\lambda_k$. For a constant $C > 0$ to be specified later, let 
+\begin{equation*}
+T_C = \sum_{k: \lambda_k^{s} \leq C^2} y_k^2
+\end{equation*}
+where
+\begin{equation*}
+y_k = \frac{1}{\sqrt{n}} \dotp{z}{v_k}.
+\end{equation*}
 
-
-Our test statistics $T_1(\lbf; G_{n,r})$ and $T_2(\lbf; G_{n,r})$ are defined as follows:
-\begin{align*}
-	T_1(\lbf; G_{n,r}) := \sup_{\fbf \in \Reals^n: \norm{\Bbf \fbf}_1 \leq C_{n,r}} ~ \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_k \\
-	T_2(\lbf; G_{n,r}) := \sup_{\fbf \in \Reals^n: \norm{\Bbf \fbf}_2^2 \leq C_{n,r}} ~ \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_k
-\end{align*}
-where $C_{n,r} = \frac{\sigma_k}{n^2 r_n^{d+2}}$ and we write $\fbf = (f_1,\ldots, f_n)$. We note that, as promised, these satisfy the form
-\begin{align*}
-T_1(\lbf; G_{n,r}) & = \sup_{f_n \in TV_n}\abs{\int_{D} f_n d\Pbb_n - \int_{D} f_n d\Qbb_n} \\
-T_2(\lbf; G_{n,r}) & = \sup_{f_n \in \Wset_n}\abs{\int_{D} f_n d\Pbb_n - \int_{D} f_n d\Qbb_n}
-\end{align*}
-where $TV_n = \set{\fbf: \norm{\Bbf \fbf}_1 \leq C_{n,r}}$ and $\Wset_n = \set{\fbf: \norm{\Bbf \fbf}_2 \leq C_{n,r}}$.
-
-
-
-\section{Consistency under fixed alternative}
-
-\paragraph{Binomialized data model.}
-For technical reasons, we would like $z_1, \ldots, z_n$ to be independent and identically distributed. We consider the following generative model, which we term the \emph{binomialized data model}: 
-
-Fix $n \in \Naturals > 0$, and $n_1 \sim \Bin(n,1/2),~ n_2 = n - n_1$. Then, let $x_1, \ldots, x_{n_1} \in \Rd$ be a sequence of i.i.d random points chosen according to $\Pbb$, and $y_1, \ldots, y_{n_2} \in \Rd$ a separate sequence of i.i.d random points chosen according to $\Qbb$, with $x_j \perp y_k$ for all $j,k$. Fix $\widetilde{\Zbf} = (\widetilde{z}_1,\ldots,\widetilde{z}_n) := (x_1, \ldots, x_{n_1}, y_1, \ldots, y_{n_2})$.  Finally, for a permutation $\pi: [n] \to [n]$ chosen uniformly at random among all such permutations, let $\Zbf = (z_1,\ldots,z_n) =  (\widetilde{z}_{\pi(1)}, \ldots, \widetilde{z}_{\pi(n)})$. 
-
-The label vector $\lbf$ remains defined as in \eqref{eqn: label_vector} with respect to $\Zbf$. Note that now $z_i \overset{i.i.d}{\sim} \frac{\Pbb}{2} + \frac{\Qbb}{2}$, as we desired, with density function $\mu(x) := \frac{p(x) + q(x)}{2}$.
-
-\begin{theorem}[Pointwise limit of Laplacian smooth test statistic.]
-	\label{thm: LLN_for_t2}
-	Let $d \geq 2$ and let $\Dset \subset \Rd$ be an open, bounded, connected set with Lipschitz boundary. Let $\mu$ satisfy
-	\begin{equation*}
-	m \leq \mu(x) \leq M \tag{$\forall x \in D$}
-	\end{equation*}
-	for some $0 < m \leq M$. Let $(r_n)$ be a sequence of positive numbers converging to $0$ and satisfying
-	\begin{align*}
-	& \lim_{n \to \infty} \frac{(\log n)^{3/4}}{n^{1/2}} \frac{1}{r_n} = 0 ~~ \text{if $d = 2$} \\
-	& \lim_{n \to \infty} \frac{(\log n)^{1/d}}{n^{1/d}} \frac{1}{r_n} = 0 ~~ \text{if $d \geq 3$}
-	\end{align*}
-	Assume the kernel $k$ satisfies conditions: 
-	\begin{align*}
-	& k(0) > 0 ~ \text{and $k$ is continuous at $0$.} \tag{\textbf{K1}} \\
-	& k~ \text{is non-increasing.} \tag{\textbf{K2}} \\
-	& \text{The integral $\int_{0}^{\infty} k(r) r^{d+1} dr$ is finite.} \tag{\textbf{K3}}
-	\end{align*}
-	
-	Then with probability one the following statement holds: For $(z_1, \ldots, z_n)$ chosen under the binomialized data model,
-	\begin{equation*}
-	\lim_{n \to \infty} T_2(\lbf; G_{n,r_n}) = \gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb).
-	\end{equation*}
-\end{theorem}
-
-\section{Proofs}
-
-Fix $\mu_n = \frac{d\Pbb_n + d\Qbb_n}{2}$. \textcolor{red}{We will show a variational form of convergence of $\mu_n$ to $\mu$.}
-
-\subsection{Gamma convergence of constraint}
-
-\begin{definition}[$TL^2$ convergence]
-	Denote by $\mathfrak{B}(\Dset)$ the Borel $\sigma$-algebra of $\Dset$ and $\mathcal{P}(\Dset)$ the set of all Borel probability measures on $\Dset$. Given a Borel map $T: \Dset \to \Dset$, the \emph{push-forward} of $\mu$ by $T$ is given by
-	\begin{equation*}
-	T_{\star}\mu(\Aset) := \mu(T^{-1}(\Aset)), ~~ \Aset \in \mathfrak{B}(\Dset).
-	\end{equation*}
-	
-	Given $\widetilde{\mu} \in \mathcal{P}(\Dset)$, we say that $T$ is a \emph{transportation map} between $\mu$ and $\widetilde{\mu}$ if $T_{\star}\mu = \widetilde{\mu}$. If for a sequence $(T_n)$ of transportation maps
-	\begin{equation*}
-	\int_{\Dset} \abs{x - T_n(x)}^2 d\mu(x) \to 0,~ \text{as $n \to \infty$}
-	\end{equation*}
-	we refer to the sequence as \emph{stagnating.} 
-	
-	Take $f \in L^2(\mu)$ and a sequence $(f_n)$ with $f_n \in L^2(\mu_n)$ for $n = 1,2,\ldots$. If there exists a stagnating sequence of transportation maps $(T_n)$ such that
-	\begin{equation*}
-	\int_{\Dset} \abs{ f - T_n(f_n(x)) }^2 d\mu(x) \to 0,~ \text{as $n \to \infty$}
-	\end{equation*}
-	we say that $(f_n)$ converges $TL^2$ to $f$, and write $f_n \overset{TL^2}{\to} f$.
-\end{definition}
-
-We restate Theorem 1.4 of \cite{trillos2018}, changing notation to match the rest of this paper.
-
-\begin{theorem}[Theorem 1.4 of \cite{trillos2018}]
-	\label{thm: gamma_convergence_energy_functional}
-	Under the setup and conditions of Theorem \ref{thm: LLN_for_t2}, with probability one the following statements hold:
-	\begin{itemize}
-		\item \emph{Liminf inequality:}
-		For all $f \in L^2(\mu)$ and all sequences $(f_n)$ with $f_n \in L^2(\mu_n)$ and $f_n \overset{TL^2}{\to} f$,
-		\begin{equation*}
-		\liminf_{n \to \infty} \frac{1}{n^2 r_n^{d + 2}} \norm{Bf}_2^2 \geq \textcolor{red}{\sigma_{k}} \norm{f}_{1,2,\rho^2}
-		\end{equation*}
-		
-		\item \emph{Limsup inequality:} For all $f \in L^2(\mu)$, there exists a sequence $(f_n)$ with $f_n \in L^2(\mu_n)$ and $f_n \overset{TL^2}{\to} f$ such that
-		\begin{equation*}
-		\limsup_{n \to \infty} \frac{1}{n^2 r_n^{d + 2}} \norm{\Bbf \fbf_n }_2^2 \leq \textcolor{red}{\sigma_{k}} \norm{f}_{1,2,\rho^2}
-		\end{equation*}
-		where $\fbf_n = (f_n(z_1), \ldots, f_n(z_n))$.
-		
-		\item \emph{Compactness property:} Every sequence $(f_n)$ with $f_n \in L^2(\mu_n)$ satisfying
-		\begin{equation*}
-		\sup_{n \in \Naturals} \frac{1}{n^2 r_n^{d + 2}} \norm{Bf}_2^2 < \infty
-		\end{equation*}
-		is precompact in $TL^2$, that is, every subsequence of $(f_n)$ has a further subsequence which converges in the $TL^2$-sense to an element of $L^2(\Dset)$.
-	\end{itemize}
-	
-\end{theorem}
-
-\subsection{Continuity of risk functional}
-
-
+We first compute the expectation $\Ebb(T_C)$. Let $\theta \in \Reals^n$ represent the expectation of $(y_k)$, meaning
+\begin{equation*}
+\theta_k = \frac{1}{\sqrt{n}}\dotp{\beta}{v_k}
+\end{equation*}
+and let $\Pi_C\theta$ have entries $(\Pi_C \theta)_k = \1(\lambda_k^{s} \leq C^2) \theta_k$. Finally, let $N(C) = \sharp\set{k: \lambda_k^{s} \leq C^2}$. 
 
 \begin{lemma}
-	\label{lem: continuity_of_risk_functional}
-	With probability one the following statement holds: If a sequence $(f_n)$ where $f_n: \set{z_1, \ldots,z_n} \to [-1,1]^{n}$ converges $TL^2$ to $f \in L^2(\mu)$, then
-	\begin{equation*}
-	\lim_{n \to \infty} \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_n(z_k) = \int_{\Dset} f d\Pbb(x) - \int_{\Dset} fd\Qbb(x).
- 	\end{equation*}
+	\label{lem:expectation}
+	For any $\beta \in \Reals^n$,
+	\begin{equation}
+	\label{eqn:expectation_1}
+	\Ebb(T_C) = \frac{N(C)}{n} + \norm{\Pi_C \theta}_2^2 
+	\end{equation}
+	If additionally $\beta \in \mathcal{H}$, the following lower bound holds:
+	\begin{equation}
+	\label{eqn:expectation_2}
+	\Ebb(T_C) \geq \frac{N(C)}{n} + \frac{\norm{\beta}^2}{n}  - \frac{C_n^2}{nC^{2}}
+	\end{equation}
 \end{lemma}
+\begin{proof}
+	We can write
+	\begin{align*}
+	\Ebb(T_C) & = \sum_{k: \lambda_k^s \leq C} \Ebb(y_k^2) \\
+	& = \frac{1}{n}\sum_{k: \lambda_k^s \leq C} \Ebb\bigl(\dotp{\beta}{v_k}^2 + \dotp{\varepsilon}{v_k}^2 + 2 \dotp{\varepsilon}{v_k} \dotp{\beta}{v_k}\bigr) \\
+	& = \sum_{k: \lambda_k^s \leq C}\theta_k^2 + \frac{1}{n} \\
+	& = \norm{\Pi_C \theta}^2 + \frac{N(C)}{n},
+	\end{align*}
+	showing \eqref{eqn:expectation_1}. Now, assuming, $\norm{D^{(s)}\beta}_2 \leq C_n$, we can further obtain
+	\begin{align*}
+	\norm{\Pi_C \theta}^2 & = \norm{\theta}^2 - \sum_{k:\lambda_k^s > C^2} \theta_k^2 \\
+	& \geq \norm{\theta}^2 - \frac{1}{C^{2}}\sum_{k:\lambda_k^s > C^2} \theta_k^2 \lambda_k^s \\
+	& \geq \norm{\theta}^2 -\frac{1}{nC^2} \beta^T V \Lambda^s V^T \beta \\
+	& \geq \norm{\theta}^2  - \frac{C_n^2}{nC^{2}}
+	\end{align*}
+	and \eqref{eqn:expectation_2} is shown.
+\end{proof}
 
-\subsection{Proof of Theorem \ref{thm: LLN_for_t2}}
+We now turn to computing the variance $\Var(T_C)$.
+\begin{lemma}
+	\label{lem:variance}
+	\begin{equation*}
+	\Var(T_C) = \frac{2N(C)}{n^2} + \frac{4 \norm{\Pi_C \theta}_2^2}{n}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	To begin, we rewrite
+	\begin{align*}
+	T_C & = \sum_{k:\lambda_k^s \leq C^2} y_k^2 \\
+	& = \frac{1}{n} \sum_{k: \lambda_k^s \leq C^2} \dotp{z}{v_k}^2 \\
+	& = \frac{1}{n} \sum_{k: \lambda_k^s \leq C^2} z^T v_k v_k^T z \\
+	& =: \frac{1}{n} z^T P_{C} z.
+	\end{align*}
+	where $P_C := \sum_{k: \lambda_k^s \leq C^2} v_k v_k^T$. Therefore $\Var(T_C) = \Var(z^T P_{C} z)/n^2$. We expand $z = \beta + \varepsilon$ to obtain
+	\begin{align}
+	\Var(z^T P_{C} z) & = \Var((\beta + \epsilon)^T P_{C} (\beta + \epsilon)) \nonumber \\
+	& = \Var(\beta^T P_{C} \beta + 2 \epsilon P_{C} \beta + \epsilon^T P_{C} \epsilon) \nonumber \\
+	& = 4 \beta^T P_{C} I P_{C} \beta + \Var(\epsilon^T P_{C} \epsilon) + 4 \Cov(\epsilon P_{C} \beta, \epsilon^T P_{C} \epsilon) \nonumber \\
+	& = 4 n \norm{\Pi_C \theta}_2^2 + \Var(\epsilon^T P_{C} \epsilon) \label{eqn:variance_1}
+	\end{align}
+	where the last equality follows from the Gaussianity of $\epsilon$, as
+	\begin{equation*}
+	\Ebb\bigl( (\epsilon P_{C} \beta) (\epsilon^T P_{C} \epsilon) \bigr) = \sum_{i = 1}^{n} \sum_{j = 1}^{n} \sum_{k = 1}^{n} (P_C\beta)_k (P_C)_{ij} \Ebb(\epsilon_i \epsilon_j \epsilon_k) = 0.
+	\end{equation*}
+	Also by the Gaussianity of $\epsilon$, $\epsilon^T P_C \epsilon \sim \chi_{N(C)}^2$, and therefore $\Var(\epsilon^T P_{C} \epsilon) = 2N(C)$. Plugging back into \eqref{eqn:variance_1}, we obtain
+	\begin{equation*}
+	\Var(z^T P_{C} z) = 4 n \norm{\Pi_C \theta}_2^2 + 2N(C) 
+	\end{equation*}
+	and therefore the desired result is proved.
+\end{proof}
 
-Let $f^{\star}$ be the witness function for $\gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb)$, meaning
+We will consider now the test $\phi_C = \mathbf{1}\{T(C) \geq N(C)/n + \tau(b)\}$, where for $b \geq 1$, $\tau(b) = b \sqrt{2N(C)/n^2}$. We first upper bound the type I error.
+
+\begin{lemma}
+	\label{lem:type_I_error}
+	Under the null hypothesis $\beta = 0$, and for any $C > 0$,
+	\begin{equation*}
+	\Ebb_{\beta = 0}(\phi_C) \leq \frac{1}{b^2}. 
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	The desired result follows from Chebyshev's inequality,
+	\begin{align*}
+	\Ebb_{\beta = 0}(\phi) & = \Pbb_{\beta = 0}\bigl(T(C) \geq N(C)/n + \tau(b)\bigr) \\ 
+	& = \Pbb_{\beta = 0}\bigl(T(C) - \frac{N(C)}{n} \geq \tau(b)\bigr) \\
+	& \leq \Pbb_{\beta = 0}\bigl(\abs{T(C) - \frac{N(C)}{n}} \geq \tau(b)\bigr) \\
+	& \leq \frac{\Var_{\beta = 0}(T_C)}{\tau(b)^2} = \frac{1}{b^2}.
+	\end{align*}
+\end{proof}
+The calculation for the type II error will be slightly more involved.
+\begin{lemma}
+	\label{lem:type_II}
+	Let $b \geq 1$ be fixed. For every $\beta \in \mathcal{S}_d^s(C_n)$ such that
+	\begin{equation}
+	\label{eqn:type_II}
+	\frac{\norm{\beta}^2}{n} \geq 2b\sqrt{2\frac{N(C)}{n^2}} + \frac{C_n^2}{nC^2}
+	\end{equation}
+	we have that
+	\begin{equation*}
+	\Ebb_{\beta}(1 - \phi) \leq \frac{2}{b^2} + \frac{2}{b\sqrt{2N(C)}}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Let $\Delta = \Ebb_{\beta}(T_C) - N(C)/n = \norm{\Pi_C \theta}^2$, and observe that by Lemma \ref{lem:expectation} and \eqref{eqn:type_II},
+	\begin{equation*}
+	\Delta \geq \frac{\norm{\beta}_2^2}{n} - \frac{C_n^2}{nC^2} \geq 2 \tau(b).
+	\end{equation*}
+	An application of Chebyshev's inequality yields
+	\begin{align*}
+	\Ebb_{\beta}\bigl(1 - \phi\bigr) & = \Pbb_{\beta}\bigl(T_C \leq N(C)/n + \tau(b)\bigr) \\
+	& = \Pbb_{\beta}\bigl(T_C - \Ebb_{\beta}(T_C) \leq \tau(b) - \Delta \bigr) \\
+	& \leq \Pbb_{\beta}\bigl(\abs{T_C - \Ebb_{\beta}(T_C)} \leq \Delta - \tau(b) \bigr) \tag{since $\Delta \geq \tau(b)$}	\\
+	& \leq \frac{\Var_{\beta}(T_C)}{(\Delta - \tau(b))^2} \\
+	& \leq 4\frac{\Var_{\beta}(T_C)}{\Delta^2} \tag{since $\Delta \geq 2\tau(b)$} \\
+	& \leq 4\frac{2N(C)/n^2 + \norm{\Pi_C\theta}_2^2/n}{\Delta^2}.
+	\end{align*}
+	
+	We now handle each summand separately. For the first term, since $\Delta \geq 2 \tau(b)$, we have
+	\begin{equation*}
+	\frac{2N(C)}{n^2\Delta^2} \leq \frac{1}{2b^2}.
+	\end{equation*}
+	
+	For the second term, since $\Delta = \norm{\Pi_C\theta}^2$, we have
+	\begin{align*}
+	\frac{\norm{\Pi_C\theta}_2^2/n}{\Delta^2} & \leq \frac{1}{n\Delta^2} \\
+	& \leq \frac{1}{2n\tau(b)} \\
+	& = \frac{1}{2b\sqrt{2N(C)}}.
+	\end{align*}
+\end{proof}
+
+To more explicitly specify the critical radius $\epsilon: \norm{\beta}_2 \geq \epsilon$, we will need to make an assumption on the relation between $N(C)$ and $C$. In particular, let $C = C^*$, where
 \begin{equation*}
-\abs{\int_{\Dset}f^{\star}d\Pbb - \int_{\Dset}f^{\star}d\Qbb} = \gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb)
+C^* = c\frac{(C_n n^{s/d})^{4s/(4s + d)}}{n^{s/d}}.
 \end{equation*}
-where $f^{\star} \in \Wset^{1,2}(\Dset,\mu^2)$ implies $f^{\star} \in L^2(\mu)$. By the limsup inequality in Theorem \ref{thm: gamma_convergence_energy_functional}, there exists some $(f_n) \overset{TL^2}{\to} f$ with $f_n \in L^2(\mu_n)$ such that
+for some $c$ constant in $n$. We will assume the following bound on $N(C^*)$:
+\begin{enumerate}[label=(A\arabic*)]
+	\item Tail decay:
+	\label{asmp:tail_decay}
+	\begin{equation*}
+	N(C^*) \leq (C^*)^{d/s}n
+	\end{equation*}
+\end{enumerate}
+
+\begin{corollary}
+	\label{cor:critical_radius}
+	Fix $b \geq 1$, assume \ref{asmp:tail_decay}. Then, for any $C_n > 0$
+	\begin{equation*}
+	\sup_{\substack{\beta \in \mathcal{S}_d^{s}(C_n), \\ \norm{\beta}_2/n \geq \epsilon}} \Ebb_{\beta}(1 - \phi_{C^{\star}}) \leq \frac{2}{b^2} + \frac{2}{b\sqrt{N(C^{\star})}}
+	\end{equation*}
+	for every $\epsilon > 0$ such that 
+	\begin{equation*}
+	\epsilon^2 \geq (2b + 1) \left(\frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}\right).
+	\end{equation*}
+\end{corollary}
+\begin{proof}
+	First, we verify that $\epsilon^2 \geq 2b\sqrt{2N(C^*)/n^2} + C_n^2/n(C^*)^2$. By Assumption \ref{asmp:tail_decay} and the choice of $C^{\star}$, we have
+	\begin{equation*}
+	N(C^*) \leq (C^*)^{d/s}n = (C_n n^{s/d})^{4d/(4s + d)}
+	\end{equation*}
+	and therefore
+	\begin{equation*}
+	2b\sqrt{\frac{N(C^*)}{n^2}} \leq \frac{2b}{n} (C_n n^{s/d})^{2d/(4s+d)}
+	\end{equation*}
+	Moving on to the second term, we have
+	\begin{align*}
+	\frac{C_n^2}{n(C^{\star})^2} & = \frac{C_n^2n^{2s/d}}{n(C_nn^{s/d})^{8s/(4s+d)}} \\
+	& = \frac{C_n^{2d/(4s + d)}n^{(s/d)2d/(4s + d)}}{n} \\
+	& = \frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}
+	\end{align*}
+	and therefore $\epsilon \geq 2b\sqrt{2N(C^*)/n^2} + C_n^2/n(C^*)^2$. As a result, by Lemma \ref{lem:type_II} for any $\beta \in \mathcal{S}^s_d(C_n)$ such that $\norm{\beta}/n \geq \epsilon$, 
+	\begin{equation*}
+	\Ebb_{\beta}(1 - \phi_{C^{\star}}) \geq \frac{2}{b^2} + \frac{2}{b\sqrt{2N(C^{\star})}}.
+	\end{equation*}
+\end{proof}
+
+\section{Graph-based Tests over Function Spaces}
+
+Let $\mathcal{D} = [0,1]^d$. Suppose we observe the random design $x_1,\ldots,x_n$ independently sampled from probability measure $P$ over $[0,1]^d$. Additionally, for $i \in [n]$, we observe
+\begin{equation*}
+z_i = f(x_i) + \varepsilon_i, \quad \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1), \quad \varepsilon \perp x
+\end{equation*}
+where $f \in \mathcal{H} \subseteq L^2(\mathcal{D})$. Our statistical goal is hypothesis testing. We wish to distinguish:
+\begin{equation*}
+\mathbf{H}_0: \norm{f}_2 = 0 \quad \textrm{vs} \quad \mathbf{H}_{\textrm{a}}: \norm{f}_2 > 0. 
+\end{equation*}
+We will evaluate our performance using worst-case error: for a given function class $\mathcal{H}$, test function $\phi: \Reals^n \to \set{0,1}$ and $\epsilon> 0$, let
+\begin{equation*}
+\mathcal{R}_{\epsilon}(\phi; \mathcal{H}) = \Ebb_{f = 0}(\phi) + \sup_{f \in \mathcal{H}: \norm{f}_2 > \epsilon} \Ebb_f(1 - \phi)
+\end{equation*}
+
+\subsection{Sobolev Spaces.}
+
+The first type of function class $\mathcal{H}$ we consider will be balls in Sobolev spaces. Let $s,d$ be known, fixed positive integers. For $f: \mathcal{D} \to \Reals$ locally summable, we use the multiindex notation $D^{\alpha}f$ to denote the $\alpha$th-weak partial derivative of $f$ (if one exists). Then, the Sobolev norm is 
+\begin{equation*}
+\norm{f}_{W^{s,2}(\D)}^2 = \sum_{\abs{\alpha} \leq s} \int_{\mathcal{D}} \norm{D^{\alpha}f}_2^2 \,dx
+\end{equation*}
+and the corresponding unit ball is $W^{s,2}(\D; L) = \set{f: \norm{f}_{W^{s,2}(\mathcal{D})} \leq L}$. 
+
+\subsubsection{Projection-based test statistic.}
+
+For $x,y \in \mathcal{D}$ and radius $r > 0$ to be specified later, let $\eta_r(x,y) = \mathbf{1}(\norm{x - y}/ r \leq 1)$. and let $A$ be the $n \times n$ adjacency matrix with entries $A_{ij} = \eta_r(x_i,x_j)$. Let $B$ be the incidence matrix associated with $A$, and $L = B^TB$ be the corresponding Laplacian matrix. Write $B = U \Lambda^{1/2}V^T$ for the singular value decomposition of $B$. Then $L = V \Lambda V^T$ is the eigendecomposition of $L$ , where $\Lambda$ is a diagonal matrix of eigenvalues with diagonal entries $\lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n$, and $V$ is an orthonormal matrix of eigenvectors. 
+
+Our test statistic will be the norm of a projection of $z$ onto the subspace spanned by the first eigenvectors of $V$. In particular, for $C > 0$ to be specified later, our test statistic will be
+\begin{equation*}
+T_C := \sum_{k: \lambda_k^s \leq C^2} y_k^2, \quad y_k = \frac{1}{\sqrt{n}} z^T v_k.
+\end{equation*}
+For $b \geq 1$, let $\tau(b) = b\sqrt{2N(C)/n^2}$. Then our test will be $\phi_{C} = \mathbf{1}\set{T_C \leq N(C)/n + \tau(b)}$. 
+
+In the following result, we prove that for an appropriate choice of threshold $C$ and radius $r$, the test $\phi_C$ achieves (nearly) minimax-optimal rates. Let
+\begin{equation*}
+C^{\star} = \frac{\left(n^{1 + s/d}r^{d/2 + s}\right)^{4s/(4s + d)}}{n^{s/d}}.
+\end{equation*}
+
+\begin{theorem}
+	\label{thm:sobolev_testing_rate}
+	Let $b \geq 1$ be a fixed constant, and let $s = 1$. For any sequence $r_n$ such that $(\log n/n)^{1/d}r \to \infty$, there exists a constant $c$ which depends only on $d$ and $L$ such that
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate_1}
+	\mathcal{R}_{\epsilon}(\phi_{C^{\star}}; \mathcal{W}^{s,2}(\mathcal{D};L)) \leq c_1\left(\frac{1}{b^2} + \frac{1}{b\sqrt{N(C^{\star})}}\right) + o(1)
+	\end{equation}
+	for every $\epsilon$ such that
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate}
+	\epsilon^2 \geq c_2 b \left(\frac{(b n^{1 + s/d}r^{d/2 + s})^{2d/(4s + d)}}{n}\right).
+	\end{equation}
+\end{theorem}
+
+\subsection{Proof of Theorem \ref{thm:sobolev_testing_rate}}
+Our goal is to upper bound
+\begin{equation*}
+\mathcal{R}_{\epsilon}(\phi_{C^{\star}}; W^{1,2}(\mathcal{D};L)) = \Ebb_{f = 0}(\phi_{C^{\star}}) + \sup_{f \in W^{1,2}(\mathcal{D};L): \norm{f}_2 > \epsilon} \Ebb_{f}(1 - \phi_{C^{\star}})
+\end{equation*}
+By Lemma \ref{lem:type_I_error}, we immediately have $\Ebb_{f = 0}(\phi_{C^{\star}}) \leq 1/b^2$, and we turn to the worst-case type II error. Fix any $f \in W^{1,2}(\mathcal{D};L)$ such that $\norm{f}_2 > \epsilon$, and let $\beta$ be the length-$n$ random vector with $j$th entry $\beta_j = f(x_j)$. Consider the following events:
+\begin{enumerate}[label=(E\arabic*)]
+	\item 
+	\label{event:discrete_sobolev_norm}
+	Discrete Sobolev norm of $\beta$: There exists a constant $c_1$ which depends only on $p_{\max}$ and $d$ such that
+	\begin{equation*}
+	\norm{B^{(s)}\beta}_2^2 \leq c_1 b^2 n^2 r^{d + 2s} 
+	\end{equation*}
+	\item 
+	\label{event:eigenvalue_tail_decay}
+	Eigenvalue tail decay:
+	\begin{equation*}
+	N(C^{\star}) \leq n(C^{\star})^{d/s}.
+	\end{equation*}
+	\item 
+	\label{event:l2_norm}
+	$L_2$ norm of $\beta$:
+	\begin{equation*}
+	\frac{\norm{\beta}_2^2}{n} \geq \frac{1}{2}\epsilon^2.
+	\end{equation*}
+\end{enumerate} 
+
+Each of these events happen with high probability as $n \to \infty$.
+\begin{lemma}
+	\label{lem:high_probability_events}
+	With probability at least $1 - \frac{1}{b^2}$ as $n \to \infty$,
+	\begin{equation}
+	\label{eqn:discrete_sobolev_norm}
+	\norm{B\beta}_2^2 \leq c_1 b^2 n^2 r^{d + 2}.
+	\end{equation}
+	
+	With probability tending to one as $n \to \infty$,
+	\begin{equation}
+	\label{eqn:eigenvalue_tail_decay}
+	N(C^{\star}) \leq n(C^{\star})^{d/s}.
+	\end{equation}
+	
+	\textcolor{red}{$L_2$ norm}.
+\end{lemma}
+In the following subsections, we prove Lemma \ref{lem:high_probability_events}. First, we show that Theorem \ref{thm:sobolev_testing_rate} is a simple consequence of Lemma \ref{lem:high_probability_events} along with our previous work. Let $\mathcal{A}_f$ be the set of $X$ such that \ref{event:discrete_sobolev_norm}, \ref{event:eigenvalue_tail_decay}, and \ref{event:l2_norm} all occur, for the given choice of $f$. We have that for $C_n := c_1bnr^{d/2 + s}$, the event \ref{event:discrete_sobolev_norm} implies $\beta \in \mathcal{S}_d^s(C_n)$. Therefore, by \ref{event:l2_norm},
 \begin{equation}
-\label{eqn: limsup_discrete_energy}
-\limsup_{n \to \infty} \frac{1}{n^2 r_n^{d+2}} \norm{\Bbf \fbf_n}_2^2 \leq \textcolor{red}{\sigma_k} \norm{f}_{1,2,\mu^2} \leq \sigma_k.
-\end{equation} 
-From Lemma \ref{lem: continuity_of_risk_functional}
-\begin{equation*}
-\lim_{n \to \infty} \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_n(z_k) = \int_{\Dset} f d\Pbb(x) - \int_{\Dset} f d\Qbb(x) = \gamma_{\Wset^{1,2}(\Dset,\mu^2)}.
-\end{equation*}
-and along with \eqref{eqn: limsup_discrete_energy}, this implies
-\begin{equation*}
-\lim_{n \to \infty} T_2(\lbf; G_{n,r}) \leq \gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb).
-\end{equation*}
-
-Let $\Lbf^{\dagger}$ be the pseudoinverse of the Laplacian matrix $\Lbf$. We introduce $f_n^{\star} = \lbf^T \Lbf^{\dagger} \lbf$, which satisfies
-\begin{equation*}
-\abs{\int_{\Dset}f_n^{\star}d\Pbb_n - \int_{\Dset}f_n^{\star}d\Qbb_n} = T_2(\lbf; G_{n,r})
-\end{equation*}
-Note that
-\begin{equation*}
-\norm{\Bbf \fbf_n^{\star}}_2^2 \leq C_n \Longrightarrow \frac{1}{n^2 r_n^{d+2}} \norm{\Bbf \fbf_n^{\star}}_2^2  \leq \sigma_k < \infty
-\end{equation*}
-and so by the compactness property in Theorem \ref{thm: gamma_convergence_energy_functional}, every subsequence of $f_n^{\star}$ has a further subsequence which is $TL^2$-convergent. For simplicity, and without loss of generality, let us work along a subsequence which is convergent (and call it $f_n^{\star}$) to $f \in L^2(\mu)$. Then
-\begin{equation}
-\label{eqn: lower_bound_T2_1}
-\lim_{n \to \infty} \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_n^{\star}(z_k) = \abs{\int_{\Dset}f d\Pbb(x) - \int_{\Dset}f d\Qbb(x)}
+\label{eqn:sobolev_testing_rate_2}
+\Ebb_f(1 - \phi_{C^*}) \leq \sup_{\substack{\beta \in \mathcal{S}_d^{s}(C_n), \\ \norm{\beta}_2/n \geq \epsilon^2/2}} \Ebb_{\beta}(1 - \phi_{C^{\star}}) + \Pbb(\mathcal{A}_f).
 \end{equation}
-and by the liminf inequality of Theorem \ref{thm: gamma_convergence_energy_functional},
+Observe the following: 
+\begin{itemize}
+	\item \textcolor{red}{$C^{\star} = (C_n n^{s/d})^{4s/(4s+d)}/n^{s/d}$},
+	\item The event \ref{event:eigenvalue_tail_decay} is exactly \ref{asmp:tail_decay}, and 
+	\item For an appropriate choice of $c_2$, by hypothesis
+	\begin{equation*}
+	\epsilon^2/2 \geq (2\sqrt{2}b + 1) \left(\frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}\right)
+	\end{equation*}
+\end{itemize}
+Therefore we may apply Corollary \ref{cor:critical_radius}, and obtain
 \begin{equation*}
-\liminf_{n \to \infty} \frac{1}{n^2 r_n^{d+2}} \norm{\Bbf \fbf_n}_2^2 \geq \sigma_k \norm{f}_{1,2,\mu^2}
+\sup_{\substack{\beta \in \mathcal{S}_d^{s}(C_n), \\ \norm{\beta}_2/n \geq \epsilon^2/2}} \Ebb_{\beta}(1 - \phi_{C^{\star}}) \leq \frac{2}{b^2} + \frac{2}{b\sqrt{N(C^{\star})}},
 \end{equation*}
-which implies $\norm{f}_{1,2,\mu^2} \leq 1$. This, along with \eqref{eqn: lower_bound_T2_1}, implies
+and along with \eqref{eqn:sobolev_testing_rate_2} and Lemma \ref{lem:high_probability_events}, this shows
 \begin{equation*}
-\lim_{n \to \infty} \frac{1}{n} \sum_{k = 1}^{n} \ell_k f_n^{\star}(z_k) \geq \gamma_{\Wset^{1,2}(\Dset,\mu^2)}(\Pbb,\Qbb)
+\Ebb_f(1 - \phi_{C^*}) \leq \frac{3}{b^2} + \frac{2}{b\sqrt{N(C^{\star})}} + o(1).
 \end{equation*}
 
-\clearpage
+\subsection{Proof of \eqref{eqn:discrete_sobolev_norm}}
 
-\bibliography{../graph_testing_bibliography}
-\bibliographystyle{plain}
+
 
 \end{document}

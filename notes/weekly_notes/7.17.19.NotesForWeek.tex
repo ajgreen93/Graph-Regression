@@ -1,0 +1,492 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 7/17/19 - 7/31/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{Goodness-of-Fit Testing in the Sampling Model.}
+
+Let $\mathcal{D} = [0,1]^d$. Suppose we observe the random design $x_1,\ldots,x_n$ independently sampled from the uniform distribution over $[0,1]^d$. Additionally, for $i \in [n]$, we observe
+\begin{equation*}
+z_i = f(x_i) + \varepsilon_i, \quad \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1), \quad \varepsilon \perp x
+\end{equation*}
+where $f \in \mathcal{H} \subseteq L^2(\mathcal{D})$. Our statistical goal is hypothesis testing. We wish to distinguish:
+\begin{equation*}
+\mathbf{H}_0: \norm{f}_2 = 0 \quad \textrm{vs} \quad \mathbf{H}_a: \norm{f}_2 > 0. 
+\end{equation*}
+We will evaluate our performance using worst-case error: for a given function class $\mathcal{H}$, test function $\phi: \Reals^n \to \set{0,1}$ and $\epsilon> 0$, let
+\begin{equation*}
+\mathcal{R}_{\epsilon}(\phi; \mathcal{H}) = \Ebb_{f = 0}(\phi) + \sup_{f \in \mathcal{H}: \norm{f}_2 > \epsilon} \Ebb_f(1 - \phi)
+\end{equation*}
+
+An example function class $\mathcal{H}$ we will consider will be the unit ball in a Sobolev space. Let $s,d$ be known, fixed positive integers. For $f: \mathcal{D} \to \Reals$ locally summable, we use the multiindex notation $D^{\alpha}f$ to denote the $\alpha$th-weak partial derivative of $f$ (if one exists). Then, the Sobolev norm is 
+\begin{equation*}
+\norm{f}_{W^{s,2}(\D)}^2 = \sum_{\abs{\alpha} \leq s} \int_{\mathcal{D}} \norm{D^{\alpha}f}_2^2 \,dx
+\end{equation*}
+and the corresponding unit ball is $W^{s,2}(\D; L) = \set{f: \norm{f}_{W^{s,2}(\mathcal{D})} \leq L}$. 
+
+\subsection{Test statistic.}
+
+For $x,y \in \mathcal{D}$ and radius $r > 0$ to be specified later, let $\eta_r(x,y) = \mathbf{1}(\norm{x - y}/ r \leq 1)$. and let $A$ be the $n \times n$ adjacency matrix with entires $A_{ij} = \eta_r(x_i,x_j)$. Let $B$ be the incidence matrix associated with $A$, and $L = B^TB$ be the associated Laplacian matrix. Write $B = U \Lambda^{1/2}V^T$ for the singular value decomposition of $B$. Then $L = V \Lambda V^T$ is the eigendecomposition of $L$ , where $\Lambda$ is a diagonal matrix of eigenvalues with diagonal entries $\lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n$, and $V$ is an orthonormal matrix of eigenvectors. 
+
+Our test statistic will be the norm of a projection of $z$ onto the subspace spanned by the first few eigenvectors of $V$. In particular, for $C > 0$ to be specified later, our test statistic will be
+\begin{equation*}
+T_C := \sum_{k: \lambda_k^s \leq C^2} y_k^2, \quad y_k = \frac{1}{\sqrt{n}} z^T v_k.
+\end{equation*}
+For $b \geq 1$, let $\tau(b) = b\sqrt{2N(C)/n^2}$. Then our test will be $\phi_{C} = \mathbf{1}\set{T_C \leq N(C)/n + \tau(b)}$.
+
+\subsection{Fixed design testing.}
+
+Let $\beta$ be the length-$n$ random vector with $j$th entry $\beta_j = f(x_j)$. We introduce the scaling $C_{n,r} > 0$, defined by $C_{n,r}^2 = n^2r^{d + 2s}$.  We will apply results about testing over balls in discrete Sobolev classes. Let $b \geq 1$ denote $N(C) := \sharp\set{k: \lambda_k^s \leq C^2}$, and consider the following events:
+\begin{enumerate}[label=(E\arabic*)]
+	\item 
+	\label{event:discrete_sobolev_norm}
+	Discrete Sobolev norm of $\beta$:
+	\begin{equation*}
+	\norm{B^{(s)}\beta}_2 \leq C_{n,r}
+	\end{equation*}
+	\item Eigenvalue tail decay:
+	\label{event:tail_decay}
+	For the choice $C = C_r^{\star}$, where
+	\begin{equation*}
+	C_r^{\star} = \frac{(C_{n,r}n^{s/d})^{4s/(4s + d)}}{n^{s/d}},
+	\end{equation*}
+	the following inequality is satisfied:
+	\begin{equation*}
+	N(C_r^{\star}) \leq n(C_r^{\star})^{d/s}.
+	\end{equation*}
+	\item 
+	\label{event:l2_norm}
+	$L_2$ norm of $\beta$:
+	\begin{equation*}
+	\frac{\norm{\beta}_2^2}{n} \geq \frac{(2\sqrt{2}b + 1)}{n} \left(C_{n,r}n^{s/d}\right)^{2d/(4s+d)}.
+	\end{equation*}
+\end{enumerate}
+
+Suppose for a given $x = x_1, \ldots, x_n$, and for a particular choice of radius $r$, the events \ref{event:l2_norm}-\ref{event:tail_decay} hold. The worst-case error conditional on $x$ can then be upper bounded.
+\begin{lemma}
+	\label{lem:discrete_test_error}
+	For any $x$ and $r$ such that \ref{event:discrete_sobolev_norm} and \ref{event:tail_decay} hold, we have that if $f = 0$,
+	\begin{equation*}
+	\Ebb_{\beta}(\phi|x) \leq \frac{1}{b^2}
+	\end{equation*}
+	If $f \neq 0$ is such that \ref{event:l2_norm} is additionally satisfied, we have that
+	\begin{equation*}
+	\Ebb_{\beta}(1 -\phi|x) \leq \frac{1}{2b^2} + o(1)
+	\end{equation*}
+\end{lemma}
+
+We now turn to showing that each of \ref{event:discrete_sobolev_norm} and \ref{event:tail_decay} (and, under appropriate conditions on $\norm{f}_2$, \ref{event:l2_norm}) hold with probability at least $1 - \frac{1}{b^2} - o(1)$. 
+
+\section{Bounding discrete Sobolev norm.}
+Recall that our goal is to show \ref{event:discrete_sobolev_norm} occurs with high probability. We will build slowly to this goal.
+
+\subsection{$s = 1$, $f$ Lipschitz.}
+To start, we provide a bound in the case when $s = 1$, and $f$ has bounded Lipschitz norm. Precisely, we define the space of $1$-Holder (Lipschitz) functions $C_{\mathcal{X}}^{0,1}(1)$ to consist of all continuous functions $g: \D \to \Reals$ such that
+\begin{equation*}
+\norm{g}_{C_{\D}^{0,1}} := \norm{g}_{C(\D)} + [g]_{C_{\D}^{0,1}} \leq 1
+\end{equation*}
+where $\norm{g}_{C(\D)} = \sup_{x \in \D} \abs{g(x)}$, and
+\begin{equation*}
+[g]_{C_{\D}^{0,1}} = \sup_{x,y \in \D} \frac{\abs{g(x) - g(y)}}{\norm{x - y}}.
+\end{equation*}
+
+Let $P_n$ be the empirical distribution associated with $x_1,\ldots,x_n$, i.e. $P_n = \frac{1}{n}\sum_{i = 1}^{n} \delta_{x_i}$. We begin by providing a deterministic bound involving the distance between the measures $P_n$ and $P$. As these are measures over different spaces, it is not obvious how to relate them. We will use transportation distance to do so. Recall that a mapping $T: \D \to \D$ is a \emph{transportation map} between $P$ and $P_n$ if for all measurable $A \subseteq \D$,
+\begin{equation*}
+P_n(A) = P(T^{-1}(A))
+\end{equation*}
+
+\begin{lemma}
+	\label{lem:holder_1_bound}
+	For any $f \in C_{\mathcal{D}}^{0,1}$, the following bound holds on the Sobolev discrete norm:
+	\begin{equation*}
+	\norm{B\beta}_2^2 \leq n^2r^2(r + \norm{\mathrm{Id} - T}_{L^{\infty}(P)})^d
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We write
+	\begin{align*}
+	\frac{1}{n^2}\norm{B^{(s)}\beta}_2^2 & = \frac{1}{n^2} \beta^T L \beta \\
+	& = \frac{1}{2n^2} \sum_{i,j = 1}^{n} (\beta_i - \beta_j)^2 A_{ij} \\
+	& = \int_{\D} \int_{\D} (f(x) - f(y))^2 \eta_r(x,y) \,dP_n(y) \,dP_n(x)
+	\end{align*}
+	We examine the inner integral. By the Holder property of $f$, and a change of variables, we obtain
+	\begin{align*}
+	\int_{\D} (f(x) - f(y))^2 \eta_r(x,y) \,dP_n(y) & \leq \int_{\D} \norm{x - y}^2 \eta_r(x,y) \,dP_n(y) \\
+	& = \int_{\D} \norm{x - T(y)}^2 \eta_r(x,T(y)) \,dP(y) \\
+	& \leq r^2 \int_{\D} \eta_r(x,T(y)) \,dP(y) \\
+	& \leq r^2 \bigl( r + \norm{\mathrm{Id} - T}_{L^{\infty}(P)} \bigr)^d
+	\end{align*}
+	and the desired result is shown.
+\end{proof}
+
+\subsection{$s = 1$, $f \in \mathcal{W}^{1,2}(\D; 1)$.}
+
+Let $P$ be an absolutely continuous probability measure over $\D$ with density function $p$ bounded above and below by constants, i.e
+\begin{equation*}
+0 < p_{\textrm{min}} < p(x) < p_{\textrm{max}} < \infty, \quad \textrm{for all $x \in \mathcal{D}$}
+\end{equation*}
+
+\begin{lemma}
+	\label{lem:sobolev_1_bound}
+	For any $f \in W^{1,2}(\mathcal{D};1)$, and any $b \geq 1$, we have that there exists a constant $C > 0$ which depends only on $d$ and $p_{\max}$ such that
+	\begin{equation}
+	\label{eqn:sobolev_1_bound}
+	\norm{B\beta}_2^2 \leq b C n^2 r^{d + 2}
+	\end{equation}
+	with probability at least $1 - \frac{1}{b}$. 
+\end{lemma}
+\begin{proof}
+	Observe that
+	\begin{align*}
+	\frac{1}{n^2}\Ebb(\beta^T L \beta) = \Ebb\left(\frac{1}{n^2} \sum_{i,j = 1}^{n} (\beta_i - \beta_j)^2 A_{ij}\right) & = \frac{(n - 1)}{n} \int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dP(y) \,dP(x) \\
+	& \leq p_{\max}^2 \frac{(n - 1)}{n} \int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dy \,dx.
+	\end{align*}
+	We will show that for any $f \in \mathcal{W}^{1,2}(\D;1)$, there exists a constant $C$ which depends only on dimension $d$ such that
+	\begin{equation}
+	\label{eqn:mean_bound}
+	\int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dy \,dx \leq C r^{d + 2}
+	\end{equation}
+	whence the desired result of \eqref{eqn:sobolev_1_bound} follows by Markov's inequality.
+	
+	We begin by dealing with complications due to the boundary of $\mathcal{D}$. Let $V$ be any bounded open set such that $\D \subset \subset V$. Note that as $\partial \D$ is $C^1$, by Theorem \ref{thm:evans_extension} there exists $g \in W^{1,2}(\Reals^d)$ such that
+	\begin{enumerate}
+		\item
+		\label{eqn:evans_extension_1}
+		$g = f$, $P$-almost-everywhere in $\D$
+		\item 
+		$g$ has support within $V$, and  
+		\item 
+		\label{eqn:sobolev_1_bound_2}
+		$\norm{g}_{W^{1,2}(\Rd)} \leq C \norm{f}_{W^{1,2}(\D)}$ for a constant $C$ which depends only on $\mathcal{D}$.
+	\end{enumerate}
+	As a result of the first point,
+	\begin{equation}
+	\label{eqn:sobolev_1_bound_1}
+	\int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dy \,dx \leq \int_{\Rd} \int_{\Rd} (g(x) - g(y))^2\eta_r(x,y) \,dy \,dx.
+	\end{equation}
+	
+	Next, we smooth $g$, so that we may work with ordinary partial derivatives.
+	We let $\kappa \in C^{\infty}(\Rd)$ be given by
+	\begin{equation*}
+	\kappa(x) :=
+	\begin{cases}
+	C \exp \left\{\frac{1}{\norm{x}^2 - 1}\right\}& \quad \textrm{if $\norm{x}_2 \leq 1$} \\
+	0 & \quad \textrm{if $\norm{x}_2 \geq 1$}
+	\end{cases}
+	\end{equation*}
+	where the normalizing constant $C > 0$ is chosen so that $\int_{\Rd} \eta dx = 1$. Let $\kappa_r(x) := (1/r^d) \kappa(x/r)$. Then, the mollification of $g$ by $\kappa_r$ is given by
+	\begin{align*}
+	g^r & := g \ast \eta_r \\
+	& = \int_{\Rd} \eta_r(x - y) g(y) dy
+	\end{align*}
+	(Refer to \citep{evans10}, Appendix C, Theorem 7 for a proof that $g^r \in C^{\infty}(\Rd)$.)
+	Adding and subtracting within \eqref{eqn:sobolev_1_bound_1}, we have
+	\begin{align}
+	\int_{\Rd} & \int_{\Rd} (g(x) - g(y))^2\eta_r(x,y) \,dy \,dx \\
+	& \leq \int_{\Rd} \int_{\Rd} \bigl((g(x) - g^r(x))^2 + (g^r(x) - g^r(y))^2 + (g^r(y) - g(y))^2\bigr)\eta_r(x,y) \,dy \,dx \nonumber \\
+	& = 2 \int_{\Rd} \int_{\Rd} \bigl((g(y) - g^r(y))^2 \eta_r(x,y) \,dy \,dx + \int_{\Rd} \int_{\Rd} \bigl((g^r(x) - g^r(y))^2 \eta_r(x,y) \,dy \,dx \label{eqn:sobolev_1_bound_5}
+	\end{align}
+	We deal with each summand individually, beginning with the first one. We have
+	\begin{align}
+	\int_{\Rd} \int_{\Rd} \bigl((g(y) - g^r(y))^2 \eta_r(x,y) \,dy \,dx & = \int_{\Rd} \int_{B(x,r)} \bigl((g(y) - g^r(y))^2\,dy \,dx \nonumber \\
+	& = \int_{\Rd} \int_{B(y,r)} \bigl((g(y) - g^r(y))^2\,dx \,dy \tag{Tonelli's Theorem} \nonumber \\
+	& = r^d \int_{\Rd}\bigl((g(y) - g^r(y))^2 \,dy \\
+	& \leq r^{d + 2} \int_{\Rd} \norm{\nabla g(y)}^2 \,dy \label{eqn:sobolev_1_bound_4}
+	\end{align}
+	where the last line follows from Lemma \ref{lem:poincare_mollify}.
+	
+	We now turn our attention to the second summand. Note that as $g^r \in C^{\infty}(\Rd)$, we may apply Theorem \ref{thm:taylor_expansion} and obtain
+	\begin{align*}
+	(g^r(x) - g^r(y))^2 & = \left(\int_{0}^{1} \nabla g^r(x + t(y - x)) \cdot (y - x) \,dt\right)^2 \\
+	& \leq \int_{0}^{1} \bigl(\nabla g^r(x + t(y - x)) \cdot (y - x)\bigr)^2 \,dt  \tag{Jensen's inequality} \\
+	& \leq \norm{y - x}^2 \int_{0}^{1} \norm{\nabla g^r(x + t(y - x))}^2 \,dt. \tag{Cauchy-Schwarz inequality}
+	\end{align*}
+	As a result, we have
+	\begin{align*}
+	\int_{\Rd} \int_{\Rd} \bigl((g^r(x) - g^r(y))^2 \eta_r(x,y) \,dy) \,dx & \leq \int_{\Rd} \int_{\Rd} \norm{y - x}^2  \int_{0}^{1} \norm{\nabla g^r(x + t(y - x))}^2 \eta_r(x,y) \,dt \,dy \,dx \\
+	& \leq r^{2} \int_{\Rd} \int_{\Rd} \int_{0}^{1} \norm{\nabla g^r(x + t(y - x))}^2 \eta_r(x,y) \,dt \,dy \,dx \\
+	& = r^{2} \int_{\Rd} \int_{0}^{1} \int_{\Rd} \norm{\nabla g^r(x + t(y - x))}^2 \eta_r(x,y) \,dx \,dt \,dy \\
+	& = r^{2} \int_{\Rd} \int_{0}^{1} \int_{\Rd} \norm{\nabla g^r(x + tz)}^2 \eta_r(z) \,dx \,dt \,dz \tag{$z = y - x$}
+	\end{align*}
+	
+	where we write $\eta_r(z) = \mathbf{1}(\norm{z} \leq r)$ in an abuse of notation. Next, we note that
+	\begin{equation*}
+	\int_{\Rd} \norm{\nabla g^r(x + tz)}^2 \,dx = \int_{\Rd} \norm{\nabla g^r(x)}^2 \,dx \leq \int_{\Rd} \norm{\nabla g(x)}^2 \,dx
+	\end{equation*}
+	with the inequality following from Lemma \ref{lem:gradient_mollify_commute}. Therefore,
+	\begin{align}
+	r^{2} \int_{\Rd} \int_{0}^{1} \int_{\Rd} \norm{\nabla g^r(x + tz)}^2 \eta_r(z) \,dx \,dt \,dz & \leq r^{2} \int_{\Rd} \eta_r(z) \int_{0}^{1} \int_{\Rd} \norm{\nabla g(x)}^2 \,dx  \,dt \,dz \nonumber \\
+	& = r^{2 + d} \int_{\Rd} \norm{\nabla g(x)}^2 \,dx. \label{eqn:sobolev_1_bound_3}
+	\end{align}
+	By \eqref{eqn:sobolev_1_bound_5}, \eqref{eqn:sobolev_1_bound_4} and \eqref{eqn:sobolev_1_bound_3}, we have that 
+	\begin{equation*}
+	\int_{\Rd} \int_{\Rd} (g(x) - g(y))^2 \eta_r(x,y) \,dx \,dy \leq 3 \int_{\Rd} \norm{\nabla g(x)}_2^2 \,dx
+	\end{equation*}
+	Then by \eqref{eqn:sobolev_1_bound_2}, $\int_{\Rd} \norm{\nabla g(x)}_2^2 \,dx \leq C\int_{\D} \norm{\nabla f(x)}_2^2 \,dx \leq C$ where $C$ is a constant depending only on $\D$. So the desired result of \eqref{eqn:sobolev_1_bound_1} follows.
+\end{proof}
+
+\section{Supporting Results.}
+
+\begin{theorem}[\citep{evans10} Chapter 5.4, Theorem 1]
+	\label{thm:evans_extension}
+	Assume $U$ is bounded and $\partial U$ is $C^1$. Select a bounded open set $V$ such that $U \subset \subset V$ ($U$ is compactly contained in $V$). Then there exists a bounded linear operator $E: W^{1,2}(U) \to W^{1,2}(\Rd)$ such that for each $u \in W^{1,2}(U)$:
+	\begin{enumerate}
+		\item $Eu = u$ a.e. in $U$,
+		\item $Eu$ has support within $V$, and 
+		\item 
+		\begin{equation*}
+		\norm{Eu}_{W^{1,2}(\Rd)} \leq C \norm{u}_{W^{1,2}(\Rd)}
+		\end{equation*}
+		the constant $C$ depending only on $U$ and $V$.
+	\end{enumerate}
+\end{theorem}
+
+For $u \in W^{1,2}(\Rd)$ and $x \in \Rd$, write $\nabla u(x) = (D^{e_1}(x),\ldots,D^{e_d}(x)$, for the gradient of $u$.
+
+\begin{theorem}[\citep{evans10} Chapter 5.8.1, Theorem 2]
+	\label{thm:evans_poincare}
+	There exists a constant $C$, depending only on $d$, such that
+	\begin{equation*}
+	\norm{u - u^r}_{L^2(B(x,r))} \leq Cr\norm{\nabla u}_{L^2(B(x,r))}
+	\end{equation*}
+\end{theorem}
+
+\begin{theorem}[Taylor expansion.]
+	\label{thm:taylor_expansion}
+	For any function $u \in C^1$, and any $x,y \in \Rd$, 
+	\begin{equation*}
+	u(y) - u(x) = \int_{0}^{1} \nabla(u(x + t(y - x))) \cdot (y - x) \,dt
+	\end{equation*}
+\end{theorem}
+
+\begin{lemma}
+	\label{lem:poincare_mollify}
+	For any function $g \in W^{1,2}(\Rd)$ compactly supported in a bounded open set $V \subset \Rd$, we have
+	\begin{equation}
+	\label{eqn:poincare_mollify}
+	\int_{\Rd} (g(x) - g^r(x))^2 \,dx \leq r^2 \int_{\Rd} \norm{\nabla g(x)}^2 \,dx
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	This Lemma is essentially a reproduction of part of the proof of the Rellich-Kondrachov Compactness Theorem from \citep{evans10}. Note that it is sufficient to prove in the case when $g$ is smooth. To see this, for the moment assume \eqref{eqn:poincare_mollify} holds for all $u \in C^{\infty}(V)$, and let $g \in W^{1,2}(V)$. By Theorem \ref{thm:local_approx_smooth_functions}, we may take a sequence $g_m \in C^{\infty}(V)$ such that
+	\begin{equation*}
+	\norm{g - g_m}_{L^2(V)} \to 0, \quad \textrm{and} \quad \norm{\nabla g - \nabla g_m}_{L^2(V)} \to 0,
+	\end{equation*}
+	Then we have
+	\begin{align*}
+	\int_{\Rd} (g(x) - g^r(x))^2 \,dx & \leq \int_{\Rd} (g(x) - g_m(x))^2 \,dx + \int_{\Rd}(g_m(x) - g_m^r(x))^2 \,dx + \int_{\Rd}(g_m^r(x) - g^r(x))^2 \,dx \\
+	& \leq \int_{\Rd} (g(x) - g_m(x))^2 \,dx + r^2 \int_{\Rd} \norm{\nabla g_m(x)}^2 \,dx + \int_{\Rd}(g_m^r(x) - g^r(x))^2 \,dx
+	\end{align*}
+	and taking the limit as $m$ goes to infinity, the right hand side converges to $\int_{\Rd} \norm{\nabla g(x)}^2 \,dx$. 
+	
+	It remains to show \eqref{eqn:poincare_mollify} in the case where $g$ is smooth. In this case, we have
+	\begin{align*}
+	g^{r}(x) -  g(x) & = \frac{1}{r^d} \int_{B(x,r)} \kappa \left(\frac{x - z}{r}\right)\bigl(g(z) - g(x)\bigr) \,dz \\
+	& = \int_{B(0,1)} \kappa(y) \bigl(g(x - ry) - g(x)\bigr) \,dy \\
+	& = \int_{B(0,1)} \kappa(y) \int_{0}^{1} \frac{d}{dt} \bigl(g(x - try) \bigr) \,dt \,dy \\
+	& = -r \int_{B(0,1)} \kappa(y) \int_{0}^{1} \bigl(\nabla g (x - try) \bigr) \cdot y \,dt \,dy.
+	\end{align*} 
+	Therefore, by Jensen's and Cauchy-Schwarz inequalities, we have
+	\begin{align*}
+	\int_{\Rd} (g(x) - g^r(x))^2 \,dx & \leq r^2 \int_{\Rd} \int_{B(0,1)} \kappa(y) \int_{0}^{1} \norm{\nabla g (x - try)}^2 \norm{y}^2 \,dt \,dy \,dx \\
+	& \leq r^2 \int_{B(0,1)} \kappa(y) \int_{0}^{1} \int_{\Rd} \norm{\nabla g (x - try)}^2 \,dx \,dt \,dy \\
+	& = r^2 \int_{\Rd} \norm{\nabla g(z)}^2 \,dz
+	\end{align*}
+\end{proof}
+
+The following theorem is Theorem 1 in Section 5.3 of \citep{evans10}.
+\begin{theorem}[Local approximation by smooth functions.]
+	\label{thm:local_approx_smooth_functions}
+	Assume $U$ is bounded, and $u \in W^{k,p}(U)$ for some $1 \leq p < \infty$. Then there exists functions $u_m \in C^{\infty}(U) \cap W^{k,p}(U)$ such that
+	\begin{equation*}
+	\norm{u_m - u}_{W^{k,p}(U)} \overset{m}{\to} 0.
+	\end{equation*}
+\end{theorem}
+
+\begin{lemma}
+	\label{lem:gradient_mollify_commute}
+	For any $u \in W^{1,2}(\Rd)$, we have
+	\begin{equation*}
+	\int_{\Reals^d} \norm{\nabla u^r(x)}_2^2 \,dx \leq \int_{\Reals^d} \norm{\nabla u(x)}_2^2 \,dx
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Observe that $\norm{\nabla u(x)}_2^2 = \sum_{j = 1}^{d} (D^{e_j}u(x))^2 $. Therefore,
+	\begin{align*}
+	\int_{\Rd} \norm{\nabla u^r(x)}_2^2 \,dP(x) & = \sum_{j = 1}^{d} \int_{\Rd} (D^{e_j}u^r(x))^2 \,dx \\
+	& = \sum_{j = 1}^{d} \int_{\Rd} ((D^{e_j}u)^r(x))^2 \,dx
+	\end{align*}
+	where the second equality follows from equation (1) in Section 5.3 of \citep{evans10}. Then, for any $v \in L^2(\Rd)$, we have that
+	\begin{align*}
+	\abs{v^r(x)} & = \int_{\Rd} \kappa_r^{1/2}(x - y) \kappa_r^{1/2}(x - y) v(y) \,dy \\
+	& \leq \left(\int_{\Rd} \kappa_r^(x - y) \,dy\right)^{1/2} \left(\int_{\Rd} \kappa_r(x - y) v^2(y) \right)^{1/2} \\
+	& = \left(\int_{\Rd} \kappa_r(x - y) v^2(y) \right)^{1/2}
+	\end{align*}
+	and therefore
+	\begin{align*}
+	\int_{\Rd} (v^r(x))^2 \,dx & \leq \int_{\Rd} \int_{\Rd } \kappa_r(x - y) v^2(y) \,dy \,dx \\
+	& = \int_{\Rd} \int_{\Rd } \kappa_r(x - y) v^2(y) \,dy \,dx \\
+	& = \int_{\Rd} v^2(y) \,dy
+	\end{align*}
+
+	Applying this to $D^{e_j}u \in L^2(\Rd)$, we have that
+	\begin{equation*}
+	\sum_{j = 1}^{d} \int_{\Rd} ((D^{e_j}u)^r(x))^2 \,dx \leq \sum_{j = 1}^{d} \int_{\Rd} ((D^{e_j}u(x))^2 \,dx = \int_{\Rd} \norm{\nabla u(x)}^2 \,dx.
+	\end{equation*}
+\end{proof}
+
+
+\bibliographystyle{plainnat}
+\bibliography{../../graph_testing_bibliography}
+
+\end{document}

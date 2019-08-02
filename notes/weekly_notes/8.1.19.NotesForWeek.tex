@@ -1,0 +1,260 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 8/1/19 - 8/8/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{Bound on Eigenvalue Tail Decay of Neighborhood Graph}
+Let $\mathcal{D} = [0,1]^d$. We consider two graphs over data on $\mathcal{D}$.
+
+Suppose we observe the random design $X = x_1, \ldots, x_n$ independently sampled from probability measure $P$ supported on $\mathcal{D}$. For any $r \geq 0$, let the kernel function $\eta_r: \mathcal{D} \times \mathcal{D} \to \Reals_{\geq 0}$ be given by $\eta_r(x,y) = \1(\norm{x - y} \leq r)$. Then, let the \emph{r-neighborhood graph} over $x_1,\ldots,x_n$ be the undirected, unweighted graph $G = (V,E)$, where $V = [n]$ and for $i,j \in [n]$, $(i,j) \in E$ if $\eta_r(x_i, x_j) = 1$. 
+
+Let $B$ be the incidence matrix associated with $G$, and let $L = B^TB$ be the corresponding Laplacian. Write $L = V \Lambda V^T$ for the eigen decomposition of $L$, where $V = (v_1 \ldots v_n)$ is an orthonormal matrix with the eigenvectors of $L$ as its columns, and $\Lambda$ is a diagonal matrix with entries $\lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n$. For a given $s > 0$ and $C > 0$, let $N(C) = \#\set{k: \lambda_k^s \leq C^2}$. We wish to prove the following result.
+
+\begin{theorem}
+	\label{thm:spectral_decay}
+	Let $r \to 0$ as $n \to \infty$ sufficiently slowly so that $r(\log n/n)^{1/d} \to \infty$. Then, for each $s > 0$ and $C \leq \sqrt{2}$,
+	\begin{equation}
+	\label{eqn:spectral_decay}
+	N(C) \leq n C^{d/s}.
+	\end{equation} 
+	with probability tending to one as $n \to \infty$. 
+\end{theorem}
+
+\section{Theory}
+To prove Theorem \ref{thm:spectral_decay}, we will make use of another graph on points within $\mathcal{D}$, whose spectral properties are very well-understood. Let $\xi$ be the set of evenly spaced lattice points over $\mathcal{D}$; formally $\xi = \set{k/n: k \in [\ell]^d}$ where $\ell = n^{1/d}$, and we define $[\ell]^d = \set{(\ell_1,\ldots,\ell_d): \ell_k \in [\ell] ~\textrm{for each}~ \ell_k}$. Then, let the grid graph over $\xi$ be given by $\wt{G} = (\wt{V},\wt{E})$, where $\wt{V} = \xi$ and $(\xi_k, \xi_{k'})$ is in $\wt{E}$ if $\norm{\xi_k - \xi_{k'}}_1 = 1/\ell$.  
+
+
+Let $\wt{L}$ be the Laplacian of $\wt{G}$, and let $\wt{\lambda_1} \leq \ldots \leq \wt{\lambda}_n$ be the ordered eigenvalues of $\wt{L}$. Write $\wt{N}(C) = \#\set{k: \wt{\lambda}_k^s \leq C^2}$. We have that the desired scaling rate \eqref{eqn:spectral_decay} holds with respect to the grid graph $\wt{G}$. 
+
+\begin{lemma}
+	\label{lem:spectral_decay_grid}
+	For each $s$ and every $C \leq \sqrt{2}$, we have
+	\begin{equation}
+	\label{eqn:spectral_decay_grid}
+	\wt{N}(C) \leq 2^d\big(n C^{d/s} + 1)
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	It will be sufficient to show that 
+	\begin{equation}
+	\label{eqn:spectral_decay_grid_1}
+	\lambda_k^s \leq C^2 \Rightarrow \floor{k^{1/d}}^d \leq C^{d/s}n
+	\end{equation}
+	To show this, observe that for any $\tau \in \mathbb{N}$ and $k = \tau^d$, we have
+	\begin{equation*}
+	\lambda_k \geq 4 \sin^2 \left(\frac{\pi k^{1/d}}{2n^{1/d}}\right) \geq \frac{\pi^2 k^{2/d}}{4 n^{2/d}} \wedge 2
+	\end{equation*}
+	Therefore, if $\lambda_k^s \leq C^2$ and $C \leq \sqrt{2}$, this implies
+	\begin{equation*}
+	\frac{\pi^{2s} k^{2s/d}}{4^s n^{2s/d}} \leq C^{2}
+	\end{equation*}
+	and rearranging, we obtain
+	\begin{equation*}
+	k \leq \frac{C^{d/s} 2^d n}{\pi^d} \leq C^{d/s}n
+	\end{equation*}	
+	If $k^{1/d}$ is not a natural number, applying the same argument to $k' = \floor{k^{1/d}}^d$ yields \eqref{eqn:spectral_decay_grid_1}.
+\end{proof}
+
+In light of Lemma \ref{lem:spectral_decay_grid}, to prove Theorem \ref{thm:spectral_decay} it is sufficient to show that $\wt{L} \preceq L$, since by the Courant-Fischer min-max theorem, the ordering $\wt{L} \preceq L$ implies that $\wt{\lambda}_k \leq \lambda_k$ for all $k \in [n]$. The next result details the conditions under which this ordering holds. This condition will be stated with respect to the min-max matching distance between $\xi$ and $X$, i.e. the minimum over all bijections $T: \xi \to X$ such that
+\begin{equation*}
+\min_{T} \max_{i \in [n]} \abs{T^{-1}(x_i) - x_i} 
+\end{equation*}
+
+\begin{lemma}
+	\label{lem:partial_ordering_grid}
+	For any radius $r$ satisfying
+	\begin{equation}
+	\label{eqn:radius_condition}
+	r \geq 2 \min_{T} \max_{i \in [n]} \abs{T^{-1}(x_i) - x_i} + n^{-1/d}
+	\end{equation}
+	we have that $\wt{L} \preceq L$. 
+\end{lemma}
+\begin{proof}
+	Let $T_{\star}$ achieve the min-max matching distance, i.e
+	\begin{equation*}
+	\max_{i \in [n]} \abs{T_{\star}^{-1}(x_i) - x_i} = \min_{T} \max_{i \in [n]} \abs{T^{-1}(x_i) - x_i}.
+	\end{equation*}
+	
+	It will be sufficient to prove that for every pair $(T_{\star}^{-1}(x_i), T_{\star}^{-1}(x_j)) \in \wt{E}$, the corresponding edge $(i,j)$ is in $E$. To see this, let $A$ denote the adjacency matrix associated with the neighborhood graph $G$, and $\wt{A}$ the adjacency matrix associated with the grid $\wt{G}$. Precisely $A$ is the $n \times n$ matrix with entries $A_{ij} = \eta_r(x_i,x_j)$, and $\wt{A}$ is the $n \times n$ matrix with entries $\wt{A}_{ij} = \1\{T_{\star}^{-1}(x_i), T_{\star}^{-1}(x_j) \in \wt{E} \}$. Our goal is to show that, for every $z \in \Rd$, we have
+	\begin{equation*}
+	z^T L z = \frac{1}{2}\sum_{i, j = 1}^{n} (z_i - z_j)^2 A_{ij} \leq \frac{1}{2}\sum_{i, j = 1}^{n} (z_i - z_j)^2 \wt{A}_{ij} = z^T \wt{L} z.
+	\end{equation*}
+	which certainly holds if $\wt{A}_{ij} \leq A_{ij}$ for all $i,j \in [n]$.
+	
+	Now, assume $(T_{\star}^{-1}(x_i), T_{\star}^{-1}(x_j)) \in \wt{E}$. This implies
+	\begin{align*}
+	\norm{x_i - x_j}_2 & \leq \norm{x_i - T_{\star}^{-1}(x_i)}_2 + \norm{T_{\star}^{-1}(x_j) - T_{\star}^{-1}(x_j)}_2 + \norm{x_j - T_{\star}^{-1}(x_j)}_2 \\
+	& \leq 2 \max_{i \in [n]} \abs{T_{\star}^{-1}(x_i) - x_i} + n^{-1/d} \\
+	& \leq r.
+	\end{align*}
+	so $\eta_r(x_i,x_j) = 1$ and therefore $(i,j) \in E$. 
+\end{proof}
+
+Finally, the following Lemma demonstrates that, for sufficiently large $r$, the condition \eqref{eqn:radius_condition} will hold with high probability. 
+
+\begin{lemma}
+	\label{lem:matching_distance}
+	Assume $P$ has density $p$ which is bounded above and below uniformly over $\D$; that is, there exist constants $p_{\min}$ and $p_{\max}$ such that
+	\begin{equation*}
+	0 < p_{\min} < p(x) < p_{\max} < \infty, \quad \text{for all $x \in \mathcal{D}$}.
+	\end{equation*}
+	Then, for any $r = r_n$ such that $r(\log(n)/n)^{1/d} \to \infty$, we have that the event
+	\begin{equation*}
+	r < 2 \min_{T} \max_{i \in [n]} \abs{T^{-1}(x_i) - x_i} + n^{-1/d}
+	\end{equation*}
+	occurs with probability tending to $0$ as $n \to \infty$. 
+\end{lemma}
+
+Together Lemmas \ref{lem:spectral_decay_grid}, \ref{lem:partial_ordering_grid}, and \ref{lem:matching_distance} imply Theorem \ref{thm:spectral_decay}.
+
+\end{document}
