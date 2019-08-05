@@ -154,6 +154,7 @@
 \maketitle
 
 \section{Fixed graph testing.}
+\label{sec:fixed_graph_testing}
 
 Suppose we observe $G = (V,E)$, an undirected graph over $V = [n]$. Let $B$ be the $m \times n$ incidence matrix of $G$, with singular value decomposition $B = U\Lambda^{1/2}V^T$, so that the Laplacian matrix $L = V \Lambda V^T$. For $i \in [n]$, we observe
 \begin{equation*}
@@ -324,6 +325,7 @@ The calculation for the type II error will be slightly more involved.
 
 To more explicitly specify the critical radius $\epsilon: \norm{\beta}_2 \geq \epsilon$, we will need to make an assumption on the relation between $N(C)$ and $C$. In particular, let $C = C^*$, where
 \begin{equation*}
+\label{eqn:C_star}
 C^* = c\frac{(C_n n^{s/d})^{4s/(4s + d)}}{n^{s/d}}.
 \end{equation*}
 for some $c$ constant in $n$. We will assume the following bound on $N(C^*)$:
@@ -339,31 +341,36 @@ for some $c$ constant in $n$. We will assume the following bound on $N(C^*)$:
 	\label{cor:critical_radius}
 	Fix $b \geq 1$, assume \ref{asmp:tail_decay}. Then, for any $C_n > 0$
 	\begin{equation*}
-	\sup_{\substack{\beta \in \mathcal{S}_d^{s}(C_n), \\ \norm{\beta}_2/n \geq \epsilon}} \Ebb_{\beta}(1 - \phi_{C^{\star}}) \leq \frac{2}{b^2} + \frac{2}{b\sqrt{N(C^{\star})}}
+	\sup_{\substack{\beta \in \mathcal{S}_d^{s}(C_n), \\ \norm{\beta}_2/\sqrt{n} \geq \epsilon}} \Ebb_{\beta}(1 - \phi_{C^{\star}}) \leq \frac{2}{b^2} + \frac{2}{b\sqrt{N(C^{\star})}}
 	\end{equation*}
 	for every $\epsilon > 0$ such that 
 	\begin{equation*}
-	\epsilon^2 \geq (2b + 1) \left(\frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}\right).
+	\epsilon^2 \geq (2bc^{d/2s} + c^{-2}) \left(\frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}\right),
 	\end{equation*}
+	where $c$ is the same constant as appears in \eqref{eqn:C_star}.
 \end{corollary}
 \begin{proof}
-	First, we verify that $\epsilon^2 \geq 2b\sqrt{2N(C^*)/n^2} + C_n^2/n(C^*)^2$. By Assumption \ref{asmp:tail_decay} and the choice of $C^{\star}$, we have
+	Our goal is to verify that, when
 	\begin{equation*}
-	N(C^*) \leq (C^*)^{d/s}n = (C_n n^{s/d})^{4d/(4s + d)}
+	\frac{\norm{\beta}_2^2}{n} \geq (2bc^{d/2s} + c^{-2}) \left(\frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}\right)
+	\end{equation*} 
+	then \eqref{eqn:type_II} holds with respect to $C^{\star}$, so that we may apply Lemma \ref{lem:type_II}. In other words, we want to show $\epsilon^2 \geq 2b\sqrt{2N(C^*)/n^2} + C_n^2/n(C^*)^2$. By Assumption \ref{asmp:tail_decay} and the choice of $C^{\star}$, we have
+	\begin{equation*}
+	N(C^*) \leq (C^*)^{d/s}n = c^{d/s}(C_n n^{s/d})^{4d/(4s + d)}
 	\end{equation*}
 	and therefore
 	\begin{equation*}
-	2b\sqrt{\frac{N(C^*)}{n^2}} \leq \frac{2b}{n} (C_n n^{s/d})^{2d/(4s+d)}
+	2b\sqrt{\frac{N(C^*)}{n^2}} \leq \frac{2bc^{d/2s}}{n} (C_n n^{s/d})^{2d/(4s+d)}
 	\end{equation*}
 	Moving on to the second term, we have
 	\begin{align*}
-	\frac{C_n^2}{n(C^{\star})^2} & = \frac{C_n^2n^{2s/d}}{n(C_nn^{s/d})^{8s/(4s+d)}} \\
-	& = \frac{C_n^{2d/(4s + d)}n^{(s/d)2d/(4s + d)}}{n} \\
-	& = \frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}
+	\frac{C_n^2}{n(C^{\star})^2} & = \frac{C_n^2n^{2s/d}}{c^2n(C_nn^{s/d})^{8s/(4s+d)}} \\
+	& = \frac{C_n^{2d/(4s + d)}n^{c^2(s/d)2d/(4s + d)}}{n} \\
+	& = \frac{(C_n n^{s/d})^{2d/(4s + d)}}{c^2n}
 	\end{align*}
-	and therefore $\epsilon \geq 2b\sqrt{2N(C^*)/n^2} + C_n^2/n(C^*)^2$. As a result, by Lemma \ref{lem:type_II} for any $\beta \in \mathcal{S}^s_d(C_n)$ such that $\norm{\beta}/n \geq \epsilon$, 
+	and therefore $\epsilon \geq 2b\sqrt{2N(C^*)/n^2} + C_n^2/n(C^*)^2$. As a result, by Lemma \ref{lem:type_II} for any $\beta \in \mathcal{S}^s_d(C_n)$ such that $\norm{\beta}/\sqrt{n} \geq \epsilon$, 
 	\begin{equation*}
-	\Ebb_{\beta}(1 - \phi_{C^{\star}}) \geq \frac{2}{b^2} + \frac{2}{b\sqrt{2N(C^{\star})}}.
+	\Ebb_{\beta}(1 - \phi_{C^{\star}}) \leq \frac{2}{b^2} + \frac{2}{b\sqrt{2N(C^{\star})}}.
 	\end{equation*}
 \end{proof}
 
@@ -400,37 +407,52 @@ T_C := \sum_{k: \lambda_k^s \leq C^2} y_k^2, \quad y_k = \frac{1}{\sqrt{n}} z^T 
 \end{equation*}
 For $b \geq 1$, let $\tau(b) = b\sqrt{2N(C)/n^2}$. Then our test will be $\phi_{C} = \mathbf{1}\set{T_C \leq N(C)/n + \tau(b)}$. 
 
-In the following result, we prove that for an appropriate choice of threshold $C$ and radius $r$, the test $\phi_C$ achieves (nearly) minimax-optimal rates. Let
-\begin{equation*}
+In the following result, we prove that for an appropriate choice of threshold $C$ and radius $r$, the test $\phi_C$ achieves (nearly) minimax-optimal rates, whenever $s > d/4$. (I.e whenever $\mathcal{W}^{s,2}(\mathcal{D})$ can be embedded into $L^4(\mathcal{D})$. Let
+\begin{equation}
+\label{eqn:C_star_continuous}
 C^{\star} = \frac{\left(n^{1 + s/d}r^{d/2 + s}\right)^{4s/(4s + d)}}{n^{s/d}}.
+\end{equation}
+and suppose that $P$ be an absolutely continuous probability measure over $\D$ with density function $p$ bounded above and below by constants, i.e
+\begin{equation*}
+0 < p_{\textrm{min}} < p(x) < p_{\textrm{max}} < \infty, \quad \textrm{for all $x \in \mathcal{D}$.}
 \end{equation*}
 
 \begin{theorem}
 	\label{thm:sobolev_testing_rate}
-	Let $b \geq 1$ be a fixed constant, and let $s = 1$. For any sequence $r_n$ such that $(\log n/n)^{1/d}r \to \infty$, there exists a constant $c$ which depends only on $d$ and $L$ such that
+	Let $b \geq 1$ be a fixed constant, let $s = 1$, and let $4s < d$. For any sequence $r_n$ such that $(\log n/n)^{1/d}r_n \to \infty$, and $(n^{1 + s/d}r_n^{d/2 + s})^{4s/(4s + d)}n^{-s/d} \leq \sqrt{2}$ for all $n$, there exists a constant $c_1$ which depends only on $d$, $L$, $p_{\max}$, and $b$ such that
 	\begin{equation}
 	\label{eqn:sobolev_testing_rate_1}
-	\mathcal{R}_{\epsilon}(\phi_{C^{\star}}; \mathcal{W}^{s,2}(\mathcal{D};L)) \leq c_1\left(\frac{1}{b^2} + \frac{1}{b\sqrt{N(C^{\star})}}\right) + o(1)
+	\mathcal{R}_{\epsilon}(\phi_{C^{\star}}; \mathcal{W}^{s,2}(\mathcal{D};L)) \leq \left(\frac{2}{b^2} + \frac{2}{b\sqrt{N(C^{\star})}}\right) + o(1)
 	\end{equation}
 	for every $\epsilon$ such that
 	\begin{equation}
 	\label{eqn:sobolev_testing_rate}
-	\epsilon^2 \geq c_2 b \left(\frac{(b n^{1 + s/d}r^{d/2 + s})^{2d/(4s + d)}}{n}\right).
+	\epsilon^2 \geq c_1 b \left(\frac{(b n^{1 + s/d}r^{d/2 + s})^{2d/(4s + d)}}{n}\right).
 	\end{equation}
 \end{theorem}
+\begin{remark}
+	Observe that when $4s > d$, the inequality $(n^{1 + s/d}r^{d/2 + s})^{4s/(4s + d)}n^{-s/d} \leq \sqrt{2}$ is satisfied whenever $r_n \leq n^{-3/(2d + 4s)} >> (\log(n)/n)^{1/d}$. In this regime, therefore, there exists a range of $r$ such that both conditions required in Theorem \ref{thm:sobolev_testing_rate} are satisfied. In particular, in this regime, choosing $r = \log(n)^{\alpha} (\log(n)/n)^{1/d}$ for any $\alpha > 0$, we have that the lower bound in \eqref{eqn:sobolev_testing_rate} becomes
+	\begin{equation*}
+	c_1 b (\log n)^{(1/d + \alpha)(d/2 + s)(2d/(4s + d))} n^{-4s/(4s + d)}
+	\end{equation*}
+	matching, up to log factors, the minimax rate for testing over Sobolev functions.
+\end{remark}
+\begin{remark}
+	Many rates of nonparametric hypothesis testing exhibit an elbow when $4s < d$. In our particular setting, it can be shown that a naive test based on the statistic $\norm{z}_2^2$ has power for alternatives with norm $\norm{f}^2 \geq n^{-1/4}$, regardless of $s$ and $d$, for any $f \in L^4(\mathcal{D})$. 
+\end{remark}
 
 \subsection{Proof of Theorem \ref{thm:sobolev_testing_rate}}
 Our goal is to upper bound
 \begin{equation*}
-\mathcal{R}_{\epsilon}(\phi_{C^{\star}}; W^{1,2}(\mathcal{D};L)) = \Ebb_{f = 0}(\phi_{C^{\star}}) + \sup_{f \in W^{1,2}(\mathcal{D};L): \norm{f}_2 > \epsilon} \Ebb_{f}(1 - \phi_{C^{\star}})
+\mathcal{R}_{\epsilon}(\phi_{C^{\star}}; W^{1,2}(\mathcal{D};L)) = \Ebb_{f = 0}(\phi_{C^{\star}}) + \sup_{f \in W^{1,2}(\mathcal{D};L): \norm{f}_{P,2} > \epsilon} \Ebb_{f}(1 - \phi_{C^{\star}})
 \end{equation*}
 By Lemma \ref{lem:type_I_error}, we immediately have $\Ebb_{f = 0}(\phi_{C^{\star}}) \leq 1/b^2$, and we turn to the worst-case type II error. Fix any $f \in W^{1,2}(\mathcal{D};L)$ such that $\norm{f}_2 > \epsilon$, and let $\beta$ be the length-$n$ random vector with $j$th entry $\beta_j = f(x_j)$. Consider the following events:
 \begin{enumerate}[label=(E\arabic*)]
 	\item 
 	\label{event:discrete_sobolev_norm}
-	Discrete Sobolev norm of $\beta$: There exists a constant $c_1$ which depends only on $p_{\max}$ and $d$ such that
+	Discrete Sobolev norm of $\beta$: There exists a constant $c_2$ which depends only on $p_{\max}$ and $d$ such that
 	\begin{equation*}
-	\norm{B^{(s)}\beta}_2^2 \leq c_1 b^2 n^2 r^{d + 2s} 
+	\norm{B^{(s)}\beta}_2^2 \leq c_2 b^2 n^2 r^{d + 2s} 
 	\end{equation*}
 	\item 
 	\label{event:eigenvalue_tail_decay}
@@ -447,34 +469,50 @@ By Lemma \ref{lem:type_I_error}, we immediately have $\Ebb_{f = 0}(\phi_{C^{\sta
 \end{enumerate} 
 
 Each of these events happen with high probability as $n \to \infty$.
-\begin{lemma}
+\begin{lemma}[High Probability Events.]
 	\label{lem:high_probability_events}
-	With probability at least $1 - \frac{1}{b^2}$ as $n \to \infty$,
+	\mbox{}
+	
+	\textbf{Discrete Sobolev norm.}
+	There exists a constant $c_2$ which depends only on $p_{\max}$ and $d$ such that, with probability at least $1 - \frac{1}{b^2}$,
 	\begin{equation}
 	\label{eqn:discrete_sobolev_norm}
-	\norm{B\beta}_2^2 \leq c_1 b^2 n^2 r^{d + 2}.
+	\norm{B\beta}_2^2 \leq c_2 b^2 n^2 r^{d + 2}.
 	\end{equation}
 	
-	With probability tending to one as $n \to \infty$,
+	\textbf{Eigenvalue tail decay.}
+	Suppose the sequence of neighborhood graph radii $(r_n)$ satisfies
+	\begin{itemize}
+		\item $r(n/\log n)^{1/d} \to \infty$, and
+		\item $r_n > \sqrt{2}n^{-1/(2d + 4s)}$ for all $n$.
+	\end{itemize} 
+	Then with probability tending to one as $n \to \infty$,
 	\begin{equation}
 	\label{eqn:eigenvalue_tail_decay}
 	N(C^{\star}) \leq n(C^{\star})^{d/s}.
 	\end{equation}
 	
-	\textcolor{red}{$L_2$ norm}.
+	\textbf{Norm of $\beta$.}
+	There exists a constant $c_5$ which depends only on $s,d$, and $\mathcal{D}$ such that
+	\begin{equation}
+	\label{eqn:l2_norm}
+	\frac{\norm{\beta}^2}{n} < \frac{\epsilon^2}{2}
+	\end{equation}
+	with probability at least $1  - 4c_5p_{\max}^4L^4/(n\epsilon^2) \to 0$ as $n \to \infty$. 
 \end{lemma}
-In the following subsections, we prove Lemma \ref{lem:high_probability_events}. First, we show that Theorem \ref{thm:sobolev_testing_rate} is a simple consequence of Lemma \ref{lem:high_probability_events} along with our previous work. Let $\mathcal{A}_f$ be the set of $X$ such that \ref{event:discrete_sobolev_norm}, \ref{event:eigenvalue_tail_decay}, and \ref{event:l2_norm} all occur, for the given choice of $f$. We have that for $C_n := c_1bnr^{d/2 + s}$, the event \ref{event:discrete_sobolev_norm} implies $\beta \in \mathcal{S}_d^s(C_n)$. Therefore, by \ref{event:l2_norm},
+
+In the following subsections, we prove the various statements which make up Lemma \ref{lem:high_probability_events}. First, however, we show that Theorem \ref{thm:sobolev_testing_rate} is a simple consequence of Lemma \ref{lem:high_probability_events} along with the fixed graph testing results of Section \ref{sec:fixed_graph_testing}. Let $\mathcal{A}_f$ be the set of $X$ such that \ref{event:discrete_sobolev_norm}, \ref{event:eigenvalue_tail_decay}, and \ref{event:l2_norm} all occur, for the given choice of $f$. We have that for $C_n := \sqrt{c_2}bnr^{d/2 + s}$, the event \ref{event:discrete_sobolev_norm} implies $\beta \in \mathcal{S}_d^s(C_n)$. Therefore, by \ref{event:l2_norm},
 \begin{equation}
 \label{eqn:sobolev_testing_rate_2}
 \Ebb_f(1 - \phi_{C^*}) \leq \sup_{\substack{\beta \in \mathcal{S}_d^{s}(C_n), \\ \norm{\beta}_2/n \geq \epsilon^2/2}} \Ebb_{\beta}(1 - \phi_{C^{\star}}) + \Pbb(\mathcal{A}_f).
 \end{equation}
 Observe the following: 
 \begin{itemize}
-	\item \textcolor{red}{$C^{\star} = (C_n n^{s/d})^{4s/(4s+d)}/n^{s/d}$},
-	\item The event \ref{event:eigenvalue_tail_decay} is exactly \ref{asmp:tail_decay}, and 
-	\item For an appropriate choice of $c_2$, by hypothesis
+	\item $C^{\star} = c_3(C_n n^{s/d})^{4s/(4s+d)}/n^{s/d}$, where $c_3 = (b c_2^{1/2})^{-1}$. 
+	\item The event \ref{event:eigenvalue_tail_decay} is exactly \ref{asmp:tail_decay}, specialized to our choice of graph \textcolor{red}{$G_{n,r}$}, and 
+	\item Letting $c_1 := 2c_2^{-2d/(4s + d)}\left(2bc_3^{d/2s} + c_3^{-2}\right)$, by \eqref{eqn:sobolev_testing_rate},
 	\begin{equation*}
-	\epsilon^2/2 \geq (2\sqrt{2}b + 1) \left(\frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}\right)
+	\epsilon^2/2 \geq (2bc_3^{d/2s} + c_3^{-2}) \left(\frac{(C_n n^{s/d})^{2d/(4s + d)}}{n}\right)
 	\end{equation*}
 \end{itemize}
 Therefore we may apply Corollary \ref{cor:critical_radius}, and obtain
@@ -488,6 +526,329 @@ and along with \eqref{eqn:sobolev_testing_rate_2} and Lemma \ref{lem:high_probab
 
 \subsection{Proof of \eqref{eqn:discrete_sobolev_norm}}
 
+\begin{lemma}
+	\label{lem:sobolev_1_bound}
+	For any $f \in W^{1,2}(\mathcal{D};L)$, and any $b \geq 1$, we have that there exists a constant $c_2 > 0$ which depends only on $d$ and $p_{\max}$ such that
+	\begin{equation}
+	\label{eqn:sobolev_1_bound}
+	\norm{B\beta}_2^2 \leq L^2 b^2 c_2 n^2 r^{d + 2}
+	\end{equation}
+	with probability at least $1 - \frac{1}{b^2}$. 
+\end{lemma}
+\begin{proof}
+	Observe that
+	\begin{align*}
+	\frac{1}{n^2}\Ebb(\beta^T L \beta) = \Ebb\left(\frac{1}{n^2} \sum_{i,j = 1}^{n} (\beta_i - \beta_j)^2 A_{ij}\right) & = \frac{(n - 1)}{n} \int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dP(y) \,dP(x) \\
+	& \leq p_{\max}^2 \frac{(n - 1)}{n} \int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dy \,dx.
+	\end{align*}
+	We will show that for any $f \in \mathcal{W}^{1,2}(\D;L)$, there exists a constant $c_4$ which depends only on dimension $d$ such that
+	\begin{equation}
+	\label{eqn:mean_bound}
+	\int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dy \,dx \leq c_4 L^2 r^{d + 2}
+	\end{equation}
+	whence the desired result of \eqref{eqn:sobolev_1_bound} follows by Markov's inequality.
+	
+	We begin by dealing with complications due to the boundary of $\mathcal{D}$. Let $V$ be any bounded open set such that $\D \subset \subset V$. Note that as $\partial \D$ is $C^1$, by Theorem \ref{thm:evans_extension} there exists $g \in W^{1,2}(\Reals^d)$ such that
+	\begin{enumerate}
+		\item
+		\label{eqn:evans_extension_1}
+		$g = f$, $P$-almost-everywhere in $\D$
+		\item 
+		$g$ has support within $V$, and  
+		\item 
+		\label{eqn:sobolev_1_bound_2}
+		$\norm{g}_{W^{1,2}(\Rd)} \leq C \norm{f}_{W^{1,2}(\D)}$ for a constant $c$ which depends only on $\mathcal{D}$.
+	\end{enumerate}
+	As a result of the first point,
+	\begin{equation}
+	\label{eqn:sobolev_1_bound_1}
+	\int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dy \,dx \leq \int_{\Rd} \int_{\Rd} (g(x) - g(y))^2\eta_r(x,y) \,dy \,dx.
+	\end{equation}
+	
+	Next, we smooth $g$, so that we may work with ordinary partial derivatives.
+	We let $\kappa \in C^{\infty}(\Rd)$ be given by
+	\begin{equation*}
+	\kappa(x) :=
+	\begin{cases}
+	C \exp \left\{\frac{1}{\norm{x}^2 - 1}\right\}& \quad \textrm{if $\norm{x}_2 \leq 1$} \\
+	0 & \quad \textrm{if $\norm{x}_2 \geq 1$}
+	\end{cases}
+	\end{equation*}
+	where the normalizing constant $C > 0$ is chosen so that $\int_{\Rd} \eta dx = 1$. Let $\kappa_r(x) := (1/r^d) \kappa(x/r)$. Then, the mollification of $g$ by $\kappa_r$ is given by
+	\begin{align*}
+	g^r & := g \ast \eta_r \\
+	& = \int_{\Rd} \eta_r(x - y) g(y) dy
+	\end{align*}
+	(Refer to \citep{evans10}, Appendix C, Theorem 7 for a proof that $g^r \in C^{\infty}(\Rd)$.)
+	Adding and subtracting within \eqref{eqn:sobolev_1_bound_1}, we have
+	\begin{align}
+	\int_{\Rd} & \int_{\Rd} (g(x) - g(y))^2\eta_r(x,y) \,dy \,dx \\
+	& \leq 3 \int_{\Rd} \int_{\Rd} \bigl((g(x) - g^r(x))^2 + (g^r(x) - g^r(y))^2 + (g^r(y) - g(y))^2\bigr)\eta_r(x,y) \,dy \,dx \nonumber \\
+	& = 6 \int_{\Rd} \int_{\Rd} \bigl((g(y) - g^r(y))^2 \eta_r(x,y) \,dy \,dx + 2 \int_{\Rd} \int_{\Rd} \bigl((g^r(x) - g^r(y))^2 \eta_r(x,y) \,dy \,dx \label{eqn:sobolev_1_bound_5}
+	\end{align}
+	We deal with each summand individually, beginning with the first one. Let $\nu_d = \pi^{d/2}/\Gamma(d/2 + 1)$ denote the volume of a ball with unit radius in $\Rd$. Then, we have
+	\begin{align}
+	\int_{\Rd} \int_{\Rd} \bigl((g(y) - g^r(y))^2 \eta_r(x,y) \,dy \,dx & = \int_{\Rd} \int_{B(x,r)} \bigl((g(y) - g^r(y))^2\,dy \,dx \nonumber \\
+	& = \int_{\Rd} \int_{B(y,r)} \bigl((g(y) - g^r(y))^2\,dx \,dy \tag{Tonelli's Theorem} \nonumber \\
+	& = \nu_d r^d \int_{\Rd}\bigl((g(y) - g^r(y))^2 \,dy \\
+	& \leq \nu_d r^{d + 2} \int_{\Rd} \norm{\nabla g(y)}^2 \,dy \label{eqn:sobolev_1_bound_4}
+	\end{align}
+	where the last line follows from Lemma \ref{lem:poincare_mollify}.
+	
+	We now turn our attention to the second summand. Note that as $g^r \in C^{\infty}(\Rd)$, we may apply Theorem \ref{thm:taylor_expansion} and obtain
+	\begin{align*}
+	(g^r(x) - g^r(y))^2 & = \left(\int_{0}^{1} \nabla g^r(x + t(y - x)) \cdot (y - x) \,dt\right)^2 \\
+	& \leq \int_{0}^{1} \bigl(\nabla g^r(x + t(y - x)) \cdot (y - x)\bigr)^2 \,dt  \tag{Jensen's inequality} \\
+	& \leq \norm{y - x}^2 \int_{0}^{1} \norm{\nabla g^r(x + t(y - x))}^2 \,dt. \tag{Cauchy-Schwarz inequality}
+	\end{align*}
+	As a result, we have
+	\begin{align*}
+	\int_{\Rd} \int_{\Rd} \bigl((g^r(x) - g^r(y))^2 \eta_r(x,y) \,dy) \,dx & \leq \int_{\Rd} \int_{\Rd} \norm{y - x}^2  \int_{0}^{1} \norm{\nabla g^r(x + t(y - x))}^2 \eta_r(x,y) \,dt \,dy \,dx \\
+	& \leq r^{2} \int_{\Rd} \int_{\Rd} \int_{0}^{1} \norm{\nabla g^r(x + t(y - x))}^2 \eta_r(x,y) \,dt \,dy \,dx \\
+	& = r^{2} \int_{\Rd} \int_{0}^{1} \int_{\Rd} \norm{\nabla g^r(x + t(y - x))}^2 \eta_r(x,y) \,dx \,dt \,dy \\
+	& = r^{2} \int_{\Rd} \int_{0}^{1} \int_{\Rd} \norm{\nabla g^r(x + tz)}^2 \eta_r(z) \,dx \,dt \,dz \tag{$z = y - x$}
+	\end{align*}
+	
+	where we write $\eta_r(z) = \mathbf{1}(\norm{z} \leq r)$ in an abuse of notation. Next, we note that
+	\begin{equation*}
+	\int_{\Rd} \norm{\nabla g^r(x + tz)}^2 \,dx = \int_{\Rd} \norm{\nabla g^r(x)}^2 \,dx \leq \int_{\Rd} \norm{\nabla g(x)}^2 \,dx
+	\end{equation*}
+	with the inequality following from Lemma \ref{lem:gradient_mollify_commute}. Therefore,
+	\begin{align}
+	r^{2} \int_{\Rd} \int_{0}^{1} \int_{\Rd} \norm{\nabla g^r(x + tz)}^2 \eta_r(z) \,dx \,dt \,dz & \leq r^{2} \int_{\Rd} \eta_r(z) \int_{0}^{1} \int_{\Rd} \norm{\nabla g(x)}^2 \,dx  \,dt \,dz \nonumber \\
+	& = \nu_d r^{2 + d} \int_{\Rd} \norm{\nabla g(x)}^2 \,dx. \label{eqn:sobolev_1_bound_3}
+	\end{align}
+	By \eqref{eqn:sobolev_1_bound_5}, \eqref{eqn:sobolev_1_bound_4} and \eqref{eqn:sobolev_1_bound_3}, we have that 
+	\begin{equation*}
+	\int_{\Rd} \int_{\Rd} (g(x) - g(y))^2 \eta_r(x,y) \,dx \,dy \leq 9 \nu_d r^{d + 2} \int_{\Rd} \norm{\nabla g(x)}_2^2 \,dx
+	\end{equation*}
+	Then by \eqref{eqn:sobolev_1_bound_2}, $\int_{\Rd} \norm{\nabla g(x)}_2^2 \,dx \leq c \int_{\D} \norm{\nabla f(x)}_2^2 \,dx \leq c L^2 $ where $c$ is a constant depending only on $\D$. So the desired result of \eqref{eqn:sobolev_1_bound_1} follows.
+\end{proof}
+
+\subsection{Proof of \eqref{eqn:eigenvalue_tail_decay}.}
+
+\begin{theorem}
+	\label{thm:spectral_decay}
+	Let $r \to 0$ as $n \to \infty$ sufficiently slowly so that $r(\log n/n)^{1/d} \to \infty$. Then, for each $s > 0$ and $C \leq \sqrt{2}$,
+	\begin{equation}
+	\label{eqn:spectral_decay}
+	N(C) \leq n C^{d/s}.
+	\end{equation} 
+	with probability tending to one as $n \to \infty$. 
+\end{theorem}
+
+Before we prove Theorem \ref{thm:spectral_decay}, we observe that, whenever $4s > d$, the choice of $C^{\star}$ by \eqref{eqn:C_star_continuous} along with the requirement that $r_n < \sqrt{2}(n^{-3/(2d + 4s)})$ implies $C^{\star} < \sqrt{2}$ for all $n$. Therefore, Theorem \ref{thm:spectral_decay} implies \eqref{eqn:eigenvalue_tail_decay}, the desired result.
+
+To prove Theorem \ref{thm:spectral_decay}, we will make use of a grid graph $\widetilde{G}$ on points within $\mathcal{D}$, whose spectral properties are very well-understood. Let $\xi$ be the set of evenly spaced lattice points over $\mathcal{D}$; formally $\xi = \set{k/n: k \in [\ell]^d}$ where $\ell = n^{1/d}$, and we define $[\ell]^d = \set{(\ell_1,\ldots,\ell_d): \ell_k \in [\ell] ~\textrm{for each}~ \ell_k}$. Then, let the grid graph over $\xi$ be given by $\wt{G} = (\wt{V},\wt{E})$, where $\wt{V} = \xi$ and $(\xi_k, \xi_{k'})$ is in $\wt{E}$ if $\norm{\xi_k - \xi_{k'}}_1 = 1/\ell$.  
+
+Let $\wt{L}$ be the Laplacian of $\wt{G}$, and let $\wt{\lambda_1} \leq \ldots \leq \wt{\lambda}_n$ be the ordered eigenvalues of $\wt{L}$. Write $\wt{N}(C) = \#\set{k: \wt{\lambda}_k^s \leq C^2}$. We have that the desired scaling rate \eqref{eqn:spectral_decay} holds with respect to the grid graph $\wt{G}$. 
+
+\begin{lemma}
+	\label{lem:spectral_decay_grid}
+	For each $s$ and every $C \leq \sqrt{2}$, we have
+	\begin{equation}
+	\label{eqn:spectral_decay_grid}
+	\wt{N}(C) \leq 2^d\big(n C^{d/s} + 1)
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	It will be sufficient to show that 
+	\begin{equation}
+	\label{eqn:spectral_decay_grid_1}
+	\lambda_k^s \leq C^2 \Rightarrow \floor{k^{1/d}}^d \leq C^{d/s}n
+	\end{equation}
+	To show this, observe that for any $\tau \in \mathbb{N}$ and $k = \tau^d$, we have
+	\begin{equation*}
+	\lambda_k \geq 4 \sin^2 \left(\frac{\pi k^{1/d}}{2n^{1/d}}\right) \geq \frac{\pi^2 k^{2/d}}{4 n^{2/d}} \wedge 2
+	\end{equation*}
+	Therefore, if $\lambda_k^s \leq C^2$ and $C \leq \sqrt{2}$, this implies
+	\begin{equation*}
+	\frac{\pi^{2s} k^{2s/d}}{4^s n^{2s/d}} \leq C^{2}
+	\end{equation*}
+	and rearranging, we obtain
+	\begin{equation*}
+	k \leq \frac{C^{d/s} 2^d n}{\pi^d} \leq C^{d/s}n
+	\end{equation*}	
+	If $k^{1/d}$ is not a natural number, applying the same argument to $k' = \floor{k^{1/d}}^d$ yields \eqref{eqn:spectral_decay_grid_1}.
+\end{proof}
+
+In light of Lemma \ref{lem:spectral_decay_grid}, to prove Theorem \ref{thm:spectral_decay} it is sufficient to show that $\wt{L} \preceq L$, since by the Courant-Fischer min-max theorem, the ordering $\wt{L} \preceq L$ implies that $\wt{\lambda}_k \leq \lambda_k$ for all $k \in [n]$. The next result details the conditions under which this ordering holds. This condition will be stated with respect to the min-max matching distance between $\xi$ and $X$, i.e. the minimum over all bijections $T: \xi \to X$ such that
+\begin{equation*}
+\min_{T} \max_{i \in [n]} \abs{T^{-1}(x_i) - x_i} 
+\end{equation*}
+
+\begin{lemma}
+	\label{lem:partial_ordering_grid}
+	For any radius $r$ satisfying
+	\begin{equation}
+	\label{eqn:radius_condition}
+	r \geq 2 \min_{T} \max_{i \in [n]} \abs{T^{-1}(x_i) - x_i} + n^{-1/d}
+	\end{equation}
+	we have that $\wt{L} \preceq L$. 
+\end{lemma}
+\begin{proof}
+	Let $T_{\star}$ achieve the min-max matching distance, i.e
+	\begin{equation*}
+	\max_{i \in [n]} \abs{T_{\star}^{-1}(x_i) - x_i} = \min_{T} \max_{i \in [n]} \abs{T^{-1}(x_i) - x_i}.
+	\end{equation*}
+	
+	It will be sufficient to prove that for every pair $(T_{\star}^{-1}(x_i), T_{\star}^{-1}(x_j)) \in \wt{E}$, the corresponding edge $(i,j)$ is in $E$. To see this, let $A$ denote the adjacency matrix associated with the neighborhood graph $G$, and $\wt{A}$ the adjacency matrix associated with the grid $\wt{G}$. Precisely $A$ is the $n \times n$ matrix with entries $A_{ij} = \eta_r(x_i,x_j)$, and $\wt{A}$ is the $n \times n$ matrix with entries $\wt{A}_{ij} = \1\{T_{\star}^{-1}(x_i), T_{\star}^{-1}(x_j) \in \wt{E} \}$. Our goal is to show that, for every $z \in \Rd$, we have
+	\begin{equation*}
+	z^T L z = \frac{1}{2}\sum_{i, j = 1}^{n} (z_i - z_j)^2 A_{ij} \leq \frac{1}{2}\sum_{i, j = 1}^{n} (z_i - z_j)^2 \wt{A}_{ij} = z^T \wt{L} z.
+	\end{equation*}
+	which certainly holds if $\wt{A}_{ij} \leq A_{ij}$ for all $i,j \in [n]$.
+	
+	Now, assume $(T_{\star}^{-1}(x_i), T_{\star}^{-1}(x_j)) \in \wt{E}$. This implies
+	\begin{align*}
+	\norm{x_i - x_j}_2 & \leq \norm{x_i - T_{\star}^{-1}(x_i)}_2 + \norm{T_{\star}^{-1}(x_j) - T_{\star}^{-1}(x_j)}_2 + \norm{x_j - T_{\star}^{-1}(x_j)}_2 \\
+	& \leq 2 \max_{i \in [n]} \abs{T_{\star}^{-1}(x_i) - x_i} + n^{-1/d} \\
+	& \leq r.
+	\end{align*}
+	so $\eta_r(x_i,x_j) = 1$ and therefore $(i,j) \in E$. 
+\end{proof}
+
+Finally, the following Lemma demonstrates that, for sufficiently large $r$, the condition \eqref{eqn:radius_condition} will hold with high probability. 
+
+\begin{lemma}
+	\label{lem:matching_distance}
+	Assume $P$ has density $p$ which is bounded above and below uniformly over $\D$; that is, there exist constants $p_{\min}$ and $p_{\max}$ such that
+	\begin{equation*}
+	0 < p_{\min} < p(x) < p_{\max} < \infty, \quad \text{for all $x \in \mathcal{D}$}.
+	\end{equation*}
+	Then, for any $r = r_n$ such that $r(\log(n)/n)^{1/d} \to \infty$, we have that the event
+	\begin{equation*}
+	r < 2 \min_{T} \max_{i \in [n]} \abs{T^{-1}(x_i) - x_i} + n^{-1/d}
+	\end{equation*}
+	occurs with probability tending to $0$ as $n \to \infty$. 
+\end{lemma}
+
+Together Lemmas \ref{lem:spectral_decay_grid}, \ref{lem:partial_ordering_grid}, and \ref{lem:matching_distance} imply Theorem \ref{thm:spectral_decay}.
+
+\subsection{Proof of \eqref{eqn:l2_norm}}
+
+Rewriting $\norm{\beta}^2/n = n^{-1} \sum f(x_i)^2$, we use Chebyshev's inequality to obtain
+\begin{align*}
+\Pbb\Bigl(n^{-1} \sum_{i = 1}^{n} f(x_i)^2 < \epsilon^2/2\Bigr) & \leq \Pbb\left( \left(n^{-1} \sum_{i=1}^{n} f(x_i)^2 - \int_{\D} f^2 \,dP(x)\right)^2 > \frac{\left(\int_{\D} f^2 \,dP(x)\right)^2}{4}\right) \\
+& \leq 4 \frac{\Var\left(f^2(x_1)\right)}{n(\int f^2 dP)^2} \\
+& \leq 4 \frac{\int f^4 \,dP(x) }{n\epsilon^2} \\
+& \leq 4 p_{\max}^4 \frac{\int f^4 \,dx }{n\epsilon^2}
+\end{align*}
+Then, since we have assumed $4s > d$, by the Sobolev embedding theorem we have that there exists some $c_5$ depending only on $s,d$, and $\D$ such that
+\begin{equation*}
+\int f^4 \,dx = \norm{f}^4_{L^4(\D)} \leq c \norm{f}_{W^{2,s}(\mathcal{D})}^4.
+\end{equation*}
+\section{Supporting Results.}
+
+\begin{theorem}[\citep{evans10} Chapter 5.4, Theorem 1]
+	\label{thm:evans_extension}
+	Assume $U$ is bounded and $\partial U$ is $C^1$. Select a bounded open set $V$ such that $U \subset \subset V$ ($U$ is compactly contained in $V$). Then there exists a bounded linear operator $E: W^{1,2}(U) \to W^{1,2}(\Rd)$ such that for each $u \in W^{1,2}(U)$:
+	\begin{enumerate}
+		\item $Eu = u$ a.e. in $U$,
+		\item $Eu$ has support within $V$, and 
+		\item 
+		\begin{equation*}
+		\norm{Eu}_{W^{1,2}(\Rd)} \leq C \norm{u}_{W^{1,2}(\Rd)}
+		\end{equation*}
+		the constant $C$ depending only on $U$ and $V$.
+	\end{enumerate}
+\end{theorem}
+
+For $u \in W^{1,2}(\Rd)$ and $x \in \Rd$, write $\nabla u(x) = (D^{e_1}(x),\ldots,D^{e_d}(x)$, for the gradient of $u$.
+
+\begin{theorem}[\citep{evans10} Chapter 5.8.1, Theorem 2]
+	\label{thm:evans_poincare}
+	There exists a constant $C$, depending only on $d$, such that
+	\begin{equation*}
+	\norm{u - u^r}_{L^2(B(x,r))} \leq Cr\norm{\nabla u}_{L^2(B(x,r))}
+	\end{equation*}
+\end{theorem}
+
+\begin{theorem}[Taylor expansion.]
+	\label{thm:taylor_expansion}
+	For any function $u \in C^1$, and any $x,y \in \Rd$, 
+	\begin{equation*}
+	u(y) - u(x) = \int_{0}^{1} \nabla(u(x + t(y - x))) \cdot (y - x) \,dt
+	\end{equation*}
+\end{theorem}
+
+\begin{lemma}
+	\label{lem:poincare_mollify}
+	For any function $g \in W^{1,2}(\Rd)$ compactly supported in a bounded open set $V \subset \Rd$, we have
+	\begin{equation}
+	\label{eqn:poincare_mollify}
+	\int_{\Rd} (g(x) - g^r(x))^2 \,dx \leq r^2 \int_{\Rd} \norm{\nabla g(x)}^2 \,dx
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	This Lemma is essentially a reproduction of part of the proof of the Rellich-Kondrachov Compactness Theorem from \citep{evans10}. Note that it is sufficient to prove in the case when $g$ is smooth. To see this, for the moment assume \eqref{eqn:poincare_mollify} holds for all $u \in C^{\infty}(V)$, and let $g \in W^{1,2}(V)$. By Theorem \ref{thm:local_approx_smooth_functions}, we may take a sequence $g_m \in C^{\infty}(V)$ such that
+	\begin{equation*}
+	\norm{g - g_m}_{L^2(V)} \to 0, \quad \textrm{and} \quad \norm{\nabla g - \nabla g_m}_{L^2(V)} \to 0,
+	\end{equation*}
+	Then we have
+	\begin{align*}
+	\int_{\Rd} (g(x) - g^r(x))^2 \,dx & \leq \int_{\Rd} (g(x) - g_m(x))^2 \,dx + \int_{\Rd}(g_m(x) - g_m^r(x))^2 \,dx + \int_{\Rd}(g_m^r(x) - g^r(x))^2 \,dx \\
+	& \leq \int_{\Rd} (g(x) - g_m(x))^2 \,dx + r^2 \int_{\Rd} \norm{\nabla g_m(x)}^2 \,dx + \int_{\Rd}(g_m^r(x) - g^r(x))^2 \,dx
+	\end{align*}
+	and taking the limit as $m$ goes to infinity, the right hand side converges to $\int_{\Rd} \norm{\nabla g(x)}^2 \,dx$. 
+	
+	It remains to show \eqref{eqn:poincare_mollify} in the case where $g$ is smooth. In this case, we have
+	\begin{align*}
+	g^{r}(x) -  g(x) & = \frac{1}{r^d} \int_{B(x,r)} \kappa \left(\frac{x - z}{r}\right)\bigl(g(z) - g(x)\bigr) \,dz \\
+	& = \int_{B(0,1)} \kappa(y) \bigl(g(x - ry) - g(x)\bigr) \,dy \\
+	& = \int_{B(0,1)} \kappa(y) \int_{0}^{1} \frac{d}{dt} \bigl(g(x - try) \bigr) \,dt \,dy \\
+	& = -r \int_{B(0,1)} \kappa(y) \int_{0}^{1} \bigl(\nabla g (x - try) \bigr) \cdot y \,dt \,dy.
+	\end{align*} 
+	Therefore, by Jensen's and Cauchy-Schwarz inequalities, we have
+	\begin{align*}
+	\int_{\Rd} (g(x) - g^r(x))^2 \,dx & \leq r^2 \int_{\Rd} \int_{B(0,1)} \kappa(y) \int_{0}^{1} \norm{\nabla g (x - try)}^2 \norm{y}^2 \,dt \,dy \,dx \\
+	& \leq r^2 \int_{B(0,1)} \kappa(y) \int_{0}^{1} \int_{\Rd} \norm{\nabla g (x - try)}^2 \,dx \,dt \,dy \\
+	& = r^2 \int_{\Rd} \norm{\nabla g(z)}^2 \,dz
+	\end{align*}
+\end{proof}
+
+The following theorem is Theorem 1 in Section 5.3 of \citep{evans10}.
+\begin{theorem}[Local approximation by smooth functions.]
+	\label{thm:local_approx_smooth_functions}
+	Assume $U$ is bounded, and $u \in W^{k,p}(U)$ for some $1 \leq p < \infty$. Then there exists functions $u_m \in C^{\infty}(U) \cap W^{k,p}(U)$ such that
+	\begin{equation*}
+	\norm{u_m - u}_{W^{k,p}(U)} \overset{m}{\to} 0.
+	\end{equation*}
+\end{theorem}
+
+\begin{lemma}
+	\label{lem:gradient_mollify_commute}
+	For any $u \in W^{1,2}(\Rd)$, we have
+	\begin{equation*}
+	\int_{\Reals^d} \norm{\nabla u^r(x)}_2^2 \,dx \leq \int_{\Reals^d} \norm{\nabla u(x)}_2^2 \,dx
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Observe that $\norm{\nabla u(x)}_2^2 = \sum_{j = 1}^{d} (D^{e_j}u(x))^2 $. Therefore,
+	\begin{align*}
+	\int_{\Rd} \norm{\nabla u^r(x)}_2^2 \,dP(x) & = \sum_{j = 1}^{d} \int_{\Rd} (D^{e_j}u^r(x))^2 \,dx \\
+	& = \sum_{j = 1}^{d} \int_{\Rd} ((D^{e_j}u)^r(x))^2 \,dx
+	\end{align*}
+	where the second equality follows from equation (1) in Section 5.3 of \citep{evans10}. Then, for any $v \in L^2(\Rd)$, we have that
+	\begin{align*}
+	\abs{v^r(x)} & = \int_{\Rd} \kappa_r^{1/2}(x - y) \kappa_r^{1/2}(x - y) v(y) \,dy \\
+	& \leq \left(\int_{\Rd} \kappa_r^(x - y) \,dy\right)^{1/2} \left(\int_{\Rd} \kappa_r(x - y) v^2(y) \right)^{1/2} \\
+	& = \left(\int_{\Rd} \kappa_r(x - y) v^2(y) \right)^{1/2}
+	\end{align*}
+	and therefore
+	\begin{align*}
+	\int_{\Rd} (v^r(x))^2 \,dx & \leq \int_{\Rd} \int_{\Rd } \kappa_r(x - y) v^2(y) \,dy \,dx \\
+	& = \int_{\Rd} \int_{\Rd } \kappa_r(x - y) v^2(y) \,dy \,dx \\
+	& = \int_{\Rd} v^2(y) \,dy
+	\end{align*}
+	
+	Applying this to $D^{e_j}u \in L^2(\Rd)$, we have that
+	\begin{equation*}
+	\sum_{j = 1}^{d} \int_{\Rd} ((D^{e_j}u)^r(x))^2 \,dx \leq \sum_{j = 1}^{d} \int_{\Rd} ((D^{e_j}u(x))^2 \,dx = \int_{\Rd} \norm{\nabla u(x)}^2 \,dx.
+	\end{equation*}
+\end{proof}
+
+\bibliographystyle{plainnat}
+\bibliography{../graph_testing_bibliography}
 
 
 \end{document}
