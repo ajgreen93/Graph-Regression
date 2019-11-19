@@ -162,7 +162,7 @@
 \maketitle
 
 \begin{abstract}
-	In the classical data analysis setting, where we observe i.i.d. point-cloud data sampled from an unknown distribution $P$, there has been recent interest in the design and analysis of procedures which involve the geometry of $P$. Broadly speaking, these procedures either estimate geometric properties such as high-density regions of $P$, or leverage the geometry of $P$ in some downstream statistical learning task. One way to implicitly adapt to the geometry of $P$ is through the use of graph-based spectral methods. The underlying intuition is that when one appropriately constructs a neighborhood graph, the resulting graph Laplacian encodes a great deal of information about the geometry of $P$; for example, one can view its top eigenvectors as (discrete versions of) functions which are smooth with respect to $P$. For this reason, there has been extensive analysis on consistency properties of graph Laplacians, that is, in what ways and with what error they approximate continuum-level operators.
+	In the classical data analysis setting, where we observe i.i.d. point-cloud data sampled from an unknown distribution $\Pbb$, there has been recent interest in the design and analysis of procedures which involve the geometry of $\Pbb$. Broadly speaking, these procedures either estimate geometric properties such as high-density regions of $\Pbb$, or leverage the geometry of $\Pbb$ in some downstream statistical learning task. One way to implicitly adapt to the geometry of $\Pbb$ is through the use of graph-based spectral methods. The underlying intuition is that when one appropriately constructs a neighborhood graph, the resulting graph Laplacian encodes a great deal of information about the geometry of $\Pbb$; for example, one can view its top eigenvectors as (discrete versions of) functions which are smooth with respect to $\Pbb$. For this reason, there has been extensive analysis on consistency properties of graph Laplacians, that is, in what ways and with what error they approximate continuum-level operators.
 	
 	\vspace{.02 in}
 	
@@ -170,17 +170,15 @@
 \end{abstract}
 
 
-\section{Background.}
+\section{Introduction and background.}
 
-\textcolor{red}{TODO:} This is why you are going to read.
-
-\textcolor{red}{TODO:} This is what you are going to read.
+This document details the work I intend to complete for my thesis, and is separated into three sections. In the first section, I give background on the convergence properties of neighborhood graphs, as well as the statistical learning problems of clustering and hypothesis testing. In the second section, I detail work I have already completed on clustering using the local spectral algorithm PPR over neighborhood graphs. In the third section, I propose several statistics used to test hypotheses using the spectra of neighborhood graphs, and make explicit the ways in which I will investigate and characterize their behavior. Finally, I give an estimated timeline for completing my proposed work.
 
 \subsection{Neighborhood graphs and their spectra.}
 \label{subsec:neighborhood_graphs_spectra}
 
 Let $X = \{x_1,
-\ldots, x_n\}$ be a sample drawn i.i.d.\ from a distribution $\Pbb$ on $\Rd$,
+\ldots, x_n\}$ be a sample drawn i.i.d. from a distribution $\Pbb$ on $\Rd$,
 with density~$f$.  For a radius $r > 0$, we define $G_{n,r}=(V,E)$ to be the
 \emph{$r$-neighborhood graph} of $X$, an unweighted, undirected graph with
 vertices $V=X$, and an edge $(x_i,x_j) \in E$ if and only if $\norm{x_i -
@@ -190,29 +188,41 @@ $(u,v) \in E$ and $0$ otherwise.  We also denote by $D$ the diagonal degree
 matrix, with entries $D_{uu} := \sum_{v \in V} A_{uv}$, and by $I$ the $n
 \times n$ identity matrix.
 
-Spectral graph theory involves the study of the eigenvalues and eigenvectors of any of following Laplacian matrices:
+Spectral graph theory involves the study of the eigenvalues and eigenvectors of the graph Laplacian $L := D - A$\footnote{Also the normalized Laplacian matrices $L_{\textrm{rw}} = I - D^{-1}A$ and $L_{\textrm{n}} = D^{1/2}L_{\textrm{rw}}D^{-1/2}$.} and is broadly applicable to fields as diverse as the theory of randomized algorithms and differential geometry \citet{chung97}. 
+
+When specifically considering Laplacians of neighborhood graphs such as $G_{n,r}$, one well-developed line of work concerns the asymptotic convergence properties of the various graph Laplacians to associated continuum Laplace operators. Let $\mathcal{X} \subseteq \Reals^d$ be an open, bounded, and connected set with Lipschitz boundary. The Laplace operator $\Delta: C^2(\mathcal{X}) \to L^2(\mathcal{X})$ is defined as
 \begin{equation*}
-\textrm{combinatorial:}~ L = D - A,~~ \textrm{random walk:}~ L_{\textrm{rw}} = I - D^{-1}A,~~ \textrm{normalized:}~ L_{\textrm{n}} = D^{1/2}L_{\textrm{rw}}D^{-1/2}.
+\Delta g = - \dive(\nabla g) =: \sum_{i = 1}^{d} \frac{\partial^2 g}{\partial x_i^2}.
 \end{equation*}
+There are several ways in which the matrix $L$ can be said to be converging to the operator $\Delta$. The first of these is \emph{functional} convergence. Here, we think of $L$ as acting on functions in $\Reals^d$,
+\begin{equation*}
+Lg(x) := \frac{1}{n^2r_n^{d+2}}\sum_{i = 1}^{n}(g(x) - g(x_i))A_{ij}
+\end{equation*}
+and ask whether $Lg(x) \to \Delta g(x)$ in probability as $n \to \infty$ and $r_n \to 0$.  \citet{belkin03,belkin05} consider a slightly different neighborhood graph than $G_{n,r}$ (constructed with a Gaussian rather than uniform kernel) and show that when $\Pbb$ is the uniform distribution over $\mathcal{X}$, such a functional convergence occurs. \footnote{For this and many of the results summarized in this section, $\mathcal{X}$ is permitted to be a low-dimensional manifold, and $\Delta$ is then taken to be the Laplace-Beltrami operator.} \citet{singer06,gine06} extend these results by proving faster convergence rates and a uniform CLT, respectively. When $\Pbb$ is non-uniform the story is slightly different. Now the relevant continuum operator is a weighted analogue of the Laplace operator,
+\begin{equation*}
+\Delta_{\Pbb} g := - \frac{1}{f} \dive(f^2 \nabla g);
+\end{equation*}
+\citet{lafon04,hein05} prove the functional convergence $Lg(x) \to \Delta_{\Pbb} g(x)$ in probability as $n \to \infty$ as $n \to \infty$ and $r_n \to 0$.
 
-and is broadly applicable to fields as diverse as the theory of randomized algorithms and differential geometry \textcolor{red}{Chung}. When specifically considering Laplacians of neighborhood graphs such as $G_{n,r}$, one well-developed line of work concerns the asymptotic convergence properties of the various graph Laplacians to associated continuum Laplacian operators.  
+Another mode of convergence is \emph{smoothness functional} convergence. In this case, we denote $\theta = (g(x_1),\ldots,g(x_n)) \in \Reals^n$, consider the smoothness functional
+\begin{equation*}
+S(g;\Pbb) := \int_{\mathcal{X}} \norm{\nabla g}_2^2~ f^2(x) \,dx
+\end{equation*}
+and ask whether $\frac{1}{n^2r_n^{d+2}}\theta^T L \theta \to S(g;\Pbb)$ in probability as $n \to \infty$ and $r_n \to 0$. \citet{bousquet03} proves that the smoothness functional converges pointwise--meaning for a fixed $g \in C^2(\mathcal{X})$--and \citet{hein06} extends this to show uniform convergence over a suitably chosen Holder ball.
 
-\begin{itemize}
-	\item  \textcolor{red}{Define the Laplacian operator}.
-	\item Introduce the study of Laplacians on point-cloud data, manifold learning, and give references as to their background. Discuss the study of the convergence of spectra \textcolor{red}{Belkin, Coifman, Garcia-Trillos and Slepcev 1, Garcia-Trillos and Slepcev Spec, von Luxburg, Hein + von Luxburg, Lafon,Koltchinskii and Gine, Gine and Koltchinskii 1}, pointwise convergence of operators \textcolor{red}{Belkin thesis, Lafon thesis, Hein + Audibert, Singer, Belkin + Niyogi08}, and convergence of smoothness functionals \textcolor{red}{Bousquet + Chapelle, Hein07}. 
-	\item Discuss the study of other functionals, such as total variation and normalized cut, on graphs \textcolor{red}{(Garcia-Trillos and Slepcev TV, Arias-Castro, Maier + von Luxburg)}
-	\item 
-\end{itemize}
+The final mode of convergence we mention is \emph{spectral} convergence.  $\Delta_{\Pbb}$ is a positive semidefinite self-adjoint operator, and therefore has a discrete spectrum. Label the $i$th smallest eigenvalue of $\Delta_{\Pbb}$ as $\lambda_i$, with associated eigenfunction $u_i$; similarly, label the $i$th smallest eigenvalue of $L$ as $s_i$ with associated eigenvector $v_i$. We say $L$ converges spectrally to $\Delta_{\Pbb}$ if for any fixed $k \in \mathbb{N}$,
+\begin{equation*}
+\lim_{n \to \infty} s_{k} = \lambda_k, \quad \textrm{and} \quad \lim_{n \to \infty} \frac{1}{n}\sum_{i = 1}^{n} (u_k(x_i) - v_{k,i})^2 = 0
+\end{equation*}
+where the limits are taken in probability. \citet{vonluxburg2008} consider the case of a fixed $r_n = r$, and prove spectral convergence of $L$ to an appropriately defined integral operator, \citet{belkin07} prove that when $\Pbb$ is the uniform distribution over $\mathcal{X}$, $L$ converges spectrally to $\Delta_{\Pbb} = \Delta$ for some $r_n \to 0$ as $n \to \infty$, and \citet{garciatrillos18} extend this result to hold for general $\Pbb$ and obtain rates at which $r_n$ may converge to $0$. 
 
-Why should I care about the asymptotic convergence of graph Laplacians?
-\begin{itemize}
-	\item The convergence of graph Laplacians, and their spectra, to underlying continuum operators suggests they may be used to perform a variety of desirable tasks in statistical learning. 
-	\item Dimension reduction: under the hypothesis that the data lie on, or are concentrated near, a manifold $\mathcal{M} \subset \Reals^d$ of dimension $m < d$, the eigenvectors $v_1,\ldots,v_m$, can be used to embed $x_i \mapsto (v_{i,1},\ldots v_{i,m})$, reducing the dimension from $d$ to $m$ without losing the geometric structure of $\Pbb$. This algorithm is known as Laplacian Eigenmaps (Belkin).
-	\item \textcolor{red}{Clustering: under the hypothesis that the distribution $\Pbb$ is supported on disjoint connected components $\mathcal{C}_1,\ldots,\mathcal{C}_k$, the span of the smallest $k$ eigenvectors of the Laplacian operator $L_n$ will approximately equal the span of the functions $\phi_j(x) = \1\set{x \in \mathcal{C}_j}, j = 1,\ldots,k$.} \textcolor{red}{(Belkin + Arias-Castro)}
-	\item Semi-supervised and supervised learning: Discuss the study of Laplacians in supervised learning \textcolor{red}{(Bousquet + Chapelle, Lee + Izbicki, GarciaTrillos + Murray, Padilla)} Discuss the study of Laplacians in semi-supervised learning \textcolor{red}{(Belkin + Niyogi, Zhou + Belkin, Slepcev and Thorpe)}. 
-\end{itemize}
-
-In this thesis proposal, we pick up a few of these threads, showing how spectral methods can be used to perform the statistical tasks of density clustering and nonparametric hypothesis testing. Before doing so, we provide some background on each of these areas.
+The convergence of graph Laplacians to underlying continuum differential operators suggests they may be used to perform a variety of desirable tasks in statistical learning. In this thesis proposal, we study a few of these tasks in detail, and show how spectral methods can be used to perform the statistical tasks of density clustering and nonparametric hypothesis testing. Before doing so, we provide some background on each of these areas.
+	 
+%\begin{itemize}
+	%\item Dimension reduction: under the hypothesis that the data lie on, or are concentrated near, a manifold $\mathcal{M} \subset \Reals^d$ of dimension $m < d$, the eigenvectors $v_1,\ldots,v_m$, can be used to embed $x_i \mapsto (v_{i,1},\ldots v_{i,m})$, reducing the dimension from $d$ to $m$ without losing the geometric structure of $\Pbb$. This algorithm is known as Laplacian Eigenmaps \citet{belkin03a}. 
+	%\item Clustering: under the hypothesis that the distribution $\Pbb$ is approximately supported on disjoint connected components $\mathcal{C}_1,\ldots,\mathcal{C}_k$, the embedding $x_i \mapsto (v_{i,1},\ldots,v_{i,k})$ will reveal the cluster structure of $\Pbb$. Subsequent application of a simple clustering method such as $k$-means clustering will then correctly partition the data $X$ into clusters \cite{ng01,ariascastro11,shi2009}.
+	%\item Semi-supervised and supervised learning: Discuss the study of Laplacians in supervised learning \textcolor{red}{(Bousquet + Chapelle, Lee + Izbicki, GarciaTrillos + Murray, Padilla)} Discuss the study of Laplacians in semi-supervised learning \textcolor{red}{(Belkin + Niyogi, Zhou + Belkin, Slepcev and Thorpe)}. 
+%\end{itemize}
 
 \subsection{Clustering.}
 
@@ -229,11 +239,11 @@ back to the work of \citet{hartigan1981}, who shows that the classical single-li
 symmetric set difference metric, \citet{tsybakov1997, singh2009} describe
 minimax optimal level-set estimators under Hausdorff loss and
 \citet{hartigan1981, chaudhuri2010, balakrishnan2013,kpotufe11} consider consistent estimation of the
-cluster tree. None of these works, however, study the ability of spectral algorithms to recover density clusters, which will be our focus. 
+cluster tree. None of these works, however, study the ability of spectral algorithms to recover density clusters, which will be our focus in Section~\ref{sec:density_clustering_PPR}.
 
 \subsubsection{Nonparametric mixture model.}
 
-The results in Section~\ref{subsec:neighborhood_graphs_spectra} detailing with spectral convergence of the graph Laplacian operator have straightforward consequences for the consistency of spectral clustering (for instance, see \cite{vonluxburg2008,garciatrillos18}). However, the behavior of the spectra of these continuum operators can in general be hard to grasp. Therefore, further work relating this spectra to the geometry of the distribution $\Pbb$ is of interest. In this spirit, \citet{shi2009,schiebinger2015,garciatrillos19,ariascastro11} examine the ability of spectral algorithms to recover the latent labels in certain geometrically well-conditioned nonparametric mixture models $\Pbb = \sum_{i = 1}^{k} \pi_i \Pbb_i$. These results focus on global rather than local 
+The results in Section~\ref{subsec:neighborhood_graphs_spectra} have straightforward consequences for the consistency of spectral clustering (for instance, see \cite{vonluxburg2008,garciatrillos18}). However, the behavior of the spectra of these continuum operators can in general be hard to grasp. Therefore, further work relating this spectra to the geometry of the distribution $\Pbb$ is of interest. In this spirit, \citet{shi2009,schiebinger2015,garciatrillos19,ariascastro11} examine the ability of spectral algorithms to recover the latent labels in certain geometrically well-conditioned nonparametric mixture models $\Pbb = \sum_{i = 1}^{k} \pi_i \Pbb_i$. These results focus on global rather than local 
 methods, and thus impose global rather than local conditions on the nature
 of the density. Moreover, they do not in general guarantee recovery of density 
 clusters, which is the focus in our work. Perhaps most importantly, these works
@@ -261,7 +271,7 @@ In hypothesis testing, the goal is distinguish whether our data are generated fr
 
 \subsubsection{Regression testing.}
 
-In addition to observing i.i.d samples $x_1,\ldots,x_n$ from a distribution $\mathbb{P}$ with support $\mathcal{X} := [0,1]^d \subset \Reals^d$\footnote{For the purposes of this proposal, whenever we discuss hypothesis testing we will assume $\mathcal{X} = [0,1]^d$, i.e. the unit cube with dimension equal to that of the ambient space $\Reals^d$.}, suppose we observe $Y = \set{y_1,\ldots,y_n}$ according to the following regression model:
+In addition to observing i.i.d samples $x_1,\ldots,x_n$ from a distribution $\mathbb{P}$ with density $p$ supported on $\mathcal{X} := [0,1]^d \subset \Reals^d$\footnote{For the purposes of this proposal, whenever we discuss hypothesis testing we will assume $\mathcal{X} = [0,1]^d$, i.e. the unit cube with dimension equal to that of the ambient space $\Reals^d$.}, suppose we observe $Y = \set{y_1,\ldots,y_n}$ according to the following regression model:
 \begin{equation}
 \label{eqn:regression}
 y_i = f(x_i) + \varepsilon_i, \quad \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)
@@ -286,23 +296,46 @@ Let $\alpha \in (0,1)$ be a user input specifying a tolerated level of testing e
 \end{equation*}
 We can then measure the difficulty of a given problem through the minimax critical radius $\epsilon_n^{\star}$, formally 
 \begin{equation*}
-\epsilon_n^{\star}(\mathcal{H}) = \inf \set{\epsilon:\inf_{\phi} \mathcal{R}(\phi; \mathcal{H}_{\epsilon} ) \leq \alpha}.
+\epsilon_n^{\star}(\mathcal{H}) = \inf \set{\epsilon:\inf_{\phi} \mathcal{R}(\phi; \mathcal{H}_{\epsilon} ) \leq \alpha},
 \end{equation*}
 where the infimum is over all Borel measurable functions $\phi: \Reals^n \to \set{0,1}$. We say a test $\phi$ is minimax optimal over a function class $\mathcal{H}$ if $\epsilon_n(\phi; \mathcal{H}) \asymp \epsilon_n^{\star}(\mathcal{H})$, and we call the rate at which $\epsilon_n^{\star}(\mathcal{H}) \to 0$ as a function of $n$ the \emph{minimax testing rate} over $\mathcal{H}$. To concisely state rates, we will use order notation, in which we write $a_n = O(b_n)$ when $a_n \leq c b_n$ for some constant $c$ and all $n \in \mathbb{N}$, $a_n = o(b_n)$ when $a_n/b_n \to 0$ as $n \to \infty$, and $a_n \asymp b_n$ when $c b_n \leq a_n \leq C b_n$ for constants $c$ and $C$ and all $n \in \mathbb{N}$.
 
-\paragraph{Testing over Sobolev classes.}
-The first type of function class $\mathcal{H}$ we consider will be balls in Sobolev spaces. We say a Borel measurable function $f: \mathcal{X} \to \Reals$ is in the space $\mathcal{L}^p(\mathcal{X})$ for $1 \leq p < \infty$ if $\int_{\mathcal{X}} \abs{f(x)}^p \,dx < \infty$. Then, the Sobolev space $W_d^{s,2}(\mathcal{X})$ consists of all functions $f \in \mathcal{L}^1(\mathcal{X})$ such that for each $\alpha = (\alpha_1,\ldots,\alpha_d)$ with $\abs{\alpha} := \sum_{i = 1}^{d} \alpha_i \leq s$, the weak derivative $D^{\alpha}f$(See \citet{evans10} for a formal definition) belongs to $\mathcal{L}^p(\mathcal{X})$. The Sobolev $\{s,2\}$ norm is then 
+\paragraph{Testing over Sobolev spaces.}
+The first type of function class $\mathcal{H}$ we consider will be balls in Sobolev spaces. We say a Borel measurable function $f: \mathcal{X} \to \Reals$ is in the space $\mathcal{L}^p(\mathcal{X})$ for $1 \leq p < \infty$ if 
+$\norm{f}_{\mathcal{L}^p(\mathcal{X})} := \int_{\mathcal{X}} \abs{f(x)}^p \,dx < \infty$. Then, the Sobolev space $W_d^{s,2}(\mathcal{X})$ consists of all functions $f \in \mathcal{L}^2(\mathcal{X})$ such that for each $\alpha = (\alpha_1,\ldots,\alpha_d)$ with $\abs{\alpha} := \sum_{i = 1}^{d} \alpha_i \leq s$, the weak derivative $D^{\alpha}f$ (See \citet{evans10} for a formal definition) belongs to $\mathcal{L}^2(\mathcal{X})$. The Sobolev $\{s,2\}$ norm is then 
 \begin{equation*}
 \norm{f}_{W_d^{s,2}(\mathcal{X})}^2 = \sum_{\abs{\alpha} \leq s} \int_{\mathcal{X}} \abs{D^{\alpha}f}^2 \,dx
 \end{equation*}
-and for a given $L > 0$, the corresponding ball is $W_d^{s,2}(\Xset; L) = \set{f: \norm{f}_{W^{s,2}(\Xset)} \leq L}$. In this work, we will treat $L$ as a fixed, known constant.
+and for a given $L > 0$, the corresponding ball is $W_d^{s,2}(\Xset; L) = \set{f: \norm{f}_{W^{s,2}(\Xset)} \leq L}$. (In this work, we will treat $L$ as a fixed, known constant.)
 
 Minimax testing rates for the Sobolev regression testing problem in one dimension were first derived by \citet{ingster82} for the idealized \emph{white noise} regression model:
 \begin{equation}
 \label{eqn:gaussian_white_noise}
 \,dY(x) = f(x) \,dx + \frac{\sigma}{\sqrt{n}}\,dW(x)
 \end{equation}
-where $\,dW(x)$ denotes a Gaussian white noise process on $\mathcal{X} \subset \Reals$ (defined formally in \citet{gine16} Section 1.2) and $\sigma > 0$ is a known constant. In this case, the minimax test rate is $\epsilon_n^{\star}(\mathcal{W}_d^{s,2}(\mathcal{X}, L)) \asymp n^{-2s/(4s + 1)}$ for all values of $s > 0$. \citet{ingster05} extend this to the multivariate setting where $\mathcal{X} \subseteq \Reals^d$, and show that $\epsilon_n^{\star}(\mathcal{W}_d^{s,2}(\mathcal{X}, L)) \asymp n^{-2s/(4s + d)}$, again for all $d \geq 1, s > 0$. The case where we observe data according to the generative model~\eqref{eqn:regression} was treated in \cite{ingster09}, wherein it is shown that the minimax rate remains the same  $\epsilon_n^{\star}(\mathcal{W}_d^{s,2}(\mathcal{X}, L)) \asymp n^{-2s/(4s + d)}$ so long as $4s > d$. When $4s < d$, if we replace the assumption $f \in W_d^{s,2}(\mathcal{X},L)$ by the assumption $\left(\int_{\mathcal{X}} f^4(x) \,dx\right)^{1/4}$, then \citet{guerre02} show that a test $\phi$ based on the statistic $\frac{1}{n}\sum_{i = 1}^{n}y_i^2$ will have testing error on the order of $n^{-1/4})$ . Since $\mathcal{W}^{s,2}$ does not compactly embed into $\mathcal{L}^4$ when $4s < d$ this result does not apply to Sobolev spaces in this regime; indeed it seems likely that uniformly consistent testing over these spaces is not possible, as the function $f^2$ may no longer have finite variance.
+where $\,dW(x)$ denotes a Gaussian white noise process on $\mathcal{X} \subset \Reals$ (defined formally in \citet{gine16} Section 1.2) and $\sigma > 0$ is a known constant. In this case, the minimax test rate is $\epsilon_n^{\star}(\mathcal{W}_d^{s,2}(\mathcal{X}, L)) \asymp n^{-2s/(4s + 1)}$ for all values of $s > 0$. \citet{ingster05} extend this to the multivariate setting where $\mathcal{X} \subseteq \Reals^d$, and show that $\epsilon_n^{\star}(\mathcal{W}_d^{s,2}(\mathcal{X}, L)) \asymp n^{-2s/(4s + d)}$, again for all $d \geq 1, s > 0$. The case where we observe data according to the generative model~\eqref{eqn:regression} was treated in \cite{ingster09}, wherein it is shown that the minimax rate remains the same  $\epsilon_n^{\star}(\mathcal{W}_d^{s,2}(\mathcal{X}, L)) \asymp n^{-2s/(4s + d)}$ so long as $4s > d$. When $4s < d$, if we replace the assumption $f \in W_d^{s,2}(\mathcal{X},L)$ by the assumption $\left(\int_{\mathcal{X}} f^4(x) \,dx\right)^{1/4}$, then \citet{guerre02} show that a test $\phi$ based on the statistic $\frac{1}{n}\sum_{i = 1}^{n}y_i^2$ will have testing error on the order of $n^{-1/4}$ . Since $\mathcal{W}^{s,2}$ does not compactly embed into $\mathcal{L}^4$ when $4s < d$ this result does not apply to Sobolev spaces in this regime; indeed it seems likely that no uniformly consistent test exists over these spaces, as the function $f^2$ may no longer have finite variance.
+
+\paragraph{Testing over Total Variation (TV) spaces.}
+
+To one extent or another, functions in the Sobolev balls exhibit homogeneous smoothness. In reality we may not wish to restrict our attention to such functions. We therefore consider functions of bounded total variation. Formally, for a function $f \in L^1(\mathcal{X})$ the \emph{total variation} semi-norm of $f$ is \citet{evans15}
+\begin{equation*}
+TV(f;\mathcal{X}) := \sup \left\{ \int_{\mathcal{X}} f \, \dive \, \psi \,dx : \psi \in C_c^1(\mathcal{X}; \Reals^d), \abs{\psi} \leq 1 \right\};
+\end{equation*}
+and we write $BV_d(\mathcal{X})$ for the subset of functions $f \in L^1(\mathcal{X})$ which have bounded norm
+\begin{equation*}
+\norm{f}_{BV_d(\mathcal{X})} := \norm{f}_{\infty} + TV(f;\mathcal{X}).
+\end{equation*}
+
+In the one-dimensional case, some work has been done on nonparametric testing over the Besov spaces $B_{p,q}^s(\mathcal{X})$ (for a formal definition see Section 4.3 of \cite{gine16}), which we can relate to the bounded variation space $BV_1(\mathcal{X})$ via the embeddings
+\begin{equation}
+\label{eqn:besov_embeddings}
+B_{11}^1(\mathcal{X}) \subseteq BV_1(\mathcal{X}) \subseteq B_{1\infty}^1(\mathcal{X}).
+\end{equation}
+
+\citet{lepski1999} study the regression testing problem, with data observed according to the white noise model as in \eqref{eqn:gaussian_white_noise}. They derive among other things that for the Besov balls $B_{1,q}^s(\mathcal{X}; L)$, the minimax critical radius $\epsilon_n^{\star}(B_{1,q}^s(\mathcal{X}; L)) \asymp n^{-2s'/(4s' + 1)}$, where $s' = s - \frac{1}{4}$ and the result holds for any $s > 1, q \geq 1$. \citet{ingster00} improve on this by showing the same result holds whenever $s > 1/2$. This along with~\eqref{eqn:besov_embeddings} implies that $\epsilon_n^{\star}(BV_1(\mathcal{X})) \asymp n^{-\frac{3}{8}}$. 
+
+When $d \geq 2$ minimax testing rates over the Besov and bounded variation spaces are still unknown. However, study of the equivalent estimation problem suggests the answers may be substantially different from the 1d problem. \citet{sadhanala16} consider a discretized version of this problem -- where observations are made on a discrete grid and the regression function is assumed to lie within a discrete bounded variation class -- and show that the minimax estimation rate in empirical norm is on the order of $n^{-1/d}$ for $d \geq 2$. This is slower than minimax estimation rate over the Sobolev space $\mathcal{W}_d^{1,2}$, the largest Sobolev space inscribed within $BV_d$. \citet{delyon96,kerkyacharian08,lepski2015,ruiz18} all consider the regression white noise model \eqref{eqn:gaussian_white_noise} and show, in progressive degrees of generality, that the minimax rates over the Besov spaces $B_{p,q}^s$ exhibit a phase transition at the boundary $2s = d$. When $2s > d$, the minimax estimation rate (with loss measured in $\mathcal{L}^2$ norm) is the standard $n^{-s/(2s + d)}$; on the other hand when $2s < d$, the minimax rate is $n^{-s/2d}$ which is much slower. When $s = 1$, this phase transition occurs at $d = 2$, and so in a minimax sense the univariate and multivariate estimation problems over $BV_d$ are revealed to be quite different. \citet{sadhanala17} show that this same phenomenon carries over to the grid, and the discrete TV classes defined upon it. 
+
 
 \subsubsection{Density testing.}
 \label{subsubsec:density_testing}
@@ -316,7 +349,8 @@ and we again evaluate our performance using worst-case risk; letting $\phi:\Real
 \mathcal{R}(\phi; \mathcal{H}) = \inf_{p \in \mathcal{H}}\Ebb_{p,p}(\phi) + \sup_{p \neq q, p,q \in \mathcal{H}} \Ebb_{p,q}(1 - \phi),
 \end{equation*}
 and the critical radius $\epsilon_n$. (Although we overload notation by having $\mathcal{R}$ and $\epsilon_n$ refer to the worst-case risk and critical radius in both the regression and density testing problems, it will always be clear from context which problem we are referring to.)
-\paragraph{Density testing in Holder spaces.} Unlike in the regression testing context, where $f$ is assumed to belong to a Sobolev space, most of the study of density testing seems to have dealt with the case where $\mathcal{H}$ is Holder space. For a given $s > 0$, the $s$th Holder norm is given by
+
+\paragraph{Testing over Holder spaces.} Unlike in the regression testing context, where $f$ is assumed to belong to a Sobolev space, most of the study of density testing seems to have dealt with the case where $\mathcal{H}$ is a Holder space. For a given $s > 0$, the $s$th Holder norm is given by
 \begin{equation*}
 \norm{f}_{C_d^{s}(\mathcal{X})} := \sum_{\abs{\alpha} \leq s} \norm{D^{\alpha}f}_{\infty} + \sum_{\abs{\alpha} = s} \sup_{x,y \in \mathcal{X}} \frac{\abs{D^{\alpha}f(y) - D^{\alpha}f(x)}}{\norm{x - y}_2}
 \end{equation*}
@@ -355,7 +389,7 @@ The test statistic which \citet{ingster09} analyze is then
 T_{\mathrm{Harm}} := \frac{1}{n}\sum_{\ell,-\ell \in [\kappa]^d} \left(\sum_{i = 1}^{n} \phi_{\ell}(x_i) y_i\right)^2, \quad \textrm{where}~ \phi_{\ell}(x) = \prod_{i = 1}^{d} \phi_{\ell_i}(x_i)
 \end{equation}
 for $\ell \in \mathbb{Z}^d$, $x \in \Reals^d$, and 
-$\kappa \in \mathbb{N}$ a tuning parameter. The test statistic $T_{\mathrm{spec}}$ which we propose and analyze in Section~\ref{subsec:spectral_regression_testing} is closely related to $T_{\mathrm{Harm}}$, the crucial difference being that instead of the Fourier basis $\set{\phi_{\ell}}$, which are eigenfunctions of the Laplacian operator over $[0,1]^d$, we use eigenvectors $\set{v_k}$ of the graph Laplacian matrix.
+$\kappa \in \mathbb{N}$ a tuning parameter. The test statistic $T_{\mathrm{spec}}$ which we propose and analyze in Section~\ref{subsec:spectral_regression_testing} is closely related to $T_{\mathrm{Harm}}$, the crucial difference being that instead of the Fourier basis $\set{\phi_{\ell}}$, which are eigenfunctions of the Laplacian operator $\Delta$, we use eigenvectors $\set{v_k}$ of the graph Laplacian matrix.
 
 \paragraph{Integral Probability Metrics (IPMs).}
 
@@ -378,6 +412,7 @@ Then the classes $\Theta_{s,p} := \set{\theta \in \Reals^n: S_{s,p}(\theta) \leq
 and we will propose a pair of such statistics in Section~\ref{sec:neighborhood_graph_IPMs}.
 
 \section{Density clustering with PPR.}
+\label{sec:density_clustering_PPR}
 
 In our density clustering work, we examine the ability of Personalized PageRank (PPR) -- a local spectral algorithm-- to recover density clusters. First, we motivate and formally define the PPR clustering algorithm we subsequently analyze. 
 
@@ -859,17 +894,17 @@ over neighborhood graphs that is independent of $n$, the number of vertices.
 
 \section{Hypothesis testing with neighborhood graphs.}
 
-We define test statistics for both the regression and density testing setups. In the former, we show in some preliminary work that our proposed test statistic is minimax optimal over the Sobolev ball $W^{1,2}(\mathcal{X};1)$. In the latter, we empirically demonstrate that our proposed approach has merit. We conclude this section by discussing some practical and computational considerations in this problem. Throughout, we detail the work we intend to complete for a final thesis.
+We define test statistics for both the regression and density testing setups. In the former, we show in some preliminary work that our proposed test statistic is minimax optimal over the Sobolev ball $W^{1,2}(\mathcal{X};1)$. In the latter, we empirically demonstrate that our proposed approach has merit. We conclude this section by discussing some practical and computational considerations for this problem. Throughout, in subsections entitled ``Proposed Work'' we detail the work we intend to complete for a final thesis. 
 
 \subsection{Regression testing using graph spectral projections.}
 \label{subsec:spectral_regression_testing}
 
-Recalling the regression model~\eqref{eqn:regression}, let $VSV^T$ be the spectral decomposition of the Laplacian matrix $L$ of the neighborhood graph $G_{n,r}$. Inspired by \eqref{eqn:harmonic}, we introduce the following truncated-series test statistic:
+Recalling the regression model~\eqref{eqn:regression}, let $VSV^T$ be the spectral decomposition of the Laplacian matrix $L$ of the neighborhood graph $G_{n,r}$. Inspired by \eqref{eqn:harmonic}, we propose the following truncated-series test statistic:
 \begin{equation}
 \label{eqn:graph_spectral_projections}
 T_{\mathrm{spec}} := \frac{1}{n} \sum_{k = 0}^{\kappa} \left(\sum_{i = 1} v_i y_i\right)^2
 \end{equation}
-where the only difference between $T_{\mathrm{harm}}$ and $T_{\mathrm{spec}}$ is that the eigenvectors $\set{v_i}$ are now playing the role of the harmonic functions $\set{\phi_{\ell}}$. In Theorem~\ref{thm:sobolev_testing_rate} we show that under some mild regularity conditions on $\Pbb$, the test $\phi_{\textrm{spec}} := \1\{T_{\mathrm{spec}} \geq \tau\}$ is, up to log factors, a minimax optimal test over the Sobolev ball $W^{1,2}(\mathcal{X};1)$. To conveniently state our results we introduce the notation
+where the main difference between $T_{\mathrm{spec}}$ and $T_{\mathrm{harm}}$ is that the eigenvectors $\set{v_i}$ are now playing the role of the harmonic functions $\set{\phi_{\ell}}$. In Theorem~\ref{thm:sobolev_testing_rate} we show that under some mild regularity conditions on $\Pbb$, the test $\phi_{\textrm{spec}} := \1\{T_{\mathrm{spec}} \geq \tau\}$ is, up to log factors, a minimax optimal test over the Sobolev ball $W^{1,2}(\mathcal{X};1)$. To conveniently state our results we introduce the notation
 \begin{equation*}
 h(\beta,d) = (1/d + \beta)(d/2 + s)(2d/(4s + d))
 \end{equation*}
@@ -893,27 +928,35 @@ h(\beta,d) = (1/d + \beta)(d/2 + s)(2d/(4s + d))
 	Therefore, $\epsilon_n^2(\phi_{\mathrm{spec}}, \mathcal{W}^{1,2}(\mathcal{X};L)) \asymp  n^{-4/(4 + d)} (\log n)^{h(\beta,d)}$. 
 \end{theorem}
 
-A comparison of Theorem~\ref{thm:sobolev_testing_rate} with the rates derived by~\citet{ingster09} for~\eqref{eqn:harmonic} demonstrates that the additional error incurred by using estimated eigenfunctions of the Laplacian, rather than directly using the Fourier series, results in the critical radius widening by only at most a factor of $(\log n)^{h(\beta,d)/2}$ from the minimax critical radius over $W^{1,2}(\mathcal{X};1)$. This means our test based on $T_{\textrm{spec}}$ is almost \textit{as good as}, in a minimax sense, the best possible test over $W^{1,2}(\mathcal{X};1)$. As mentioned previously, the problem when $d \geq 4$ requires different assumptions on $f$ and is characterized by a different minimax rate.
+A comparison of Theorem~\ref{thm:sobolev_testing_rate} with the rates derived by~\citet{ingster09} for a test based on $T_{\mathrm{harm}}$ demonstrates that the additional error incurred by using estimated eigenfunctions of the Laplacian, rather than directly using the Fourier series, results in the critical radius widening by only at most a factor of $(\log n)^{h(\beta,d)/2}$ from the minimax critical radius over $W^{1,2}(\mathcal{X};1)$. This means our test based on $T_{\textrm{spec}}$ is almost \textit{as good as}, in a minimax sense, the best possible test over $W^{1,2}(\mathcal{X};1)$. As mentioned previously, when $d \geq 4$ the problem  requires different assumptions on $f$ and is characterized by a different minimax rate.
 
-\subsubsection{Weighted Sobolev norms.}
+We have shown that the test $\phi_{\mathrm{spec}}$ has some desirable theoretical properties. However, more comprehensive theoretical work is required to fully motivate $\phi_{\mathrm{spec}}$, and to better characterize its performance.
 
-However, we would like to argue that in certain cases, $T_{\textrm{spec}}$ is in fact \textit{better} than competitors such as $T_{\textrm{harm}}$. While we do not yet have theoretical results along these lines, intuitively $T_{\textrm{spec}}$ should be particularly sensitive to functions $f$ which have smooth deviations from $f_0 = 0$ in high-density regions, but are potentially much wigglier in low-density regions. We therefore intend to (i) alter our function class $\mathcal{H}$ to be defined as the unit ball in a weighted Sobolev norm; precisely
-\begin{equation*}
-\mathcal{H}_{\Pbb} = \set{f \in L^2(\mathcal{X}): \sum_{\abs{\alpha} \leq s}\int\ \int_{\mathcal{X}} \abs{D^{\alpha}f(x)}^2 p^2(x)\,dx}
-\end{equation*}
-(ii) analyze the performance of $T_{\mathrm{spec}}$ over $\mathcal{H}_{\Pbb}$, and (iii) provide example distributions $\Pbb$ where $T_{\mathrm{spec}}$ outperforms reasonable competitors over $\mathcal{H}_{\Pbb}$ (See Figure~\ref{fig:fig3} for some empirical examples in the two-sample density testing case).
+\subsubsection{Proposed work.}
 
-\subsubsection{Higher-order derivative classes.}
-Theorem~\ref{thm:sobolev_testing_rate} covers only the $\{1,2\}$-Sobolev ball. In order to extend to higher-order Sobolev classes (i.e. the Sobolev $\{s,2\}$-balls where $s \geq 2$), we will likely need to consider kernels $K_r(u,v) = K\left(\frac{\norm{u - v}}{r}\right)$ for which
+Theorem~\ref{thm:sobolev_testing_rate} shows that the test $\phi_{\mathrm{spec}}$ is nearly-minimax optimal over $W_d^{1,2}(\mathcal{X};L)$. We propose to study the minimax properties of $\phi_{\mathrm{spec}}$ over two related Sobolev spaces, (i) the higher-order Sobolev balls $W_d^{s,2}(\mathcal{X};L)$, and (ii) density-weighted versions of Sobolev spaces.
+
+\paragraph{Higher-order Sobolev spaces.}
+In order to extend our results to hold with respect to the balls $W_d^{s,2}(\mathcal{X};L)$, we will likely need to consider kernels $K_r(u,v) = K\left(\frac{\norm{u - v}}{r}\right)$ for which
 \begin{equation}
 \label{eqn:higher_order_kernel}
 \int x^i K(x) \,dx = 0, \quad \textrm{i = 1,\ldots,s}
 \end{equation}
-as is typical in nonparametric smoothing problems \cite{tsybakov08}. Choosing kernels which satisfy~\eqref{eqn:higher_order_kernel} as opposed to $K_r(x,y) = \1(\norm{x - y} \leq r)$ allows for tighter control on the quadratic functional
+as is typical in nonparametric smoothing problems \cite{tsybakov08}. Choosing kernels which satisfy~\eqref{eqn:higher_order_kernel}--as opposed to our current choice of kernel $K_r(x,y) = \1(\norm{x - y} \leq r)$--allows for tighter control on the quadratic functional
 \begin{equation*}
 \int \int (f(x) - f(y))^2 K_r(x,y) \,d\Pbb(x) \,d\Pbb(y);
 \end{equation*}
-this control is critical to obtain minimax rates, and otherwise the analysis when $s = 1$ versus $s > 1$ is not substantially different. We therefore intend to show that with an appropriate choice of kernel $K$, along with tuning parameters $\kappa$ and $r$, the test statistics $T_{\mathrm{spec}}$ and $T_{\mathrm{spec}}^{(2)}$ (the latter of which we define in the following section) result in minimax optimal tests over all Sobolev $\{s,2\}$-balls, in the regression and density testing problems respectively. 
+this control is critical to obtain minimax rates, and otherwise the analysis when $s = 1$ versus $s > 1$ is not substantially different. We therefore \textbf{intend} to show for any Sobolev ball $W_d^{s,2}(\mathcal{X};L)$ such that $4s > d$, if the kernel $K$ satisfies~\eqref{eqn:higher_order_kernel} and the tuning parameters $\kappa$ and $r$ are selected appropriately, the test $\phi_{\mathrm{spec}}$ is minimax optimal.
+
+\paragraph{Weighted Sobolev norms.}
+
+The aforementioned completed and proposed work shows/would show that our test $\phi_{\mathrm{spec}}$ has minimax properties as good as any other minimax optimal test; for instance, a test based on the statistic $T_{\mathrm{harm}}$ defined in~\eqref{eqn:harmonic}. However, we would like to argue that in certain cases, $T_{\textrm{spec}}$ is in fact \textit{better} than competitors such as $T_{\textrm{harm}}$. We know from results in Section~\ref{subsec:neighborhood_graphs_spectra} that the eigenvectors $\set{v_i}$ converge towards eigenfunctions of a \emph{weighted} Laplacian operator. At a high-level, these eigenfunctions display inhomogeneous smoothness as a function of density, appearing much more wiggly in regions of low-density. 
+
+The behavior of these eigenfunctions should affect the performance of $T_{\mathrm{spec}}$ in predictable ways.  In particular, the test statistic $T_{\mathrm{spec}}$ should be more sensitive than $T_{\mathrm{harm}}$ and other test statistics which perform more classical smoothing to functions $f$ which have smooth deviations from $f_0 = 0$ in high-density regions, but are potentially much wigglier in low-density regions. We will therefore consider the performance of our test $\phi_{\mathrm{spec}}$ over the unit ball in a weighted Sobolev norm 
+\begin{equation*}
+\mathcal{W}_d^{1,2}(\mathbb{P};\mathcal{X};L) := \set{f \in L^2(\mathcal{X}): \sum_{\abs{\alpha} \leq s}\int\ \int_{\mathcal{X}} \abs{D^{\alpha}f(x)}^2 p^2(x)\,dx \leq 1}.
+\end{equation*}
+We \textbf{intend} to upper bound the critical radius $\epsilon_n(\phi_{\mathrm{spec}};\mathcal{W}_d^{1,2}(\mathbb{P};\mathcal{X};L))$ as a function of $\mathbb{P}$ as well as $d$ and $n$, and exhibit choices of $\mathbb{P}$ for which $\phi_{\mathrm{spec}}$ will provably outperform competitors such as tests based on $T_{\mathrm{harm}}$ in the sense of having smaller worst-case risk. (See Figure~\ref{fig:fig3} for some empirical examples in the two-sample density testing case).
 
 \subsection{Density testing using graph spectral projections.}
 \label{subsec:spectral_density_testing}
@@ -923,9 +966,7 @@ It is straightforward to adapt the test statistic $T_{\mathrm{spec}}$ to the two
 \label{eqn:graph_spectral_projections_2}
 T_{\mathrm{spec}}^{(2)} := \frac{1}{n} \sum_{k = 0}^{\kappa} \left(\sum_{i = 1}^{n} v_i a_i\right)^2
 \end{equation}
-where as before $v_1,\ldots,v_n$ are eigenvectors of the Laplacian $L = L(X,r)$.
-
-While we do not yet have theoretical results characterizing the behavior of $T_{\mathrm{spec}}^{(2)}$, Figure~\ref{fig:fig3} shows some instances in which $T_{\mathrm{spec}}^{(2)}$ outperforms a range of common nonparametric tests. We see that the examples support our intuition; $T_{\textrm{spec}}^{(2)}$ is especially strong when the difference in densities $p - q$ oscillates at a higher frequency in regions where the mixture density $\frac{1}{2}(p + q)$ is small.
+where as before $v_1,\ldots,v_n$ are eigenvectors of the Laplacian $L = L(X,r)$. Figure~\ref{fig:fig3} shows some instances in which $T_{\mathrm{spec}}^{(2)}$ outperforms a range of common nonparametric tests. We see that the examples support our intuition; $T_{\textrm{spec}}^{(2)}$ is especially strong when the difference in densities $p - q$ oscillates at a higher frequency in regions where the mixture density $\frac{1}{2}(p + q)$ is small. While these examples empirically motivate the use of $T_{\mathrm{spec}}^{(2)}$, at present we still lack a proper theoretical characterization of its performance. This is what we propose to study. 
 
 \begin{figure}
 	\label{fig:fig3}
@@ -944,91 +985,97 @@ While we do not yet have theoretical results characterizing the behavior of $T_{
 	\includegraphics[width=0.32\textwidth]{plots/stepfunction_sin3_theta}
 \end{figure}
 
-We intend to (i) derive upper bounds on the worst-case risk of the test $\phi_{\mathrm{spec}}^{(2)} = \1(T_{\mathrm{spec}}^{(2)} \leq \tau)$ over the class $C_d^{s}(\mathcal{X};L)$, and prove that it is minimax optimal, (ii) investigate the minimax rate for two-sample density testing over the Sobolev class $\mathcal{W}_d^{s,2}(\mathcal{X};L)$, and (iii) prove an analogue to Theorem~\ref{thm:sobolev_testing_rate} establish that $\phi_{\mathrm{spec}}^{(2)}$ remains minimax optimal over the larger classes $\mathcal{W}_d^{s,2}(\mathcal{X};L)$. 
+\subsubsection{Proposed work.}
 
-\subsubsection{Density testing for irregular alternatives.}
-As mentioned in Section~\ref{subsubsec:density_testing}, the regression and density testing models over e.g. Holder spaces are formally asymptotically equivalent; however, these asymptotic equivalence statements hold only when $2s > d$. To illuminate some differences between the density and regression testing problems when the regression function $f$ or difference in densities $p - q$ is considered to be irregular (meaning $2s < d$), it is helpful to consider the following generative model: suppose we observe pairs $(x_i,\ell_i)$ for $i = 1,\ldots, (n + m)$, where as usual $x_i \sim \Pbb$ are independent, and additionally $\ell_i$ are conditionally independent given $x_i$ with distribution
+As previously mentioned the minimax critical radius for the two-sample density testing problem over $C_d^{s}(\mathcal{X};L)$ is known to be $\epsilon_n^{\star}(C_d^{s}(\mathcal{X};L)) \asymp n^{-2s/(4s + d)}$ for all $d \geq 1$ and $s > 0$. Letting $\phi_{\mathrm{spec}}^{(2)} := \1\{T_{\mathrm{spec}} > \tau\}$, we \textbf{intend} to show that the critical radius $\epsilon_n(\phi_{\mathrm{spec}}^{(2)};C_d^{s}(\mathcal{X};L)) \asymp n^{-2s/(4s + d)}$ for all $d \geq 1, s > 0$, thus establishing that the test is minimax optimal over $C_d^{s}(\mathcal{X};L)$.
+
+There are certain technical nuances which make studying $T_{\mathrm{spec}}^{(2)}$ in the density testing problem more subtle than studying $T_{\mathrm{spec}}$ in the regression testing problem. (In particular, we require a condition on convergence of the eigenvectors ${v_i}$ which presently eludes us.) However, besides this issue by and large the technical results required are the same in each problem \emph{when the condition $4s > d$ is met}.
+
+\paragraph{Density testing for irregular ($4s \leq d$) alternatives.}
+
+% As mentioned in Section~\ref{subsubsec:density_testing}, the regression and density testing models over e.g. Holder spaces are formally asymptotically equivalent; however, these asymptotic equivalence statements hold only when $2s > d$. To illuminate some differences between the density and regression testing problems when the regression function $f$ or difference in densities $p - q$ is considered to be irregular (meaning $2s < d$), it is helpful to consider the following generative model: suppose we observe pairs $(x_i,\ell_i)$ for $i = 1,\ldots, (n + m)$, where as usual $x_i \sim \Pbb$ are independent, and additionally $\ell_i$ are conditionally independent given $x_i$ with distribution
+%\begin{equation*}
+%\begin{cases*}
+%1, & ~~  \textrm{with probability $\frac{p(x)}{p(x) + q(x)}$} \\
+%-1, & ~~ \textrm{with probability $\frac{q(x)}{p(x) + q(x)}$.} 
+%\end{cases*}
+%\end{equation*}
+%We can relate this to the density testing problem by applying Bayes rule, whence we derive that the conditional distribution of $X_i|\ell_i = 1$ is $\mathbb{P}$, and similarly the conditional distribution of $X_i|\ell_i = -1$ is $\mathbb{Q}$. On the other hand, since $\ell_i = f(x_i) + w_i$ where $f = \frac{p - q}{p + q}$ and $w_i$ is a mean-zero error term, this resembles in some respects the regression testing setup. However, $w_i$ is now heteroskedastic with variance depending on the unknown densities $p$ and $q$. The fact that the variance of $w_i$ is unknown is crucial, and as previously mentioned it implies that there will no longer be a elbow in rates at $d = 4$. Indeed,
+
+Before precisely stating what we intend to show regarding $T_{\mathrm{spec}}^{(2)}$ when $4s \leq d$, it is worth emphasizing the differences between the density testing and regression testing problems when $4s \leq d$. In particular, in the density testing problem, the minimax critical radius is $\epsilon_n^{\star}(C_d^{s}(\mathcal{X};L)) \asymp n^{-2s/(4s + d)}$ for all $d \geq 1$ and $s > 0$. By contrast, the following series of inclusions:
 \begin{equation*}
-\ell_i = 
-\begin{cases*}
-1, & ~~  \textrm{with probability $\frac{p(x)}{p(x) + q(x)}$} \\
--1, & ~~ \textrm{with probability $\frac{q(x)}{p(x) + q(x)}$.} 
-\end{cases*}
+C_d^{s}(\mathcal{X};L) \subseteq \{f: \sup_{x \in \mathcal{X}}\abs{f(x)}\} \subseteq \{f: \norm{f}_{\mathcal{L}^4} \leq L\}
 \end{equation*}
-We can relate this to the density testing problem by applying Bayes rule, whence we derive that the conditional distribution of $X_i|\ell_i = 1$ is $\mathbb{P}$, and similarly the conditional distribution of $X_i|\ell_i = -1$ is $\mathbb{Q}$. On the other hand, since $\ell_i = f(x_i) + w_i$ where $f = \frac{p - q}{p + q}$ and $w_i$ is a mean-zero error term, this resembles in some respects the regression testing setup. However, $w_i$ is now heteroskedastic with variance depending on the unknown densities $p$ and $q$. The fact that the variance of $w_i$ is unknown is crucial, and as previously mentioned it implies that there will no longer be a elbow in rates at $d = 4$. Indeed, as previously stated the minimax critical radius for the two-sample density testing problem over $C_d^1(\mathcal{X};L)$ is known to be $\epsilon_n^{\star}(C_d^1(\mathcal{X};L)) \asymp n^{-2/(4 + d)}$ for all $d$, including $d \geq 4$. 
+and the aforementioned work of \citet{guerre02} show that in the regression testing problem, the minimax critical radius is $\epsilon_n^{\star}(C_d^{s}(\mathcal{X};L)) = O(n^{-1/4})$. 
 
-When $d \geq 4$, choosing the hyperparameters for $T_{\mathrm{spec}}^{(2)}$ becomes more subtle. Statistics such as $T_{\mathrm{harm}}$ -- which take empirical evaluations of an orthogonal basis in $L^2(\mathcal{X})$--continue to be minimax optimal over $C_d^{1}(\mathcal{X};L)$ when $\kappa \asymp n^{2d/(4+d)}$. However, since this choice implies $\kappa > n$ the statistic $T_{\mathrm{spec}}^{(2)}$ -- which takes an orthogonal basis in $L^2(\mathbb{P}_n)$ -- reduces to simply $T_{\mathrm{spec}}^{(2)} = 1$ regardless of $\Pbb_n$ and $\Qbb_n$. Intuition from chi-squared tests--where the optimal choice of bin-width is on the order of $n^{-2/(4+d)}$, less than $n^{-1/d}$ whenever $d > 4$--suggests that we should modify our test statistic by choosing $r$ to be shrinking at a rate faster than $n^{-\frac{1}{d}}$. Of course at this connectivity scale with high probability the graph $G_{n,r}$ is disconnected \cite{penrose99}, and our analysis will necessarily be quite different than before. We intend to pursue such a modification and the resulting analysis.
+The upper bounds on the minimax critical radius in the density testing problem can be proved using binning tests, or tests based on truncated series test statistics such as $T_{\mathrm{harm}}$. These latter statistics--which take empirical evaluations of an orthonormal basis in $\mathcal{L}^2(\mathcal{X})$--are minimax optimal over $C_d^{1}(\mathcal{X};L)$ when the number of basis functions is chosen to be $\kappa \asymp n^{2d/(4s+d)}$, meaning $\kappa > n$ when $4s < d$. Since we have only $n$ eigenvectors $v_1,\ldots,v_n$, there is no clear relationship between $T_{\mathrm{harm}}$ and $T_{\mathrm{spec}}^{(2)}$ in this setting.
+
+We will therefore need a new approach to choosing $r$ and $\kappa$ if we want our test $\phi_{\mathrm{spec}}^{(2)}$ to be minimax optimal when $4s \leq d$. Intuition from binning tests--where the optimal choice of bin-width is on the order of $n^{-2s/(4s+d)}$, less than $n^{-1/d}$ whenever $4s < d$--suggests that we should modify our test statistic by choosing $r$ to be shrinking at a rate faster than $n^{-\frac{1}{d}}$. Of course at this connectivity scale with high probability the graph $G_{n,r}$ is disconnected \cite{penrose99}, and our analysis will necessarily be quite different than before. We \textbf{intend} to study the behavior of the graph $G_{n,r}$ when $r = o(n^{-1/d})$, with the hopes of showing that for $r \asymp n^{-2s/(4s+d)}$ and appropriate choices of $\kappa$ and $\tau$, the test $\phi_{\mathrm{spec}}^{(2)}$ has critical radius $\epsilon_n(\phi_{\mathrm{spec}}^{(2)}; C_d^{s}(\mathcal{X};L)) \asymp n^{-2s/(4s + d)}$ even when $4s \leq d$.
 
 \subsection{IPMs on neighborhood graphs.}
 \label{sec:neighborhood_graph_IPMs}
 
-We define a pair of graph-based test statistics on the neighborhood graph $G_{n,r}$, which we cast as IPMs over different ``function'' classes $\Theta \subset \Reals^n$. 
+In this section, we introduce a pair of graph-based test statistics on the neighborhood graph $G_{n,r}$, which we cast as IPMs over different ``function'' classes $\Theta \subset \Reals^n$. We have not substantively investigated the behavior of these test statistics yet, and therefore we have several lines of proposed work.
 
-\subsubsection{A graph-based Sobolev IPM.}
+\subsubsection{Proposed work: Sobolev IPM on a neighborhood graph.}
 
-We term our first test statistic the \emph{graph Sobolev} IPM, since the function class $\Theta$ over which we take the supremum will resemble a continuous Sobolev space. Formally we let
+We call our first proposed test statistic the \emph{graph Sobolev} IPM, since the function class $\Theta$ over which we take the supremum will resemble a continuous Sobolev space. Formally, we introduce the scaling $C_n := nr^{(d + 2)/2}$, and let
 \begin{equation}
 \label{eqn:sobolev_IPM}
-T_{\textrm{sob}} := \sup_{\theta \in \Reals^n: \norm{B^{(s)}\theta}_2 + \lambda\norm{\theta}_2 \leq 1} \abs{a^T \theta} = \sqrt{a^T (L^s + \lambda I)^{-1}a}, ~~ \lambda > 0, 
+T_{\textrm{sob}} := \sup_{\theta \in \Theta_{1,2}(\lambda)} \abs{\frac{1}{n}\sum_{i = 1}^{n} a_i \theta_i}, \quad  \Theta_{1,2}(\lambda) := \{\theta \in \Reals^n:~ C_n^{-1} \norm{B\theta}_2 + \frac{\lambda}{n^{1/2}}\norm{\theta}_2 \leq 1\} ~~ \lambda > 0, 
 \end{equation}
-where we recall the notation $a = \left(N^{-1},\ldots,N^{-1},-M^{-1},\ldots,-M^{-1}\right)$. (We could easily adapt this statistic to the regression testing case by replacing $a$ with $y$, although we would lose the analogy to an IPM). 
+where we recall $B$ is the incidence matrix of $G_{n,r}$, and the notation $a = \left(N^{-1},\ldots,N^{-1},-M^{-1},\ldots,-M^{-1}\right)$. (We could easily adapt this statistic to the regression testing case by replacing $a$ with $y$, although we would lose the analogy to an IPM).  Several aspects of the statistic $T_{\textrm{sob}}$ are worthy of comment. 
 
-\textbf{Remark:}~~Two aspects of the statistic $T_{\textrm{sob}}$ are worthy of comment. The first regards the role played by the parameter $\lambda$, which is at first glance somewhat mysterious. It may seem more natural to consider the statistic
+\textbf{Remark:}~~The scalings $C_n$ and $n^{-1/2}$ in front of $\norm{B\theta}_2$ and $\norm{\theta}_2$ are the proper scalings at which to compare these norms to the continuum norms $\norm{\cdot}_{W_d^{s,2}(\mathcal{X})}$ and $\norm{\cdot}_{\mathcal{L}^2(\mathcal{X})}$. These scalings are strictly for convenience, as we could always absorb them into the parameter $\lambda$.  
+
+\textbf{Remark:} The role played by the term $\frac{\lambda}{n^{1/2}}\norm{\theta}_2$ is at first glance somewhat mysterious. It may seem more natural to consider the statistic
 \begin{equation*}
-\sup_{\theta \in \Reals^n: \norm{B\theta}_2 \leq 1} \abs{a^T \theta}, 
+\sup_{\theta \in \Reals^n: C_n^{-1}\norm{B\theta}_2 \leq 1} \abs{\frac{1}{n}\sum_{i = 1}^{n} a_i \theta_i}, 
 \end{equation*}
-so that the function class is defined only with respect to the semi-norm $\norm{B\theta}_2$. However, it can be shown that this function class is too rich, and our test statistic will overfit to noise; hence we restrict it in the manner of~\eqref{eqn:sobolev_IPM}, a modification similar to that of \citet{arbel18} who observe that it improves empirical performance. Second, we note that in general, an analogous IPM in the continuum Sobolev space is a poor candidate for testing. Specifically, we have that when $2s < d$,
+so that the function class is defined only with respect to the semi-norm $\norm{B\theta}_2$. However, we have shown in preliminary calculations that this function class is too rich, and that the resulting test statistic will overfit to noise; hence we restrict it in the manner of~\eqref{eqn:sobolev_IPM}, a modification similar to that of \citet{arbel18} who observe that it improves empirical performance. 
+
+\textbf{Remark:} Finally we note that in general, an analogous IPM in the continuum Sobolev space is a poor candidate for testing. Specifically, we have that when $2s < d$,
 \begin{equation}
 \label{eqn:continuum_Sobolev_IPM}
-\sup_{f \in L^2(\mathcal{X}): \norm{f}_{W^{s,2}(\mathcal{X})} \leq L} \abs{\mathbb{P}_nf - \mathbb{Q}_nf} = \infty
+\sup_{f \in W_d^{s,2}(\mathcal{X};1)} \abs{\mathbb{P}_nf - \mathbb{Q}_nf} = \infty
 \end{equation}
 regardless of $\mathbb{P}_n$ and $\mathbb{Q}_n$, achieved by taking spike functions at data. (This phenomenon has been observed in the context of semi-supervised learning in e.g. \citet{nadler09,zhou11,slepcev17,alaoui16}.) However, by replacing the continuous Sobolev norm in \eqref{eqn:continuum_Sobolev_IPM} with a discrete Sobolev norm in \eqref{eqn:sobolev_IPM}, we have obviated this concern.  
 
-Based on the success of Sobolev IPMs in real-world problems \citet{mroueh17,arbel18} and the favorable properties of analogous estimators when performing regression on a grid \citet{sadhanala16}, we believe testing with $T_{\textrm{sob}}$ is a reasonable idea. We intend to investigate the minimax properties of such a test with respect to the function classes $C^s(\mathcal{X})$ and $W^{s,2}(\mathcal{X})$.
+Based on the success of Sobolev IPMs\footnote{that is, IPMs such as~\eqref{eqn:continuum_Sobolev_IPM} but where $2s > d$ or some other modification has been made to avoid their being ill-posed} in real-world problems \citet{mroueh17,arbel18} and the favorable properties of analogous estimators when performing regression on a grid \citet{sadhanala16}, we believe testing with $T_{\textrm{sob}}$ is a reasonable idea. We will investigate the matter theoretically and empirically. On the theoretical side, we \textbf{intend} to show that the test  $\phi_{\mathrm{sob}} := \1\{T_{\mathrm{sob}} \leq \tau\}$ achieves minimax optimal density testing radius $\epsilon_n(\phi_{\mathrm{sob}};W_d^{s,2}(\mathcal{X};L)) \asymp n^{-2s/(4s + d)}$. On the empirical side, we note that $T_{\mathrm{spec}}^{(2)}$ and $T_{\mathrm{sob}}$ appear at a high level to operate  by regularizing the spectrum of $L$, albeit in different manners; this makes it unclear when and why we should prefer one test over the other. We \textbf{intend} to elucidate these differences, and motivate the need for both tests, by showing directions (that is, specific choices of $p$ and $q$ in the alternative) for which $T_{\mathrm{spec}}^{(2)}$ outperforms $T_{\mathrm{sob}}$ and vice versa.
 
-
-\subsubsection{A graph-based Total Variation (TV) IPM.}
+\subsubsection{Proposed work: TV IPM on a neighborhood graph.}
 Our second IPM test statistic will resemble the first, except we replace the graph Sobolev norm by a graph total variation norm. We hence call this statistic the \emph{graph TV} IPM, defined as
 \begin{equation*}
-T_{\mathrm{TV}} := \sup_{\theta \in \Reals^n: \norm{B\theta}_1 + \lambda\norm{\theta}_2 \leq 1} \abs{a^T \theta}.
+T_{\mathrm{TV}} := \sup_{\theta \in \Theta_{1,1}(\lambda)} \abs{\frac{1}{n}\sum_{i = 1}^{n} a_i \theta_i}, \quad \Theta_{1,1}(\lambda) := \{\theta \in \Reals^n:~ (C_n')^{-1} \norm{B\theta}_1 + \frac{\lambda}{n^{1/2}}\norm{\theta}_2 \leq 1\}
 \end{equation*}
-To motivate the graph TV IPM, we give some background on testing in TV spaces.
-
-\paragraph{Testing in TV spaces.}
-
-To one extent or another, functions in the Sobolev and Holder balls exhibit homogeneous smoothness. In reality we may not wish to restrict our attention to such functions. This is in part the motivation behind considering functions of bounded variation. Formally, for a function $f \in L^1(\mathcal{X})$ the \emph{total variation} semi-norm of $f$ is \citet{evans15}
+where $C_n' := n^{2}r^{(d + 1)}$. Compared to the Sobolev case, far less methodological and theoretical work has been done regarding total variation-based test statistics. As previously mentioned, the minimax lower bound on the critical radius over the bounded variation spaces remains unknown for the multivariate problem, even under idealized models such as~\eqref{eqn:gaussian_white_noise}.  We \textbf{intend} to investigate whether a phase transition such as that which occurs in the analogous estimation problem (from $d = 1$ to $d \geq 2$) exists in the testing setting as well, by deriving upper and lower bounds for the critical radius $\epsilon_n(BV_d(\mathcal{X};L))$ where $BV_d(\mathcal{X}; L) = \set{f \in BV_d(\mathcal{X}): \norm{f}_{BV_d(\mathcal{X})} \leq L}$. Our upper bound will be based on the test $\phi_{TV} := \1\{T_{\mathrm{TV}} \geq \tau \}$, on the theory that the test statistic $T_{\mathrm{TV}}$ is a good approximation to the functional
 \begin{equation*}
-TV(f;\mathcal{X}) := \sup \left\{ \int_U f \, \dive \, \psi \,dx : \psi \in C_c^1(\mathcal{X}; \Reals^d), \abs{\psi} \leq 1 \right\};
+\sup_{g:~ \mathrm{TV}(g;\mathcal{X}) + \lambda\norm{g}_{\mathcal{L}^2} \leq 1} \abs{\int_{\mathcal{X}} g(x) \,d\Pbb(x) - \int_{\mathcal{X}} g(x) \,d\Qbb(x)}
 \end{equation*}
-and we write $BV_d(\mathcal{X})$ for the subset of functions $f \in L^1(\mathcal{X})$ which have bounded norm
-\begin{equation*}
-\norm{f}_{BV_d(\mathcal{X})} := \norm{f}_{\infty} + TV(f;\mathcal{X}).
-\end{equation*}
+and is therefore a reasonable choice for testing over $BV_d(\mathcal{X};L)$.
 
-In the one-dimensional case, some work has been done on nonparametric testing over the Besov spaces $B_{p,q}^s(\mathcal{X})$ (for a formal definition see Section 4.3 of \cite{gine16}), which we can relate to bounded variation spaces via the embeddings
-\begin{equation}
-\label{eqn:besov_embeddings}
-B_{11}^1(\mathcal{X}) \subseteq BV_1(\mathcal{X}) \subseteq B_{1\infty}^1(\mathcal{X}).
-\end{equation}
-
-\citet{lepski1999} study the regression testing problem, with data observed according to the white noise model as in \eqref{eqn:gaussian_white_noise}. They derive among other things that for the Besov balls $B_{1,q}^s(\mathcal{X}; L)$, the minimax critical radius $\epsilon_n^{\star}(B_{1,q}^s(\mathcal{X}; L)) \asymp n^{-2s'/(4s' + 1)}$, where $s' = s - \frac{1}{4}$ and the result holds for any $s > 1, q \geq 1$. \citet{ingster00} improve on this by showing the same result holds whenever $s > 1/2$. This along with~\eqref{eqn:besov_embeddings} implies that $\epsilon_n^{\star}(BV_1(\mathcal{X})) \asymp n^{-\frac{3}{8}}$. 
-
-When $d \geq 2$ minimax testing rates over the Besov and bounded variation spaces are still unknown. However, study of the equivalent estimation problem suggests the answers may be substantially different from the 1d problem. \citet{sadhanala16} consider a discretized version of this problem -- where observations are made on a discrete grid and the regression function is assumed to lie within a discrete bounded variation class -- and show that the minimax estimation rate in empirical norm is on the order of $n^{-1/d}$ for $d \geq 2$. This is slower than minimax estimation rate over the Sobolev space $\mathcal{W}_d^{1,2}$, the largest Sobolev space inscribed within $BV_d$. \citet{delyon96,kerkyacharian08,lepski2015,ruiz18} all consider the regression white noise model \eqref{eqn:gaussian_white_noise} and show, in progressive degrees of generality, that the minimax rates over the Besov spaces $B_{p,q}^s$ exhibit a phase transition at the boundary $2s = d$. When $2s > d$, the minimax estimation rate (with loss measured in squared $\mathcal{L}_2$ norm) is the standard $n^{-2s/(2s + d)}$; on the other hand when $2s < d$, the minimax rate is $n^{-s/d}$ which is much slower. When $s = 1$, this phase transition occurs at $d = 2$, and so in a minimax sense the univariate and multivariate estimation problems over $BV_d$ are revealed to be quite different. \citet{sadhanala17} show that this same phenomenon carries over to the grid, and the discrete TV classes defined upon it. 
-
-We intend to investigate whether such a phase transition (from $d = 1$ to $d \geq 2$) exists in the testing setting as well, by deriving upper and lower bounds for the critical radius $\epsilon_n(BV_d(\mathcal{X};L))$, where $BV_d(\mathcal{X}; L) = \set{f \in BV_d(\mathcal{X}): \norm{f}_{BV_d(\mathcal{X})} \leq L}$. Our upper bound will be based on the test $\phi_{TV} := \1\{T_{\mathrm{TV}} \geq \tau \}$.
-
-\subsubsection{Computational considerations.}
+\subsection{Proposed work: computational considerations.}
 
 Although our primary focus has been on the statistical properties of various tests we have defined, there are also some computational considerations which merit our attention.
 
-When $n$ is large and the graph $G_{n,r}$ is relatively dense, exactly computing the eigenvectors of $L$ (as in~\eqref{eqn:graph_spectral_projections}) or the matrix inverse $(L + \lambda I)^{-1}$ (as in ~\eqref{eqn:sobolev_IPM}) may be computationally expensive. Recently, there has been remarkable progress made (e.g. \citet{spielman2011,batson13,spielman2014,cohen14}) in efficiently computing $\epsilon$-\emph{spectral sparsifiers} of $G$: that is, graphs $\widetilde{G}$ with Laplacian matrices $\widetilde{L}$ which satisfy:
+When $n$ is large and the graph $G_{n,r}$ is relatively dense, exactly computing the eigenvectors of $L$ (as in~\eqref{eqn:graph_spectral_projections}) or the matrix inverse $(L + \lambda I)^{-1}$ (implicitly in \eqref{eqn:sobolev_IPM}) may be computationally expensive. Recently, there has been remarkable progress made (e.g. \citet{spielman2011,batson13,spielman2014,cohen14}) in efficiently computing $\delta$-\emph{spectral sparsifiers} of $G$: that is, graphs $\widetilde{G}$ with Laplacian matrices $\widetilde{L}$ which satisfy:
 \begin{equation}
 \label{eqn:spectral_similarity}
-(1 - \epsilon)x^T \widetilde{L} x \leq x^T L x \leq (1 + \epsilon) x^T \widetilde{L} x, \quad \textrm{for some $0 \leq \epsilon < 1$, and all $x \in \Reals^n$.}
+(1 - \delta)x^T \widetilde{L} x \leq x^T L x \leq (1 + \delta) x^T \widetilde{L} x, \quad \textrm{for some $0 \leq \delta < 1$, and all $x \in \Reals^n$,}
 \end{equation}
-and have many fewer edges than $G$ (hence the term ``sparsifier''.) Since $\widetilde{L}$ is a sparse matrix, we can compute its eigenvectors $\set{\widetilde{v}}$ or the inverse $(\widetilde{L} + \lambda I)^{-1}$  efficiently. Additionally \eqref{eqn:spectral_similarity} should imply that the resulting test statistics behave similarly to those defined with respect to $L$. As yet limited work \citet{vonluxburg2014,sadhanala16b} has been done to rigorously analyze the performance of spectral sparsifiers in statistical learning problems, despite their obvious promise. We plan to address this gap by providing a theoretical characterization of the performance of graph statistics on sparsified graphs in the regression and density testing problems.
+and have many fewer edges than $G$ (hence the term ``sparsifier''.) Since $\widetilde{L}$ is a sparse matrix, we can compute its eigenvectors $\set{\widetilde{v}_i}$ or the inverse $(\widetilde{L} + \lambda I)^{-1}$  efficiently. Additionally, \eqref{eqn:spectral_similarity} should imply that the resulting test statistics behave similarly to those defined with respect to $L$. As yet limited work \citet{vonluxburg2014,sadhanala16b} has been done to rigorously analyze the performance of spectral sparsifiers in statistical learning problems, despite their obvious promise. We \textbf{intend} to address this gap by showing how graph statistics computed on sparsified graphs perform in the regression and density testing problems. Specifically, we hope to show that the statistics $\widetilde{T}_{\mathrm{spec}}, \widetilde{T}_{\mathrm{spec}}^{(2)}$ and $\widetilde{T}_{\mathrm{sob}}$ -- equivalent to their \textcolor{red}{non-tilde} counterparts but computed over the sparsified $\widetilde{L}$ rather than the original matrix $L$ -- have critical radii on the same order as those of their \textcolor{red}{non-tilde} counterparts, while being much easier to compute.
 
-% We also mention in passing that another potential computational difficulty stems from calibrating the threshold $\tau$. While the choice of $\tau$ in the statement of Theorem~\ref{thm:sobolev_testing_rate} is optimal in a minimax sense, practically speaking depending on the regression function $f$ and distribution $\Pbb$ it may be a conservative threshold, with a resulting loss in power. In practice, one can calibrate $\tau$ by permutation, however doing so requires repeatedly shuffling the data $X$ and recomputing a test statistic $T$. It would therefore be helpful to know the distribution of our various proposed statistics $T$ under the null hypothesis, or at least derive asymptotic approximations to these distribution, and we plan to investigate this. However, while in the density testing context there has been some work on deriving asymptotic distributions of IPMs \cite{gretton12,sadhanala19}, typically these limiting distributions depend on the unknown $\mathbb{P}$, and therefore the practical implications of these results is somewhat limited.
+We also mention in passing that another potential computational difficulty stems from calibrating the threshold $\tau$. While the choice of $\tau$ in the statement of Theorem~\ref{thm:sobolev_testing_rate} is optimal in a minimax sense, practically speaking depending on the regression function $f$ and distribution $\Pbb$ it may be a conservative threshold, with a resulting loss in power. In practice, one can calibrate $\tau$ by permutation, however doing so requires repeatedly shuffling the data $X$ and recomputing a test statistic $T$. It would therefore be helpful to know the distribution of our various proposed statistics $T$ under the null hypothesis, or at least derive asymptotic approximations to these distributions. In the density testing context there has been some work on deriving asymptotic distributions of IPMs \cite{gretton12,sadhanala19}, but typically these limiting distributions depend on the unknown $\mathbb{P}$, and therefore the practical implications of these results is somewhat limited. Nevertheless, we \textbf{intend} to derive asymptotic null distributions for the statistics we propose, and investigate whether they indeed depend on $\mathbb{P}$. 
+
+\subsection{Estimated timeline.}
+
+The following is an estimated timeline for completing my proposed work.
+\begin{itemize}
+	\item \textbf{Spring 2020:} Complete all aforementioned intended work regarding the tests $\phi_{\mathrm{spec}}$ and $\phi_{\mathrm{spec}}^{(2)}$ 
+	\item \textbf{Fall 2020:} Complete all aforementioned intended work regarding the test $\phi_{\mathrm{sob}}$, and address computational considerations.
+	\item \textbf{Spring 2021:} Complete all aforementioned intended work regarding the test $\phi_{\mathrm{TV}}$, and minimax testing over the bounded variation spaces $BV_d(\mathcal{X})$. Defend my thesis.
+\end{itemize}
+
 
 \clearpage
 
