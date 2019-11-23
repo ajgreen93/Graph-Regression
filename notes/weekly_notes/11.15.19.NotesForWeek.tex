@@ -1,0 +1,407 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\domain}{\mathcal{X}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\Partial}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 11/16/19 - 11/23/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+In this week's notes, I pick up the thread of the ``11.8.19.NotesForWeek'' document. There, we obtained that the critical radius in the two-sample density testing problem over a graph $G$ was a function of
+\begin{equation*}
+\Pi_{\max} = \max_{i = 1,\ldots,n} \set{\sum_{k = 1}^{\kappa} v_{k,i}^2}
+\end{equation*}
+where $L = V S V^T$ and $V = (v_1,\ldots,v_n)$ is an orthonormal matrix, $S$ is a diagonal matrix with increasing entries $0 = s_1 \leq s_2 \leq \ldots \leq s_n$. In particular, we showed that if $\Pi_{\max}$ could be upper bounded by a constant less than $1$, then the critical radius in the two-sample density testing problem over a graph $G$ was the same as in the one-sample regression testing problem. Our goal was therefore to upper bound $\Pi_{\max} \leq \frac{1}{2}$ for an appropriate choice of $\kappa$. We showed that such an upper bound holds when $G = G_{dn}$ the $d$-dimensional grid, and $\kappa \leq \frac{n}{4}$. 
+
+\section{Bounding $\Pi_{\max}$ for neighborhood graphs in $1$-dimension.}
+Now, suppose we additionally have a graph $\widetilde{G}$ with Laplacian matrix $\widetilde{L}$ such that
+\begin{equation}
+\label{eqn:spectral_similarity}
+(1 - \delta) x^T L x \leq x^T \widetilde{L} x \leq (1 + \delta) x^T L x, \quad \textrm{for some $0 \leq \delta \leq 1$ and all $x \in \Reals^n$.}
+\end{equation}
+Write the spectral decomposition $\widetilde{L} = U \Lambda U^T$, and suppose that the eigenvectors $U$ satisfy
+\begin{equation}
+\label{eqn:incoherence_tilde}
+u_{l,i}^2 \leq \frac{2}{n} \quad \textrm{for all $l,i = 1,\ldots,n$.}
+\end{equation}
+
+\begin{lemma}
+	\label{lem:incoherence}
+	Let $\widetilde{G} = G_{1n}$ be the 1-dimensional grid graph (i.e. the chain), and assume $G$ satisfies \eqref{eqn:spectral_similarity}. Then we have the following bound on incoherence of the eigenvectors $v_{k,i}$: for any $R \gtrsim n \delta^{1/2} (s_{\max}^{1/2} \vee 1)$,
+	\begin{equation*}
+	v_{k,i}^2 \lesssim \frac{1}{n}\left(R + \frac{n^4 \delta^2 s_{\max}^2}{R^3}\right) \quad \textrm{for any $i = 1,\ldots,n$}
+	\end{equation*} 
+	for any $k \leq n/8$.
+\end{lemma}
+
+Before proving Lemma~\ref{lem:incoherence}, we demonstrate its consequence. To state things concisely, we use tilde-order notation $\widetilde{O}$ and $\widetilde{\Theta}$ to suppress $\log(n)$ terms. Assume that 
+\begin{equation}
+\label{eqn:neighborhood_graph_spectral_similarity}
+\textrm{$G = G_{n,r}$, $\widetilde{G} = G_{1n}$ satisfy \eqref{eqn:spectral_similarity} with $\delta = \widetilde{O}(n^{-1})$}, \quad \textrm{the maximum degree $d_{\max}(G) = \widetilde{O}(1)$}
+\end{equation}
+Using the upper bound on maximum eigenvalue of a Laplacian $s_{\max} \leq 2 d_{\max}$), by Lemma~\ref{lem:incoherence} the eigenvectors $v$ of $G$ satisfy
+\begin{equation*}
+v_{k,i}^2 = \widetilde{O}\biggl(\frac{1}{n}\left(R + \frac{n}{R^3}\right)\biggr)
+\end{equation*}
+for any $k \leq n/8$ and $R = \widetilde{\Theta}(n^{1/2}s_{\max}^{1/2}) = \widetilde{\Theta}(n^{1/2})$. Taking $R = \widetilde{\Theta}(n^{1/2})$, we have that
+\begin{equation}
+\label{eqn:incoherence}
+\max_{i = 1,\ldots,n} v_{k,i}^2 = \widetilde{O}\left(n^{-1/2}\right)
+\end{equation}
+for all $k \leq n/8$. This is quite a bit weaker than the incoherence bound~\eqref{eqn:incoherence_tilde} that the eigenvectors of the chain satisfy. Nevertheless, it will suffice for our purposes. When $\kappa \asymp n^{2/5}$, equation~\eqref{eqn:incoherence} implies that
+\begin{equation*}
+\Pi_{\max} = \widetilde{O}(\kappa n^{-1/2}) = o(1). 
+\end{equation*}
+We have previously shown that when $r = \widetilde{O}(n^{-1})$, the graph $G_{n,r}$ satisfies~\eqref{eqn:neighborhood_graph_spectral_similarity}  with high probability; therefore, $\Pi_{\max}$ is less than constant order. Looking back at the ``11.8.19.NotesForWeek'' (specifically equation (8) which gives the critical radius) we see that this is sufficient to ensure that the critical radius in the two-sample density testing and one-sample regression testing problems will be the same when $d = 1$. 
+\section{Technical Results.}
+
+\subsection{Proof of Lemma~\ref{lem:incoherence}}
+
+The proof of Lemma~\ref{lem:incoherence} will proceed according to the following steps.
+\begin{enumerate}
+	\item We show that the incoherence $\max_{i} v_{k,i}^2$ can be upper bounded
+	\begin{equation}
+	\label{eqn:incoherence_proof_1}
+	\max_{i} v_{k,i}^2 \leq \frac{1}{n} \left(\sum_{j = 1}^{n} \abs{\dotp{v_k}{u_j}}\right)^2
+	\end{equation}
+	replacing the norm $\norm{v_k}_{\infty}$ by the inner products $\dotp{v_k}{u_j}$.
+	\item Let
+	\begin{equation*}
+	I(k,r) = \set{j \geq 0: \abs{j - k} \leq r}.
+	\end{equation*}
+	Using Davis-Kahan, we establish that the following upper bounds
+	\begin{equation}
+	\label{eqn:incoherence_proof_2}
+	\sum_{j \not\in I(k,r)}^{n} (\dotp{v_k}{u_j})^2 \leq 400 \frac{n^4 \delta^2 s_{\max}^2}{R^4}
+	\end{equation}
+	hold for each $k \leq n/8$ and any $r \geq 8k\sqrt{\delta}$. 
+	\item We carefully upper bound the $L_1$ norm present in \eqref{eqn:incoherence_proof_1} given the various bounds on $L_2$ norm we've established in \eqref{eqn:incoherence_proof_2}.
+\end{enumerate}
+
+\paragraph{Step 1: Proof of~\eqref{eqn:incoherence_proof_1}.}
+
+We can re-express $v_k$ in the basis $(u_j)$ as
+\begin{equation*}
+v_k = \sum_{j = 1}^{n} \dotp{v_k}{u_j} u_j,
+\end{equation*}
+whereupon the bound~\eqref{eqn:incoherence_proof_1} follows from \eqref{eqn:incoherence_tilde}. 
+\paragraph{Step 2: Proof of~\eqref{eqn:incoherence_proof_2}.}
+
+Let $\widetilde{L} = L + H$. By Davis Kahan, we have that
+\begin{equation}
+\label{eqn:davis_kahan}
+\sum_{j \not\in I(k,r)} (\dotp{v_k}{u_j})^2 \leq \left(\frac{\norm{H}_{\textrm{op}}}{\min{\abs{\lambda_j - s_k}:j \in I(k,r)}}\right)^2
+\end{equation}
+To upper bound the numerator, we use~\eqref{eqn:spectral_similarity} to get
+\begin{equation*}
+\norm{H}_{op} \leq \delta s_{\max}.
+\end{equation*}
+
+To lower bound the denominator, we note
+\begin{align}
+\abs{\lambda_j - s_k} & \geq \abs{\lambda_j - \lambda_k} - \abs{\lambda_k - s_k} \nonumber \\
+& \geq \abs{\lambda_j - \lambda_k} - \delta \lambda_k. \label{eqn:incoherence_proof_8}
+\end{align}
+The eigenvalues of the chain graph are well known to be
+\begin{equation*}
+\lambda_j = 2\left(1 - \cos\left(\frac{j\pi}{n}\right)\right) = 4\sin^2\left(\frac{k\pi}{n}\right) ~~\textrm{for $k = 0,\ldots,n - 1$.}
+\end{equation*}
+By Taylor expansion, for $k \leq j \leq n/(2\pi)$ we have
+\begin{equation}
+\label{eqn:incoherence_proof_5}
+\lambda_j - \lambda_k = 2\left(\cos\left(\frac{k\pi}{n}\right) - \cos\left(\frac{j\pi}{n}\right)\right) \geq \frac{(k - j)^2\pi^2}{n^2}.
+\end{equation}
+and when $j \geq n/(2\pi)$ we have $\lambda_j - \lambda_k \geq 2(\cos\left(\frac{\pi}{8}\right) - \cos\left(\frac{1}{2}\right) > .09$. Additionally since $\sin(x) \leq x$ for all $x \geq 0$, we have
+\begin{equation}
+\label{eqn:incoherence_proof_6}
+\lambda_k \leq 4\frac{k^2\pi^2}{n^2}.
+\end{equation}
+Combining~\eqref{eqn:incoherence_proof_5},\eqref{eqn:incoherence_proof_6}, and the lower bound $\abs{k - j} \geq R \geq 8k\sqrt{\delta}$, we have that
+\begin{equation}
+\label{eqn:incoherence_proof_7}
+\abs{\lambda_j - \lambda_k} - \delta \lambda_k \geq .04\frac{(k - j)^2\pi^2}{n^2} - 4 \delta\frac{k^2\pi^2}{n^2} \geq .02\frac{(k - j)^2\pi^2}{n^2}.
+\end{equation}
+The result follows from \eqref{eqn:incoherence_proof_7}, \eqref{eqn:incoherence_proof_8} and \eqref{eqn:davis_kahan}.
+
+\paragraph{Step 3: $L_1$ norm to $L_2$ norm.}
+
+Let $a \in \Reals^n$, and suppose we know that the $L_2$ norm of $a$ is bounded,
+\begin{equation}
+\label{eqn:incoherence_proof_3}
+\norm{a}_2^2 \leq 1.
+\end{equation}
+Under no other conditions on $a$, the upper bound $\norm{a}_1 \leq \sqrt{n}$ is the best that can be hoped for (achieved when $a = (n^{-1/2},\ldots,n^{-1/2})$). However, suppose we also know that for some $B_2^2 \geq B_3^2 \geq \ldots \geq B_n^2$, we have that there exists some $R \in [n]$ such that
+\begin{equation}
+\label{eqn:incoherence_proof_4}
+\sum_{j = r}^{n} a_j^2 \leq B_r^2 ~~\textrm{for each $r = R,\ldots,n$.}
+\end{equation}
+Clearly, if $B_n^2 \leq \frac{1}{n}$ then $a$ cannot be equal to $(n^{-1/2},\ldots,n^{-1/2})$. We might hope for more general improvements on the bound $\norm{a}_1 \leq \sqrt{n}$ if $B_R^2$ is quite small once $R$ gets sufficiently large. The following Lemma gives such a result.
+\begin{lemma}
+	\label{lem:incoherence_util_1}
+	Suppose $a \in \Reals^n$ satisfies \eqref{eqn:incoherence_proof_3} and \eqref{eqn:incoherence_proof_4} for some $1 = B_1^2 = B_2^2 \geq \ldots \geq B_n^2 \geq B_{n+1}^2 = 0$. Assume additionally that there exists an $R \in [n]$ such that
+	\begin{equation}
+	\label{eqn:incoherence_util_1}
+	B_r^2 - B_{r + 1}^2 \leq \frac{1}{r}~\textrm{for each $r = R, R+1,\ldots, n - 1$.}
+	\end{equation}
+	Then,
+	\begin{equation}
+	\label{eqn:incoherence_util_2}
+	\norm{a}_1 \leq \sqrt{R}\sqrt{1 - B_R^2} + \sum_{j = R}^{n} \sqrt{B_j^2 - B_{j+1}^2}.
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	Set
+	\begin{equation*}
+	(a_\star)_j^2 = 
+	\begin{cases*}
+	\frac{1}{R}(1 - B_R^2), ~ j \leq R \\
+	B_j^2 - B_{j + 1}^2, j > R
+	\end{cases*}
+	\end{equation*}
+	so that $\norm{a_\star}_1$ is equal to the right hand side of~\eqref{eqn:incoherence_util_2}. We now prove by contradiction that $a_\star$ maximizes $\norm{a}_1$ under the constraints \eqref{eqn:incoherence_proof_3} and \eqref{eqn:incoherence_proof_4}. Suppose this were not true, and let $a$ be a vector such that $a$ satisfies \eqref{eqn:incoherence_proof_3} and \eqref{eqn:incoherence_proof_4} and $\norm{a}_1 > \norm{a_{\star}}$. Then,
+	\begin{itemize}
+		\item since $\norm{a}_1 > \norm{a_{\star}}$ then there exists some index $j$ such that
+		\begin{equation}
+		\label{eqn:incoherence_util_3}
+		a_j > (a_{\star})_j
+		\end{equation} 
+		\item by~\eqref{eqn:incoherence_proof_3} $\norm{a}_2 \leq 1$. Since $\norm{a_{\star}}_2 = 1$, by \eqref{eqn:incoherence_util_3} there must exist some index $k$ such that
+		\begin{equation}
+		\label{eqn:incoherence_util_4}
+		(a_{\star})_k > a_k.
+		\end{equation} 
+		Choose $k$ to be the largest of all such indices.
+		\item suppose $k < j$ and $j > R$. Since $k$ was chosen to be the largest such index which satisfied~\eqref{eqn:incoherence_util_4}, clearly $a_i \geq (a_{\star})_i$ for all $i > j$, and by \eqref{eqn:incoherence_util_3} $a_j > (a_{\star})_j$. But then 
+		\begin{equation*}
+		B_j^2 = \sum_{i = j}^{N} (a_{\star})_i^2 < \sum_{i = j}^{N} a_i^2 
+		\end{equation*}
+		and so $a$ does not satisfy~\eqref{eqn:incoherence_proof_4}. Therefore either $k > j$ or $j \leq R$.
+		\item In either case, we have
+		\begin{equation*}
+		a_j > (a_{\star})_j \geq (a_{\star})_k > a_k.
+		\end{equation*}
+		Let $j \leq l < k$ be the largest index for which $a_j > (a_{\star})_j$. 
+		
+		We now construct a vector $\norm{b}$ which satisfies the constraints \eqref{eqn:incoherence_proof_3} and \eqref{eqn:incoherence_proof_4} such that $\norm{b}_1 > \norm{a}_1$. Once we have shown this, we will have established a contradiction, and the proof of Lemma~\ref{lem:incoherence_util_1} will be complete. Let $b = (b_i)$ be given as follows:
+		\begin{equation*}
+		b_i = 
+		\begin{cases*}
+		a_i, ~~\textrm{if $i \neq k,l$}, \\
+		a_{\star,k}, ~~\textrm{if $i = k$}, \\
+		\sqrt{a_l^2 - (a_{\star,k}^2 - a_k^2)}, ~~\textrm{if $i = l$.}
+		\end{cases*}
+		\end{equation*}
+		Clearly $\norm{b}_2 = \norm{a}_2 = 1$ and so $b$ satisfies~\eqref{eqn:incoherence_proof_3}. To see that $b$ satisfies~\eqref{eqn:incoherence_proof_4} we separate the analysis into cases. When $r \geq l + 1$, we have that
+		\begin{equation*}
+		\sum_{i = r}^{n} b_i^2 = \sum_{i = r}^{n} a_i^2 \leq B_r^2.
+		\end{equation*}
+		When $l < r \leq k$, we have that
+		\begin{equation*}
+		\sum_{i = r}^{n} b_i^2 \leq \sum_{i = r}^{k} a_{\star,i}^2 + \sum_{i = k +1}^{n} a_{i}^2 \leq B_r^2 - B_{k + 1}^2 + B_{k + 1}^2 = B_r^2
+		\end{equation*}
+		Finally, when $R \leq r \leq l$, we have
+		\begin{equation*}
+		\sum_{i = r}^{n} b_i^2 \leq a_l^2 - (a_{\star,k}^2 - a_k^2) + (a_{\star,k}^2) + \sum_{i \neq k,l} a_i^2 = \sum_{i = r}^{n} a_i^2 \leq B_r^2.
+		\end{equation*}
+		Therefore $b$ satisfies~\eqref{eqn:incoherence_proof_4}. Finally, we have that
+		\begin{equation*}
+		\norm{b}_1 = \norm{a}_1 + (a_{\star,k}  - a_k) - (\sqrt{a_l^2 - (a_{\star,k}^2 - a_k^2)} - a_l) > \norm{a}_1 + (a_{\star,k}  - a_k) + (a_{\star,k}  - a_k) - (a_{\star,k}  - a_k) = \norm{a}_1,
+		\end{equation*}
+		so we have established the desired contradiction.
+	\end{itemize}
+\end{proof}
+
+\paragraph{Putting the pieces together.}
+We apply Lemma~\ref{lem:incoherence_util_1} to the vector $a = (a_i)_{i = 1}^{n}$, where
+\begin{equation*}
+a_i = \frac{1}{\sqrt{2}}\left(\abs{\dotp{v_k}{u_{k - i}}} + \abs{\dotp{v_k}{u_{k + i}}}\right).
+\end{equation*}
+Note the following:
+\begin{itemize}
+	\item $\norm{a}_2 \leq 1$.
+	\item By \eqref{eqn:incoherence_proof_2}, the vector $a$ satisfies the constraint~\eqref{eqn:incoherence_proof_4} with
+	\begin{equation*}
+	B_r^2 = 400\frac{n^4\delta^2s_{\max}^2}{r^4} ~~\textrm{when $r \geq 8 k \sqrt{\delta}$.}
+	\end{equation*}
+	\item Taylor expanding $f(r + 1) = (r + 1)^{-4}$ around $r$, we have that
+	\begin{equation*}
+	B_r^2 - B_{r + 1}^2 \leq 3200 \frac{n^4 \delta^2 s_{\max}^2}{r^5} ~~\textrm{when $r \geq 2$.}
+	\end{equation*}
+	Therefore, the sequence $(B_r)$ satisfies \eqref{eqn:incoherence_util_1} for all $r$ large enough such that 
+	\begin{equation*}
+	r \geq 2^{5/4} 100^{1/4} n \sqrt{\delta s_{\max}}
+	\end{equation*}
+	\item Since $a$ and $(B_r)$ satisfy the constraints \eqref{eqn:incoherence_proof_3}, \eqref{eqn:incoherence_proof_4} and \eqref{eqn:incoherence_proof_5}, we may apply Lemma~\ref{lem:incoherence_util_1} to $a$, obtaining that
+	\begin{equation*}
+	\sum_{j = 1}^{n} \abs{\dotp{u_j}{v_k}} = \sqrt{2}\norm{a}_1 \leq \sqrt{2R} + 60\sqrt{2} n^2 \delta s_{\max} \sum_{r = R}^{n} r^{-5/2}
+	\end{equation*}
+	for any $R \geq 2 \vee k\sqrt{\delta} \vee 2^{5/4} 100^{1/4} n \sqrt{\delta s_{\max}}$. Bounding sum by integral, we have that if $R \geq 2$ then
+	\begin{equation*}
+	\sum_{r = R}^{n} r^{-5/2} \leq \int_{R - 1}^{n - 1} x^{-5/2} \,dx \leq \frac{2^{3/2}2}{3} R^{-3/2}.
+	\end{equation*}
+	Plugging this into the previous expression, we arrive at
+	\begin{equation*}
+	\sum_{j = 1}^{n} \abs{\dotp{u_j}{v_k}} \leq \sqrt{R} + 60 \sqrt{2} n^2 \delta s_{\max} \frac{2^{3/2}2}{3R^{3/2}}
+	\end{equation*}
+	for any $R \geq 2 \vee k\sqrt{\delta} \vee 2^{5/4} 100^{1/4} n \sqrt{\delta s_{\max}}$. The desired result then follows from~\eqref{eqn:incoherence_proof_1}.
+\end{itemize}
+
+% \paragraph{Davis-Kahan sin-theta theorem.}
+%For a given $k \in [n]$ and $R \leq n$, decompose
+%\begin{equation*}
+%L = s_k v_k v_k^T + \sum_{k' \neq k}^{n} s_{k'} v_{k'} v_{k'}^T, ~~\textrm{and}~~ \widetilde{L} = \sum_{\ell:\abs{k - \ell} \leq R} \lambda_\ell u_\ell v_\ell^T + \sum_{\ell:\abs{k - \ell} > R} \lambda_\ell u_\ell u_\ell^T,
+%\end{equation*}
+%and denote $U_{k,R}^{\perp} = \sum_{\ell:\abs{k - \ell} > R} u_\ell u_\ell^T$. One consequence of the Davis-Kahan Theorem is the following: suppose for all $\ell: \abs{k - \ell} \geq R$, the eigenvalue $\lambda_{\ell}$ is excluded from the interval $(s_k - \delta,s_k + \delta)$ for some $\delta > 0$. Then 
+%\begin{equation*}
+%\sum_{\ell:\abs{k - \ell} > R} \dotp{v_k}{u_{\ell}}^2 \leq \frac{\norm{(U_{k,R}^{\perp})^T H v_k}_F^2}{\delta^2}
+%\end{equation*}
+
+
+\end{document}

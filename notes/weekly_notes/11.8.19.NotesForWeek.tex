@@ -1,0 +1,354 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\domain}{\mathcal{X}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\Partial}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 11/1/19 - 11/8/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $P$ and $Q$ be distributions on $\Rd$, absolutely continuous with respect to Lebesgue measure with densities $p$ and $q$, and let $\mu = (P + Q)/2$. For fixed points $Z = \set{z_1,\ldots,z_N} \subset \mathcal{Z}$ for some subset $\mathcal{Z}$ of the support of $\mu$, suppose we observe $\ell = (\ell_1,\ldots,\ell_N) \in \Reals^n$, where $\ell_1,\ldots,\ell_N$ are independent Rademacher random variables with means
+\begin{equation*}
+\mathbb{E}[\ell_i] = \frac{p(z_i) - q(z_i)}{p(z_i) + q(z_i)}.
+\end{equation*}
+
+Let $\theta_p = (p(z_1),\ldots,p(z_N))$ and similarly $\theta_q = (q(z_1),\ldots,q(z_N))$; let $\theta_{\mu} = \frac{1}{2}\theta_p + \frac{1}{2}\theta_q$. Our goal: use the data $\ell,Z$ to test the following hypothesis:
+\begin{equation*}
+\textbf{H}_0: \theta_p = \theta_q ~~\textrm{versus}~~ \textbf{H}_a: d(\theta_p,\theta_q) > \epsilon 
+\end{equation*}
+for some metric $d$ on the space $\Reals^n$, and some $\epsilon > 0$. For a given test $\phi: \{-1,1\}^N \times \mathcal{Z} \to \{0,1\}$, we will evaluate our test error using the sum of Type I and Type II error
+\begin{equation*}
+\mathcal{R}(\phi;\theta_p,\theta_q) = \mathbb{E}_{\theta_\mu,\theta_\mu}(\phi) + \mathbb{E}_{\theta_p,\theta_q}(1 - \phi),
+\end{equation*}
+and the worst case risk
+\begin{equation*}
+\mathcal{R}(\phi,\epsilon,\Theta) = \sup_{\theta_p,\theta_q \in \Theta} \mathcal{R}(\phi; \theta_p, \theta_q)
+\end{equation*}
+where $\Theta$ is a subset of $\Reals^n$ and the supremum is over all vectors $\theta_p,\theta_q$ such that $d(\theta_p,\theta_q) \geq \epsilon$. 
+
+In particular, we propose and analyze the following projection-based test. Letting $G_{N,r}$ be the $r$-neighborhood graph over $Z$ with combinatorial Laplacian $L$, we write the spectral decomposition of $L$ as $L = V S V^T$, where $V = (v_1,\ldots,v_N)$ is $N \times N$ orthonormal matrix, and $S$ is a diagonal matrix with entries $s_1 \leq s_2 \leq \ldots \leq s_N$. Our test statistic $T$ depends on a tuning parameter $C > 0$ in the following manner:
+\begin{equation*}
+T = T(\ell,Z) = \frac{1}{N}\sum_{k: s_k \leq C} \left(\dotp{\ell}{v_k}\right)^2
+\end{equation*}
+and our test $\phi := \phi(\ell,Z)$ will simply be $\phi = \1\{T \geq \frac{\kappa}{N} + b\tau\}$ for a threshold $\tau > 0$ to be specified later.
+
+\subsection{Moments of $T$.}
+To upper bound the test error we must show that the fluctuations of $T$ (under null or alternative)  are small compared to the difference in means $\Ebb_{\theta_{p},\theta_q}(T) - \Ebb_{\theta_{\mu},\theta_{\mu}}(T)$. We therefore must compute the first and second moments of $T$, under null and alternative. To compute the moments of $T$, we decompose the vector $\ell$ into a mean term and a noise term. Letting $\Delta_{P,Q} = \frac{\theta_P - \theta_q}{2\theta_{\mu}}$, we have $\ell = \Delta_{P,Q} + \varepsilon$ where $\varepsilon = (\varepsilon_1,\ldots,\varepsilon_n)$ consists of $n$ independent mean-zero random variables, distributed
+\begin{equation*}
+\varepsilon_i = 
+\begin{cases}
+\frac{\theta_{Q,i}}{\theta_{\mu,i}}, ~ & \textrm{with probability $\frac{\theta_{P,i}}{\theta_{\mu,i}}$} \\
+-\frac{\theta_{P,i}}{\theta_{\mu,i}}, ~ & \textrm{with probability $\frac{\theta_{Q,i}}{\theta_{\mu,i}}$}.
+\end{cases}
+\end{equation*}
+
+\subsubsection{Mean of $T$.}
+Let $\kappa$ be the largest integer $k \in [N]$ such that $s_k \leq C$. (Here $\kappa$ is a fixed quantity.) Then,
+\begin{align*}
+\Ebb(T) & = \frac{1}{N}\sum_{k = 1}^{\kappa} \Ebb\left[\dotp{v_k}{\ell}^2\right] \\
+& = \frac{1}{N}\sum_{k = 1}^{\kappa} \Ebb\left[\dotp{\Delta_{P,Q} + \epsilon}{v_k}^2\right] \\
+& = \frac{1}{N}\sum_{k = 1}^{\kappa} \bigl\{\dotp{\Delta_{P,Q}}{v_k}^2 + \Ebb\left[\dotp{\epsilon}{v_k}^2\right]\bigr\}
+\end{align*}
+For a given $k \in [\kappa]$, we have
+\begin{align*}
+\Ebb\left[\dotp{\epsilon}{v_k}_2^2\right] & = \sum_{i = 1}^{N} \sum_{j = 1}^N \Ebb\left[\varepsilon_i \varepsilon_j v_{k,i} v_{k,j}\right] \\
+& = \sum_{i = 1}^{N} v_{k,i}^2 \Ebb\left[\varepsilon_i^2 \right]
+\end{align*}
+and by a direct computation of $\Ebb\left[\varepsilon_i^2 \right]$ we obtain
+\begin{align*}
+\mathbb{E}(T) & = \frac{1}{N}\left(\sum_{k = 1}^{\kappa} \dotp{\Delta_{P,Q}}{v_k}^2 + \sum_{k = 1}^{\kappa} \sum_{i = 1}^{N} v_{k,i}^2 \frac{\theta_{P,i} \theta_{Q,i}}{\theta_{\mu,i}^2}\right) \\
+& = \frac{1}{N}\left(\sum_{k = 1}^{\kappa} \dotp{\Delta_{P,Q}}{v_k}^2 + \kappa - \sum_{k = 1}^{\kappa} \sum_{i = 1}^{N} v_{k,i}^2 \Delta_{P,Q,i}^2\right) \\
+& = \frac{1}{N}\left(\sum_{k = 1}^{\kappa} \dotp{\Delta_{P,Q}}{v_k}^2 + \kappa - \sum_{i = 1}^{N} \Pi_{\kappa,ii} \Delta_{P,Q,i}^2\right) \\
+& \geq \frac{1}{N}\left(\sum_{k = 1}^{\kappa} \dotp{\Delta_{P,Q}}{v_k}^2 + \kappa - \Pi_{\max} \norm{\Delta_{P,Q}}^2\right)
+\end{align*}
+Under the null, $\Delta_{P,Q} = 0$ and therefore
+\begin{equation}
+\label{eqn:mean_null}
+\mathbb{E}_{\theta_{\mu},\theta_{\mu}}(T) = \frac{\kappa}{N}.
+\end{equation}
+Under the alternative, we have the following lower bound on the expectation of 
+\begin{align*}
+\sum_{k = 1}^{\kappa} \dotp{\Delta_{P,Q}}{v_k}^2 & = \sum_{k = 1}^{N} \dotp{\Delta_{P,Q}}{v_k}^2  - \sum_{k = \kappa + 1}^{N} \dotp{\Delta_{P,Q}}{v_k}^2 \\
+& = \norm{\Delta_{P,Q}}_2^2 - \sum_{k = \kappa + 1}^{N} \frac{1}{s_k}\dotp{\Delta_{P,Q}}{v_k}^2 s_k \\
+& \geq \norm{\Delta_{P,Q}}_2^2 - \frac{1}{C} \dotp{L\Delta_{P,Q}}{\Delta_{P,Q}}.
+\end{align*}
+leading to the lower bound
+\begin{equation}
+\label{eqn:mean_alternative}
+\mathbb{E}_{\theta_p,\theta_q}(T) \geq \frac{\kappa}{N} + \frac{(1 - \Pi_{\max})}{N}\norm{\Delta_{P,Q}}^2 - \frac{1}{CN} \dotp{L\Delta_{P,Q}}{\Delta_{P,Q}}.
+\end{equation}
+
+\subsubsection{Variance of $T$.}
+Let $V_{\kappa} = (v_1\ldots v_{\kappa})$ be the $n \times \kappa$ matrix containing the first $\kappa$ eigenvectors of $L$, and let $\Pi_{\kappa} = V_{\kappa} V_{\kappa}^T$. Observing that $T = \frac{1}{N}\dotp{\Pi_{\kappa}(\Delta_{P,Q} + \varepsilon)}{\Delta_{P,Q} + \varepsilon}$, we have
+\begin{align}
+\Var(T) & = \frac{1}{N^2}\Var(2\dotp{\Pi_{\kappa}\Delta_{P,Q}}{\varepsilon} + \dotp{\Pi_{\kappa}\varepsilon}{\varepsilon}) \nonumber \\
+& = \frac{1}{N^2}\Bigl\{4\underbrace{\Var(\dotp{\Pi_{\kappa}\Delta_{P,Q}}{\varepsilon})}_{=: V_1} + 2\underbrace{\Cov(\dotp{\Pi_{\kappa}\Delta_{P,Q}}{\varepsilon},\dotp{\Pi_{\kappa}\varepsilon}{\varepsilon})}_{=: K_1} + \underbrace{\Var(\dotp{\Pi_{\kappa}\varepsilon}{\varepsilon})}_{=:V_2}\Bigr\}, \label{eqn:var}
+\end{align}
+and we now upper bound each of the three terms on the right hand side of the previous display.
+\paragraph{Upper bound on $V_1$:}
+Let $\Sigma := \Cov(\varepsilon)$ be the covariance matrix of $\varepsilon$. Noting that $\Sigma \preceq I$, we have
+\begin{equation}
+\label{eqn:var1}
+\Var(\dotp{\Pi_{\kappa}\Delta_{P,Q}}{\varepsilon}) =\Delta_{P,Q}^T \Pi_{\kappa}^T \Sigma \Pi_{\kappa} \Delta_{P,Q} \leq \norm{\Pi_{\kappa}\Delta_{P,Q}}^2.
+\end{equation}
+
+\paragraph{Upper bound on $K_1$:}
+Noting that $\Ebb(\dotp{\Pi_{\kappa} \Delta_{P,Q}}{\varepsilon}) = 0$, we have that
+\begin{align*}
+K_1 & = \Ebb\left[\dotp{\Pi_{\kappa} \Delta_{P,Q}}{\varepsilon} \dotp{\Pi_{\kappa} \varepsilon}{\varepsilon}\right] \\
+& = \sum_{i = 1}^{N} \sum_{j = 1}^{N} \sum_{i' = 1}^{N} \Ebb\left[\varepsilon_i \varepsilon_j \Pi_{\kappa,ij} \varepsilon_{i'} (\Pi_{\kappa}\Delta_{P,Q})_i\right] \\
+& = \sum_{i = 1}^{N} \Ebb\left[\varepsilon_i^3\right] \Pi_{\kappa,ii} (\Pi_{\kappa} \Delta_{P,Q})_i.
+\end{align*}
+Standard computations yield $\Ebb\left[\varepsilon_i^3\right]  = \frac{1}{2}(1 - \Delta_{P,Q,i}^2)(\Delta_{Q,P,i})$, and plugging in to the previous expression by Cauchy-Schwarz we have
+\begin{align}
+K_1 = \sum_{i = 1}^{N} \Ebb\left[\varepsilon_i^3\right] \Pi_{\kappa,ii}  (\Pi_{\kappa}\Delta_{P,Q})_i & = \frac{1}{2}\sum_{i = 1}^{N} (1 - \Delta_{P,Q,i}^2)(\Delta_{Q,P,i}) \Pi_{\kappa,ii}  (\Pi_{\kappa}\Delta_{P,Q})_i \nonumber \\
+& \leq \norm{\Pi_{\kappa} \Delta_{P,Q}} \cdot \left(\sum_{i = 1}^{N} \Delta_{P,Q,i}^2 \Pi_{\kappa,ii}^2\right)^{1/2} \nonumber \\
+& \leq \Pi_{\max} \cdot \norm{\Pi_{\kappa} \Delta_{P,Q}} \cdot \norm{\Delta_{P,Q}}  \label{eqn:var2} 
+\end{align}
+
+\paragraph{Upper bound on $V_2$:}
+$V_2$ is a variance of a sum, which we re-express as the sum of covariances:
+\begin{align*}
+V_2 & = \Var(\dotp{\Pi_{\kappa} \varepsilon}{\varepsilon}) \\
+& = \sum_{i,j,i',j' = 1}^{N} (\Pi_{\kappa})_{ij} (\Pi_{\kappa})_{i'j'} \Cov(\varepsilon_i \varepsilon_j, \varepsilon_{i'} \varepsilon_{j'}).
+\end{align*}
+This covariance will be non-zero only when $i = i' \neq j = j'$, $i = j' \neq j = i'$, or $i = i' = j = j'$, and therefore
+\begin{align}
+V_2 & = 2\sum_{i = 1}^{N}\sum_{j = 1}^{N} (\Pi_{\kappa})_{ij}^2 \Var(\varepsilon_i\varepsilon_j) + \sum_{i = 1}^{N} (\Pi_{\kappa})_{ii}^2 \Var(\varepsilon_i^2) \nonumber\\
+& \leq 2\sum_{i = 1}^{N}\sum_{j = 1}^{N} (\Pi_{\kappa})_{ij}^2 + \sum_{i = 1}^{N} (\Pi_{\kappa})_{ii}^2 \leq 3 \mathrm{tr}(\Pi_{\kappa}^2) = 3\kappa. \label{eqn:var3}
+\end{align}
+
+\paragraph{Putting the pieces together.}
+Plugging \eqref{eqn:var1}, \eqref{eqn:var2}, and \eqref{eqn:var3} back into \eqref{eqn:var}, we obtain
+\begin{equation}
+\label{eqn:var_5}
+\Var(T) \leq \frac{1}{N^2}\left\{4\norm{\Pi_{\kappa} \Delta_{P,Q}}^2 + \Pi_{\max} \cdot \norm{\Pi_{\kappa} \Delta_{P,Q}} \cdot \norm{\Delta_{P,Q}} + 3\kappa \right\}.
+\end{equation}
+
+\subsection{Type I and Type II error.}
+
+We translate our bounds on the mean and variance of $T$ to bounds on the Type I and Type II error of our test $\phi$ using Chebyshev's inequality. Recall that our test statistic is of the form $\phi = \1\{T \geq \frac{\kappa}{N} + b\tau\}$, and let $\tau = \frac{\sqrt{3\kappa}}{N}$. 
+
+\paragraph{Type I error.}
+We apply Chebyshev's inequality, and obtain
+\begin{align*}
+\Pbb_{\theta_{\mu},\theta_{\mu}}\left(T \geq \frac{\kappa}{N} + b\tau\right) & = \Pbb_{\theta_{\mu},\theta_{\mu}}\left(T - \frac{\kappa}{N} \geq b\tau - \Ebb(T)\right) \\
+& = \Pbb_{\theta_{\mu},\theta_{\mu}}\left( (T - \frac{\kappa}{N})^2 \geq b^2\tau^2 \right) \\
+& \leq \frac{\Var_{\theta_{\mu},\theta_{\mu}}(T)}{b^2\tau^2} = \frac{1}{b^2}.
+\end{align*}
+
+\paragraph{Type II error.}
+To obtain meaningful bounds on Type I error, we must assume some separation between $\theta_P$ and $\theta_Q$. In particular, letting $d(\theta_P,\theta_Q) := \norm{\Delta_{P,Q}}^2$ we assume
+\begin{equation}
+\label{eqn:dist_thetaP_thetaQ}
+\frac{1}{N}d(\theta_P,\theta_Q) \geq \frac{1}{(1 - \Pi_{\max})} \left(\frac{1}{CN}\norm{D \Delta_{P,Q}}^2 + 2b\tau\right).
+\end{equation}
+Note that this implies
+\begin{equation*}
+\mathbb{E}_{\theta_P,\theta_Q}(T) - \left(\frac{\kappa}{N} + b\tau\right) \geq \frac{(1 - \Pi_{\max})}{N} \norm{\Delta_{P,Q}}^2 - \frac{1}{CN}\norm{D \Delta_{P,Q}}^2 - b\tau \geq b\tau \vee \frac{(1 - \Pi_{\max})}{2N} \norm{\Delta_{P,Q}}^2.
+\end{equation*}
+Now, we apply Chebyshev's inequality:
+\begin{align*}
+\Pbb\left(T \leq \frac{\kappa}{N} + b\tau\right) & = \Pbb\bigl(T - \Ebb[T] \leq \frac{\kappa}{N} + b\tau - \Ebb[T]\bigr) \\
+& = \Pbb\bigl( (T - \Ebb[T])^2 \leq (\Ebb[T] - \frac{\kappa}{N} - b\tau)^2 \bigr) \\
+& \leq \frac{\Var(T)}{(\Ebb[T] - \frac{\kappa}{N} - b\tau)^2} \\
+& \leq \frac{1}{N^2}\frac{4\norm{\Pi_{\kappa} \Delta_{P,Q}}^2 + \Pi_{\max} \cdot \norm{\Pi_{\kappa} \Delta_{P,Q}} \cdot \norm{\Delta_{P,Q}} + 3\kappa}{b^2\tau^2 \vee \frac{(1 - \Pi_{\max})^2}{4N^2} \norm{\Delta_{P,Q}}^4} \\
+& \leq \frac{16}{(1 - \Pi_{\max})^2 \norm{\Delta_{P,Q}}^2} \vee \frac{4\Pi_{\max}}{(1 - \Pi_{\max})^2 \norm{\Delta_{P,Q}}^2} \vee \frac{1}{b^2} \\
+& \leq \frac{3}{b^2}
+\end{align*}
+where the last line follows by \eqref{eqn:dist_thetaP_thetaQ} whenever $N \geq \sqrt{48}$. 
+
+\section{Upper bounds on $\Pi_{\max}$.}
+Clearly, the critical radius established by inequality~\eqref{eqn:dist_thetaP_thetaQ} is only meaningful if $1 - \Pi_{\max} > 0$. In fact, we will want to show that $\Pi_{\max} < \frac{1}{2}$ so the factor of $(1 - \Pi_{\max})^{-1}$ does not affect the rate at which the critical radius shrinks. We review what $\Pi_{\max}$ looks like on some common graphs.
+
+\subsection{Chain.}
+Suppose $G := G_{\mathrm{1N}}$ is a length-$N$ chain, i.e. a 1d grid graph on vertices $V = 1:N$. The eigenvectors of $G$ are given by the discrete Fourier transform;
+\begin{equation*}
+v_{1,i} = \frac{1}{\sqrt{N}},~~ v_{k,i} =\sqrt{\frac{2}{N}} \cos\left(\frac{(i - .5)(k - 1)\pi}{N}\right)~ \textrm{for $i = 1,\ldots,N$, k = $2,\ldots,N$.}
+\end{equation*}
+Clearly $\Pi_{\max} \leq \frac{2\kappa}{N}$, so that whenever $\kappa < \frac{N}{4}$ we have $\Pi_{\max} < \frac{1}{2}$ as desired.
+
+\subsection{Grid.}
+Now suppose $G := G_{\mathrm{dN}}$ is a $d$-dimensional grid graph on $N$ nodes, i.e. $G = G_{1M} \otimes \cdots \otimes G_{1M}$ for $M = \frac{N}{d}$ (assume $M$ is an integer for simplicity). The product structure of $G$ yields an expression for its eigenvectors from the eigenvectors of $G_{\mathrm{1M}}$. In particular, for a given $i = (i_1,\ldots,i_d) \in [M]^d$ and $k = (k_1,\ldots,k_d) \in [M]^d$, we have
+\begin{equation*}
+v_{k,i} = \prod_{j = 1}^{d} \sqrt{\frac{2}{M}} \cos\left(\frac{(i_j - .5)(k_j - 1)\pi}{M}\right)
+\end{equation*}
+and therefore $v_{k,i}^2 \leq \frac{2}{M^{d}} = \frac{2}{N}$ for all $i,k \in [M]^d$. So we arrive at the same bound $\Pi_{\max} \leq \frac{2\kappa}{N}$ and again $\kappa < \frac{N}{4}$ implies $\Pi_{\max} < \frac{1}{2}$ as desired.
+
+\subsection{Spectral similarity.}
+Suppose we have graphs $G$ and $H$ with Laplacians $L_G$ and $L_H$, such that $G$ and $H$ are $\epsilon$ spectrally-similar, meaning
+\begin{equation}
+\label{eqn:spectral_similarity}
+(1 - \epsilon) x^T L_H x \leq x^T L_G x \leq (1 + \epsilon) x^T L_H x,~~ \textrm{for all $x \in \Reals^N$.}
+\end{equation}
+Write $L_G = V \Lambda V^T$ and $L_H = U S U^T$ for the spectral decompositions of $G$ and $H$, respectively, and assume that we have
+\begin{equation*}
+\max_{(i,l) \in [N]^2} u_{l,i}^2 \leq \frac{2}{N},
+\end{equation*}
+which we have already shown holds for $H = G_{dN}$. For each $k$, and for any $L(k), R(k) \in [N]$, write
+\begin{equation*}
+v_{k} = \sum_{l = R(k)}^{L(k)}\alpha_{k,l} u_l +  \textrm{proj}_{U_{L(k)}^{\perp}}(v_k);
+\end{equation*}
+as a result, we have that
+\begin{align*}
+v_{k,i}^2 & \leq 2\sum_{h = R(k)}^{L(k)} \sum_{l = R(k)}^{L(k)}\alpha_{k,h}\alpha_{k,l} u_{h,i} u_{l,i} + 2(\textrm{proj}_{U_{R(k):L(k)}^{\perp}}(v_k))_i^2 \\
+& \leq \frac{4}{N} \norm{\alpha}_1^2 + 2\norm{ \textrm{proj}_{U_{L(k)}^{\perp}}(v_k)}^2 \\
+& \leq \frac{4}{N} (L(k) - R(k)) + 2\norm{ \textrm{proj}_{U_{R(k):L(k)}^{\perp}}(v_k)}^2
+\end{align*}
+where the last inequality follows since $\norm{\alpha}_2 \leq 1$, and the inequality $\norm{\alpha}_1 \leq \sqrt{L - R} \norm{\alpha}_2$, since $\alpha$ is a length $L - R$-vector. 
+
+\textcolor{red}{TODO:} Upper bound $\norm{ \textrm{proj}_{U_{L(k)}^{\perp}}(v_k)}^2$ using~\eqref{eqn:spectral_similarity}, and choose $L(k),R(k)$ to make the sum in the previous display as small as possible.
+\section{Notation.}
+
+We write $\Pi_{\max} = \max_{i = 1,\ldots,n} \Pi_{\kappa,ii}$ where we recall $\Pi_{\kappa} = V_{\kappa} V_{\kappa}^T$ and therefore $\Pi_{\kappa,ii} = \sum_{k = 1}^{\kappa} v_{k,i}^2$. 
+
+We write $D$ for the incidence matrix of $L$.
+
+\end{document}
