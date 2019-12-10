@@ -1,0 +1,417 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Graph Testing}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+This document details the current status of the graph testing project. We divide by section based on the testing problem under consideration. At the end of each section, we list some areas we are interested in investigating. All proofs are left until the end.
+
+Throughout, let $X = \{x_1,
+\ldots, x_n\}$ be a sample drawn i.i.d. from a distribution $P$ on $\Rd$,
+with density~$p$.  For a radius $r > 0$, we define $G_{n,r}=(V,E)$ to be the
+\emph{$r$-neighborhood graph} of $X$, an unweighted, undirected graph with
+vertices $V=X$, and an edge $(x_i,x_j) \in E$ if and only if $K_r(x_i,x_j) = \norm{x_i -x_j} \leq r$, where $\norm{\cdot}$ is the Euclidean norm. We denote by $A \in
+\Reals^{n \times n}$ the adjacency matrix, with entries $A_{uv} = 1$ if
+$(u,v) \in E$ and $0$ otherwise.  We also denote by $D$ the diagonal degree
+matrix, with entries $D_{uu} := \sum_{v \in V} A_{uv}$. The graph Laplacian is $L = D - A$, and we write its spectral decomposition as $L = V S V^T$. 
+
+\section{Regression goodness-of-fit testing with random design.}
+
+Let $P$ be a distribution with density $p$ supported on $\mathcal{X} \subseteq \Reals^d$. Suppose we observe random design points $X = \set{x_1,\ldots,x_n} \sim P$, and additionally responses
+\begin{equation}
+\label{eqn:regression_known_variance}
+y_i = f(x_i) + \varepsilon_i, ~~ \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)
+\end{equation} 
+
+We wish to distinguish
+\begin{equation*}
+\mathbf{H}_0: f = f_0 := 0 \quad \textrm{vs} \quad \mathbf{H}_{\textrm{a}}: f \neq f_0
+\end{equation*}
+We will evaluate our performance using worst-case risk: for a given function class $\mathcal{H}$ and test function $\phi: \Reals^n \to \set{0,1}$, let
+\begin{equation*}
+\mathcal{R}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, f \neq f_0} \Ebb_f(1 - \phi).
+\end{equation*}
+The worst-case risk may be quite close to $1$ unless we require some separation between null and alternative spaces. A more realistic measure of performance is therefore
+\begin{equation*}
+\mathcal{R}_{\epsilon}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, \norm{f - f_0}_2 \geq \epsilon} \Ebb_f(1 - \phi).
+\end{equation*}
+
+
+\subsection{Test Statistics.}
+We list the test statistics we use for the regression testing problem.
+
+\paragraph{Eigenvector projection test statistic.}
+Let $VSV^T$ be the spectral decomposition of the Laplacian matrix $L$ of the neighborhood graph $G_{n,r}$. To test whether $f = f_0$, we propose the following \emph{eigenvector projection} test statistic:
+\begin{equation}
+\label{eqn:graph_spectral_projections}
+T_{\mathrm{spec}} := \frac{1}{n} \sum_{k = 0}^{\kappa} \left(\sum_{i = 1} v_i y_i\right)^2
+\end{equation}
+
+\subsection{Current Results.}
+
+In Theorem~\ref{thm:sobolev_testing_rate} we show that under some typical regularity conditions on $P$, the test $\phi_{\textrm{spec}} := \1\{T_{\mathrm{spec}} \geq \tau\}$ is, up to log factors, a minimax optimal test over the Sobolev ball $W^{1,2}(\mathcal{X};R)$. To conveniently state our results we introduce the notation
+\begin{equation*}
+h(a,d) = a(d+2) + (1 + 2/d),~~\textrm{for $a > 0$}
+\end{equation*}
+
+\begin{theorem}
+	\label{thm:sobolev_testing_rate}
+	Let $b \geq 1$ and $a > 0$ be fixed constants, and let $d < 4$. Suppose that $\Pbb$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]^d$ with density function $p$ bounded above and below by constants, i.e
+	\begin{equation*}
+	0 < p_{\min} < p(x) < p_{\max} < \infty, \quad \textrm{for all $x \in \mathcal{X}$.}
+	\end{equation*}
+	Then the following statement holds: if the test $\phi_{\spec}$ is performed with parameter choices 
+	\begin{equation*}
+	r = \log^a n \cdot \left(\frac{\log n}{n}\right)^{1/d}, ~\kappa = n^{2d/(4 + d)}, ~\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*}
+	then there exists a constant $c$ which may depend on $d,R,p_{\max},b$ and $a$ but is independent of the sample size $n$ such that for every $\epsilon \geq 0$ satisfying
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate}
+	\epsilon^2 \geq c \cdot b \cdot n^{-4/(4 + d)} (\log n)^{h(a,d)}
+	\end{equation}
+	the worst-case risk is upper bounded
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate_1}
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; \mathcal{W}^{1,2}(\mathcal{X};R)) \lesssim \frac{1}{b}.
+	\end{equation}
+\end{theorem}
+The testing rate~\eqref{eqn:sobolev_testing_rate} matches the minimax critical radius up to a factor of $\log^{h(a,d)}n$.
+
+When $d \geq 4$ the compact embedding
+\begin{equation*}
+W_d^{1,2}(\mathcal{X}) \subseteq \mathcal{L}_d^4(\mathcal{X}) 
+\end{equation*}
+does not hold (as it does when $d < 4$). However, if we directly assume $f \in \mathcal{L}_d^4(\mathcal{X};R)$ (regardless of $d$) we obtain the following result.
+\begin{proposition}
+	\label{prop:L4_testing_rate}
+	If $f \in \mathcal{L}_d^4(\mathcal{X};R)$, there exists a constant $c$ such that if
+	\begin{equation}
+	\label{eqn:L4_testing_rate}
+	\epsilon^2 > b \cdot n^{-1/2}
+	\end{equation}
+	then the test
+	\begin{equation*}
+	\phi_{\mathrm{mean}} = \1\{\frac{1}{n}\sum_{i = 1}^{n} y_i^2 \geq 1\}
+	\end{equation*}
+	has worst-case risk
+	\begin{equation*}
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; W^{1,2}(\mathcal{X};R)) \lesssim \frac{1}{b}. 
+	\end{equation*}
+\end{proposition}
+
+Note that when $d < 4$ the rate~\eqref{eqn:sobolev_testing_rate} is sharper than \eqref{eqn:L4_testing_rate}. 
+
+\subsection{Areas to Investigate}
+
+\begin{enumerate}[(i)]
+	\item When $d \geq 4$, is it true that there does not exist a uniformly consistent
+	test over the Sobolev ball $W_d^{1,2}(\mathcal{X};R)$?
+	\item Does the testing rate of $\phi_{\mathrm{spec}}$ over Sobolev spaces $W_d^{s,2}(\mathcal{X};R)$ match the minimax rate, for an appropriate choice of kernel $K$?
+	\item Assume the distribution $P$ is supported on a manifold $\mathcal{M}$ of intrinsic dimension $s < d$. Does $\mathrm{\phi_{\mathrm{spec}}}$ display adaptivity to the intrinsic dimension of $\mathcal{M}$?
+	\item Assume that $f$ belongs to the Holder space $C_d^s(\mathcal{X})$. Moreover, suppose that instead of observing ${y_i}$ according to the regression testing model \eqref{eqn:regression_known_variance}, we observe
+	\begin{equation*}
+	y_i = f(x_i) + \sigma \varepsilon_i, ~\varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)
+	\end{equation*}
+	where $\sigma > 0$ is unknown. When $d \geq 4$, what are the minimax regression testing rates over $C_d^1(\mathcal{X};R)$? Is the test $\phi_{\mathrm{spec}}$ minimax optimal, when the tuning parameters $r$ and $\kappa$ are appropriately chosen?
+\end{enumerate}
+
+\section{Two-sample density testing.}
+In the two-sample density testing problem, we observe independent samples $Z = z_1,\ldots,z_N \sim P$ and $Y = y_1,\ldots,y_M \sim Q$, where $P$ and $Q$ are distributions over $\Reals^d$ with densities $p$ and $q$, respectively, and $N \sim \textrm{Bin}(n,1/2)$. Our goal is to distinguish the hypotheses
+\begin{equation*}
+\mathbf{H}_0: P = Q \quad \textrm{vs} \quad \mathbf{H}_{\textrm{a}}: P \neq Q
+\end{equation*}
+and we again evaluate our performance using worst-case risk; letting $\phi:\Reals^{N + M} \to \{0,1\}$, 
+\begin{equation*}
+\mathcal{R}_{\epsilon}(\phi; \mathcal{H}) = \inf_{p \in \mathcal{H}}\Ebb_{p,p}(\phi) + \sup_{\substack{p,q \in \mathcal{H} \\ \norm{p - q}_{\Leb^2} \geq \epsilon}} \Ebb_{p,q}(1 - \phi).
+\end{equation*}
+
+\subsection{Test statistics.}
+
+We suggest several two-sample test statistics. 
+
+\paragraph{Eigenvector projection test statistic.}
+
+It is straightforward to adapt the test statistic $T_{\mathrm{spec}}$ to the two-sample testing problem. Concatenate the samples $Z$ and $Y$ in $X = (z_1,\ldots,z_N,y_1,\ldots,y_M)$, and define $T_{\mathrm{spec}}^{(2)}$ to be
+\begin{equation}
+\label{eqn:graph_spectral_projections_2}
+T_{\mathrm{spec}}^{(2)} := \frac{1}{n} \sum_{k = 0}^{\kappa} \left(\sum_{i = 1}^{n} v_i a_i\right)^2, ~~\textrm{where}~~ a = (\underbrace{N^{-1},\ldots,{N^{-1}}}_{\textrm{length } N},\underbrace{-M^{-1},\ldots,-M^{-1}}_{\textrm{length } M})
+\end{equation}
+
+For convenience, we state our following two test statistics with respect to the empirical norm $\norm{\theta}_n = n^{-1/2}\norm{\theta}_2$ for $\theta \in \Reals^n$. They will each depend on a tuning parameter $\lambda > 0$.
+\paragraph{Graph Sobolev IPM.}
+Letting $C_n := nr^{(d + 2)/2}$ and
+\begin{equation*}
+\Theta_{1,2} := \{\theta \in \Reals^n:~ C_n^{-1} \norm{B\theta}_2 \leq 1\} 
+\end{equation*}
+we define the \emph{graph Sobolev IPM} to be
+\begin{equation}
+\label{eqn:sobolev_IPM}
+T_{\textrm{sob}} := \sup_{\substack{\theta \in \Theta_{1,2} \\ \lambda \norm{\theta}_n \leq 1}} \abs{\frac{1}{n}\sum_{i = 1}^{n} a_i \theta_i}. 
+\end{equation}
+
+\paragraph{Graph Total Variation IPM.}
+Letting $C_n' := n^{2}r^{(d + 1)}$ and 
+\begin{equation*}
+\Theta_{1,1} := \{\theta \in \Reals^n:~ (C_n')^{-1} \norm{B\theta}_1 \leq 1\}
+\end{equation*}
+we define the \emph{graph Total Variation} IPM to be
+\begin{equation}
+\label{eqn:total_variation_IPM}
+T_{\mathrm{TV}} := \sup_{\substack{\theta \in \Theta_{1,1}, \\ \lambda \norm{\theta}_n \leq 1} } \abs{\frac{1}{n}\sum_{i = 1}^{n} a_i \theta_i}, \quad
+\end{equation}
+
+\subsection{Current results.}
+
+\textcolor{red}{WARNING:} While I have proved all the parts I believe are required for the below theorem, I haven't actually put together the pieces yet.
+
+In Theorem~\ref{thm:twosample_sobolev_testing_rate} we show that under some typical regularity conditions on $P$, the test $\phi_{\textrm{spec}}^{(2)} := \1\{T_{\mathrm{spec}}^{(2)} \geq \tau\}$ is, up to log factors, a minimax optimal test over the Sobolev ball $W^{1,2}(\mathcal{X};R)$ when $d = 1$.
+
+\begin{theorem}
+	\label{thm:twosample_sobolev_testing_rate}
+	Let $b \geq 1$ and $a > 0$ be fixed constants, and let $d = 1$.  Suppose that $P$ and $Q$ are absolutely continuous probability measures over $\mathcal{X} = [0,1]$ with density functions $p$ and $q$ bounded above and below by constants, i.e
+	\begin{equation*}
+	0 < p_{\min},q_{\min} < p(x),q(x) < p_{\max},q_{\max} < \infty, \quad \textrm{for all $x \in \mathcal{X}$.}
+	\end{equation*}
+	Then the following statement holds: if the test $\phi_{\spec}^{(2)}$ is performed with parameter choices 
+	\begin{equation*}
+	r = \log^a n \cdot \left(\frac{\log n}{n}\right), ~\kappa = n^{2/5}, ~\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*}
+	then there exists a constant $c$ which may depend on $R,p_{\max},q_{\max},b$ and $a$ but is independent of the sample size $n$ such that for every $\epsilon \geq 0$ satisfying
+	\begin{equation}
+	\label{eqn:twosample_sobolev_testing_rate}
+	\epsilon^2 \geq c \cdot b \cdot n^{-4/5} (\log n)^{h(a,1)}
+	\end{equation}
+	the worst-case risk is upper bounded
+	\begin{equation}
+	\label{eqn:twosample_sobolev_testing_rate_1}
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; \mathcal{W}^{1,2}(\mathcal{X};R)) \lesssim \frac{1}{b}.
+	\end{equation}
+\end{theorem}
+
+We prove Theorem~\ref{thm:twosample_sobolev_testing_rate} by relating the density testing problem to a regression testing problem with a certain type of structured noise, and then proceeding along similar lines to the proof of Theorem~\ref{thm:sobolev_testing_rate}. To pursue this strategy, we require the eigenvectors to satisfy a certain type of incoherence condition; this is in constrast to the regression testing problem with known variance, where we did not require the eigenvectors to be smooth in any sense.
+
+\subsection{Areas to Investigate}
+
+\begin{enumerate}[(i)]
+	\item When $1 < d < 4$, is the test $\phi_{\spec}^{(2)}$ minimax optimal?
+	\item Are either or both of the test statistics \eqref{eqn:graph_spectral_projections_2}-\eqref{eqn:sobolev_IPM} minimax optimal over $C_d^1(\mathcal{X};R)$ for all values of $d$?
+	\item Are either or both of the test statistics \eqref{eqn:graph_spectral_projections_2}-\eqref{eqn:sobolev_IPM} minimax optimal over $W_d^{1,2}(\mathcal{X};R)$ when $d \leq 4$?
+	\item Is the test statistic \eqref{eqn:graph_spectral_projections_2}, computed over a graph with suitable choice of kernel $K$, minimax optimal over higher order derivative classes $C_d^s$ and $W^{s,2}$? 
+	\item Modify the test statistic \eqref{eqn:sobolev_IPM} by replacing the function class $\Theta_{1,2}$ with
+	\begin{equation}
+	\Theta_{s,2} := \{\theta \in \Reals^n:~ C_n^{-1} \norm{B^{(s)}\theta}_2 \leq 1\} 
+	\end{equation}
+	Is the modified test statistic, computed over a graph with suitable choice of kernel $K$, minimax optimal over higher order derivative classes $C_d^s$ and $W^{s,2}$?
+	\item What is the minimax testing rate over $BV_d^{1}(\mathcal{X};R)$? Does it exhibit a phase transition analogous to the minimax estimation rate over bounded variation spaces?
+	\item Is the test statistic \eqref{eqn:total_variation_IPM} minimax optimal over $BV_d^{1}(\mathcal{X};R)$?
+	\item Is the test statistic \eqref{eqn:total_variation_IPM} minimax optimal over Sobolev and Holder function classes?
+\end{enumerate}
+
+\section{Definitions}
+
+Here we collect definitions of some common function spaces and graph operators.
+
+\subsection{Function Spaces}
+
+\paragraph{Lebesgue spaces.}
+
+We say a Borel measurable function $f: \mathcal{X} \to \Reals$ is in the space $\mathcal{L}^p(\mathcal{X})$ for $1 \leq p < \infty$ if 
+$$\norm{f}_{\mathcal{L}^p(\mathcal{X})} := \int_{\mathcal{X}} \abs{f(x)}^p \,dx < \infty$$
+and we let 
+\begin{equation*}
+\mathcal{L}^p(\mathcal{X};R) = \set{f \in \mathcal{L}^p(\mathcal{X}): \norm{f}_{\mathcal{L}^p(\mathcal{X})} < R}
+\end{equation*}
+be a ball in the Lebesgue space.
+
+
+\paragraph{Holder spaces.}
+
+For a given $s > 0$, the $s$th Holder norm is given by
+\begin{equation*}
+\norm{f}_{C_d^{s}(\mathcal{X})} := \sum_{\abs{\alpha} \leq s} \norm{D^{\alpha}f}_{\infty} + \sum_{\abs{\alpha} = s} \sup_{x,y \in \mathcal{X}} \frac{\abs{D^{\alpha}f(y) - D^{\alpha}f(x)}}{\norm{x - y}_2}
+\end{equation*}
+and the $s$th Holder space $C_d^{s}(\mathcal{X})$ consists of all functions which are $s$ times continuously differentiable with finite $s$ Holder norm. Denote the Holder  ball by $C_d^{s}(\mathcal{X},R) = \set{f \in C_d^{s}(\mathcal{X}): \norm{f}_{C_d^{s}(\mathcal{X})} \leq R}$.
+
+\paragraph{Sobolev spaces.}
+
+For a given $s > 0$, the Sobolev space $W_d^{s,2}(\mathcal{X})$ consists of all functions $f \in \mathcal{L}^2(\mathcal{X})$ such that for each $\alpha = (\alpha_1,\ldots,\alpha_d)$ with $\abs{\alpha} := \sum_{i = 1}^{d} \alpha_i \leq s$, the weak derivative $D^{\alpha}f$ belongs to $\mathcal{L}^2(\mathcal{X})$. The Sobolev $\{s,2\}$ norm is then 
+\begin{equation*}
+\norm{f}_{W_d^{s,2}(\mathcal{X})}^2 = \sum_{\abs{\alpha} \leq s} \int_{\mathcal{X}} \abs{D^{\alpha}f}^2 \,dx
+\end{equation*}
+and for a given $L > 0$, the corresponding ball is $W_d^{s,2}(\Xset; L) = \set{f: \norm{f}_{W^{s,2}(\Xset)} \leq L}$.
+
+\paragraph{Bounded Variation spaces.}
+
+For a function $f \in L^1(\mathcal{X})$ the \emph{total variation} semi-norm of $f$ is
+\begin{equation*}
+TV(f;\mathcal{X}) := \sup \left\{ \int_{\mathcal{X}} f \, \Xsetive \, \psi \,dx : \psi \in C_c^1(\mathcal{X}; \Reals^d), \abs{\psi} \leq 1 \right\};
+\end{equation*}
+and we write $BV_d(\mathcal{X})$ for the subset of functions $f \in L^1(\mathcal{X})$ which have bounded norm
+\begin{equation*}
+\norm{f}_{BV_d(\mathcal{X})} := \norm{f}_{\infty} + TV(f;\mathcal{X}).
+\end{equation*}
+For a given $R > 0$, the corresponding ball is $BV_d^{1}(\mathcal{X};R) = \set{f: \norm{f}_{BV_d(\mathcal{X})} \leq R}$. 
+
+\subsection{Graph Operators.}
+Let $s \geq 1$ be an integer. The $s$th-order difference operator on $G_{n,r}$, denoted $B^{(s)}$, is defined by
+\begin{equation*}
+B^{(s)} :=
+\begin{cases}
+L^{s/2},& ~~ s \textrm{ even} \\
+BL^{(s - 1)/2},& ~~ s \textrm{ odd.}
+\end{cases}
+\end{equation*}
+
+\end{document}
