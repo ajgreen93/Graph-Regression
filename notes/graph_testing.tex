@@ -66,6 +66,10 @@
 
 %%% Vectors
 \newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
 
 %%% Matrices
 \newcommand{\X}{X} % no bold
@@ -104,6 +108,7 @@
 \newcommand{\Xsetxpr}{\,dx'}
 \newcommand{\Xsetypr}{\,dy'}
 \newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
 \newcommand{\spec}{\mathrm{spec}}
 
 %%% Order of magnitude
@@ -320,9 +325,9 @@ In Theorem~\ref{thm:twosample_sobolev_testing_rate} we show that under some typi
 
 \begin{theorem}
 	\label{thm:twosample_sobolev_testing_rate}
-	Let $b \geq 1$ and $a > 0$ be fixed constants, and let $d = 1$.  Suppose that $P$ and $Q$ are absolutely continuous probability measures over $\mathcal{X} = [0,1]$ with density functions $p$ and $q$ bounded above and below by constants, i.e
+	Let $b \geq 1$ and $a > 0$ be fixed constants, and let $d = 1$.  Suppose that $\mu = (P + Q)/2$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]$ with density functions $\rho$ bounded above and below by constants, i.e
 	\begin{equation*}
-	0 < p_{\min},q_{\min} < p(x),q(x) < p_{\max},q_{\max} < \infty, \quad \textrm{for all $x \in \mathcal{X}$.}
+	0 < \rho_{\min} < \rho(x) < \rho_{\max} < \infty, \quad \textrm{for all $x \in \mathcal{X}$.}
 	\end{equation*}
 	Then the following statement holds: if the test $\phi_{\spec}^{(2)}$ is performed with parameter choices 
 	\begin{equation*}
@@ -421,7 +426,7 @@ BL^{(s - 1)/2},& ~~ s \textrm{ odd.}
 To prove Theorem~\ref{thm:sobolev_testing_rate}, we will show that when
 \begin{equation}
 \label{eqn:critical_radius}
-\epsilon^2 \geq c \cdot b \cdot (\log n)^{h(\beta,d)} \cdot n^{-4/(4 + d)}
+\epsilon^2 \geq c \cdot b \cdot (\log n)^{h(a,d)} \cdot n^{-4/(4 + d)}
 \end{equation}
 and we choose tuning parameters as specified in Theorem~\ref{thm:sobolev_testing_rate}, the test $\phi_{\mathrm{spec}}$ satisfies
 \begin{equation}
@@ -470,7 +475,7 @@ In Lemma~, we upper bound the Type I and Type II error of the test $\phi_{\spec}
 		\label{eqn:fixed_graph_testing_critical_radius}
 		\frac{1}{n} \sum_{i = 1}^{n} \beta_i^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}} + \frac{S_2(\beta;G)}{ns_{\kappa}}
 		\end{equation}
-		the Type II error of $\phi_{\beta}$ is upper bounded,
+		the Type II error of $\phi_{\spec}$ is upper bounded,
 		\begin{equation}
 		\label{eqn:graph_spectral_type_II_error}
 		\mathbb{E}_{\beta}(1 - \phi_{\spec}) \leq \frac{3}{b}.
@@ -512,7 +517,7 @@ We write $T_{\mathrm{spec}} = n^{-1} y^T V_{\kappa} V_{\kappa}^T y$ where $V_{\k
 where the last inequality follows from standard properties of the Gaussian distribution. We now move on to showing the desired inequalities \eqref{eqn:graph_spectral_type_I_error} and \eqref{eqn:graph_spectral_type_II_error}.
 For simplicity, we introduce the notation
 \begin{equation*}
-t(b) = b\sqrt{\frac{2\kappa}{n^2}}, ~~ \Delta = \norm{\beta}_2^2 - \frac{S_2(\beta;G)}{s_{\kappa}}.
+\Delta = \norm{\beta}_2^2 - \frac{S_2(\beta;G)}{s_{\kappa}}.
 \end{equation*}
 
 \vspace{.2 in}
@@ -674,24 +679,25 @@ Then by \ref{eqn:sobolev_1_bound_2}, $\int_{\Rd} \norm{\nabla g(x)}^2 \,dx \leq 
 
 \paragraph{Proof of~\eqref{eqn:eigenvalue_tail_bound}:}
 
-For ease of notation we write $t = n^{1/d}$, and assume without loss of generality that $t$ is whole number. Let $\overline{G} = (\overline{V},\overline{E})$ be the lattice over $[0,1]^d$, formally
+For ease of notation we write $t = n^{1/d}$, and assume without loss of generality that $t$ is whole number. Let $\overline{G} = (\overline{X},\overline{E})$ be the lattice over $[0,1]^d$, formally
 \begin{align*}
-\overline{V} & = \bigl\{\overline{x}_k := \frac{1}{n}(k_1,\ldots,k_d): k \in [t]^d\bigr\} \\
+\overline{X} & = \bigl\{\overline{x}_k := \frac{1}{t}(k_1,\ldots,k_d): k \in [t]^d\bigr\} \\
 \overline{E} & = \bigl\{(\overline{x}_k, \overline{x}_{\ell}): \norm{k - \ell}_1 = 1\bigr\}.
 \end{align*}
 
 By Theorem 1.1 of \textcolor{red}{Garcia Trillos and Slepcev}, with probability at least $1 - n^{-1}$ there exists a bijection $\pi: \overline{V} \to X$ such that
-\begin{equation*}
+\begin{equation}
+\label{eqn:transport_distance}
 \max_{k \in [t]^d} \abs{\overline{x}_k - \pi(\overline{x}_k)} \leq c \left(\frac{\log n}{n}\right)^{1/d}
-\end{equation*}
+\end{equation}
 Since our choice $r = \log^a(n) \cdot (\log n/n)^{1/d}$ implies $r = \omega(\left(\frac{\log n}{n}\right)^{1/d})$, for $n$ sufficiently large with probability $1 - n^{-1} = 1 - o(1)$ we have
 \begin{equation}
 \label{eqn:eigenvalue_tail_bound_pf1}
 (\overline{x}_k,\overline{x}_{\ell}) \in \overline{E} \Longrightarrow (\pi(\overline{x}_k),\pi(\overline{x}_{\ell})) \in E.
 \end{equation}
-Let $\overline{L}$ be the Laplacian of $\overline{G}$, with eigenvalues $\lambda_1 < \cdots \leq \lambda_n$. If \eqref{eqn:eigenvalue_tail_bound_pf1} holds, then for all $x \in \Reals^n$,
+Let $\overline{L}$ be the Laplacian of $\overline{G}$, with eigenvalues $\overline{s}_1 < \cdots \leq \overline{s}_n$. If \eqref{eqn:eigenvalue_tail_bound_pf1} holds, then for all $x \in \Reals^n$,
 \begin{equation*}
-x^T \overline{L} x \geq x^T L x \Longrightarrow \lambda_j \leq s_j~~ \textrm{for all}~ j \in [n].
+x^T \overline{L} x \leq x^T L x \Longrightarrow \overline{s}_j \leq s_j~~ \textrm{for all}~ j \in [n].
 \end{equation*}
 The eigenvalues of the $d$-dimensional lattice are explicitly known. In particular when $j = h^d$ for some whole number $h$, we have $s_j \geq \lambda_j = 4 d \sin^2(\pi h/2t) \geq \pi^2 h^2/ (4 t^2)$, with a similar inequality (for possible different constants) holding when $j^{1/d}$ is not integral; this shows~\eqref{eqn:eigenvalue_tail_bound}.
 
@@ -756,6 +762,441 @@ and the variance can be upper bounded
 \Var(T_{\mathrm{mean}}) \leq \frac{1}{n}(3 + p_{\max} \norm{f}_{\Leb^4}^4 + p_{\max}\norm{f}_{\Leb^2}^2) = \frac{c}{n}.
 \end{equation*}
 Since $\mathbb{E}(f^2(x_1)) \geq p_{\min} \epsilon^2$, when $\epsilon^2 \gtrsim b\cdot n^{-1/2}$ we can apply Chebyshev's inequality to obtain the claimed result.
+
+\subsection{Proof of Theorem~\ref{thm:twosample_sobolev_testing_rate}}
+
+As mentioned previously, to prove Theorem~\ref{thm:twosample_sobolev_testing_rate}, we relate the two sample model to the following regression model: we observe
+$X = \{x_1,\ldots,x_n\} \sim \mu$ (where we recall $\mu = (P + Q)/2$), and associated labels
+\begin{equation*}
+a_i = 
+\begin{cases}
+1, & \textrm{with probability}~ \frac{p(x_i)}{p(x_i) + q(x_i)} \\
+-1, & \textrm{with probability}~ \frac{q(x_i)}{p(x_i) + q(x_i)}
+\end{cases}
+\end{equation*}
+where $a_i$ is conditionally independent of $x_j,a_j$ given $x_i$. 
+
+\textcolor{red}{TODO:} Complete the above argument.
+
+Our analysis will trace a similar path to the proof of Theorem~\ref{thm:sobolev_testing_rate}, proceeding according to the following steps:
+\begin{enumerate}
+	\item We upper bound the testing error of our eigenvector projection test statistic when $a$ are viewed as random responses defined over the vertices of a fixed graph $G$. This upper bound will hold whenever certain functionals on the graph $G$ are themselves bounded. One of these functionals will be a measure of eigenvector incoherence.
+	\item We analyze the behavior of these functionals with respect to the random graph $G_{n,r}$, and bound them with high probability.
+	\item We condition on $X \subseteq \mathcal{E}$, where $\mathcal{E}$ is a high-probability set over which the relevant functionals on $G_{n,r}$ are bounded. We conclude that the upper bound on testing error derived in our first step holds whenever $X \subseteq \mathcal{E}$. 
+\end{enumerate}
+
+\subsubsection{Step 1: Testing error on a fixed graph}
+
+Let $G = (V,E)$ be a graph over vertices $V = \set{v_1,\ldots,v_n}$, and let $\beta^{(p)} = (\beta_1^{(p)},\ldots,\beta_n^{(p)}) \in \Reals^n$, $\beta^{(q)} = (\beta_1^{(q)},\ldots,\beta_n^{(q)}) \in \Reals^n$ be non-negative signals over the vertices $V$. We observe labels $a = (a_1,\ldots,a_n)$ according to the model
+\begin{equation*}
+a_i = 
+\begin{cases*}
+1, & \textrm{with probability $\frac{\betap_i}{\betap_i + \betaq_i}$} \\
+-1, & \textrm{with probability $\frac{\betaq_i}{\betap_i + \betaq_i}$}
+\end{cases*}
+\end{equation*}
+Letting $L = VSV^T$ be the spectral decomposition of the Laplacian $L$ of $G$, our graph spectral test statistic is 
+\begin{equation*}
+T_{\spec}^{(2)} = \frac{1}{n}\sum_{k = 1}^{\kappa} \left(\sum_{i = 1}^{n} v_i a_i\right)^2
+\end{equation*}
+where $\kappa$ is a tuning parameter. The resulting test we will use is
+\begin{equation*}
+\phi_{\spec}^{(2)} = \1\{T_{\spec}^{(2)} \geq \frac{\kappa}{n} + t(b)\},~~\textrm{where}~ t(b) = b\sqrt{\frac{2\kappa}{n^2}}~~\textrm{for $b \geq 1$.}
+\end{equation*}
+
+Let $\Pi_{\max}(\kappa;G)$ be a measure of the incoherence of the eigenvectors $v_1,\ldots,v_\kappa$, given by
+\begin{equation*}
+\Pi_{\max}(\kappa;G) := \max_{i = 1,\ldots,n} \left\{\sum_{k = 1}^{\kappa} v_{k,i}^2\right\}
+\end{equation*}
+In Lemma~\ref{lem:twosample_fixed_graph_testing}, we upper bound the Type I and Type II error of the test $\phi_{\spec}^{(2)}$. Our bound on the Type II error will be stated as a function of $\Pi_{\max}(\kappa;G)$ as well as the $\kappa$th eigenvalue $s_{\kappa}$ and the smoothness functional $S_2(\beta;G)$. We use the notation $\varDelta^{(p,q)} = (\betap - \betaq)/(\betap + \betaq)$.
+
+\begin{lemma}
+	\label{lem:twosample_fixed_graph_testing}
+	Let $1 \leq \kappa \leq n$ be an integer.
+	\begin{enumerate}
+		\item \textbf{Type I error:} Under the null hypothesis $\betap = \betaq$, the Type I error of $\phi_{\spec}^{(2)}$ is upper bounded
+		\begin{equation}
+		\label{eqn:twosample_graph_spectral_type_I_error}
+		\mathbb{E}_{\betap,\betap}(\phi_{\spec}^{(2)}) \leq \frac{1}{b^2}.
+		\end{equation}
+		\item \textbf{Type II error:} Suppose $\Pi_{\max}(\kappa;G) \leq 1$. Then for any $b$, $\betap$ and $\betaq$ such that
+		\begin{equation}
+		\label{eqn:twosample_fixed_graph_testing_critical_radius}
+		\frac{1}{n} \sum_{i = 1}^{n} (\varDelta_i^{(p,q)})^2 \geq \frac{1}{1 - \Pi_{\max}(\kappa;G)}\left(2b\sqrt{\frac{2\kappa}{n^2}} + \frac{S_2(\varDelta;G)}{ns_{\kappa}}\right)
+		\end{equation}
+		the Type II error of $\phi_{\spec}^{(2)}$ is upper bounded,
+		\begin{equation}
+		\label{eqn:twosample_graph_spectral_type_II_error}
+		\mathbb{E}_{\betap,\betaq}(1 - \phi_{\spec}^{(2)}) \leq \frac{3}{b}.
+		\end{equation}
+	\end{enumerate}
+\end{lemma}
+
+\paragraph{Proof of Lemma~\ref{lem:twosample_fixed_graph_testing}.}
+
+To prove Lemma~\ref{lem:twosample_fixed_graph_testing} we will compute (bounds on) the expectation and variance of the test statistic $T_{\mathrm{spec}}^{(2)}$. The inequalities \eqref{eqn:twosample_graph_spectral_type_I_error} and \eqref{eqn:twosample_graph_spectral_type_II_error} can then be computed using Chebyshev's inequality in a manner very similar to the proof of Lemma~\ref{lem:fixed_graph_testing}, and we omit the details. Let $w_i := a_i - \vardeltapq_{i}$, and note that $\Ebb(w_i) = 0$ and
+\begin{equation*}
+\Ebb(w_i^2) = \frac{\betap_i \betaq_i}{(\betap_i + \betaq_i)^2} = 1 - (\vardeltapq_{i})^2,~~ \Ebb(w_i^3) = \frac{1}{2}(1 - (\vardeltapq_{i})^2)\vardeltapq_{i}
+\end{equation*}
+
+\vspace{.2 in}
+
+\textit{Mean of $T_{\spec}^{(2)}$}:
+
+We have
+\begin{align*}
+\Ebb(T_{\spec}^{(2)}) & = \frac{1}{n}\left(\sum_{k = 1}^{\kappa} \dotp{\vardeltapq}{v_k}^2 + \Ebb\bigl(\dotp{w}{v_k}^2 + 2 \dotp{w}{v_k} \dotp{\vardeltapq}{v_k}\bigr)\right) \\
+& = \frac{1}{n}\left(\sum_{k = 1}^{\kappa} \dotp{1 - (\vardeltapq)^2}{v_k^2} + \dotp{\vardeltapq}{v_k}\right) \\
+& \geq \frac{\kappa}{n} + \left(\sum_{k = 1}^{\kappa}\dotp{\vardeltapq}{v_k} - \dotp{(\vardeltapq)^2}{v_k^2}\right)
+\end{align*}
+When $\vardeltapq = 0$, this equals $\kappa/n$. Otherwise, we have the following upper bound:
+\begin{align*}
+\sum_{k = 1}^{\kappa} \dotp{(\vardeltapq)^2}{v_k^2}  & = \sum_{i = 1}^{n} (\vardeltapq_{i})^2 \left(\sum_{k = 1}^{\kappa} v_{k,i}^2 \right)\\
+& \leq \Pi_{\max}(\kappa,G) \cdot \sum_{i = 1}^{n} (\vardeltapq_{i})^2 = \Pi_{\max}(\kappa,G) \cdot \norm{\vardeltapq}_2^2.
+\end{align*}
+Additionally, $\sum_{k = 1}^{\kappa}\dotp{\vardeltapq}{v_k} \geq \norm{\vardeltapq}_2^2 - S_2(\beta;G)/s_{\kappa}$ by reasoning given in the proof of Lemma~\ref{lem:fixed_graph_testing}, and as a result 
+\begin{equation*}
+\Ebb(T_{\spec}^{(2)}) \geq \frac{\kappa}{n} -  \frac{\bigl(1 - \Pi_{\max}(\kappa;G)\bigr)}{n} \norm{\vardeltapq}_2^2 - \frac{S_2(\beta;G)}{ns_{\kappa}}
+\end{equation*}
+
+\vspace{.2 in}
+\textit{Variance of $T_{\spec}^{(2)}$:}
+
+We have
+\begin{align}
+\Var(T_{\spec}^{(2)}) & = \frac{1}{n^2}\Var(2\dotp{V_{\kappa}V_{\kappa}^T\vardeltapq}{w} + \dotp{V_{\kappa}V_{\kappa}^Tw}{w}) \nonumber \\
+& = \frac{1}{n^2}\Bigl\{4\underbrace{\Var(\dotp{V_{\kappa}V_{\kappa}^T\vardeltapq}{w})}_{=: V_1} + 2\underbrace{\Cov(\dotp{V_{\kappa}V_{\kappa}^T\vardeltapq}{w},\dotp{V_{\kappa}V_{\kappa}^Tw}{w})}_{=: K_1} + \underbrace{\Var(\dotp{V_{\kappa}V_{\kappa}^Tw}{w})}_{=:V_2}\Bigr\}, \label{eqn:var}
+\end{align}
+and we now upper bound each of the three terms on the right hand side of the previous display.
+
+\textbf{Upper bound on $V_1$:}
+Let $\Sigma := \Cov(w)$ be the covariance matrix of $w$. Noting that $\Sigma \preceq I$, we have
+\begin{equation}
+\label{eqn:var1}
+\Var(\dotp{V_{\kappa}V_{\kappa}^T\vardeltapq}{w}) =(\vardeltapq)^T V_{\kappa}V_{\kappa}^T \Sigma V_{\kappa}V_{\kappa}^T \vardeltapq \leq \norm{V_{\kappa}V_{\kappa}^T\vardeltapq}^2.
+\end{equation}
+
+\textbf{Upper bound on $K_1$:}
+Noting that $\Ebb(\dotp{V_{\kappa}V_{\kappa}^T \vardeltapq}{w}) = 0$, we have that
+\begin{align}
+K_1 & = \Ebb\left[\dotp{V_{\kappa}V_{\kappa}^T \vardeltapq}{w} \dotp{V_{\kappa}V_{\kappa}^T w}{w}\right] \nonumber \\
+& = \sum_{i = 1}^{n} \sum_{j = 1}^{n} \sum_{i' = 1}^{n} \Ebb\left[w_i w_j (V_{\kappa}V_{\kappa}^T)_{ij} w_{i'} (V_{\kappa}V_{\kappa}^T\vardeltapq)_i\right] \nonumber \\
+& = \sum_{i = 1}^{n} \Ebb\left[w_i^3\right] (V_{\kappa}V_{\kappa}^T)_{ii} (V_{\kappa}V_{\kappa}^T \vardeltapq)_i \nonumber \\
+& = \frac{1}{2}\sum_{i = 1}^{n} (1 - (\vardeltapq_{i})^2)(\vardeltapq_{i}) (V_{\kappa} V_{\kappa}^T)_{ii}  (V_{\kappa}V_{\kappa}^T\vardeltapq)_i \nonumber \\
+& \leq \norm{V_{\kappa}V_{\kappa}^T \vardeltapq} \cdot \left(\sum_{i = 1}^{n} (\vardeltapq_{i})^2 (V_{\kappa} V_{\kappa}^T)_{ii}^2\right)^{1/2} \nonumber \\
+& \leq \Pi(\kappa,G) \cdot \norm{V_{\kappa}V_{\kappa}^T \vardeltapq} \cdot \norm{\vardeltapq}  \label{eqn:var2} 
+\end{align}
+
+\textbf{Upper bound on $V_2$:}
+$V_2$ is a variance of a sum, which we re-express as the sum of covariances:
+\begin{align*}
+V_2 & = \Var(\dotp{V_{\kappa}V_{\kappa}^T w}{w}) \\
+& = \sum_{i,j,i',j' = 1}^{n} (V_{\kappa}V_{\kappa}^T)_{ij} (V_{\kappa}V_{\kappa}^T)_{i'j'} \Cov(w_i w_j, w_{i'} w_{j'}).
+\end{align*}
+This covariance will be non-zero only when $i = i' \neq j = j'$, $i = j' \neq j = i'$, or $i = i' = j = j'$, and therefore
+\begin{align}
+V_2 & = 2\sum_{i = 1}^{n}\sum_{j = 1}^{n} (V_{\kappa}V_{\kappa}^T)_{ij}^2 \Var(w_iw_j) + \sum_{i = 1}^{n} (V_{\kappa}V_{\kappa}^T)_{ii}^2 \Var(w_i^2) \nonumber\\
+& \leq 2\sum_{i = 1}^{n}\sum_{j = 1}^{n} (V_{\kappa}V_{\kappa}^T)_{ij}^2 + \sum_{i = 1}^{n} (V_{\kappa}V_{\kappa}^T)_{ii}^2 \leq 3 \mathrm{tr}\bigl((V_{\kappa}V_{\kappa}^T)^2\bigr) = 3\kappa. \label{eqn:var3}
+\end{align}
+
+Now, plugging \eqref{eqn:var1}, \eqref{eqn:var2}, and \eqref{eqn:var3} back into \eqref{eqn:var}, we obtain
+\begin{equation}
+\label{eqn:var_5}
+\Var(T_{\spec}^{(2)}) \leq \frac{1}{n^2}\left\{4\norm{V_{\kappa}V_{\kappa}^T \vardeltapq}^2 + \Pi(\kappa;G) \cdot \norm{V_{\kappa}V_{\kappa}^T \vardeltapq} \cdot \norm{\vardeltapq} + 3\kappa \right\}.
+\end{equation}
+
+
+\subsubsection{Step 2: Bounding neighborhood graph functionals}
+
+Note that since $p,q \in W^{1,2}(\mathcal{X};R)$, we have $f := p - q \in W^{1,2}(\mathcal{X};2R)$. Therefore the bounds~\eqref{eqn:continuous_to_discrete_sobolev_norm} and \eqref{eqn:l2_to_empirical_norm} apply to $S_2(\varDelta,G_{n,r})$ and $(1/n)\sum_{i = 1}^{n}\varDelta_i^2$, respectively. The bound~\eqref{eqn:eigenvalue_tail_bound} continues to apply to $s_{\kappa}$. What remains is to upper bound the incoherence parameter
+\begin{equation}
+\label{eqn:pi_max}
+\Pi_{\max}(\kappa,G_{n,r}) \leq \frac{1}{2}~~\textrm{when}~ \kappa = n^{2/5}~\textrm{and}~ r = \log^a n \cdot \left(\frac{\log n}{n}\right)
+\end{equation}
+with probability $1 - o(1)$ as $n \to \infty$.
+
+Our proof of~\eqref{eqn:pi_max} will proceed by relating $G_{n,r}$ to a graph which satsifies a strict notion of incoherence, the chain graph. When $G = \overline{G}$, the incoherence parameter $\Pi_{\max}$ is upper bounded
+\begin{equation}
+\Pi_{\max}(\kappa,\overline{G}) \leq \frac{\kappa}{n}.
+\end{equation}
+To prove that the weaker bound \eqref{eqn:pi_max} holds with respect to $G_{n,r}$, we will show that the two graphs $\overline{G}$ and $G_{n,r}$ are $\delta$-spectrally similar, meaning
+\begin{equation}
+\label{eqn:spectral_similarity}
+(1 - \delta_n) x^T L x \leq x^T \overline{L} x \leq (1 + \delta_n) x^T L x~~\textrm{for all}~x \in \Reals^n, \delta_n = \frac{c \log n}{n}
+\end{equation}
+with probability $1 - o(1)$ as $n \to \infty$. The proof of~\eqref{eqn:spectral_similarity} relies heavily on bounding the transport distance between $X$ and $\overline{X}$, i.e. \eqref{eqn:transport_distance}. Then the following technical Lemma along with \eqref{eqn:spectral_similarity} will imply \eqref{eqn:pi_max}.
+\begin{lemma}
+	\label{lem:pi_max_pf_1}
+	Let $G$ satisfy~\eqref{eqn:spectral_similarity} for a given $0 \leq \delta < 1$. Then for any $R \gtrsim n \delta^{1/2} (s_{n}^{1/2} \vee 1)$ and $k \leq n/8$,
+	\begin{equation*}
+	v_{k,i}^2 \lesssim \frac{1}{n}\left(R + \frac{n^4 \delta^2 s_{n}^2}{R^3}\right) \quad \textrm{for every $i = 1,\ldots,n$.}
+	\end{equation*} 
+\end{lemma}
+At a high level, Lemma~\ref{lem:pi_max_pf_1} is proved through repeated applications of the Davis-Kahan Theorem. The full proof is long and we delay presenting it until Section~\ref{sec:technical_lemma_proofs}.
+
+\subsubsection{Step 3: Conclusion}
+
+With Lemma~\ref{lem:twosample_fixed_graph_testing} as well as \eqref{eqn:continuous_to_discrete_sobolev_norm}, \eqref{eqn:eigenvalue_tail_bound}, \eqref{eqn:l2_to_empirical_norm} and \eqref{eqn:pi_max} in hand, the proof of Theorem~\ref{thm:twosample_sobolev_testing_rate} follows by similar reasoning to the conclusion of Theorem~\ref{thm:sobolev_testing_rate}.
+
+\section{Proofs of Technical Results}
+\label{sec:technical_lemma_proofs}
+
+Here we give in full detail the proof of \eqref{eqn:spectral_similarity} and Lemma~\ref{lem:pi_max_pf_1}.
+
+
+
+\subsection{Proof of~\eqref{eqn:spectral_similarity}}
+
+Assuming~\eqref{eqn:transport_distance} holds and $r$ is chosen according to~\eqref{eqn:pi_max}, we have already shown that the upper bound in~\eqref{eqn:spectral_similarity} holds for $\delta = 0$ (see~\eqref{eqn:eigenvalue_tail_bound_pf1}). Now we need only to show the lower bound, which we will do following these steps:
+\begin{enumerate}[(i)]
+	\item First, we consider the case of two fixed graphs $G$ and $\wt{G}$, and establish a Poincare inequality. In other words, we show that if edges in $G$ can be mapped to short, non-overlapping paths in $\wt{G}$, then the Laplacian matrix $L$ cannot be much larger $\wt{L}$, in the usual sense of partial ordering of matrices.
+	\item Now, we treat the case of $G = G_{n,r}$ and $\wt{G} = \overline{G}$. We assume that~\eqref{eqn:transport_distance} holds, and exhibit such a mapping between edges in $G_{n,r}$ and paths in $\overline{G}$. The resulting Poincare inequality will imply~\eqref{eqn:spectral_similarity}.
+\end{enumerate}
+In step (ii) we assume that~\eqref{eqn:transport_distance} holds. Since \eqref{eqn:transport_distance} holds with probability at least $1 - c/n$, this will imply that~\eqref{eqn:spectral_similarity} holds with at least the same probability.
+
+\subsubsection{Step 1: Poincare inequality}
+
+Let $G = (V,E)$ and $\wt{G} = (V,\wt{E})$ be two graphs over a common vertex set $V$. The set $\mathcal{P}_{\wt{G}}$ consists of all paths $P$ over $\wt{G}$, meaning all tuples
+\begin{equation*}
+P = (\wt{e}_1,\wt{e}_2,\ldots,\wt{e}_m),~~m \in \mathbb{N}~, \wt{e}_j \in \wt{E}~ \forall~ j \in [m], (\wt{e}_j)_2 = (\wt{e}_{j + 1})_1 \forall~j \in [m - 1].
+\end{equation*}
+Let $\gamma:E \to \mathcal{P}_{\wt{G}}$ be a mapping from edges in $G$ to paths in $\wt{G}$. The maximum path length $M(\gamma)$ is defined
+\begin{equation*}
+M(\gamma) = \max_{e \in E} \abs{\gamma(e)}
+\end{equation*} 
+and the bottleneck $b(\gamma)$ is defined
+\begin{equation*}
+b(\gamma) = \max_{\wt{e} \in \wt{E}} \abs{\{e \in E:  \wt{e} \in \gamma(e)\}}.
+\end{equation*}
+As mentioned previously, the Laplacian matrix $L$ cannot be much larger than $\wt{L}$ if edges in $G$ can be mapped to short, non-overlapping paths in $\wt{G}$. Formally, we will show the following: for any $\gamma: E \to \mathcal{P}_{\wt{E}}$,
+\begin{equation}
+\label{eqn:poincare_inequality}
+x^T L x \leq M(\gamma)\cdot b(\gamma) \cdot (x^T \wt{L} x)~\forall{x \in \Reals^n}
+\end{equation} 
+
+\textcolor{red}{TODO}: Prove Poincare inequality.
+
+\subsubsection{Step 2: Mapping $E_{G_{n,r}}$ to $\mathcal{P}_{\overline{G}}$}
+We assume there exists a mapping $\pi:\overline{X} \to X$ which satisfies \eqref{eqn:transport_distance}. We will apply the Poincare inequality to $\pi^{-1}(G_{n,r})$, the isomorphism of $G_{n,r}$ induced by the mapping $\pi^{-1}: X \to \overline{X}$. We now construct our mapping $\gamma:\pi^{-1}(E) \to \overline{E}$. For a given $(\overline{x}_{k},\overline{x}_{\ell}) \in \pi^{-1}(E)$, recalling the notation $t = n^{1/d}$, let
+\begin{equation*}
+s_i = \frac{1}{t}(\textrm{sign}(k_i - \ell_i),0,\ldots,0),~~\textrm{for $i = 1,\ldots,d$.}
+\end{equation*}
+and
+\begin{align*}
+\gamma((\overline{x}_{k},\overline{x}_{\ell})) = \bigl(& (\overline{x}_k, \overline{x}_{k} + s_1), (\overline{x}_{k} + s_1,\overline{x}_{k} + 2s_1),\ldots,(\overline{x}_{k} + (\abs{k_1 - \ell_1} - 1)s_1, \overline{x}_{k} + \frac{1}{t}(k_1 - \ell_1)) \\
+& (\overline{x}_{k} + \frac{1}{t}(k_1 - \ell_1), \overline{x}_{k} + \frac{1}{t}(k_1 - \ell_1) + s_2),\ldots,(\overline{x}_{k} + \frac{1}{t}(k_1 - \ell_1) + (\abs{k_2 - \ell_2} - 1)s_2, \overline{x}_{k}  + \frac{1}{t}((k_1 - \ell_1) + (k_2 - \ell_2)) \\
+& \vdots \\
+& (\overline{x}_{k} + \frac{1}{t}\sum_{i = 1}^{d - 1}(k_i - \ell_i) + s_d,\overline{x}_{k} + \frac{1}{t}\sum_{i = 1}^{d - 1}(k_i - \ell_i) + 2s_d), \ldots, (\overline{x}_k + \frac{1}{t}\sum_{i = 1}^{d - 1}(k_i - \ell_i) + (\abs{k_d - \ell_d} - 1)s_d, \overline{x}_{\ell})\bigr)
+\end{align*}
+As a result of~\eqref{eqn:transport_distance} we obtain the following bounds on $M(\gamma)$ and $b(\gamma)$:
+\begin{align}
+M(\gamma) & \leq c n^{1/d} \left(\left(\frac{\log n}{n}\right)^{1/d} + r\right) \label{eqn:maximum_path_length}\\
+b(\gamma) & \leq c \left(n^{1/d} \left(\left(\frac{\log n}{n}\right)^{1/d} + r\right)\right)^{2d}, \label{eqn:bottleneck}
+\end{align}
+which we now prove. 
+
+\paragraph{Proof of~\eqref{eqn:maximum_path_length}:}
+
+Suppose $(\overline{x}_k, \overline{x}_{\ell}) \in \pi^{-1}(E)$. Then
+\begin{align*}
+\gamma(\overline{x}_k, \overline{x}_{\ell})) = \norm{\overline{x}_k - \overline{x}_{\ell}}_1 & \leq \sqrt{d} \norm{\overline{x}_k - \overline{x}_{\ell}}_2 \\
+& \leq \sqrt{d}\bigl(\norm{\overline{x}_k - \pi(\ol{x}_{k})}_2 + \norm{\pi(\ol{x}_k) - \pi(\ol{x}_{\ell})}_2 + \norm{\overline{x}_\ell - \pi(\ol{x}_{\ell})}_2\bigr) \\
+& \leq \sqrt{d}\left(\norm{\pi(\ol{x}_k) - \pi(\ol{x}_{\ell})}_2 + 2c\left(\frac{\log n}{n}\right)^{1/d}\right) \tag{by \eqref{eqn:transport_distance}} \\
+& \leq \sqrt{d}\left(r + 2c\left(\frac{\log n}{n}\right)^{1/d}\right) \tag{since $(\pi(\ol{x}_k),\pi(\ol{x}_{\ell})) \in E$}
+\end{align*} 
+
+\paragraph{Proof of~\eqref{eqn:bottleneck}:} \textcolor{red}{TODO}:
+
+\subsection{Proof of Lemma~\ref{lem:pi_max_pf_1}}
+
+Write $\overline{L} = \overline{V}\overline{S} \overline{V}^T$ for the spectral decomposition of $\overline{L}$. The proof of Lemma~\ref{lem:pi_max_pf_1} will proceed according to the following steps.
+\begin{enumerate}
+	\item We show that the incoherence $\max_{i} v_{k,i}^2$ can be upper bounded
+	\begin{equation}
+	\label{eqn:incoherence_proof_1}
+	\max_{i} v_{k,i}^2 \leq \frac{1}{n} \left(\sum_{j = 1}^{n} \abs{\dotp{v_k}{\overline{v}_j}}\right)^2
+	\end{equation}
+	replacing the norm $\norm{v_k^2}_{\infty}$ by the inner products $\dotp{v_k}{\overline{v}_j}$.
+	\item Let $I(k,r) = \set{j \geq 0: \abs{j - k} \leq r}$. Using Davis-Kahan, we establish that the following upper bounds
+	\begin{equation}
+	\label{eqn:incoherence_proof_2}
+	\sum_{j \not\in I(k,r)}^{n} (\dotp{v_k}{\overline{v}_j})^2 \leq 400 \frac{n^4 \delta^2 s_{\max}^2}{R^4}
+	\end{equation}
+	hold for each $k \leq n/8$ and any $r \geq 8k\sqrt{\delta}$. 
+	\item We carefully upper bound the $L_1$ norm present in \eqref{eqn:incoherence_proof_1} given the various bounds on $L_2$ norm we've established in \eqref{eqn:incoherence_proof_2}.
+\end{enumerate}
+
+\paragraph{Step 1: Proof of~\eqref{eqn:incoherence_proof_1}.}
+
+We can re-express $v_k$ in the basis $(\overline{v}_j)$ as
+\begin{equation*}
+v_k = \sum_{j = 1}^{n} \dotp{v_k}{\overline{v}_j} \overline{v}_j,
+\end{equation*}
+whereupon the bound~\eqref{eqn:incoherence_proof_1} follows from the incoherence property of the chain
+\begin{equation*}
+\max_{i,k = 1,\ldots,n} \overline{v}_{k,i}^2 \leq \frac{1}{n}.
+\end{equation*}
+\paragraph{Step 2: Proof of~\eqref{eqn:incoherence_proof_2}.}
+
+Let $\widetilde{L} = L + H$. By Davis Kahan, we have that
+\begin{equation}
+\label{eqn:davis_kahan}
+\sum_{j \not\in I(k,r)} (\dotp{v_k}{\overline{v}_j})^2 \leq \left(\frac{\norm{H}_{\textrm{op}}}{\min{\abs{\overline{s}_j - s_k}:j \in I(k,r)}}\right)^2
+\end{equation}
+To upper bound the numerator, we use~\eqref{eqn:spectral_similarity} to get
+\begin{equation*}
+\norm{H}_{op} \leq \delta s_{n}.
+\end{equation*}
+
+To lower bound the denominator, we note
+\begin{align}
+\abs{\overline{s}_j - s_k} & \geq \abs{\overline{s}_j - \overline{s}_k} - \abs{\overline{s}_k - s_k} \nonumber \\
+& \geq \abs{\overline{s}_j - \overline{s}_k} - \delta \overline{s}_k. \label{eqn:incoherence_proof_8}
+\end{align}
+The eigenvalues of the chain graph are well known to be
+\begin{equation*}
+\overline{s}_j = 2\left(1 - \cos\left(\frac{j\pi}{n}\right)\right) = 4\sin^2\left(\frac{k\pi}{n}\right) ~~\textrm{for $k = 0,\ldots,n - 1$.}
+\end{equation*}
+By Taylor expansion, for $k \leq j \leq n/(2\pi)$ we have
+\begin{equation}
+\label{eqn:incoherence_proof_5}
+\overline{s}_j - \overline{s}_k = 2\left(\cos\left(\frac{k\pi}{n}\right) - \cos\left(\frac{j\pi}{n}\right)\right) \geq \frac{(k - j)^2\pi^2}{n^2}.
+\end{equation}
+and when $j \geq n/(2\pi)$ we have $\overline{s}_j - \overline{s}_k \geq 2(\cos\left(\frac{\pi}{8}\right) - \cos\left(\frac{1}{2}\right) > .09$. Additionally since $\sin(x) \leq x$ for all $x \geq 0$, we have
+\begin{equation}
+\label{eqn:incoherence_proof_6}
+\overline{s}_k \leq 4\frac{k^2\pi^2}{n^2}.
+\end{equation}
+Combining~\eqref{eqn:incoherence_proof_5},\eqref{eqn:incoherence_proof_6}, and the lower bound $\abs{k - j} \geq R \geq 8k\sqrt{\delta}$, we have that
+\begin{equation}
+\label{eqn:incoherence_proof_7}
+\abs{\overline{s}_j - \overline{s}_k} - \delta \overline{s}_k \geq .04\frac{(k - j)^2\pi^2}{n^2} - 4 \delta\frac{k^2\pi^2}{n^2} \geq .02\frac{(k - j)^2\pi^2}{n^2}.
+\end{equation}
+The result follows from \eqref{eqn:incoherence_proof_7}, \eqref{eqn:incoherence_proof_8} and \eqref{eqn:davis_kahan}.
+
+\paragraph{Step 3: $L_1$ norm to $L_2$ norm.}
+
+Let $u \in \Reals^n$, and suppose we know that the $L_2$ norm of $u$ is bounded,
+\begin{equation}
+\label{eqn:incoherence_proof_3}
+\norm{u}_2^2 \leq 1.
+\end{equation}
+Under no other conditions on $u$, the upper bound $\norm{u}_1 \leq \sqrt{n}$ is the best that can be hoped for (achieved when $u = (n^{-1/2},\ldots,n^{-1/2})$). However, suppose we also know that for some $B_2^2 \geq B_3^2 \geq \ldots \geq B_n^2$, we have that there exists some $R \in [n]$ such that
+\begin{equation}
+\label{eqn:incoherence_proof_4}
+\sum_{j = r}^{n} v_j^2 \leq B_r^2 ~~\textrm{for each $r = R,\ldots,n$.}
+\end{equation}
+Clearly, if $B_n^2 \leq \frac{1}{n}$ then $u$ cannot be equal to $(n^{-1/2},\ldots,n^{-1/2})$. We might hope for more general improvements on the bound $\norm{u}_1 \leq \sqrt{n}$ if $B_R^2$ is quite small once $R$ gets sufficiently large. The following Lemma gives such a result.
+\begin{lemma}
+	\label{lem:pi_max_pf_1_util_1}
+	Suppose $u \in \Reals^n$ satisfies \eqref{eqn:incoherence_proof_3} and \eqref{eqn:incoherence_proof_4} for some $1 = B_1^2 = B_2^2 \geq \ldots \geq B_n^2 \geq B_{n+1}^2 = 0$. Assume additionally that there exists an $R \in [n]$ such that
+	\begin{equation}
+	\label{eqn:incoherence_util_1}
+	B_r^2 - B_{r + 1}^2 \leq \frac{1}{r}~\textrm{for each $r = R, R+1,\ldots, n - 1$.}
+	\end{equation}
+	Then,
+	\begin{equation}
+	\label{eqn:incoherence_util_2}
+	\norm{u}_1 \leq \sqrt{R}\sqrt{1 - B_R^2} + \sum_{j = R}^{n} \sqrt{B_j^2 - B_{j+1}^2}.
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	Set
+	\begin{equation*}
+	(u_\star)_j^2 = 
+	\begin{cases*}
+	\frac{1}{R}(1 - B_R^2), ~ j \leq R \\
+	B_j^2 - B_{j + 1}^2, j > R
+	\end{cases*}
+	\end{equation*}
+	so that $\norm{u_\star}_1$ is equal to the right hand side of~\eqref{eqn:incoherence_util_2}. We now prove by contradiction that $u_\star$ maximizes $\norm{\cdot}_1$ under the constraints \eqref{eqn:incoherence_proof_3} and \eqref{eqn:incoherence_proof_4}. Suppose this were not true, and that the maximum is achieved for some $u \neq u_{\star}$.
+	\begin{itemize}
+		\item since $\norm{u}_1 > \norm{u_{\star}}$ then there exists some index $j$ such that
+		\begin{equation}
+		\label{eqn:incoherence_util_3}
+		u_j > (u_{\star})_j
+		\end{equation} 
+		\item by~\eqref{eqn:incoherence_proof_3} $\norm{u}_2 \leq 1$. Since $\norm{u_{\star}}_2 = 1$, by \eqref{eqn:incoherence_util_3} there must exist some index $k$ such that
+		\begin{equation}
+		\label{eqn:incoherence_util_4}
+		(u_{\star})_k > u_k.
+		\end{equation} 
+		Choose $k$ to be the largest of all such indices.
+		\item suppose $k < j$ and $j > R$. Since $k$ was chosen to be the largest such index which satisfied~\eqref{eqn:incoherence_util_4}, clearly $v_i \geq (u_{\star})_i$ for all $i > j$, and by \eqref{eqn:incoherence_util_3} $u_j > (u_{\star})_j$. But then 
+		\begin{equation*}
+		B_j^2 = \sum_{i = j}^{N} (u_{\star})_i^2 < \sum_{i = j}^{N} u_i^2 
+		\end{equation*}
+		and so $v$ does not satisfy~\eqref{eqn:incoherence_proof_4}. Therefore either $k > j$ or $j \leq R$.
+		\item In either case, we have
+		\begin{equation*}
+		u_j > (u_{\star})_j \geq (u_{\star})_k > u_k.
+		\end{equation*}
+		Let $j \leq l < k$ be the largest index for which $v_j > (a_{\star})_j$. 
+		
+		We now construct a vector $\wt{u}$ which satisfies the constraints \eqref{eqn:incoherence_proof_3} and \eqref{eqn:incoherence_proof_4} such that $\norm{\wt{u}}_1 > \norm{u}_1$. Once we have shown this, we will have established a contradiction, and the proof of Lemma~\ref{lem:pi_max_pf_1_util_1} will be complete. Let $\wt{u} = (\wt{u}_i)$ be given as follows:
+		\begin{equation*}
+		\wt{u}_i = 
+		\begin{cases*}
+		u_i, ~~\textrm{if $i \neq k,l$}, \\
+		u_{\star,k}, ~~\textrm{if $i = k$}, \\
+		\sqrt{u_l^2 - (u_{\star,k}^2 - a_k^2)}, ~~\textrm{if $i = l$.}
+		\end{cases*}
+		\end{equation*}
+		Clearly $\norm{\wt{u}}_2 = \norm{u}_2 = 1$ and so $\wt{u}$ satisfies~\eqref{eqn:incoherence_proof_3}. To see that $\wt{u}$ satisfies~\eqref{eqn:incoherence_proof_4} we separate the analysis into cases. When $r \geq l + 1$, we have that
+		\begin{equation*}
+		\sum_{i = r}^{n} \wt{u}_i^2 = \sum_{i = r}^{n} u_i^2 \leq B_r^2.
+		\end{equation*}
+		When $l < r \leq k$, we have that
+		\begin{equation*}
+		\sum_{i = r}^{n} \wt{u}_i^2 \leq \sum_{i = r}^{k} u_{\star,i}^2 + \sum_{i = k +1}^{n} u_{i}^2 \leq B_r^2 - B_{k + 1}^2 + B_{k + 1}^2 = B_r^2
+		\end{equation*}
+		Finally, when $R \leq r \leq l$, we have
+		\begin{equation*}
+		\sum_{i = r}^{n} \wt{u}_i^2 \leq u_l^2 - (u_{\star,k}^2 - u_k^2) + (u_{\star,k}^2) + \sum_{i \neq k,l} u_i^2 = \sum_{i = r}^{n} u_i^2 \leq B_r^2.
+		\end{equation*}
+		Therefore $\wt{u}$ satisfies~\eqref{eqn:incoherence_proof_4}. Finally, we have that
+		\begin{equation*}
+		\norm{\wt{u}}_1 = \norm{u}_1 + (u_{\star,k}  - u_k) - (\sqrt{u_l^2 - (u_{\star,k}^2 - u_k^2)} - u_l) > \norm{u}_1 + (u_{\star,k}  - u_k) - (u_{\star,k}  - u_k) = \norm{u}_1,
+		\end{equation*}
+		so we have established the desired contradiction.
+	\end{itemize}
+\end{proof}
+
+\paragraph{Putting the pieces together.}
+We apply Lemma~\ref{lem:pi_max_pf_1_util_1} to the vector $u = (u_i)_{i = 1}^{n}$, where
+\begin{equation*}
+u_i = \frac{1}{\sqrt{2}}\left(\abs{\dotp{v_k}{\overline{v}_{k - i}}} + \abs{\dotp{v_k}{\overline{v}_{k + i}}}\right).
+\end{equation*}
+Note the following:
+\begin{itemize}
+	\item $\norm{u}_2 \leq 1$.
+	\item By \eqref{eqn:incoherence_proof_2}, the vector $u$ satisfies the constraint~\eqref{eqn:incoherence_proof_4} with
+	\begin{equation*}
+	B_r^2 = 400\frac{n^4\delta^2s_{n}^2}{r^4} ~~\textrm{when $r \geq 8 k \sqrt{\delta}$.}
+	\end{equation*}
+	\item Taylor expanding $f(r + 1) = (r + 1)^{-4}$ around $r$, we have that
+	\begin{equation*}
+	B_r^2 - B_{r + 1}^2 \leq 3200 \frac{n^4 \delta^2 s_{n}^2}{r^5} ~~\textrm{when $r \geq 2$.}
+	\end{equation*}
+	Therefore, the sequence $(B_r)$ satisfies \eqref{eqn:incoherence_util_1} for all $r$ large enough such that 
+	\begin{equation*}
+	r \geq 2^{5/4} 100^{1/4} n \sqrt{\delta s_{n}}
+	\end{equation*}
+	\item Since $u$ and $(B_r)$ satisfy the constraints \eqref{eqn:incoherence_proof_3}, \eqref{eqn:incoherence_proof_4} and \eqref{eqn:incoherence_proof_5}, we may apply Lemma~\ref{lem:pi_max_pf_1_util_1} to $u$, obtaining that
+	\begin{equation*}
+	\sum_{j = 1}^{n} \abs{\dotp{v_j}{\overline{v}_k}} = \sqrt{2}\norm{u}_1 \leq \sqrt{2R} + 60\sqrt{2} n^2 \delta s_{n} \sum_{r = R}^{n} r^{-5/2}
+	\end{equation*}
+	for any $R \geq 2 \vee k\sqrt{\delta} \vee 2^{5/4} 100^{1/4} n \sqrt{\delta s_{n}}$. Bounding sum by integral, we have that if $R \geq 2$ then
+	\begin{equation*}
+	\sum_{r = R}^{n} r^{-5/2} \leq \int_{R - 1}^{n - 1} x^{-5/2} \,dx \leq \frac{2^{3/2}2}{3} R^{-3/2}.
+	\end{equation*}
+	Plugging this into the previous expression, we arrive at
+	\begin{equation*}
+	\sum_{j = 1}^{n} \abs{\dotp{\overline{v}_j}{v_k}} \leq \sqrt{R} + 60 \sqrt{2} n^2 \delta s_{\max} \frac{2^{3/2}2}{3R^{3/2}}
+	\end{equation*}
+	for any $R \geq 2 \vee k\sqrt{\delta} \vee 2^{5/4} 100^{1/4} n \sqrt{\delta s_{\max}}$. Lemma~\ref{lem:pi_max_pf_1} then follows from~\eqref{eqn:incoherence_proof_1}.
+\end{itemize}
+
 \section{Auxiliary Results}
 
 \begin{theorem}[\textcolor{red}{Evans} Chapter 5.4, Theorem 1]
@@ -868,10 +1309,10 @@ The following theorem is Theorem 1 in Section 5.3 of \textcolor{red}{Evans}.
 
 \begin{lemma}
 	\label{lem:paley_zygmund}
-	Let $0 < p < q$, and let $Z$ be a non-negative random variable such that $\mathbb{E}(Z^q) < \infty$. Then, for all $0 \leq \lambda \leq 1$,
+	Let $0 < p < q$, and let $Z$ be a non-negative random variable such that $\mathbb{E}(Z^q) < \infty$. Then, for all $0 \leq \overline{s} \leq 1$,
 	\begin{equation}
 	\label{eqn:paley_zygmund}
-	\mathbb{P}(Z > \lambda \mathbb{E}(Z^p)) \geq \left[(1 - \lambda^p) \frac{\mathbb{E}(Z^p)}{(\mathbb{E}(Z^q))^{p/q}}\right]^{\frac{q}{q - p}}
+	\mathbb{P}(Z > \overline{s} \mathbb{E}(Z^p)) \geq \left[(1 - \overline{s}^p) \frac{\mathbb{E}(Z^p)}{(\mathbb{E}(Z^q))^{p/q}}\right]^{\frac{q}{q - p}}
 	\end{equation}
 \end{lemma}
 
