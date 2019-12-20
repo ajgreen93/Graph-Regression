@@ -163,7 +163,7 @@
 
 This document details the current status of the graph testing project. We divide by section based on the testing problem under consideration. At the end of each section, we list some areas we are interested in investigating. All proofs are left until the end.
 
-Throughout, let $X = \{x_1,
+We establish some notation that we will use throughout. Let $X = \{x_1,
 \ldots, x_n\}$ be a sample drawn i.i.d. from a distribution $P$ on $\Rd$,
 with density~$p$.  For a radius $r > 0$, we define $G_{n,r}=(V,E)$ to be the
 \emph{$r$-neighborhood graph} of $X$, an unweighted, undirected graph with
@@ -188,7 +188,7 @@ We will evaluate our performance using worst-case risk: for a given function cla
 \begin{equation*}
 \mathcal{R}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, f \neq f_0} \Ebb_f(1 - \phi).
 \end{equation*}
-The worst-case risk may be quite close to $1$ unless we require some separation between null and alternative spaces. A more realistic measure of performance is therefore
+The worst-case risk may be quite close to $1$ unless we enforce some separation between null and alternative spaces. A more realistic measure of performance is therefore
 \begin{equation*}
 \mathcal{R}_{\epsilon}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, \norm{f - f_0}_2 \geq \epsilon} \Ebb_f(1 - \phi).
 \end{equation*}
@@ -201,7 +201,7 @@ We list the test statistics we use for the regression testing problem.
 Let $VSV^T$ be the spectral decomposition of the Laplacian matrix $L$ of the neighborhood graph $G_{n,r}$. To test whether $f = f_0$, we propose the following \emph{eigenvector projection} test statistic:
 \begin{equation}
 \label{eqn:graph_spectral_projections}
-T_{\mathrm{spec}} := \frac{1}{n} \sum_{k = 0}^{\kappa} \left(\sum_{i = 1} v_i y_i\right)^2
+T_{\mathrm{spec}} := \frac{1}{n} \sum_{k = 0}^{\kappa} \left(\sum_{i = 1}^{n} v_{k,i} y_i\right)^2
 \end{equation}
 
 \subsection{Current Results.}
@@ -319,8 +319,6 @@ T_{\mathrm{TV}} := \sup_{\substack{\theta \in \Theta_{1,1}, \\ \lambda \norm{\th
 
 \subsection{Current results.}
 
-\textcolor{red}{WARNING:} While I have proved all the parts I believe are required for the below theorem, I haven't actually put together the pieces yet.
-
 In Theorem~\ref{thm:twosample_sobolev_testing_rate} we show that under some typical regularity conditions on $P$, the test $\phi_{\textrm{spec}}^{(2)} := \1\{T_{\mathrm{spec}}^{(2)} \geq \tau\}$ is, up to log factors, a minimax optimal test over the Sobolev ball $W^{1,2}(\mathcal{X};R)$ when $d = 1$.
 
 \begin{theorem}
@@ -383,11 +381,11 @@ be a ball in the Lebesgue space.
 
 \paragraph{Holder spaces.}
 
-For a given $s > 0$, the $s$th Holder norm is given by
+For a given $s > 0$, let $\ell = \floor{s}$ be the largest integer strictly less than $s$. Then the $s$th Holder norm is given by
 \begin{equation*}
-\norm{f}_{C_d^{s}(\mathcal{X})} := \sum_{\abs{\alpha} \leq s} \norm{D^{\alpha}f}_{\infty} + \sum_{\abs{\alpha} = s} \sup_{x,y \in \mathcal{X}} \frac{\abs{D^{\alpha}f(y) - D^{\alpha}f(x)}}{\norm{x - y}_2}
+\norm{f}_{C_d^{s}(\mathcal{X})} := \sum_{\abs{\alpha} < s} \norm{D^{\alpha}f}_{\infty} + \sum_{\abs{\alpha} = \ell} \sup_{x,y \in \mathcal{X}} \frac{\abs{D^{\alpha}f(y) - D^{\alpha}f(x)}}{\norm{x - y}_2^{s - \ell}}
 \end{equation*}
-and the $s$th Holder space $C_d^{s}(\mathcal{X})$ consists of all functions which are $s$ times continuously differentiable with finite $s$ Holder norm. Denote the Holder  ball by $C_d^{s}(\mathcal{X},R) = \set{f \in C_d^{s}(\mathcal{X}): \norm{f}_{C_d^{s}(\mathcal{X})} \leq R}$.
+and the $s$th Holder space $C_d^{s}(\mathcal{X})$ consists of all functions which are $\ell$ times continuously differentiable with finite Holder norm $\norm{\cdot}_{C_d^{s}(\mathcal{X})}$. Denote the Holder ball by $C_d^{s}(\mathcal{X},R) = \set{f \in C_d^{s}(\mathcal{X}): \norm{f}_{C_d^{s}(\mathcal{X})} \leq R}$.
 
 \paragraph{Sobolev spaces.}
 
@@ -418,6 +416,180 @@ L^{s/2},& ~~ s \textrm{ even} \\
 BL^{(s - 1)/2},& ~~ s \textrm{ odd.}
 \end{cases}
 \end{equation*}
+
+\section{\textcolor{red}{In Progress}}
+
+We say $K_{r}$ is an order-$s$ kernel when 
+\begin{equation*}
+\int x^j K_{r}(x) \,dx = 0, \textrm{for $j = 1,\dots,s$}
+\end{equation*}
+
+Our goal is to prove the following theorem.
+
+\begin{theorem}
+	\label{thm:higher_order_sobolev_testing_rate}
+	Let $b,s,d \geq 1$ and $a > 0$ be fixed constants such that $d < 4s$. Suppose that $\Pbb$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]^d$ with density function $p$ bounded above and below by constants, i.e
+	\begin{equation*}
+	0 < p_{\min} < p(x) < p_{\max} < \infty, \quad \textrm{for all $x \in \mathcal{X}$.}
+	\end{equation*}
+	Then the following statement holds: if the test $\phi_{\spec}$ is performed with parameter choices 
+	\begin{equation*}
+	\textrm{$K_r$ an order-$s$ kernel with}~ r = \log^a n \cdot \left(\frac{\log n}{n}\right)^{1/d}, ~\kappa = n^{2d/(4s + d)}, ~\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*}
+	then there exists a constant $c$ which may depend on $d,R,p_{\max},b$ and $a$ but is independent of the sample size $n$ such that for every $\epsilon \geq 0$ satisfying
+	\begin{equation}
+	\label{eqn:higher_order_sobolev_testing_rate}
+	\epsilon^2 \geq c \cdot b \cdot n^{-4/(4s + d)} (\log n)^{h(a,d)}
+	\end{equation}
+	the worst-case risk is upper bounded
+	\begin{equation}
+	\label{eqn:higher_order_sobolev_testing_rate_1}
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; \mathcal{W}^{s,2}(\mathcal{X};R)) \lesssim \frac{1}{b}.
+	\end{equation}
+\end{theorem}
+
+\section{\textcolor{red}{In Progress Proofs}}
+
+\subsection{Proof of Theorem~\ref{thm:higher_order_sobolev_testing_rate}}
+
+Let $G = (V,E)$ be a graph over vertices $V = \set{v_1,\ldots,v_n}$, and let $\beta = (\beta_1,\ldots,\beta_n) \in \Reals^n$ be a signal over the vertices $V$. We observe responses $Y = (y_1,\ldots,y_n)$ according to the model
+\begin{equation*}
+y_i = \beta_i + \varepsilon_i, ~~ \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)
+\end{equation*}
+Letting $L = VSV^T$ be the spectral decomposition of the Laplacian $L$ of $G$, our graph spectral test statistic is 
+\begin{equation*}
+T_{\spec} = \frac{1}{n}\sum_{k = 1}^{\kappa} \left(\sum_{i = 1}^{n} v_i y_i\right)^2
+\end{equation*}
+where $\kappa$ is a tuning parameter. The resulting test we will use is
+\begin{equation*}
+\phi_{\spec} = \1\{T_{\spec} \geq \frac{\kappa}{n} + t(b)\},~~\textrm{where}~ t(b) = b\sqrt{\frac{2\kappa}{n^2}}~~\textrm{for $b \geq 1$.}
+\end{equation*}
+
+Let $S_s(\beta;G)$ be a measure of smoothness the signal $\beta$ displays over the graph $G$, given by
+\begin{equation*}
+S_s(\beta;G) := \beta^T L^s \beta
+\end{equation*}
+In Lemma~\ref{lem:higher_order_fixed_graph_testing}, we upper bound the Type I and Type II error of the test $\phi_{\spec}$. Our bound on the Type II error will be stated as a function of $S_2(\beta;G)$ as well as the $\kappa$th eigenvalue $s_{\kappa}$.
+
+\begin{lemma}
+	\label{lem:higher_order_fixed_graph_testing}
+	Let $1 \leq \kappa \leq n$ be an integer.
+	\begin{enumerate}
+		\item \textbf{Type I error:} Under the null hypothesis $\beta = \beta_0 = 0$, the Type I error of $\phi_{\spec}$ is upper bounded
+		\begin{equation}
+		\label{eqn:higher_order_graph_spectral_type_I_error}
+		\mathbb{E}_{\beta_0}(\phi_{\spec}) \leq \frac{1}{b^2}.
+		\end{equation}
+		\item \textbf{Type II error:} For any $b$ and $\beta$ such that
+		\begin{equation}
+		\label{eqn:higher_order_fixed_graph_testing_critical_radius}
+		\frac{1}{n} \sum_{i = 1}^{n} \beta_i^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}} + \frac{S_s(\beta;G)}{ns_{\kappa}^s}
+		\end{equation}
+		the Type II error of $\phi_{\spec}$ is upper bounded,
+		\begin{equation}
+		\label{eqn:higher_order_graph_spectral_type_II_error}
+		\mathbb{E}_{\beta}(1 - \phi_{\spec}) \leq \frac{3}{b}.
+		\end{equation}
+	\end{enumerate}
+\end{lemma}
+
+To prove Lemma~\ref{lem:higher_order_fixed_graph_testing} we will first compute (bounds on) the expectation and variance of the test statistic $T_{\mathrm{spec}}$, and then use Chebyshev's inequality to show \eqref{eqn:higher_order_graph_spectral_type_I_error} and \eqref{eqn:higher_order_graph_spectral_type_II_error}.
+
+\vspace{.2 in}
+
+\textit{Mean of $T_{\mathrm{spec}}$:} Using the notation $\dotp{v}{w} = \sum_{i = 1}^{n} v_iw_i$, we have
+\begin{align*}
+\Ebb(T_{\spec}) & = \frac{1}{n}\left(\sum_{k = 1}^{\kappa} \dotp{\beta}{v_k}^2 + \Ebb\bigl( \dotp{\varepsilon}{v_k}^2 + 2 \dotp{\varepsilon}{v_k} \dotp{\beta}{v_k}\bigr)\right) \\
+& = \frac{\kappa}{n} + \frac{1}{n}\sum_{k = 1}^{\kappa}\dotp{\beta}{v_k}^2.
+\end{align*}
+When $\beta = 0$, this equals $\kappa/n$. Otherwise, we have the following lower bound:
+\begin{align*}
+\sum_{k = 1}^{\kappa}\dotp{\beta}{v_k}^2 & = \norm{\beta}_2^2 - \sum_{k = \kappa + 1}^{n} \dotp{\beta}{v_k}^2 \\
+& \geq \norm{\beta}_2^2 - \frac{1}{s_{\kappa}^s}\sum_{k = \kappa + 1}^{n} \dotp{\beta}{v_k}^2 s_k^s \\
+& \geq \norm{\beta}_2^2 - \frac{S_s(\beta;G)}{s_{\kappa}^s},
+\end{align*}
+and therefore $\Ebb(T_{\spec}) \geq \kappa/n + n^{-1}(\norm{\beta}_2^2 - S_s(\beta;G)/s_{\kappa}^s)$. 
+
+\vspace{.2 in}
+
+\textit{Variance of $T_{\mathrm{spec}}$:}
+We write $T_{\mathrm{spec}} = n^{-1} y^T V_{\kappa} V_{\kappa}^T y$ where $V_{\kappa}$ is the $n \times \kappa$ matrix with eigenvectors $v_1,\ldots,v_{\kappa}$ as columns. Consequently,
+\begin{align}
+\Var(T_{\spec}) & = \frac{1}{n^2} \Var(y^T V_{\kappa} V_{\kappa}^T y) \\
+& = \frac{1}{n^2} \Var((\beta + \varepsilon)^T V_{\kappa} V_{\kappa}^T (\beta + \varepsilon)) \\
+& = \frac{1}{n^2} \Var(2 \beta^T V_{\kappa} V_{\kappa}^T \varepsilon + \varepsilon^T V_{\kappa} V_{\kappa}^T \varepsilon) \\
+& \leq \frac{1}{n^2}(4 \beta^T V_{\kappa} V_{\kappa}^T \beta + 2\kappa)
+\end{align}
+where the last inequality follows from standard properties of the Gaussian distribution. We now move on to showing the desired inequalities \eqref{eqn:higher_order_graph_spectral_type_I_error} and \eqref{eqn:higher_order_graph_spectral_type_II_error}.
+
+\vspace{.2 in}
+
+\textit{Proof of~\eqref{eqn:higher_order_graph_spectral_type_I_error}:} By Chebyshev's inequality,
+\begin{align*}
+\Pbb_{\beta = 0}\bigl(T_{\spec} \geq \frac{\kappa}{n} + t(b)\bigr)
+& \leq \Pbb_{\beta = 0}\bigl(\abs{T_{\spec} - \frac{\kappa}{n}} \geq t(b)\bigr) \\
+& \leq \frac{\Var_{\beta = 0}(T_{\spec})}{t(b)^2} = \frac{1}{b^2}.
+\end{align*}
+
+\vspace{.2 in}
+
+\textit{Proof of~\eqref{eqn:higher_order_graph_spectral_type_II_error}:} For simplicity, we introduce the notation
+\begin{equation*}
+\Delta = \frac{\norm{\beta}_2^2}{n} - \frac{S_s(\beta;G)}{ns_{\kappa}^s}.
+\end{equation*}
+Assumption~\eqref{eqn:higher_order_fixed_graph_testing_critical_radius} implies $\Delta \geq 2 t(b)$. Then another application of Chebyshev's inequality gives us
+\begin{align*}
+\Pbb_{\beta}\bigl(T_{\spec} \leq \frac{\kappa}{n} + t(b)\bigr) & = \Pbb_{\beta}\bigl(T_{\spec} - \Ebb_{\beta}(T_{\spec}) \leq t(b) - \Delta \bigr) \\
+& \leq \Pbb_{\beta}\bigl(\abs{T_{\spec} - \Ebb_{\beta}(T_{\spec})} \leq \Delta - t(b) \bigr) \tag{since $\Delta \geq t(b)$}	\\
+& \leq \frac{\Var_{\beta}(T_{\spec})}{(\Delta - t(b))^2} \\
+& \leq 4\frac{\Var_{\beta}(T_{\spec})}{\Delta^2} \tag{since $\Delta \geq 2t(b)$} \\
+& \leq 4\frac{2\kappa/n^2 + 4\beta^T V_{\kappa} V_{\kappa}^T \beta /n^2}{\Delta^2}.
+\end{align*}
+We handle each summand in the numerator separately. For the first term, since $\Delta \geq 2 t(b)$, we have
+\begin{equation}
+\label{eqn:higher_order_spectral_type_II_error_pf1}
+\frac{2\kappa}{n^2\Delta^2} \leq \frac{1}{2b^2}.
+\end{equation}
+
+For the second term, noting that $\Delta = \beta^T V_{\kappa} V_{\kappa}^T \beta/n$, we have
+\begin{align}
+\frac{\beta^T V_{\kappa} V_{\kappa}^T \beta/n^2}{\Delta^2} & = \frac{1}{n\Delta} \nonumber \\
+& \leq \frac{1}{2nt(b)} \nonumber \\
+& = \frac{1}{2b\sqrt{2\kappa}}, \label{eqn:higher_order_spectral_type_II_error_pf2}
+\end{align}
+and combining~\eqref{eqn:higher_order_spectral_type_II_error_pf1} and~\eqref{eqn:higher_order_spectral_type_II_error_pf2} yields~\eqref{eqn:higher_order_graph_spectral_type_II_error}.
+
+
+\subsubsection{Step 2: Bounding neighborhood graph functionals}
+
+To make use of Lemma~\ref{lem:fixed_graph_testing} we will need to show that when $r$ and $\kappa$ are appropriately tuned and $\norm{f}_{\Leb^2(\mathcal{X})}$ is sufficiently large, the inequality~\eqref{eqn:fixed_graph_testing_critical_radius} holds with respect to $G = G_{n,r}$ and $\beta = (f(x_1),\ldots,f(x_n))$. In particular, we will show that for some constants $c_1,c_2,c_3$, the following statements:
+\begin{enumerate}[label=(E\arabic*)]
+	\item 
+	\label{event:higher_order_discrete_sobolev_norm}
+	\textbf{Graph Sobolev norm:} When $\beta = (f(x_1),\ldots,f(x_n))$ for $f \in W^{s,2}(\mathcal{X};R)$, and $r = n^{-1/(2 + d)}$,
+	\begin{equation}
+	\label{eqn:higher_order_continuous_to_discrete_sobolev_norm}
+	S_s(\beta;G_{n,r}) \leq c_1 \cdot n^{2 + s} r^{s(d + 2)} 
+	\end{equation}
+	\item 
+	\label{event:higher_order_eigenvalue_tail_decay}
+	\textbf{Eigenvalue tail bound:} For any $r \geq n^{-1/(2 + d)}$ and for all $\kappa \in [n]$:
+	\begin{equation}
+	\label{eqn:higher_ordereigenvalue_tail_bound}
+	s_{\kappa} \geq c_2 \cdot n r^{d + 2} \kappa^{2/d}
+	\end{equation}
+	\item 
+	\label{event:higher_order_l2_norm}
+	\textbf{Empirical norm of $f$:} When $f \in W^{s,2}(\mathcal{X};R)$ and \textcolor{red}{some other condition}
+	\begin{equation}
+	\label{eqn:higher_order_l2_to_empirical_norm}
+	\frac{1}{n}\sum_{i = 1}^{n}\beta_i^2 = \norm{f}_n^2 \geq c_3 \cdot \norm{f}_{\Leb^2}^2
+	\end{equation}
+\end{enumerate} 
+
+each hold with probability $1 - o(1)$ as $n \to \infty$.
+
+
 
 \section{Proofs}
 
@@ -515,10 +687,6 @@ We write $T_{\mathrm{spec}} = n^{-1} y^T V_{\kappa} V_{\kappa}^T y$ where $V_{\k
 & \leq \frac{1}{n^2}(4 \beta^T V_{\kappa} V_{\kappa}^T \beta + 2\kappa)
 \end{align}
 where the last inequality follows from standard properties of the Gaussian distribution. We now move on to showing the desired inequalities \eqref{eqn:graph_spectral_type_I_error} and \eqref{eqn:graph_spectral_type_II_error}.
-For simplicity, we introduce the notation
-\begin{equation*}
-\Delta = \norm{\beta}_2^2 - \frac{S_2(\beta;G)}{s_{\kappa}}.
-\end{equation*}
 
 \vspace{.2 in}
 
@@ -531,17 +699,17 @@ For simplicity, we introduce the notation
 
 \vspace{.2 in}
 
-\textit{Proof of~\eqref{eqn:graph_spectral_type_II_error}:} Assumption~\eqref{eqn:fixed_graph_testing_critical_radius} implies
+\textit{Proof of~\eqref{eqn:graph_spectral_type_II_error}:} For simplicity, we introduce the notation
 \begin{equation*}
-\Delta \geq \frac{\norm{\beta}_2^2}{n} - \frac{C_n^2}{nC^2} \geq 2 t(b).
+\Delta = \frac{\norm{\beta}_2^2}{n} - \frac{S_2(\beta;G)}{ns_{\kappa}}.
 \end{equation*}
-Then another application of Chebyshev's inequality gives us
+Assumption~\eqref{eqn:fixed_graph_testing_critical_radius} implies $\Delta \geq 2 t(b)$. Then another application of Chebyshev's inequality gives us
 \begin{align*}
 \Pbb_{\beta}\bigl(T_{\spec} \leq \frac{\kappa}{n} + t(b)\bigr) & = \Pbb_{\beta}\bigl(T_{\spec} - \Ebb_{\beta}(T_{\spec}) \leq t(b) - \Delta \bigr) \\
 & \leq \Pbb_{\beta}\bigl(\abs{T_{\spec} - \Ebb_{\beta}(T_{\spec})} \leq \Delta - t(b) \bigr) \tag{since $\Delta \geq t(b)$}	\\
 & \leq \frac{\Var_{\beta}(T_{\spec})}{(\Delta - t(b))^2} \\
 & \leq 4\frac{\Var_{\beta}(T_{\spec})}{\Delta^2} \tag{since $\Delta \geq 2t(b)$} \\
-& \leq 4\frac{2\kappa/n^2 + 4\beta^T V_{\kappa} V_{\kappa}^T \beta /n}{\Delta^2}.
+& \leq 4\frac{2\kappa/n^2 + 4\beta^T V_{\kappa} V_{\kappa}^T \beta /n^2}{\Delta^2}.
 \end{align*}
 We handle each summand in the numerator separately. For the first term, since $\Delta \geq 2 t(b)$, we have
 \begin{equation}
@@ -549,9 +717,9 @@ We handle each summand in the numerator separately. For the first term, since $\
 \frac{2\kappa}{n^2\Delta^2} \leq \frac{1}{2b^2}.
 \end{equation}
 
-For the second term, noting that $\Delta = \beta^T V_{\kappa} V_{\kappa}^T \beta$, we have
+For the second term, noting that $\Delta = \beta^T V_{\kappa} V_{\kappa}^T \beta/n$, we have
 \begin{align}
-\frac{\beta^T V_{\kappa} V_{\kappa}^T \beta/n}{\Delta^2} & \leq \frac{1}{n\Delta} \nonumber \\
+\frac{\beta^T V_{\kappa} V_{\kappa}^T \beta/n^2}{\Delta^2} & = \frac{1}{n\Delta} \nonumber \\
 & \leq \frac{1}{2nt(b)} \nonumber \\
 & = \frac{1}{2b\sqrt{2\kappa}}, \label{eqn:spectral_type_II_error_pf2}
 \end{align}
@@ -922,7 +1090,7 @@ Our proof of~\eqref{eqn:pi_max} will proceed by relating $G_{n,r}$ to a graph wh
 To prove that the weaker bound \eqref{eqn:pi_max} holds with respect to $G_{n,r}$, we will show that the two graphs $\overline{G}$ and $G_{n,r}$ are $\delta$-spectrally similar, meaning
 \begin{equation}
 \label{eqn:spectral_similarity}
-(1 - \delta_n) x^T L x \leq x^T \overline{L} x \leq (1 + \delta_n) x^T L x~~\textrm{for all}~x \in \Reals^n, \delta_n = \frac{c \log n}{n}
+(1 - \delta_n) x^T L x \leq x^T \overline{L} x \leq (1 + \delta_n) x^T L x~~\textrm{for all}~x \in \Reals^n, \delta_n = c \cdot (\log n)^{h(a,1) + da}\cdot \frac{\log n}{n}
 \end{equation}
 with probability $1 - o(1)$ as $n \to \infty$. The proof of~\eqref{eqn:spectral_similarity} relies heavily on bounding the transport distance between $X$ and $\overline{X}$, i.e. \eqref{eqn:transport_distance}. Then the following technical Lemma along with \eqref{eqn:spectral_similarity} will imply \eqref{eqn:pi_max}.
 \begin{lemma}
@@ -932,6 +1100,10 @@ with probability $1 - o(1)$ as $n \to \infty$. The proof of~\eqref{eqn:spectral_
 	v_{k,i}^2 \lesssim \frac{1}{n}\left(R + \frac{n^4 \delta^2 s_{n}^2}{R^3}\right) \quad \textrm{for every $i = 1,\ldots,n$.}
 	\end{equation*} 
 \end{lemma}
+
+\textcolor{red}{TODO}: Explain how Lemma~\ref{lem:pi_max_pf_1} implies~\eqref{eqn:pi_max}.
+
+
 At a high level, Lemma~\ref{lem:pi_max_pf_1} is proved through repeated applications of the Davis-Kahan Theorem. The full proof is long and we delay presenting it until Section~\ref{sec:technical_lemma_proofs}.
 
 \subsubsection{Step 3: Conclusion}
@@ -974,14 +1146,31 @@ As mentioned previously, the Laplacian matrix $L$ cannot be much larger than $\w
 x^T L x \leq M(\gamma)\cdot b(\gamma) \cdot (x^T \wt{L} x)~\forall{x \in \Reals^n}
 \end{equation} 
 
-\textcolor{red}{TODO}: Prove Poincare inequality.
+\paragraph{Proof of~\eqref{eqn:poincare_inequality}:}
+
+Letting $c \in \Reals$, we will use the notation $G \preceq c \cdot  \wt{G}$ as shorthand for
+\begin{equation*}
+x^T L x \leq c \cdot  x^T \wt{L} x,~~\textrm{for all $x \in \Reals^n$}.
+\end{equation*}
+
+
+Let $G_e = (V, \set{e})$ and $P_e = (V, \set{\widetilde{e}: \widetilde{e} \in \gamma(e)})$ be the graphs associated with $e$ and $\gamma(e)$, respectively. By Lemma \ref{lem: path_poincare}, we have
+\begin{equation*}
+G_{e} \preceq \abs{P_e} P_e
+\end{equation*}
+Summing over all $e \in E_G$, we obtain
+\begin{align*}
+G & \preceq \sum_{e \in E_G} \abs{P_e} P_e \\
+& \preceq \max_{e \in E_G} \abs{\gamma(e)} \sum_{e \in E_G} P_e \\
+& \preceq \max_{e \in E_G} \abs{\gamma(e)} b_{\gamma}\cdot \widetilde{G}
+\end{align*}
 
 \subsubsection{Step 2: Mapping $E_{G_{n,r}}$ to $\mathcal{P}_{\overline{G}}$}
-We assume there exists a mapping $\pi:\overline{X} \to X$ which satisfies \eqref{eqn:transport_distance}. We will apply the Poincare inequality to $\pi^{-1}(G_{n,r})$, the isomorphism of $G_{n,r}$ induced by the mapping $\pi^{-1}: X \to \overline{X}$. We now construct our mapping $\gamma:\pi^{-1}(E) \to \overline{E}$. For a given $(\overline{x}_{k},\overline{x}_{\ell}) \in \pi^{-1}(E)$, recalling the notation $t = n^{1/d}$, let
+We assume there exists a mapping $\pi:\overline{X} \to X$ which satisfies \eqref{eqn:transport_distance}. We will apply the Poincare inequality to $\pi^{-1}(G_{n,r})$, the isomorphism of $G_{n,r}$ induced by the mapping of vertices $\pi^{-1}: X \to \overline{X}$. We will map a given $(\overline{x}_{k},\overline{x}_{\ell}) \in \pi^{-1}(E)$ to a shortest path $P \in \mathcal{P}_{\overline{G}}$ (measured by Manhattan distance) between $\overline{x}_k$ and $\overline{x}_{\ell}$. Recalling the notation $t = n^{1/d}$ and letting
 \begin{equation*}
-s_i = \frac{1}{t}(\textrm{sign}(k_i - \ell_i),0,\ldots,0),~~\textrm{for $i = 1,\ldots,d$.}
+s_i = \frac{1}{t}(\textrm{sign}(k_i - \ell_i),0,\ldots,0),~~\textrm{for $i = 1,\ldots,d$,}
 \end{equation*}
-and
+our mapping $\gamma: \pi^{-1}(E) \to \mathcal{P}_{\overline{G}}$ is given by
 \begin{align*}
 \gamma((\overline{x}_{k},\overline{x}_{\ell})) = \bigl(& (\overline{x}_k, \overline{x}_{k} + s_1), (\overline{x}_{k} + s_1,\overline{x}_{k} + 2s_1),\ldots,(\overline{x}_{k} + (\abs{k_1 - \ell_1} - 1)s_1, \overline{x}_{k} + \frac{1}{t}(k_1 - \ell_1)) \\
 & (\overline{x}_{k} + \frac{1}{t}(k_1 - \ell_1), \overline{x}_{k} + \frac{1}{t}(k_1 - \ell_1) + s_2),\ldots,(\overline{x}_{k} + \frac{1}{t}(k_1 - \ell_1) + (\abs{k_2 - \ell_2} - 1)s_2, \overline{x}_{k}  + \frac{1}{t}((k_1 - \ell_1) + (k_2 - \ell_2)) \\
@@ -1005,7 +1194,28 @@ Suppose $(\overline{x}_k, \overline{x}_{\ell}) \in \pi^{-1}(E)$. Then
 & \leq \sqrt{d}\left(r + 2c\left(\frac{\log n}{n}\right)^{1/d}\right) \tag{since $(\pi(\ol{x}_k),\pi(\ol{x}_{\ell})) \in E$}
 \end{align*} 
 
-\paragraph{Proof of~\eqref{eqn:bottleneck}:} \textcolor{red}{TODO}:
+\paragraph{Proof of~\eqref{eqn:bottleneck}:} 
+
+Suppose $(\overline{x}_k, \overline{x}_{\ell}) \in \gamma(e)$ for some $e = (\overline{x}_i, \overline{x}_j) \in \pi^{-1}(E)$.  Then, by the construction of $\gamma$,
+\begin{equation}
+\label{eqn:bottleneck_pf_1}
+\norm{\overline{x}_k - \overline{x}_i}_2 \wedge \norm{\overline{x}_\ell - \overline{x}_j}_2  \leq \norm{\overline{x}_j - \overline{x}_i}_2
+\end{equation}
+As shown in the preceding paragraph, assuming~\eqref{eqn:transport_distance} we have
+\begin{equation*}
+\norm{\overline{x}_j - \overline{x}_i}_2 \leq r + 2c\left(\frac{\log n}{n}\right)^{1/d}
+\end{equation*}
+and therefore by~\eqref{eqn:bottleneck_pf_1},
+\begin{align*}
+\abs{\set{e \in E: (\overline{x}_k, \overline{x}_{\ell}) \in \gamma(e)}} & \leq \abs{\set{\overline{x}_i: \norm{\overline{x}_k - \overline{x}_i}_2 \leq r + 2c\left(\frac{\log n}{n}\right)^{1/d}}} \cdot \abs{\set{\overline{x}_i: \norm{\overline{x}_k - \overline{x}_i}_2 \leq r + 2c\left(\frac{\log n}{n}\right)^{1/d}}} \\
+& \leq \left(n^{1/d}\left( r + 2c\left(\frac{\log n}{n}\right)^{1/d}\right)\right)^2.
+\end{align*}
+
+Putting the pieces together, we have that when $d = 1$ and $r = (\log n)^a (\log n/n)$, then
+\begin{equation*}
+G_{n,r} \preceq c \cdot (\log n)^{(1/d + a) + 2 + 2da}\cdot \overline{G}
+\end{equation*}
+with probability at least $1 - o(1)$.
 
 \subsection{Proof of Lemma~\ref{lem:pi_max_pf_1}}
 
@@ -1314,6 +1524,14 @@ The following theorem is Theorem 1 in Section 5.3 of \textcolor{red}{Evans}.
 	\label{eqn:paley_zygmund}
 	\mathbb{P}(Z > \overline{s} \mathbb{E}(Z^p)) \geq \left[(1 - \overline{s}^p) \frac{\mathbb{E}(Z^p)}{(\mathbb{E}(Z^q))^{p/q}}\right]^{\frac{q}{q - p}}
 	\end{equation}
+\end{lemma}
+
+\begin{lemma}[Poincare inequality for path graphs.]
+	\label{lem: path_poincare}
+	Fix $m \geq 0$. For vertices $V = \set{1, \ldots,m}$ define the path $P(1 \to m) = ((1,2),(2,3),\ldots, (m-1,m))$ and $G_{(1,m)}$ to be the graph consisting only of an edge between $1$ and $m$. Then,
+	\begin{equation*}
+	(m - 1) \cdot P(1 \to m) \succeq G_{(1,m)}
+	\end{equation*}
 \end{lemma}
 
 \end{document}

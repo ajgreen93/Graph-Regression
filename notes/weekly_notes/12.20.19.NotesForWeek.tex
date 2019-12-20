@@ -1,0 +1,337 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\Unq}{\mathrm{Unq}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 12/7/19 - 12/20/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+We observe random design and responses $(x_i,y_i)$ according to the following regression model: $x_1,\ldots,x_n$ are drawn i.i.d from distribution $P$ with density $p$ supported on $\mathcal{X} \subset \Reals^d$, and
+\begin{equation*}
+y_i = f(x_i) + \varepsilon_i,~ \varepsilon_i \overset{i.i.d}{\sim} \mathcal{N}(0,1).
+\end{equation*}
+Suppose we form the undirected, weighted graph $G_{n,r} = (X,W)$ with edge weights $W = (W_{ij})$ formed according to the kernel function $K$ as follows:
+\begin{equation*}
+W_{ij} = K_r(x_i,x_j) := \frac{1}{r^d}K(\norm{x_i - x_j}^2)
+\end{equation*}
+Let $L_n$ be the graph Laplacian operator associated with $G_{n,r}$, defined by the action
+\begin{equation*}
+L_nf(x) := \frac{1}{nr^2} \sum_{i = 1}^{n}(f(x_i) - f(x))K_r(x_i,x).
+\end{equation*}
+The graph Laplacian $L_n$ induces a class of roughness functionals $R_s(f)$, defined by
+\begin{equation*}
+R_{s,n}(f) = R_s(f;G_{n,r}) = \frac{1}{n} f^T L_n^s f
+\end{equation*} 
+We refer to $R_{s,n}(f)$ as the order-$s$ roughness functional. As part of our graph testing work, we have shown that if $f \neq 0$, then for any design points $X$ and resulting neighborhood graph $G$ with Laplacian $L$ such that
+\begin{equation}
+\label{eqn:bias_variance}
+\norm{f}_n^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}} + \frac{R_{s}(f;G) }{\lambda_{\kappa}^s}
+\end{equation}
+the graph spectral test $\phi_{\spec}$ makes a Type II error with probability at most $3/b$. Suppose
+\begin{equation}
+\label{eqn:graph_functionals}
+\norm{f}_n^2 \geq \frac{1}{2}\norm{f}_2^2, ~R_s(f;G_{n,r}) \leq ||f||_{W_{d}^{s}(\Xset)}^2 ~~\textrm{and}~~ \lambda_{\kappa} \leq \kappa^{2/d};
+\end{equation}
+then it can be verified that choosing $\kappa = n^{-2d/(4s + d)}$, the equation~\eqref{eqn:bias_variance} is satisfied whenever $\norm{f}_2^2 \geq n^{-4s/(4s + d)}$. It is therefore sufficient to show that~\eqref{eqn:graph_functionals} holds with high probability over the random design points $X$.
+
+In this week's notes, we will focus our attention on upper bounding the roughness functional $R_{n,s}(f)$. Our main results should take the following form: when (a) $f \in C^{s}(L)$ for a fixed constant $L$ (or more ideally $f \in \mathcal{W}^{s}(L)$), (b) the neighborhood graph radius $r = r(n)$ is properly chosen as a function of $n$, and (c) $K$ is an appropriately chosen kernel, the roughness functional satisfies
+\begin{equation}
+\label{eqn:roughness_functional_bound}
+\mathbb{E}\left[R_{s,n}(f)\right] = O\left(L^2\right)
+\end{equation}
+
+These notes detail our current progress in showing such a result for different values of $s$. We showed the following useful representation of $R_{s,n}(f)$ in the \emph{8.7.19} Notes. For $k = (k_1,\ldots,k_n) \in [n]^s$, recursively defined the graph difference operator $D_k$ by 
+\begin{equation*}
+D_{k_1}f(x) = (f(x_{k_1}) - f(x))K_r(x_{k_1},x),~~ D_kf(x) = \bigl(D_{k_1}(D_{(k_2,\ldots,k_n)}f\bigr)(x)
+\end{equation*}
+Then when $s$ is even, letting $q = s/2$ we have
+\begin{equation}
+\label{eqn:roughness_functional_representation_even}
+R_{s,n}(f) = \frac{1}{n}\sum_{i = 1}^{n} \left(\frac{1}{(nr^2)^q}\sum_{k \in [n]^q} D_kf(x_i)\right)^2
+\end{equation}
+and when $s$ is odd, letting $q = (s - 1)/2$ we have
+\begin{equation}
+\label{eqn:roughness_functional_representation_odd}
+R_{s,n}(f) =  \frac{1}{2n^2r^2}\sum_{i,j = 1}^{n}\left(\frac{1}{(nr^2)^q}\sum_{k \in [n]^q}\bigl(D_kf(x_i) - D_kf(x_j)\bigr)\right)^2K_r(x_i,x_j)
+\end{equation}
+We have already obtained the desired bound on the 1st-order roughness functional $R_{1,n}(f)$, for any $f \in W_d^{1}(L)$, all scalings $r = r(n)$, and the uniform kernel. We therefore begin these notes with the case $s = 2$. 
+
+\section{Bounding the 2nd-Order Roughness Functional}
+The (first and) second order roughness functionals are somewhat special. These roughness functionals do not involve taking compositions of the difference operator $D_k$, and as a result, we get the desired bounds in expectation even when $r(n)$ is small. 
+\begin{lemma}
+	\label{lem:2nd_order_roughness_functional}
+	Fix $L > 0$, and form the neighborhood graph $G_{n,r}$ using kernel $K(z) = \1\{z^2 \leq r^2\}$. Suppose $f \in C^2(L)$ and $p \in C^1(L)$. Then for any $r(n) \geq n^{-1/(2+d)}$ and , we have
+	\begin{equation*}
+	\Ebb(R_{2,n}(f)) = O(L^2)
+	\end{equation*}
+\end{lemma}
+
+\section{Bounding the 3rd-Order Roughness Functional}
+
+For the order-$s$ roughness functionals when $s \geq 3$, the graph Laplacian is forced to approximate higher order derivatives by composing difference operators-- that is, taking differences of differences, etc. In for the roughness functional to continue scaling at the desired rate, we will need $r(n)$ to be larger, and we cannot use the uniform kernel $K$ any longer. In the particular case $s = 3$, we will require a kernel $K$ which is bounded and compactly supported on $B(0,1)$, and additionally satisfies
+\begin{equation*}
+\int z^j K(z) = 0,~~\textrm{$j = 1,2$.}
+\end{equation*}
+We then have the following result.
+\begin{lemma}
+	\label{lem:3rd_order_roughness_functional}
+	Suppose $f \in C^{3}(L)$ for some $L > 0$, and further suppose $p \in C^{2}(L)$. For any kernel $K$ which satisfies the previous conditions, and any $r(n) \geq n^{-1/(3+d)}$, we have that
+	\begin{equation*}
+	\Ebb(R_{s,n}(f)) = O(L^2)
+	\end{equation*} 
+\end{lemma}
+
+\section{\textcolor{red}{Bounding the Roughness Functional in Expectation}}
+
+\textcolor{red}{WARNING:} The following Lemma is not proved, but it is the result I am trying to prove. After the Lemma is stated, I go into some detail about how I intend to prove it. 
+
+For an integer $\ell > 0$, we will say $K$ is an order-$\ell$ kernel
+\begin{equation*}
+\int K(z) = 1 ~~\textrm{and}~~\int z^j K(z) = 0,~~\textrm{for $j = 1,\ldots,\ell$}
+\end{equation*}
+and further $K$ is $\ell$ times continuously differentiable with $K^{j}(z) = O(z^j K(z))$ for $j = 1,\ldots,s$.
+
+\begin{lemma}
+	\label{lem:roughness_functional_expectation}
+	Suppose $f \in C^{s}(L)$ for some $s,L > 0$, and further suppose $p \in C^{\ell}(L)$ for $\ell = \floor{s}$ the largest integer strictly less than $s$. For any order-$\ell$ kernel $K$ and any $r(n) \geq n^{-1/(4+d)}$, we have that
+	\begin{equation*}
+	\Ebb(R_{s,n}(f)) = O(r^{2s})
+	\end{equation*} 
+\end{lemma}
+When $s \geq 3$ the graph Laplacian approximates higher-order derivatives by composing difference operators. The crudeness of this approximation means that in Lemma~\ref{lem:roughness_functional_expectation} we allow for a slower scaling of $r(n)$ than we did Lemma~\ref{lem:2nd_order_roughness_functional}. At a high level, however, we prove Lemma~\ref{lem:roughness_functional_expectation} in a similar fashion to Lemma~\ref{lem:2nd_order_roughness_functional}. We first break the sum into cases according to the number of unique indices, then bound the expectation case by case. To simplify our statements, for index vectors $k,\ell \in [n]^q$ we will use the following notation:
+\begin{equation*}
+\textrm{Unq}(k \setminus \ell) = \set{x \in k: x \not\in \ell, \textrm{$x$ appears in $k$ exactly once,}}~~ k \bigcup \ell = \set{x: x \in k ~\textrm{or}~ x \in \ell}
+\end{equation*}
+Thus $\textrm{Unq}(k \setminus \ell)$ measures the number of indices in $k$ which appear exactly once in $k$ and never in $\ell$, and $k \bigcup \ell$ measures the total number of distinct indices.
+
+
+The following Lemma will be the workhorse which supplies a sufficient bound in all cases.
+\begin{lemma}
+	\label{lem:expected_difference_operators}
+	Let $q = s/2$ when $s$ is even, and $q = (s - 1)/2$ when $s$ is odd. Under the same conditions as Lemma~\ref{lem:roughness_functional_expectation}, for any indices $k = (k_1,\ldots,k_q)$ and $\ell = (\ell_1,\ldots,\ell_q)$, we have
+	\begin{equation}
+	\Ebb(D_kf(x_i) D_kf(x_i)) =
+	\begin{cases*}
+	O(r^{2} r^{d(\abs{k \cup \ell} - 2q)}), & ~~\textrm{if $\Unq(k\setminus\ell) = \emptyset$ and $\Unq(\ell\setminus k) = \emptyset$}~ 
+	\\
+	O(r^{2q + 1} r^{\abs{k \cup \ell}} r^{d(\abs{k \cup \ell} - 2q)}), & ~~\textrm{if $\Unq(k\setminus\ell) \neq \emptyset$ or $\Unq(\ell\setminus k) \neq \emptyset$} \\
+	O(r^{4q} r^{d(\abs{k \cup \ell} - 2q)}), & ~~\textrm{if $\Unq(k\setminus\ell) \neq \emptyset$ and $\Unq(\ell\setminus k) \neq \emptyset$}
+	\end{cases*}
+	\end{equation}
+\end{lemma}
+
+\section{Proofs}
+\subsection{Proof of Lemma~\ref{lem:2nd_order_roughness_functional}}
+We prove Lemma~\ref{lem:2nd_order_roughness_functional} in the case when $d = 1$.
+
+\textcolor{red}{TODO:} Extend the proof to all values of $d$. It's not hard, just requires you to replace derivatives by partial derivatives.
+
+Separating the squared sum in~\eqref{eqn:roughness_functional_representation_even} into diagonal and off-diagonal terms, we obtain
+\begin{align*}
+R_{2,n}(f) & = \frac{1}{n}\sum_{i = 1}^{n}\left(\frac{1}{nr^2}\sum_{j = 1}^{n} D_jf(x_i)\right)^2 \\
+& = \frac{1}{n^3r^4}\sum_{i = 1}^{n} \sum_{j = 1}^{n}\underbrace{(D_jf(x_i))^2}_{V_1} + \frac{1}{n^3r^4}\sum_{i = 1}^{n} \sum_{j = 1} \sum_{k \neq j}\underbrace{(D_jf(x_i))(D_kf(x_i))}_{U_1}
+\end{align*}
+
+The expectation of $U_1$ will be of the right order of magnitude thanks to a cancellation of the first-order term in a Taylor expansion. Noting that the kernel $K$ satisfies
+\begin{equation*}
+\int z K(z) \,dz = 0
+\end{equation*}
+we therefore derive that for any $x \in \mathcal{X}$,
+\begin{align*}
+\mathbb{E}(D_jf(x)) & = \frac{1}{r}\int ((y - x)f'(x) + O(L(y-x)^2) K(y - x) p(y) \,dy \tag{by $f \in C^2(L)$} \\
+& = \frac{1}{r}\int(y - x)K(y - x)f'(x)(p(x) + O(L(y - x))) \,dy + O(Lr^2)  \tag{by $p \in C^1(L)$}\\
+& = \underbrace{\frac{f'(x) p(x)}{r} \int z K(z) \,dz}_{= 0} + O(Lr^2) = O(Lr^2).
+\end{align*}
+As a result, we have
+\begin{equation*}
+\frac{1}{n^3r^4}\sum_{i = 1}^{n} \sum_{j = 1} \sum_{k \neq j} \Ebb\left[(D_jf(x_i))(D_kf(x_i))\right] = \frac{1}{n^3r^4}\sum_{i = 1}^{n} \sum_{j = 1} \sum_{k \neq j} \Ebb\left[ \Ebb(D_kf(x)\mid x_i = x)^2\right] = O(L^2).
+\end{equation*}
+
+The expectation of the diagonal terms may be much larger, but on the other hand there are many fewer of them. Specifically, we compute
+\begin{align*}
+\Ebb\bigl((D_kf(x_i))^2\bigr) & = \Ebb\biggl(O\left(L^2(x_k - x_i)^2\right)\cdot K_r(x_k,x)^2\biggr) \\
+& = O(L^2r^2)\cdot\Ebb(K_r(x_k,x_i)^2) = O(L^2 r)
+\end{align*}
+and therefore
+\begin{equation*}
+\frac{1}{n^3r^4}\sum_{i = 1}^{n} \sum_{j = 1}^{n} \Ebb\bigl((D_jf(x_i))^2\bigr) = \frac{1}{n} O(L^2 r^{-3}) = O(L^2)
+\end{equation*}
+where the second equality follows since by assumption when $d = 1$, $n^{-1} = O(r^{3})$. 
+
+\section{Proof of Lemma~\ref{lem:3rd_order_roughness_functional}}
+
+\textcolor{red}{TODO}: Copy proof of Lemma~\ref{lem:3rd_order_roughness_functional} from handwritten notes.
+
+\section{Proof of Lemma~\ref{lem:expected_difference_operators}}
+
+\textcolor{red}{TODO}: Prove Lemma~\ref{lem:expected_difference_operators}.
+
+
+\section{Auxiliary Results.}
+\begin{lemma}
+	\label{lem:difference_operator_taylor}
+	When $f \in C^s(L)$, for any $k \in [n]$ 
+	\begin{equation*}
+	D_kf(x) = \left(\sum_{r = 1}^{s - 1} (x_k - x)^r f^{(r)}(x) + O((x_k - x)^{s})\right) \cdot K_r(x_k,x)
+	\end{equation*}
+\end{lemma}
+
+
+
+\end{document}
