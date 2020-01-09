@@ -1,0 +1,229 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\Unq}{\mathrm{Unq}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 12/30/19 - 1/3/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Suppose we observe independent samples $X = \set{x_1,\ldots,x_n}$ from a distribution $P$ with density $p$ supported on $\mathcal{X} = [0,1]^d$. Let $G_{n,r}$ be the random geometric graph of radius $r$ formed over the samples $X$, that is, the neighborhood graph with kernel $K(x) = \1(\norm{x} \leq r)$, and let $L$ denote the corresponding graph Laplacian matrix. In this week's notes, we will show that as long as $r$ is chosen to be sufficiently small, the eigenvalues of $L$ we care about scale at an appropriate rate. More precisely, we will prove the following Lemma.
+\begin{lemma}
+	\label{lem:higher_order_eigenvalue_tail_bound}
+	Let $\kappa = n^{2d/(4s + d)}$. Suppose $p$ is uniformly bounded away from $0$ and $\infty$ on its support,
+	\begin{equation*}
+	0 < p_{\min} < p(x) < p_{\max} < \infty,~~\textrm{for all $x \in \Xset$.}
+	\end{equation*}
+	Then there exists a constant $c$ such that for any $r \leq n^{-4/((2+d)(4s + d))}$, the eigenvalue $\lambda_{\kappa}$ is lower bounded,
+	\begin{equation}
+	\label{eqn:higher_order_eigenvalue_tail_bound}
+	\lambda_{\kappa} \geq c\kappa^{2/d}nr^{2 + d}
+	\end{equation}
+	with probability $1 - o(n^{-1})$ as $n \to \infty$.
+\end{lemma}
+Lemma~\ref{lem:higher_order_eigenvalue_tail_bound} establishes that eigenvalues of the graph Laplacian, suitably normalized, scale comparably to the eigenvalues of the continuum Laplacian operator $\mathcal{D}f := \textrm{div}(\nabla f)$. Along with an upper bound on the graph Sobolev semi-norm $R_{s,n}(f)$ (established in the \textit{12.20.19 Notes}), this allows us to argue that if $f$ is a smooth function with large $\mathcal{L}_2$ norm, then the projection of a function $f$ onto the eigenvectors $v_1,\ldots,v_{\kappa}$ is still quite large (measured in empirical norm); or, equivalently, the bias induced by projection onto these eigenvectors is small.
+
+\section{Proofs}
+
+\subsection{Proof of Lemma~\ref{lem:higher_order_eigenvalue_tail_bound}}
+
+We prove Lemma~\ref{lem:higher_order_eigenvalue_tail_bound} by comparing $G_{n,r}$ to the tensor product of a $d$-dimensional lattice and a complete graph. The latter is a highly structured graph with known eigenvalues, which as we will see are sufficiently lower bounded for our purposes.
+
+Let $\wt{r} = r/(3(\sqrt{d} + 1)), M = (1/\wt{r})^d, N = n\wt{r}^d$. Assume without loss of generality that $M$ and $N$ are integers. Additionally, for $t = n^{1/d}$ and $m = M^{1/d}$ let 
+\begin{equation*}
+\overline{X} = \set{\frac{1}{t}(k_1,\ldots,k_d): k \in [t]^d},~~ \overline{Z} = \set{\frac{1}{m}(j_1,\ldots,j_d): j \in [m]^d}.
+\end{equation*}
+For a given $\overline{z}_j \in \overline{Z}$, we write $Q(z_j) = m^{-1}[j_1 - 1,j_1] \times \cdots \times m^{-1}[j_d - 1,j_d]$ for the cube of side length $1/m$ with $z_j$ at one corner. 
+
+Consider the graph $H = (\overline{X}, E_H)$, where $(\ol{x}_k, \ol{x}_{\ell}) \in E_H$ if
+\begin{equation*}
+\textrm{there exists}~\ol{z}_i, \ol{z}_j \in \ol{Z}~\textrm{such that}~\ol{x}_k \in Q(\ol{z}_i),~ \ol{x}_\ell \in Q(\ol{z}_j),~\textrm{and}~\norm{i - j}_1 \leq 1.
+\end{equation*}
+On the one hand $H \cong \ol{G}^M_d \otimes K_N$ where $\ol{G}^M_d$ is the $d$-dimensional lattice on $M$ nodes, and $K_N$ is the complete graph on $N$ nodes. On the other hand, we now show that with high probability $G_{n,r} \succeq H$. If $(\ol{x}_k, \ol{x}_{\ell}) \in E_H$, then there exist $\ol{z}_i, \ol{z}_j$ such that
+\begin{equation*}
+\norm{\ol{x}_k - \ol{x}_{\ell}}_2 \leq m^{-1} + \norm{\ol{x}_k - \ol{z}_{i}}_2 + \norm{\ol{x}_{\ell} - \ol{z}_{j}}_2 \leq \wt{r}(1 + \sqrt{d}) = r/3.
+\end{equation*}
+
+By Theorem 1.1 of \textcolor{red}{Garcia Trillos and Slepcev}, with probability at least $1 - n^{-1}$ there exists a bijection $\pi: \overline{X} \to X$ such that
+\begin{equation}
+\label{eqn:transport_distance}
+\max_{k \in [t]^d} \abs{\overline{x}_k - \pi(\overline{x}_k)} \leq c \left(\frac{\log n}{n}\right)^{1/d}
+\end{equation}
+Assuming~\eqref{eqn:transport_distance} holds, if $(\ol{x}_k, \ol{x}_{\ell}) \in E_H$, then for sufficiently large $n$
+\begin{equation*}
+\norm{\pi(\ol{x}_k) - \pi(\ol{x}_\ell)}_2 \leq 2 c \left(\frac{\log n}{n}\right)^{1/d} + \frac{r}{3} \leq r,
+\end{equation*}
+implying that $(\pi(\ol{x}_k), \pi(\ol{x}_{\ell})) \in E$. Therefore, $G_{n,r} \succeq \ol{G}^M_d \otimes K_N$ whenever~\eqref{eqn:transport_distance} holds.
+
+The eigenvalues of lattices and complete graphs are known to satisfy, respectively
+\begin{equation*}
+\lambda_k(\ol{G}^{M}_d) \geq \frac{k^{2/d}}{M^{2/d}}~\textrm{for $k = 0,\ldots,M - 1$},~~ \textrm{and}~\lambda_{j}(K_N) \geq N\1\{j > 0\}~\textrm{for $j = 0,\ldots,N-1$.}
+\end{equation*}
+and by standard facts regarding the eigenvalues of tensor product graphs (\textcolor{red}{reference}), we have that the spectrum $\Lambda(H)$ satisfies
+\begin{equation*}
+\Lambda(H) = \set{N\lambda_k(\ol{G}^{M}_d) + M\lambda_j(K_N): \textrm{for $k = 0,\ldots,M - 1$ and $j = 0,\ldots,N-1$}}
+\end{equation*}
+For all $j = 1,\ldots,N-1$, we have that $M\lambda_j(K_N) = MN = n$. Therefore,
+\begin{align*}
+\lambda_{\kappa}(H) & \geq \{n \wedge N\lambda_{\kappa}(\ol{G}^{M}_d)\} \\
+& \geq \{n \wedge n\wt{r}^d\frac{\kappa^{2/d}}{M^{2/d}}\} \\
+& \geq \{n \wedge (3\sqrt{d} + 3)^{-(2+d)}nr^{d+2}\kappa^{2/d}\} \\
+& \geq (3\sqrt{d} + 3)^{-(2+d)}nr^{d+2}\kappa^{2/d},
+\end{align*}
+where the last inequality can be verified by a quick calculation in light of $\kappa = n^{2d/(4s + d)}$ and $r \leq n^{-4/((2+d)(4s + d))}$. Since we've already shown $\lambda_{\kappa}(G_{n,r}) \geq \lambda_{\kappa}(H)$ with probability $1 - o(n^{-1})$, this completes the proof of Lemma~\ref{lem:higher_order_eigenvalue_tail_bound}. 
+\end{document}

@@ -157,7 +157,7 @@
 \theoremstyle{remark}
 
 \begin{document}
-\title{Notes for Week 12/7/19 - 12/20/19}
+\title{Notes for Week 12/7/19 - 12/29/19}
 \author{Alden Green}
 \date{\today}
 \maketitle
@@ -226,14 +226,14 @@ The (first and) second order roughness functionals are somewhat special. These r
 
 For the order-$s$ roughness functionals when $s \geq 3$, the graph Laplacian is forced to approximate higher order derivatives by composing difference operators-- that is, taking differences of differences, etc. In for the roughness functional to continue scaling at the desired rate, we will need $r(n)$ to be larger, and we cannot use the uniform kernel $K$ any longer. In the particular case $s = 3$, we will require a kernel $K$ which is bounded and compactly supported on $B(0,1)$, and additionally satisfies
 \begin{equation*}
-\int z^j K(z) = 0,~~\textrm{$j = 1,2$.}
+\int z^j K(z) = 0~~\textrm{for $j = 1,2$.}
 \end{equation*}
 We then have the following result.
 \begin{lemma}
 	\label{lem:3rd_order_roughness_functional}
-	Suppose $f \in C^{3}(L)$ for some $L > 0$, and further suppose $p \in C^{2}(L)$. For any kernel $K$ which satisfies the previous conditions, and any $r(n) \geq n^{-1/(3+d)}$, we have that
+	Suppose $f \in C^{3}(L)$ for some $L > 0$, and further suppose $p \in C^{2}(L)$. For any kernel $K$ which satisfies the previous conditions, and any $r(n) \geq n^{-1/(4+d)}$, we have that
 	\begin{equation*}
-	\Ebb(R_{s,n}(f)) = O(L^2)
+	\Ebb(R_{s,n}(f)) = O(1)
 	\end{equation*} 
 \end{lemma}
 
@@ -249,34 +249,56 @@ and further $K$ is $\ell$ times continuously differentiable with $K^{j}(z) = O(z
 
 \begin{lemma}
 	\label{lem:roughness_functional_expectation}
-	Suppose $f \in C^{s}(L)$ for some $s,L > 0$, and further suppose $p \in C^{\ell}(L)$ for $\ell = \floor{s}$ the largest integer strictly less than $s$. For any order-$\ell$ kernel $K$ and any $r(n) \geq n^{-1/(4+d)}$, we have that
+	Suppose $f \in C^{s}(L)$ for some $s,L > 0$, and further suppose $p \in C^{\ell}(L)$ for $\ell = \floor{s}$ the largest integer strictly less than $s$. For any order-$\ell$ kernel $K$ and any $1 \geq r(n) \geq n^{-1/(2(s - 1)+d)}$, we have that
 	\begin{equation*}
-	\Ebb(R_{s,n}(f)) = O(r^{2s})
+	\Ebb(R_{s,n}(f)) = O(1)
 	\end{equation*} 
 \end{lemma}
-When $s \geq 3$ the graph Laplacian approximates higher-order derivatives by composing difference operators. The crudeness of this approximation means that in Lemma~\ref{lem:roughness_functional_expectation} we allow for a slower scaling of $r(n)$ than we did Lemma~\ref{lem:2nd_order_roughness_functional}. At a high level, however, we prove Lemma~\ref{lem:roughness_functional_expectation} in a similar fashion to Lemma~\ref{lem:2nd_order_roughness_functional}. We first break the sum into cases according to the number of unique indices, then bound the expectation case by case. To simplify our statements, for index vectors $k,\ell \in [n]^q$ we will use the following notation:
-\begin{equation*}
-\textrm{Unq}(k \setminus \ell) = \set{x \in k: x \not\in \ell, \textrm{$x$ appears in $k$ exactly once,}}~~ k \bigcup \ell = \set{x: x \in k ~\textrm{or}~ x \in \ell}
-\end{equation*}
-Thus $\textrm{Unq}(k \setminus \ell)$ measures the number of indices in $k$ which appear exactly once in $k$ and never in $\ell$, and $k \bigcup \ell$ measures the total number of distinct indices.
-
-
-The following Lemma will be the workhorse which supplies a sufficient bound in all cases.
+When $s \geq 3$ the graph Laplacian approximates higher-order derivatives by composing difference operators. The crudeness of this approximation means that in Lemma~\ref{lem:roughness_functional_expectation} we allow for a slower scaling of $r(n)$ than we did in Lemmas~\ref{lem:2nd_order_roughness_functional} and~\ref{lem:3rd_order_roughness_functional}. At a high level, however, we prove Lemma~\ref{lem:roughness_functional_expectation} in a similar fashion to Lemma~\ref{lem:2nd_order_roughness_functional}. We first break the sum into cases according to the number of unique indices, then bound the expectation case by case. 
+The following Lemma will be the workhorse which supplies a sufficient bound in each case.
 \begin{lemma}
 	\label{lem:expected_difference_operators}
 	Let $q = s/2$ when $s$ is even, and $q = (s - 1)/2$ when $s$ is odd. Under the same conditions as Lemma~\ref{lem:roughness_functional_expectation}, for any indices $k = (k_1,\ldots,k_q)$ and $\ell = (\ell_1,\ldots,\ell_q)$, we have
 	\begin{equation}
-	\Ebb(D_kf(x_i) D_kf(x_i)) =
+	\label{eqn:expected_difference_operators_1}
+	\Ebb(D_kf(x_i) D_\ell f(x_i)) =
 	\begin{cases*}
-	O(r^{2} r^{d(\abs{k \cup \ell} - 2q)}), & ~~\textrm{if $\Unq(k\setminus\ell) = \emptyset$ and $\Unq(\ell\setminus k) = \emptyset$}~ 
-	\\
-	O(r^{2q + 1} r^{\abs{k \cup \ell}} r^{d(\abs{k \cup \ell} - 2q)}), & ~~\textrm{if $\Unq(k\setminus\ell) \neq \emptyset$ or $\Unq(\ell\setminus k) \neq \emptyset$} \\
-	O(r^{4q} r^{d(\abs{k \cup \ell} - 2q)}), & ~~\textrm{if $\Unq(k\setminus\ell) \neq \emptyset$ and $\Unq(\ell\setminus k) \neq \emptyset$}
+	O(r^{2s}), & ~~\textrm{if all indices are distinct} \\
+	O(r^{2} r^{d(\abs{k \cup \ell \cup i} - (2q + 1))}), & ~~\textrm{otherwise}~ 
+	\end{cases*}
+	\end{equation}
+	Additionally, we have
+	\begin{equation}
+	\label{eqn:expected_difference_operators_2}
+	\Ebb(d_iD_kf(x_j) d_iD_\ell f(x_j)) =
+	\begin{cases*}
+	O(r^{2s}), & ~~\textrm{if all indices are distinct} \\
+	O(r^{2} r^{d(\abs{k \cup \ell \cup i \cup j} - (2q + 2))}), & ~~\textrm{otherwise}~ 
 	\end{cases*}
 	\end{equation}
 \end{lemma}
 
 \section{Proofs}
+
+\subsection{Proof of Lemma~\ref{lem:roughness_functional_expectation}}
+We will take $s$ to be even, as the proof when $s$ is odd follows essentially the same steps. Now when $s$ is even, we have the decomposition
+\begin{equation*}
+R_{s,n}(f) = \frac{1}{n^{s+1}r^{2s}} \sum_{i = 1}^{n} \sum_{k \in [n]^q} \sum_{\ell \in [n]^q} D_kf(x_i) D_{\ell}f(x_i)
+\end{equation*}
+For given index vectors $k,\ell$ and index $i$, let $I = \abs{k \cup \ell \cup i}$ be the total number of unique indices. We separate our analysis into cases based on the magnitude of $I$. 
+
+When $I < s + 1$, there is at least one repeated index, and by Lemma~\ref{lem:expected_difference_operators} we have that
+\begin{equation*}
+\Ebb(D_kf(x_i)D_{\ell}f(x_i)) = O(r^2r^{d(I - (s + 1))}).
+\end{equation*}
+There are $O(n^{I})$ terms in $R_{s,n}(f)$ with exactly $I$ distinct indices. Therefore, the total contribution of such terms to the sum is $O(r^{-2(s - 1)}r^{d(I - (s + 1))}n^{I - (s + 1)}r)$. Since $r(n) \geq n^{-1/d}$, this increases with $I$. Taking $I = s$ to be as large as possible such that there is at least one repeated index, the contribution of these terms to the sum is $O(r^{-(2(s - 1) + d)}n^{-1}) = O(1)$, with the equality following by the restriction $r \geq n^{-1/(2(s - 1) + d)}$. 
+
+When $I = s + 1$, every index in $\ell,k$ and $i$ is unique. Therefore by Lemma~\ref{lem:roughness_functional_expectation},  
+\begin{equation*}
+\Ebb(D_kf(x_i)D_{\ell}f(x_i)) = O(r^{2s}).
+\end{equation*}
+Since there are $O(n^{s+1})$ such terms, we have that the total contribution of these terms is $O(n^{s + 1}r^{2s}n^{-(s + 1)}r^{-2s}) = O(1)$.
+
 \subsection{Proof of Lemma~\ref{lem:2nd_order_roughness_functional}}
 We prove Lemma~\ref{lem:2nd_order_roughness_functional} in the case when $d = 1$.
 
@@ -315,14 +337,139 @@ and therefore
 where the second equality follows since by assumption when $d = 1$, $n^{-1} = O(r^{3})$. 
 
 \section{Proof of Lemma~\ref{lem:3rd_order_roughness_functional}}
+We prove Lemma~\ref{lem:3rd_order_roughness_functional} when $d = 1$ and $r(n) \geq n^{-1/5}$.
 
-\textcolor{red}{TODO}: Copy proof of Lemma~\ref{lem:3rd_order_roughness_functional} from handwritten notes.
+\textcolor{red}{TODO:} Prove for all dimensions $d$, by replacing derivatives with partial derivatives.
 
+From~\eqref{eqn:roughness_functional_representation_odd}, we have
+\begin{align*}
+R_{3,n}(f) & = \frac{1}{2n^2r^2}\sum_{i,j = 1}^{n}\left(\frac{1}{(nr^2)}\sum_{k \in n}\bigl(D_kf(x_i) - D_kf(x_j)\bigr)\right)^2K_r(x_i,x_j) \\
+& = \frac{1}{2n^4r^6}\sum_{i,j = 1}^{n} \sum_{k,\ell = 1}^{n} D_{i\ell}f(x_j) \cdot d_i(D_kf(x_j)).
+\end{align*}
+We separate our analysis into cases based on the distinct indices in the previous summation.
+
+\paragraph{Case 1: $i = k = \ell$.}
+In this case, we can rewrite the summand as
+\begin{align*}
+D_iif(x_j) d_iD_if(x_j) & = (d_if(x_j))^2 K_r(x_i,x_j)^3 \\
+& \leq 4L^2r^2 \abs{K_r(x_i,x_j)^3}
+\end{align*}
+Therefore,
+\begin{align*}
+\Ebb(D_iif(x_j) d_iD_if(x_j)) & \leq 4L^2 r^2 \Ebb\bigl(\abs{K_r(x_i,x_j)^3}\bigr)\\
+& \leq 4CL^3, \tag{Lemma~\ref{lem:expected_kernel}}
+\end{align*}
+and as a result
+\begin{equation*}
+\frac{1}{2n^4r^6}\sum_{i,j = 1}^{n} \Ebb(D_{ii}f(x_j) \cdot d_i(D_if(x_j))) \leq \frac{2CL^3}{n^2r^6} \leq \frac{2CL^3}{n^{4/5}}.
+\end{equation*}
+
+\paragraph{Case 2: $i = \ell \neq k$.}
+In this case, we can rewrite the summand as $-(D_if(x_j))(d_iD_kf(x_j))K_r(x_i,x_j)$. We have that
+\begin{equation*}
+\abs{D_if(x_j)} \leq 2LrK(x_i,x_j),~~\textrm{and}~ \abs{d_iD_kf(x_j)} \leq 2Lr \bigl(\abs{K_r(x_k,x_i)} + \abs{K_r(x_{\ell},x_i)}\bigr)
+\end{equation*}
+Therefore, we can upper bound
+\begin{equation*}
+\abs{D_if(x_j)d_iD_kf(x_j)K_r(x_i,x_j)} \leq 4Lr^2K(x_i,x_j)^2\bigl(\abs{K_r(x_k,x_i)} + \abs{K_r(x_{\ell},x_i)}\bigr)
+\end{equation*}
+and the resultant expectation satisfies
+\begin{equation*}
+\Ebb\bigl(\abs{D_if(x_j)d_iD_kf(x_j)K_r(x_i,x_j)}\bigr) \leq 8CL^4r.
+\end{equation*}
+Since there are order $n^3$ terms in the sum for which $i = k \neq \ell$, we have
+\begin{equation*}
+\frac{1}{2n^4r^4}\sum_{\ell\neq k = i \neq j\neq }^{n} \Ebb(D_{ii}f(x_j) \cdot d_i(D_{\ell}f(x_j))) \leq \frac{8 C L^3}{r^5n} \leq 8 C L^3.
+\end{equation*}
+Note that by symmetry, the same analysis applies to the case $i = \ell \neq k$.
+\paragraph{Case 3: $i \neq k = \ell$.}
+In this case, we can rewrite the summand as $(d_{i}D_kf(x_j))^2K_r(x_i,x_j)$. We bound the order of magnitude of the composed difference operators using Taylor expansion:
+\begin{align*}
+\abs{d_{i}D_kf(x_j)} & = \abs{(f(x_k) - f(x_i))K_r(x_k,x_i) - (f(x_k) - f(x_j))K_r(x_k,x_j)} \\
+& \leq \abs{(f(x_k) - f(x_i))}\abs{K_r(x_k,x_i)} + \abs{(f(x_k) - f(x_j))}\abs{K_r(x_k,x_ij)} \\
+& \leq 2L\left(\abs{x_k - x_j} \abs{K_r(x_k,x_i)} + \abs{x_k - x_i} \abs{K_r(x_k,x_i)}\right) \\
+& \leq 2Lr \bigl(\abs{K_r(x_k,x_i)} + \abs{K_r(x_{\ell},x_i)}\bigr)
+\end{align*}
+Taking expectation with respect to $x_k$, we have
+\begin{align*}
+\Ebb(\bigl(d_{i}D_kf(x_j)\bigr)^2|x_i,x_j) & \leq 8L^2r^2\left(\int K_r(x,x_i)^2 p(x)\,dx + \int K_r(x,x_j)^2 p(x)\,dx\right) \\
+& \leq 16L^3r^{2} \int \left(\frac{1}{r}K(z/r)\right)^2 \,dz \tag{$p \in C^2(L)$} \\
+& \leq 16L^3r \int \bigl(K(t)\bigr)^2 \,dt \tag{change of variables} \\
+& \leq 16CL^3r. \tag{$K$ compactly supported and bounded}
+\end{align*}
+As a result, 
+\begin{align*}
+\Ebb((d_{i}D_kf(x_j))^2K_r(x_i,x_j)) & = \Ebb(\Ebb((d_{i}D_kf(x_j))^2|x_i,x_j)K_r(x_i,x_j)) \\
+& \leq 16CL^3r\Ebb(\abs{K_r(x_i,x_j)}) \\
+& \leq 16CL^3r.
+\end{align*}
+Since there are not quite $n^3$ terms in the sum with $i \neq k = \ell$, and since $r \geq n^{-1/5}$, 
+\begin{equation*}
+\frac{1}{2n^4r^6}\sum_{i \neq j \neq k = \ell \neq i}^{n} \Ebb(D_{ik}f(x_j) \cdot d_i(D_kf(x_j))) \leq \frac{8 C L^3}{r^5n} \leq 8 C L^3.
+\end{equation*}
+
+\paragraph{Case 4: $i,k,\ell$ all distinct.}
+We rewrite the summand as $d_i(D_{\ell}f(x_j)) d_i(D_{k}f(x_j))K_r(x_i,x_j)$. Noting that
+\begin{equation*}
+d_i(D_{k}f(x_j)) = [f(x_k) - f(x_i)]K_r(x_k,x_i) -  [f(x_k) - f(x_j)]K_r(x_k,x_j)
+\end{equation*}
+by Lemma~\ref{lem:leading_term} we have that
+\begin{equation*}
+\abs{\Ebb(d_i(D_{k}f(x_j))|x_i,x_j)} \leq 2Lr^3.
+\end{equation*}
+Therefore,
+\begin{align*}
+\abs{\Ebb(d_i(D_{\ell}f(x_j)) d_i(D_{k}f(x_j))K_r(x_i,x_j))} & \leq \Ebb\biggl(\abs{\Ebb(d_k(D_{\ell}f(x_j))|x_i,x_j)\cdot\Ebb(d_k(D_{\ell}f(x_j))|x_i,x_j)\cdot K_r(x_k,x_j)}\biggr) \\
+& \leq 4L^2r^6 \Ebb(\abs{K_r(x_k,x_j)}) \leq 4CL^2r^6.
+\end{align*}
+Since there are order $n^4$ terms in the summation for which $i,j,k$ and $\ell$ are all distinct, we have that
+\begin{equation*}
+\frac{1}{2n^4r^6} \sum_{i \neq j \neq k \neq \ell}^{n} \Ebb(D_{ik}f(x_j) d_iD_{\ell}f(x_j) K_r(x_i,x_j)) \leq 4C.
+\end{equation*}
+The above four cases cover all terms in the summation, and so we have proved Lemma~\ref{lem:3rd_order_roughness_functional}.
 \section{Proof of Lemma~\ref{lem:expected_difference_operators}}
 
-\textcolor{red}{TODO}: Prove Lemma~\ref{lem:expected_difference_operators}.
+\subsection{Proof of~\eqref{eqn:expected_difference_operators_1}}
 
+Let $k,\ell \in [n]^q$ be index vectors. We first prove the desired bound in the case when some indices are repeated, and then the desired bound in the case when all indices are distinct.
 
+\paragraph{Repeated indices.}
+
+Since $f \in C^1(L)$, for all index vectors $k,\ell \in [n]^q$ and indices $i \in [n]$, the product of iterated difference operators $D_kf(x_i) D_{\ell}f(x_i)$ satisfies
+\begin{equation*}
+\abs{D_kf(x_i) D_{\ell}f(x_i)} \leq 4^{q} L^2 r^{2 - 2q}
+\end{equation*}
+Moreover $D_kf(x_i) D_{\ell}f(x_i)$ will equal zero if there exists $x_j, j \in k \cup \ell \cup i$ such that
+\begin{equation*}
+\norm{x_j - x_h} > r,~~\textrm{for all $h \in k \cup \ell \cup i$}
+\end{equation*}
+Therefore $D_kf(x_i) D_{\ell}f(x_i)$ is nonzero with probability $O(r^{\abs{k \cup \ell \cup i} - 1})$, which along with the boundedness of $D_kf(x_i) D_{\ell}f(x_i)$ implies the claimed result.
+
+\paragraph{All indices distinct.}
+
+By the law of iterated expectation, we have
+\begin{align}
+\Ebb\left[D_kf(x_i)D_{\ell}f(x_i)\right] & = \Ebb\left[\Ebb\left(D_kf(x)|x_i = x\right) \Ebb\left(D_{\ell}f(x)|x_i = x\right)\right] \nonumber \\
+& = \Ebb\left[\Ebb\left(D_kf(x)|x_i = x\right)^2\right] \label{eqn:expected_difference_operators_pf1}
+\end{align}
+Again applying the law of iterated expectation, letting $g$ be the function given by $g(x) = \Ebb(D_1f(x))$, we have
+\begin{align*}
+\Ebb(D_kf(x)) & = \Ebb(\Ebb(D_{k}f(x)|x_{k_1},\ldots,x_{k_{q-1}})) \\
+& = \Ebb((D_{k_1\cdots k_{q - 1}}g)(x)).
+\end{align*}
+By Lemma~\ref{lem:leading_term}, we have that $g(x) = O(r^s)$ for all values of $x$, and therefore
+\begin{equation*}
+(D_{k_1\cdots k_{q_1}}g)(x) = O(r^{s - d(q - 1)})
+\end{equation*}
+Since $(D_{k_1\cdots k_{q_1}}g)(x)$ is nonzero with probability $O(r^{d(q - 1)})$, we have that 
+\begin{equation*}
+\Ebb(D_kf(x)) = \Ebb((D_{k_1\cdots k_{q - 1}}g)(x)) = O(r^s),
+\end{equation*}
+and the desired result follows from~\eqref{eqn:expected_difference_operators_pf1}.
+
+\subsection{Proof of~\eqref{eqn:expected_difference_operators_2}}
+
+The proof of~\eqref{eqn:expected_difference_operators_2} is essentially the same, and we do not reproduce it here.
 \section{Auxiliary Results.}
 \begin{lemma}
 	\label{lem:difference_operator_taylor}
@@ -332,6 +479,21 @@ where the second equality follows since by assumption when $d = 1$, $n^{-1} = O(
 	\end{equation*}
 \end{lemma}
 
+\begin{lemma}
+	\label{lem:expected_kernel}
+	When $K$ is a bounded and compactly supported kernel, then for any $s$ and for all $x \in \Rd$
+	\begin{equation*}
+	\Ebb(\abs{K(x_i,x)}^s) \leq CLr^{(1 - s)d}
+	\end{equation*}
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:leading_term}
+	When $f \in C^s(L)$ and $p \in C^{s - 1}(L)$, we have that 
+	\begin{equation*}
+	\Ebb(\left(f(x_{\ell}) - f(x)\right)K_r(x_{\ell},x)) \leq Lr^s.
+	\end{equation*}
+\end{lemma}
 
 
 \end{document}
