@@ -158,7 +158,7 @@
 
 This document details the current status of the graph testing project. We divide by section based on the testing problem under consideration. At the end of each section, we list some areas we are interested in investigating. All proofs are left until the end.
 
-Throughout, let $X = \{x_1,
+We establish some notation that we will use throughout. Let $X = \{x_1,
 \ldots, x_n\}$ be a sample drawn i.i.d. from a distribution $P$ on $\Rd$,
 with density~$p$.  For a radius $r > 0$, we define $G_{n,r}=(V,E)$ to be the
 \emph{$r$-neighborhood graph} of $X$, an unweighted, undirected graph with
@@ -183,9 +183,9 @@ We will evaluate our performance using worst-case risk: for a given function cla
 \begin{equation*}
 \mathcal{R}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, f \neq f_0} \Ebb_f(1 - \phi).
 \end{equation*}
-The worst-case risk may be quite close to $1$ unless we require some separation between null and alternative spaces. A more realistic measure of performance is therefore
+The worst-case risk may be quite close to $1$ unless we enforce some separation between null and alternative spaces. A more realistic measure of performance is therefore
 \begin{equation*}
-\mathcal{R}_{\epsilon}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, \norm{f - f_0}_2 \geq \epsilon} \Ebb_f(1 - \phi).
+\mathcal{R}_{\epsilon}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, \norm{f - f_0}_{\Leb^2} \geq \epsilon} \Ebb_f(1 - \phi).
 \end{equation*}
 
 
@@ -196,7 +196,7 @@ We list the test statistics we use for the regression testing problem.
 Let $VSV^T$ be the spectral decomposition of the Laplacian matrix $L$ of the neighborhood graph $G_{n,r}$. To test whether $f = f_0$, we propose the following \emph{eigenvector projection} test statistic:
 \begin{equation}
 \label{eqn:graph_spectral_projections}
-T_{\mathrm{spec}} := \frac{1}{n} \sum_{k = 0}^{\kappa} \left(\sum_{i = 1} v_i y_i\right)^2
+T_{\mathrm{spec}} := \frac{1}{n} \sum_{k = 0}^{\kappa} \left(\sum_{i = 1}^{n} v_{k,i} y_i\right)^2
 \end{equation}
 
 \subsection{Current Results.}
@@ -224,10 +224,9 @@ h(a,d) = a(d+2) + (1 + 2/d),~~\textrm{for $a > 0$}
 	the worst-case risk is upper bounded
 	\begin{equation}
 	\label{eqn:sobolev_testing_rate_1}
-	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; \mathcal{W}^{1,2}(\mathcal{X};R)) \lesssim \frac{1}{b}.
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; W^{1,2}(\mathcal{X};R)) \lesssim \frac{1}{b}.
 	\end{equation}
 \end{theorem}
-The testing rate~\eqref{eqn:sobolev_testing_rate} matches the minimax critical radius up to a factor of $\log^{h(a,d)}n$.
 
 When $d \geq 4$ the compact embedding
 \begin{equation*}
@@ -252,6 +251,30 @@ does not hold (as it does when $d < 4$). However, if we directly assume $f \in \
 \end{proposition}
 
 Note that when $d < 4$ the rate~\eqref{eqn:sobolev_testing_rate} is sharper than \eqref{eqn:L4_testing_rate}. 
+
+The minimax testing rate over the higher-order smoothness classes $W_d^{s,2}(\Xset;L)$ and $C_d^s(\Xset;L)$ is known to be $n^{-4s/(4s + d)}$ when $4s < d$. Hence the testing rate~\eqref{eqn:sobolev_testing_rate} matches the minimax critical radius when $s = 1$ up to a factor of $\log^{h(a,d)}n$. The eigenvector projection test is also minimax optimal over the balls in higher order Holder spaces $C_d^s(\Xset;L)$.
+
+\begin{theorem}
+	\label{thm:higher_order_holder_testing_rate}
+	Let $b \geq 1$ be a fixed constant, and let $d$ and $s$ be positive integers such that $d < 4s$. Suppose that $P$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]^d$ with density function $p \in C^{s-1}(\mathcal{X};R)$ bounded above and below by constants, i.e
+	\begin{equation*}
+	0 < p_{\min} < p(x) < p_{\max} < \infty, \quad \textrm{for all $x \in \mathcal{X}$.}
+	\end{equation*}
+	Then the following statement holds: if the test $\phi_{\spec}$ is performed with parameter choices 
+	\begin{equation*}
+	\textrm{$K_r$ the uniform kernel with}~ n^{-1/(2(s - 1) + d)} \leq r(n) \leq n^{-4/((4s + d)(2+d))}, ~\kappa = n^{2d/(4s + d)}, ~\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*}
+	then there exists constants $c_1,c_2$ which may depend on $d,R,$ and $s$ but are independent of the sample size $n$ such that for every $\epsilon \geq 0$ satisfying
+	\begin{equation}
+	\label{eqn:higher_order_holder_testing_rate}
+	\epsilon^2 \geq c_1 \cdot b^2 \cdot n^{-4s/(4s + d)}
+	\end{equation}
+	the worst-case risk is upper bounded
+	\begin{equation}
+	\label{eqn:higher_order_holder_testing_rate_1}
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; C_d^{s}(\mathcal{X};R)) \leq \frac{c_2}{b}.
+	\end{equation}
+\end{theorem}
 
 \subsection{Areas to Investigate}
 
@@ -314,15 +337,13 @@ T_{\mathrm{TV}} := \sup_{\substack{\theta \in \Theta_{1,1}, \\ \lambda \norm{\th
 
 \subsection{Current results.}
 
-\textcolor{red}{WARNING:} While I have proved all the parts I believe are required for the below theorem, I haven't actually put together the pieces yet.
-
 In Theorem~\ref{thm:twosample_sobolev_testing_rate} we show that under some typical regularity conditions on $P$, the test $\phi_{\textrm{spec}}^{(2)} := \1\{T_{\mathrm{spec}}^{(2)} \geq \tau\}$ is, up to log factors, a minimax optimal test over the Sobolev ball $W^{1,2}(\mathcal{X};R)$ when $d = 1$.
 
 \begin{theorem}
 	\label{thm:twosample_sobolev_testing_rate}
-	Let $b \geq 1$ and $a > 0$ be fixed constants, and let $d = 1$.  Suppose that $P$ and $Q$ are absolutely continuous probability measures over $\mathcal{X} = [0,1]$ with density functions $p$ and $q$ bounded above and below by constants, i.e
+	Let $b \geq 1$ and $a > 0$ be fixed constants, and let $d = 1$.  Suppose that $\mu = (P + Q)/2$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]$ with density functions $\rho$ bounded above and below by constants, i.e
 	\begin{equation*}
-	0 < p_{\min},q_{\min} < p(x),q(x) < p_{\max},q_{\max} < \infty, \quad \textrm{for all $x \in \mathcal{X}$.}
+	0 < \rho_{\min} < \rho(x) < \rho_{\max} < \infty, \quad \textrm{for all $x \in \mathcal{X}$.}
 	\end{equation*}
 	Then the following statement holds: if the test $\phi_{\spec}^{(2)}$ is performed with parameter choices 
 	\begin{equation*}
@@ -378,11 +399,11 @@ be a ball in the Lebesgue space.
 
 \paragraph{Holder spaces.}
 
-For a given $s > 0$, the $s$th Holder norm is given by
+For a given $s > 0$, let $\ell = \floor{s}$ be the largest integer strictly less than $s$. Then the $s$th Holder norm is given by
 \begin{equation*}
-\norm{f}_{C_d^{s}(\mathcal{X})} := \sum_{\abs{\alpha} \leq s} \norm{D^{\alpha}f}_{\infty} + \sum_{\abs{\alpha} = s} \sup_{x,y \in \mathcal{X}} \frac{\abs{D^{\alpha}f(y) - D^{\alpha}f(x)}}{\norm{x - y}_2}
+\norm{f}_{C_d^{s}(\mathcal{X})} := \sum_{\abs{\alpha} < s} \norm{D^{\alpha}f}_{\infty} + \sum_{\abs{\alpha} = \ell} \sup_{x,y \in \mathcal{X}} \frac{\abs{D^{\alpha}f(y) - D^{\alpha}f(x)}}{\norm{x - y}_2^{s - \ell}}
 \end{equation*}
-and the $s$th Holder space $C_d^{s}(\mathcal{X})$ consists of all functions which are $s$ times continuously differentiable with finite $s$ Holder norm. Denote the Holder  ball by $C_d^{s}(\mathcal{X},R) = \set{f \in C_d^{s}(\mathcal{X}): \norm{f}_{C_d^{s}(\mathcal{X})} \leq R}$.
+and the $s$th Holder space $C_d^{s}(\mathcal{X})$ consists of all functions which are $\ell$ times continuously differentiable with finite Holder norm $\norm{\cdot}_{C_d^{s}(\mathcal{X})}$. Denote the Holder ball by $C_d^{s}(\mathcal{X},R) = \set{f \in C_d^{s}(\mathcal{X}): \norm{f}_{C_d^{s}(\mathcal{X})} \leq R}$.
 
 \paragraph{Sobolev spaces.}
 

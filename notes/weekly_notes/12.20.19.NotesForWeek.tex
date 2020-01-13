@@ -193,9 +193,9 @@ then it can be verified that choosing $\kappa = n^{-2d/(4s + d)}$, the equation~
 In this week's notes, we will focus our attention on upper bounding the roughness functional $R_{n,s}(f)$. Our main results should take the following form: when (a) $f \in C^{s}(L)$ for a fixed constant $L$ (or more ideally $f \in \mathcal{W}^{s}(L)$), (b) the neighborhood graph radius $r = r(n)$ is properly chosen as a function of $n$, and (c) $K$ is an appropriately chosen kernel, the roughness functional satisfies
 \begin{equation}
 \label{eqn:roughness_functional_bound}
-\mathbb{E}\left[R_{s,n}(f)\right] = O\left(L^2\right)
+\mathbb{E}\left[R_{s,n}(f)\right] = O\left(1\right)
 \end{equation}
-
+uniformly over all $f \in C^{s}(1)$. 
 These notes detail our current progress in showing such a result for different values of $s$. We showed the following useful representation of $R_{s,n}(f)$ in the \emph{8.7.19} Notes. For $k = (k_1,\ldots,k_n) \in [n]^s$, recursively defined the graph difference operator $D_k$ by 
 \begin{equation*}
 D_{k_1}f(x) = (f(x_{k_1}) - f(x))K_r(x_{k_1},x),~~ D_kf(x) = \bigl(D_{k_1}(D_{(k_2,\ldots,k_n)}f\bigr)(x)
@@ -210,52 +210,25 @@ and when $s$ is odd, letting $q = (s - 1)/2$ we have
 \label{eqn:roughness_functional_representation_odd}
 R_{s,n}(f) =  \frac{1}{2n^2r^2}\sum_{i,j = 1}^{n}\left(\frac{1}{(nr^2)^q}\sum_{k \in [n]^q}\bigl(D_kf(x_i) - D_kf(x_j)\bigr)\right)^2K_r(x_i,x_j)
 \end{equation}
-We have already obtained the desired bound on the 1st-order roughness functional $R_{1,n}(f)$, for any $f \in W_d^{1}(L)$, all scalings $r = r(n)$, and the uniform kernel. We therefore begin these notes with the case $s = 2$. 
 
-\section{Bounding the 2nd-Order Roughness Functional}
-The (first and) second order roughness functionals are somewhat special. These roughness functionals do not involve taking compositions of the difference operator $D_k$, and as a result, we get the desired bounds in expectation even when $r(n)$ is small. 
-\begin{lemma}
-	\label{lem:2nd_order_roughness_functional}
-	Fix $L > 0$, and form the neighborhood graph $G_{n,r}$ using kernel $K(z) = \1\{z^2 \leq r^2\}$. Suppose $f \in C^2(L)$ and $p \in C^1(L)$. Then for any $r(n) \geq n^{-1/(2+d)}$ and , we have
-	\begin{equation*}
-	\Ebb(R_{2,n}(f)) = O(L^2)
-	\end{equation*}
-\end{lemma}
+\section{Bounding the Roughness Functional in Expectation}
 
-\section{Bounding the 3rd-Order Roughness Functional}
-
-For the order-$s$ roughness functionals when $s \geq 3$, the graph Laplacian is forced to approximate higher order derivatives by composing difference operators-- that is, taking differences of differences, etc. In for the roughness functional to continue scaling at the desired rate, we will need $r(n)$ to be larger, and we cannot use the uniform kernel $K$ any longer. In the particular case $s = 3$, we will require a kernel $K$ which is bounded and compactly supported on $B(0,1)$, and additionally satisfies
+For an integer $\ell > 0$, we will say $K$ is a $2$nd-order kernel if it is bounded and compactly supported on $B(0,1)$ and additionally
 \begin{equation*}
-\int z^j K(z) = 0~~\textrm{for $j = 1,2$.}
+\int K(z) = 1 ~~\textrm{and}~~\int z K(z) = 0
 \end{equation*}
-We then have the following result.
-\begin{lemma}
-	\label{lem:3rd_order_roughness_functional}
-	Suppose $f \in C^{3}(L)$ for some $L > 0$, and further suppose $p \in C^{2}(L)$. For any kernel $K$ which satisfies the previous conditions, and any $r(n) \geq n^{-1/(4+d)}$, we have that
-	\begin{equation*}
-	\Ebb(R_{s,n}(f)) = O(1)
-	\end{equation*} 
-\end{lemma}
-
-\section{\textcolor{red}{Bounding the Roughness Functional in Expectation}}
-
-\textcolor{red}{WARNING:} The following Lemma is not proved, but it is the result I am trying to prove. After the Lemma is stated, I go into some detail about how I intend to prove it. 
-
-For an integer $\ell > 0$, we will say $K$ is an order-$\ell$ kernel
-\begin{equation*}
-\int K(z) = 1 ~~\textrm{and}~~\int z^j K(z) = 0,~~\textrm{for $j = 1,\ldots,\ell$}
-\end{equation*}
-and further $K$ is $\ell$ times continuously differentiable with $K^{j}(z) = O(z^j K(z))$ for $j = 1,\ldots,s$.
+That $K$ be a $2$nd-order kernel is crucial for $L_n$ to act as a $2$nd-order differential operator, and for $R_{s,n}$ to scale at the proper rate.
 
 \begin{lemma}
 	\label{lem:roughness_functional_expectation}
-	Suppose $f \in C^{s}(L)$ for some $s,L > 0$, and further suppose $p \in C^{\ell}(L)$ for $\ell = \floor{s}$ the largest integer strictly less than $s$. For any order-$\ell$ kernel $K$ and any $1 \geq r(n) \geq n^{-1/(2(s - 1)+d)}$, we have that
+	Suppose $f \in C^{s}(L)$ for some positive integer $s$ and $L > 0$, and further suppose $p \in C^{\ell}(L)$ for $\ell = \floor{s}$ the largest integer strictly less than $s$. For any $2$nd-order kernel $K$ and any $1 \geq r(n) \geq n^{-1/(2(s - 1)+d)}$, we have that
 	\begin{equation*}
-	\Ebb(R_{s,n}(f)) = O(1)
+	\Ebb(R_{s,n}(f)) = O(1),
 	\end{equation*} 
+	uniformly over all $f \in C^{s}(L)$.
 \end{lemma}
-When $s \geq 3$ the graph Laplacian approximates higher-order derivatives by composing difference operators. The crudeness of this approximation means that in Lemma~\ref{lem:roughness_functional_expectation} we allow for a slower scaling of $r(n)$ than we did in Lemmas~\ref{lem:2nd_order_roughness_functional} and~\ref{lem:3rd_order_roughness_functional}. At a high level, however, we prove Lemma~\ref{lem:roughness_functional_expectation} in a similar fashion to Lemma~\ref{lem:2nd_order_roughness_functional}. We first break the sum into cases according to the number of unique indices, then bound the expectation case by case. 
-The following Lemma will be the workhorse which supplies a sufficient bound in each case.
+
+Note that Lemma~\ref{lem:roughness_functional_expectation} implies a high-probability bound on $R_{s,n}(f)$ by Markov's inequality. To prove Lemma~\ref{lem:roughness_functional_expectation}, we first break the sum~\eqref{eqn:roughness_functional_representation_even} (or ~\eqref{eqn:roughness_functional_representation_odd}) into cases according to the number of unique indices, then bound the expectation case by case. The following Lemma will be the workhorse which supplies a sufficient bound in each case.
 \begin{lemma}
 	\label{lem:expected_difference_operators}
 	Let $q = s/2$ when $s$ is even, and $q = (s - 1)/2$ when $s$ is odd. Under the same conditions as Lemma~\ref{lem:roughness_functional_expectation}, for any indices $k = (k_1,\ldots,k_q)$ and $\ell = (\ell_1,\ldots,\ell_q)$, we have
@@ -278,6 +251,8 @@ The following Lemma will be the workhorse which supplies a sufficient bound in e
 	\end{equation}
 \end{lemma}
 
+The minimum scaling condition $r(n) \geq n^{-1/(2(s - 1) + d)}$ is needed in order to ensure the diagonal terms of the sums in~\eqref{eqn:roughness_functional_representation_even} and~\eqref{eqn:roughness_functional_representation_odd} (where not all indices are distinct) do not dominate the off-diagonal terms (where all indices are distinct).
+
 \section{Proofs}
 
 \subsection{Proof of Lemma~\ref{lem:roughness_functional_expectation}}
@@ -298,6 +273,135 @@ When $I = s + 1$, every index in $\ell,k$ and $i$ is unique. Therefore by Lemma~
 \Ebb(D_kf(x_i)D_{\ell}f(x_i)) = O(r^{2s}).
 \end{equation*}
 Since there are $O(n^{s+1})$ such terms, we have that the total contribution of these terms is $O(n^{s + 1}r^{2s}n^{-(s + 1)}r^{-2s}) = O(1)$.
+
+\section{Proof of Lemma~\ref{lem:expected_difference_operators}}
+
+\subsection{Proof of~\eqref{eqn:expected_difference_operators_1}}
+
+Let $k,\ell \in [n]^q$ be index vectors. We first prove the desired bound in the case when some indices are repeated, and then the desired bound in the case when all indices are distinct.
+
+\paragraph{Repeated indices.}
+
+Since $f \in C^1(L)$, for all index vectors $k,\ell \in [n]^q$ and indices $i \in [n]$, the product of iterated difference operators $D_kf(x_i) D_{\ell}f(x_i)$ satisfies
+\begin{equation*}
+\abs{D_kf(x_i) D_{\ell}f(x_i)} \leq 4^{q} L^2 r^{2 - ds}
+\end{equation*}
+Moreover $D_kf(x_i) D_{\ell}f(x_i)$ will equal zero if there exists $x_j, j \in k \cup \ell \cup i$ such that
+\begin{equation*}
+\norm{x_j - x_h} > r,~~\textrm{for all $h \in k \cup \ell \cup i$}
+\end{equation*}
+Therefore $D_kf(x_i) D_{\ell}f(x_i)$ is nonzero with probability $O(r^{d(\abs{k \cup \ell \cup i} - 1)})$, which along with the boundedness of $D_kf(x_i) D_{\ell}f(x_i)$ implies the claimed result.
+
+\paragraph{All indices distinct.}
+
+By the law of iterated expectation, we have
+\begin{align}
+\Ebb\left[D_kf(x_i)D_{\ell}f(x_i)\right] & = \Ebb\left[\Ebb\left(D_kf(x)|x_i = x\right) \Ebb\left(D_{\ell}f(x)|x_i = x\right)\right] \nonumber \\
+& = \Ebb\left[\Ebb\left(D_kf(x)|x_i = x\right)^2\right] \label{eqn:expected_difference_operators_pf1}
+\end{align}
+The result then follows from Lemma~\ref{lem:leading_term}.
+
+\subsection{Proof of~\eqref{eqn:expected_difference_operators_2}}
+
+The proof of~\eqref{eqn:expected_difference_operators_2} when some index is repeated is essentially the same, and we do not reproduce it.
+
+When all indices $\ell,k,i$ and $j$ are distinct, by Lemma~\ref{lem:leading_term} there exists some $f_{s-1} \in C^1(L)$ such that
+\begin{align*}
+\Ebb(d_iD_kf(x_j)d_iD_{\ell}f(x_j)K_r(x_i,x_j)) & = \Ebb\biggl(\Bigl(d_i\bigl(O(r^{s-1})\cdot f_{s - 1} + O(r^s)\bigr)\Bigr)^2K_r(x_i,x_j)\biggr) \\
+& = O(r^{2s - 2})\Ebb\Bigl(\bigl(d_if_{s-1}(x_j))\bigr)^2K_{r}(x_i,x_j)\Bigr) + O(r^{2s - 1})\Ebb\bigl(D_if_{s - 1}(x_j)\bigr)+ O(r^{2s})
+\end{align*}
+where the second equality follows from the linearity of the difference operator. Then since $f_{s-1} \in C^1(L)$, we have $\Ebb(D_if_{s-1}(x_j)) = O(r)$, and
+\begin{equation*}
+\Ebb\Bigl(\bigl(d_if_{s-1}(x_j))\bigr)^2K_{r}(x_i,x_j)\Bigr) = \Ebb\Bigl(\bigl(O(r)\bigr)^2K_{r}(x_i,x_j)\Bigr) = O(r^2),
+\end{equation*}
+establishing $\Ebb(d_iD_kf(x_j)d_iD_{\ell}f(x_j)K_r(x_i,x_j)) = O(r^{2s})$ as claimed.
+\section{Auxiliary Results.}
+\begin{lemma}
+	\label{lem:difference_operator_taylor}
+	When $f \in C^s(L)$, for any $k \in [n]$ 
+	\begin{equation*}
+	D_kf(x) = \left(\sum_{r = 1}^{s - 1} (x_k - x)^r f^{(r)}(x) + O((x_k - x)^{s})\right) \cdot K_r(x_k,x)
+	\end{equation*}
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:expected_kernel}
+	When $K$ is a bounded and compactly supported kernel, then for any $s$ and for all $x \in \Rd$
+	\begin{equation*}
+	\Ebb(\abs{K(x_i,x)}^s) \leq CLr^{(1 - s)d}
+	\end{equation*}
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:leading_term}
+	Suppose $f \in C^s(L)$, $p \in C^{s-1}(L)$, $k \in [n]^q$ for some $q \geq 1$, and that $K_r$ is a $2$nd-order kernel. Then if $2q \leq s - 1$,
+	\begin{equation}
+	\label{eqn:leading_term}
+	\Ebb(D_kf(x)) = \sum_{\ell = 2q}^{s - 1} O(r^{\ell}) \cdot f_{\ell}(x) + O(r^s),
+	\end{equation}
+	for some $f_{\ell} \in C^{s - \ell}(L)$. If $2q \geq s$, $\Ebb(D_kf(x)) = O(r^s)$.  All $O(\cdot)$ terms may depend $L$ and $s$, but do not depend on $f$ or $x$.
+\end{lemma}
+\begin{proof}
+	We will prove Lemma~\ref{lem:leading_term} in the case where $d = 1$. When $d \geq 2$, using multivariate Taylor expansions we find the same result, but with more notational overhead. 
+	
+	We will prove by induction on $q$ in the case where $d = 1$. The When $q = 1$ and $k \in [n]$, by taking Taylor expansions of $f$ and $p$, we obtain
+	\begin{align}
+	\nonumber 
+	\Ebb(D_kf(x)) & = \sum_{\ell = 1}^{s - 1} f^{(\ell)}(x) \int (z - x)^{\ell} K_r(z,x) p(z) dz + O(r^s) \\ 
+	& = \sum_{\ell = 1}^{s - 1} \sum_{a = 0}^{s - 1} f^{(\ell)}(x) p^{(a)}(x) \underbrace{\int(z - x)^{\ell + a} K_r(z,x) dz}_{:=I_{t + a}} + O(r^s) \label{eqn:leading_term_pf1}
+	\end{align}
+	Since $K$ is a $2$nd-order kernel, $I_{1} = 0$ and $I_t = O(r^{t})$ for $t \geq 2$.  Additionally, when $\ell + a \leq s - 1$, we have that $f^{(\ell)}p^{(a)} \in C^{\min\{s - \ell, s - 1 - a\}} \subseteq C^{s - (\ell + a)}$, and $\abs{f^{(\ell)}p^{(a)}} \leq L^2$ for any $\ell$ and $a$. We can therefore simplify~\eqref{eqn:leading_term_pf1} by combining all terms where $\ell + a = t$, obtaining
+	\begin{equation}
+	\label{eqn:leading_term_pf2}
+	\Ebb(D_kf(x)) = \sum_{t = 1}^{s - 1} f_t(x) I_t + O(r^s) = \sum_{t = 2}^{s - 1} f_t(x) I_t + O(r^s),
+	\end{equation}
+	which establishes~\eqref{eqn:leading_term} in the base case.
+	
+	Now, we assume \eqref{eqn:leading_term} holds for all $k \in [n]^q$, and prove the desired estimate on $\Ebb(D_{kj}f(x))$ for each $j \in [n]$. By the law of iterated expectation and~\eqref{eqn:leading_term_pf2},
+	\begin{align*}
+	\Ebb(D_{kj}f(x)) & = \Ebb(D_k(\Ebb(D_jf))(x)) \\
+	& = \Ebb\left(D_k\left(\sum_{t = 2}^{s - 1} I_t f_t + O(r^s)\right)(x)\right) \\
+	& = \sum_{t = 2}^{s - 1} I_t \cdot \Ebb(D_kf_t(x)) + O(r^s)
+	\end{align*}
+	where the second equality follows from the linearity and boundedness of $f \mapsto \Ebb(D_kf)$. We now apply the inductive hypothesis to $\Ebb(D_kf_t(x))$. If $2(q + 1) \geq s$, note that since $f_t \in C^{s - t}(L)$ for $t \geq 2$, we have by hypothesis $\Ebb(D_kf_t(x)) = O(r^{s - t})$. As a result
+	\begin{equation*}
+	\sum_{t = 2}^{s - 1} I_t \cdot \Ebb(D_kf_t(x)) = \sum_{t = 2}^{s - 1} I_t \cdot O(r^{s - t}) = O(r^s)
+	\end{equation*} 
+	Otherwise $2(q + 1) \leq s - 1$. For each $t = 2,\ldots, s - 1$, if additionally  $2q \leq s - t - 1$, then by hypothesis $\Ebb(D_kf_t(x)) = \sum_{\ell = 2q}^{s - t - 1} O(r^{\ell}) \cdot g_{\ell}(x) + O(r^{s - t})$ for some $g_{\ell} \in C^{s - t - \ell}(L)$, and otherwise $\Ebb(D_kf_t(x)) = O(r^{s - t})$. Therefore,
+	\begin{align*}
+	\sum_{t = 2}^{s - 1} I_t \cdot \Ebb(D_kf_t(x)) & = \sum_{t = 2}^{s - 1 - 2q} I_t \cdot \left\{\sum_{\ell = 2q}^{s - t - 1} O(r^{\ell}) \cdot g_{\ell}(x) + O(r^{s - t}) \right\} + \sum_{t = s - 1 - 2q}^{s - 1}I_{t} \cdot O(r^{s - t}) \\
+	& = \sum_{t = 2}^{s - 1 - 2q} I_t \cdot \left\{\sum_{\ell = 2q}^{s - t - 1} O(r^{\ell}) \cdot g_{\ell}(x)\right\}  + O(r^s) \\
+	& = \sum_{\ell = 2q}^{s - 3} \sum_{t = 2}^{s - \ell - 1} I_t \cdot O(r^{\ell}) \cdot g_{\ell}(x) + O(r^s).
+	\end{align*}
+	Noting that $g_{\ell} \in C^{s - (t + \ell)}(L)$ for some $\ell + t = 2(q + 1),\ldots,s - 1$, and $I_t \cdot O(r^{\ell}) = O(r^{t + \ell})$, we can rewrite the final equation as a sum over $\ell + t = 2(q + 1),\ldots,s - 1$, which proves~\eqref{eqn:leading_term}.
+\end{proof}
+
+\section{Old Work}
+
+\subsection{Bounding the 2nd-Order Roughness Functional}
+The (first and) second order roughness functionals are somewhat special. These roughness functionals do not involve taking compositions of the difference operator $D_k$, and as a result, we get the desired bounds in expectation even when $r(n)$ is small. 
+\begin{lemma}
+	\label{lem:2nd_order_roughness_functional}
+	Fix $L > 0$, and form the neighborhood graph $G_{n,r}$ using kernel $K(z) = \1\{z^2 \leq r^2\}$. Suppose $f \in C^2(L)$ and $p \in C^1(L)$. Then for any $r(n) \geq n^{-1/(2+d)}$ and , we have
+	\begin{equation*}
+	\Ebb(R_{2,n}(f)) = O(L^2)
+	\end{equation*}
+\end{lemma}
+
+\subsection{Bounding the 3rd-Order Roughness Functional}
+
+For the order-$s$ roughness functionals when $s \geq 3$, the graph Laplacian is forced to approximate higher order derivatives by composing difference operators-- that is, taking differences of differences, etc. In for the roughness functional to continue scaling at the desired rate, we will need $r(n)$ to be larger, and we cannot use the uniform kernel $K$ any longer. In the particular case $s = 3$, we will require a kernel $K$ which is bounded and compactly supported on $B(0,1)$, and additionally satisfies
+\begin{equation*}
+\int z^j K(z) = 0~~\textrm{for $j = 1,2$.}
+\end{equation*}
+We then have the following result.
+\begin{lemma}
+	\label{lem:3rd_order_roughness_functional}
+	Suppose $f \in C^{3}(L)$ for some $L > 0$, and further suppose $p \in C^{2}(L)$. For any kernel $K$ which satisfies the previous conditions, and any $r(n) \geq n^{-1/(4+d)}$, we have that
+	\begin{equation*}
+	\Ebb(R_{s,n}(f)) = O(1)
+	\end{equation*} 
+\end{lemma}
 
 \subsection{Proof of Lemma~\ref{lem:2nd_order_roughness_functional}}
 We prove Lemma~\ref{lem:2nd_order_roughness_functional} in the case when $d = 1$.
@@ -336,7 +440,7 @@ and therefore
 \end{equation*}
 where the second equality follows since by assumption when $d = 1$, $n^{-1} = O(r^{3})$. 
 
-\section{Proof of Lemma~\ref{lem:3rd_order_roughness_functional}}
+\subsection{Proof of Lemma~\ref{lem:3rd_order_roughness_functional}}
 We prove Lemma~\ref{lem:3rd_order_roughness_functional} when $d = 1$ and $r(n) \geq n^{-1/5}$.
 
 \textcolor{red}{TODO:} Prove for all dimensions $d$, by replacing derivatives with partial derivatives.
@@ -427,73 +531,7 @@ Since there are order $n^4$ terms in the summation for which $i,j,k$ and $\ell$ 
 \frac{1}{2n^4r^6} \sum_{i \neq j \neq k \neq \ell}^{n} \Ebb(D_{ik}f(x_j) d_iD_{\ell}f(x_j) K_r(x_i,x_j)) \leq 4C.
 \end{equation*}
 The above four cases cover all terms in the summation, and so we have proved Lemma~\ref{lem:3rd_order_roughness_functional}.
-\section{Proof of Lemma~\ref{lem:expected_difference_operators}}
 
-\subsection{Proof of~\eqref{eqn:expected_difference_operators_1}}
-
-Let $k,\ell \in [n]^q$ be index vectors. We first prove the desired bound in the case when some indices are repeated, and then the desired bound in the case when all indices are distinct.
-
-\paragraph{Repeated indices.}
-
-Since $f \in C^1(L)$, for all index vectors $k,\ell \in [n]^q$ and indices $i \in [n]$, the product of iterated difference operators $D_kf(x_i) D_{\ell}f(x_i)$ satisfies
-\begin{equation*}
-\abs{D_kf(x_i) D_{\ell}f(x_i)} \leq 4^{q} L^2 r^{2 - 2q}
-\end{equation*}
-Moreover $D_kf(x_i) D_{\ell}f(x_i)$ will equal zero if there exists $x_j, j \in k \cup \ell \cup i$ such that
-\begin{equation*}
-\norm{x_j - x_h} > r,~~\textrm{for all $h \in k \cup \ell \cup i$}
-\end{equation*}
-Therefore $D_kf(x_i) D_{\ell}f(x_i)$ is nonzero with probability $O(r^{\abs{k \cup \ell \cup i} - 1})$, which along with the boundedness of $D_kf(x_i) D_{\ell}f(x_i)$ implies the claimed result.
-
-\paragraph{All indices distinct.}
-
-By the law of iterated expectation, we have
-\begin{align}
-\Ebb\left[D_kf(x_i)D_{\ell}f(x_i)\right] & = \Ebb\left[\Ebb\left(D_kf(x)|x_i = x\right) \Ebb\left(D_{\ell}f(x)|x_i = x\right)\right] \nonumber \\
-& = \Ebb\left[\Ebb\left(D_kf(x)|x_i = x\right)^2\right] \label{eqn:expected_difference_operators_pf1}
-\end{align}
-Again applying the law of iterated expectation, letting $g$ be the function given by $g(x) = \Ebb(D_1f(x))$, we have
-\begin{align*}
-\Ebb(D_kf(x)) & = \Ebb(\Ebb(D_{k}f(x)|x_{k_1},\ldots,x_{k_{q-1}})) \\
-& = \Ebb((D_{k_1\cdots k_{q - 1}}g)(x)).
-\end{align*}
-By Lemma~\ref{lem:leading_term}, we have that $g(x) = O(r^s)$ for all values of $x$, and therefore
-\begin{equation*}
-(D_{k_1\cdots k_{q_1}}g)(x) = O(r^{s - d(q - 1)})
-\end{equation*}
-Since $(D_{k_1\cdots k_{q_1}}g)(x)$ is nonzero with probability $O(r^{d(q - 1)})$, we have that 
-\begin{equation*}
-\Ebb(D_kf(x)) = \Ebb((D_{k_1\cdots k_{q - 1}}g)(x)) = O(r^s),
-\end{equation*}
-and the desired result follows from~\eqref{eqn:expected_difference_operators_pf1}.
-
-\subsection{Proof of~\eqref{eqn:expected_difference_operators_2}}
-
-The proof of~\eqref{eqn:expected_difference_operators_2} is essentially the same, and we do not reproduce it here.
-\section{Auxiliary Results.}
-\begin{lemma}
-	\label{lem:difference_operator_taylor}
-	When $f \in C^s(L)$, for any $k \in [n]$ 
-	\begin{equation*}
-	D_kf(x) = \left(\sum_{r = 1}^{s - 1} (x_k - x)^r f^{(r)}(x) + O((x_k - x)^{s})\right) \cdot K_r(x_k,x)
-	\end{equation*}
-\end{lemma}
-
-\begin{lemma}
-	\label{lem:expected_kernel}
-	When $K$ is a bounded and compactly supported kernel, then for any $s$ and for all $x \in \Rd$
-	\begin{equation*}
-	\Ebb(\abs{K(x_i,x)}^s) \leq CLr^{(1 - s)d}
-	\end{equation*}
-\end{lemma}
-
-\begin{lemma}
-	\label{lem:leading_term}
-	When $f \in C^s(L)$ and $p \in C^{s - 1}(L)$, we have that 
-	\begin{equation*}
-	\Ebb(\left(f(x_{\ell}) - f(x)\right)K_r(x_{\ell},x)) \leq Lr^s.
-	\end{equation*}
-\end{lemma}
 
 
 \end{document}
