@@ -1,0 +1,290 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\domain}{\mathcal{X}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\Partial}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 11/8/19 - 11/15/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+For a function $f:\Rd \to \Reals$ , consider the empirical norm
+\begin{equation*}
+\norm{f}_n^2 := \frac{1}{n}\sum_{i = 1}^{n} [f(x_i)]^2 
+\end{equation*}
+where $x_1,\ldots,x_n$ are i.i.d. samples from a distribution $P$, with density $p$ supported on $\Xset \subset \Rd$. Under what conditions is the empirical norm at least on the order of $\norm{f}_{\Leb^2(\Xset)}^2$?
+
+\begin{lemma}
+	Let $\Xset$ be a Lipschitz domain over which the density is upper and lower bounded 
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty ~~\textrm{for all $x \in \Xset$,}
+	\end{equation*}
+	and let $f \in W_d^{s,2}(\Xset)$.Then for any $b \geq 1$, there exists $c_1$ such that if 
+	\begin{equation}
+	\norm{f}_{\Leb^2(\Xset)} \geq 
+	\begin{cases*}
+	c_1 \cdot b \cdot \norm{f}_{W_d^{s,2}(\Xset)} \cdot \max\{n^{-1/2},n^{-s/d}\},~~\textrm{if}~2s \neq d \\
+	c_1 \cdot b \cdot \norm{f}_{W_d^{s,2}(\Xset)} \cdot n^{-a/2},~~\textrm{if}~ 2s = d ~\textrm{for any}~ 0 < a < 1
+	\end{cases*}
+	\end{equation}
+	then,
+	\begin{equation}
+	\label{eqn:l2_to_empirical_norm_sobolev}
+	\mathbb{P}\left[\norm{f}_n^2 \geq \frac{1}{b} \Ebb\bigl[\norm{f}_n^2\bigr]\right] \geq 1 - \frac{5}{b}
+	\end{equation}
+	where $c_1$ and $c_2$ are constants which may depend only on $s$, $\Xset$, $d$, $p_{\min}$ and $p_{\max}$.
+\end{lemma}
+\begin{proof}
+	To prove~\eqref{eqn:l2_to_empirical_norm_sobolev} we will show
+	\begin{equation*}
+	\mathbb{E}\bigl[\norm{f}_n^4\bigr] \leq \left(1 + \frac{1}{b^2}\right)\cdot \left(\mathbb{E}\bigl[\norm{f}_n^2\bigr]\right)^2
+	\end{equation*}
+	whence the claim follows from the Paley-Zygmund inequality (Lemma~\ref{lem:paley_zygmund}). Since $p \leq p_{\max}$ is uniformly bounded, we can relate $\mathbb{E}\bigl[\norm{f}_n^4\bigr]$ to the $\Leb^4$ norm,
+	\begin{equation*}
+	\mathbb{E}\bigl[\norm{f}_n^4\bigr] = \frac{(n-1)}{n}\left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + \frac{\mathbb{E}\Bigl[\bigl(f(x_1)\bigr)^4\Bigr]}{n} \leq \left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + p_{\max}^2\frac{\norm{f}_{\Leb^4}^4}{n}.
+	\end{equation*}
+	We will use a Sobolev inequality to relate $\norm{f}_{\Leb^4}$ to $\norm{f}_{W_d^{s,2}(\Xset)}$. The nature of this inequality depends on the relationship between $s$ and $d$ (see Theorem 6 in Section 5.6.3 of \textcolor{red}{Evans} for a formal statement), so from this point on we divide our analysis into three cases: (i) the case where $2s > d$, (ii) the case where $2s < d$, and (iii) the borderline case $2s = d$.
+	
+	\paragraph{Case 1: $2s > d$.}
+	When $2s > d$, since $\Xset$ is a Lipschitz domain the Sobolev inequality establishes that $f \in C^{\gamma}(\overline{\Xset})$ for some $\gamma > 0$ which depends on $s$ and $d$, with the accompanying estimate
+	\begin{equation*}
+	\sup_{x \in \Xset} \abs{f(x)} \leq \norm{f}_{C^{\gamma}(\Xset)} \leq c \norm{f}_{W^{s,2}(\Xset)}.
+	\end{equation*}
+	Therefore,
+	\begin{align*}
+	\norm{f}_{\Leb^4}^4 & = \int_{\Xset} [f(x)]^4 \,dx \\
+	& \leq \left(\sup_{x \in \Xset} \abs{f(x)}\right)^2 \cdot \int_{\Xset} [f(x)]^2 \,dx \\
+	& \leq c \norm{f}_{W^{s,2}(\Xset)}^2 \cdot \norm{f}_{\Leb^2(\Xset)}^2.
+	\end{align*}
+	Since by assumption
+	\begin{equation*}
+	\norm{f}_{\Leb^2(\Xset)}^2 \geq c_1^2 \cdot b^2 \cdot \norm{f}_{W_d^{s,2}(\Xset)}^2 \cdot \frac{1}{n},
+	\end{equation*}
+	we have
+	\begin{equation*}
+	p_{\max}^2\frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq c \norm{f}_{W^{s,2}(\Xset)}^2 \cdot \frac{\norm{f}_{\Leb^2(\Xset)}^4}{n \norm{f}_{\Leb^2(\Xset)}^2} \leq c \frac{\norm{f}_{\Leb^2(\Xset)}^4}{c_1^2 b^2} \leq \frac{\Ebb\bigl[\norm{f}_n^2\bigr]}{b^2},
+	\end{equation*}
+	where the last inequality follows by taking $c_1$ sufficiently large.
+	
+	\paragraph{Case 2: $2s < d$.}
+	When $2s < d$, since $\Xset$ is a Lipschitz domain the Sobolev inequality establishes that $f \in \Leb^q(\Xset)$ for $q = 2d/(d - 2s)$, and moreover that
+	\begin{equation*}
+	\norm{f}_{\Leb^q(\Xset)} \leq c \norm{f}_{W^{s,2}(\Xset)}.
+	\end{equation*}
+	Since $4 = 2\theta + (1 - \theta)q$ for $\theta = 2 - d/(2s)$, Lyapunov's inequality implies
+	\begin{equation*}
+	\norm{f}_{\Leb^4(\Xset)}^4 \leq \norm{f}_{\Leb^2}^{2\theta} \cdot \norm{f}_{\Leb^q(\Xset)}^{(1 - \theta)q} \leq c \norm{f}_{\Leb^2(\Xset)}^{4} \cdot \left(\frac{\norm{f}_{W^{s,2}(\Xset)}}{\norm{f}_{\Leb^2(\Xset)}}\right)^{d/s}.
+	\end{equation*}
+	By assumption, $\norm{f}_{\Leb^2(\Xset)} \geq c_1 b \norm{f}_{W^{s,2}(\Xset)} n^{-s/d}$, and therefore
+	\begin{equation*}
+	p_{\max}^2 \frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq c\norm{f}_{\Leb^2(\Xset)}^4 \left(\frac{\norm{f}_{W^{s,2}(\Xset)}}{n^{s/d}\norm{f}_{\Leb^2(\Xset)}}\right)^{d/s} \leq \frac{c\norm{f}_{\Leb^2(\Xset)}^4}{c_1b^{d/s}} \leq \frac{\norm{f}_{\Leb^2(\Xset)}^4}{b^2}.
+	\end{equation*}
+	where the last inequality follows when $c_1$ is sufficiently large, and keeping in mind that $d/s > 2$ and $b \geq 1$. 
+	
+	\paragraph{Case 3: $2s = d$.}
+	Assume $f$ satisfies~\eqref{eqn:paley_zygmund_1} for a given $0 < a < 1$. When $2s = d$, since $\Xset$ is a Lipschitz domain we have that $f \in L^q(\Xset)$ for any $q < \infty$, with the accompanying estimate
+	\begin{equation*}
+	\norm{f}_{\Leb^q(\Xset)} \leq c \norm{f}_{W^{s,2}(\Xset)}.
+	\end{equation*}
+	In particular the above holds for $q = 2/(1 - a)$ when $1/2 < a < 1$, and for any $q > 4$ when $0 < a < 1/2$. Using Lyapunov's inequality as in the previous case then implies the desired result.
+\end{proof}
+
+\clearpage 
+\section{Old Stuff}
+\begin{lemma}
+	\label{lem:empirical_norm_lb}
+	Suppose $\norm{f}_{\infty} \leq 1$ and $\mathbb{E}[f^2(X)] \geq \frac{1}{n}$. Then,
+	\begin{equation*}
+	\mathbb{P}\left(\frac{1}{n}\sum_{i = 1}^{n} f(x_i)^2 \geq \frac{1}{2}\mathbb{E}[f^2(X)]\right) \geq \frac{1}{8}.
+	\end{equation*}
+\end{lemma}
+
+The proof of Lemma~\ref{lem:empirical_norm_lb} relies on (a variant of) the Paley-Zygmund Inequality.
+\begin{lemma}
+	\label{lem:paley_zygmund}
+	Let $f$ satisfy the following moment inequality for some $b \geq 1$:
+	\begin{equation}
+	\label{eqn:paley_zygmund_1}
+	\Ebb\bigl[\norm{f}_n^4\bigr] \leq \left(1 + \frac{1}{b^2}\right)\cdot\Bigl(\Ebb\bigl[\norm{f}_n^2\bigr]\Bigr)^2.
+	\end{equation}
+	Then,
+	\begin{equation}
+	\label{eqn:paley_zygmund_2}
+	\mathbb{P}\left[\norm{f}_n^2 \geq \frac{1}{b} \Ebb\bigl[\norm{f}_n^2\bigr]\right] \geq 1 - \frac{5}{b}.
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	Let $Z$ be a non-negative random variable such that $\mathbb{E}(Z^q) < \infty$. The Paley-Zygmund inequality says that for all $0 \leq \lambda \leq 1$,
+	\begin{equation}
+	\label{eqn:paley_zygmund_pf1}
+	\mathbb{P}(Z > \lambda \mathbb{E}(Z^p)) \geq \left[(1 - \lambda^p) \frac{\mathbb{E}(Z^p)}{(\mathbb{E}(Z^q))^{p/q}}\right]^{\frac{q}{q - p}}
+	\end{equation}
+	Applying~\eqref{eqn:paley_zygmund_pf1} with $Z = \norm{f}_n^2$, $p = 1$, $q = 2$ and $\lambda = \frac{1}{b}$, by assumption~\eqref{eqn:paley_zygmund_1} we have
+	\begin{equation*}
+	\mathbb{P}\Bigl(\norm{f}_n^2 > \frac{1}{b} \mathbb{E}[\norm{f}_n^2]\Bigr) \geq \Bigl(1 - \frac{1}{b}\Bigr)^2 \cdot  \frac{\bigl(\mathbb{E}[\norm{f}_n^2]\bigr)^2}{\mathbb{E}[\norm{f}_n^4]} \geq \frac{\Bigl(1 - \frac{2}{b}\Bigr)}{\Bigl(1 + \frac{1}{b^2}\Bigr)} \geq 1 - \frac{5}{b}.
+	\end{equation*}
+\end{proof}
+
+\paragraph{Proof of Lemma~\ref{lem:empirical_norm_lb}:}
+To apply Lemma~\ref{lem:paley_zygmund}, we need an upper bound on $\mathbb{E}((\frac{1}{n}\sum_{i = 1}^{n} f(x_i)^2)^2)$.
+\begin{align*}
+\mathbb{E}\left((\frac{1}{n}\sum_{i = 1}^{n} f(x_i)^2)^2\right) & = \frac{1}{n^2}\left(n(n - 1)\mathbb{E}(f^2(X))^2 + n\mathbb{E}(f^4(X)) \right) \\
+& \leq \frac{1}{n^2}\left(n(n - 1)\mathbb{E}(f^2(X))^2 + n\mathbb{E}(f^2(X)) \right) \\
+& = \frac{1}{n^2}\left(\mathbb{E}(f^2(X))\left(n(n -1)\mathbb{E}(f^2(X)) + n\right)\right) \\
+& \leq \frac{1}{n^2}\left(\mathbb{E}(f^2(X))\left(n(n -1)\mathbb{E}(f^2(X)) + n^2\mathbb{E}(f^2(X))\right)\right) \\
+& \leq 2 \left(\mathbb{E}(f^2(X))\right)^2
+\end{align*}
+Applying Lemma~\ref{lem:paley_zygmund} with $p = 1$, $q = 2$, $Z = \frac{1}{n}\sum_{i = 1}^{n} f(x_i)^2$, and $\lambda = \frac{1}{2}$, we have
+\begin{align*}
+\mathbb{P}\left(\frac{1}{n}\sum_{i = 1}^{n} f(x_i)^2 \geq \frac{1}{2}\mathbb{E}[f^2(X)] \right) & \geq \left[\frac{1}{2} \frac{\mathbb{E}(f^2(X))}{\mathbb{E}\left((\frac{1}{n}\sum_{i = 1}^{n} f(x_i)^2)^2\right)^{1/2}}\right]^2\\
+& \geq \frac{1}{4} \left[\frac{1}{\sqrt{2}}\right]^2 = \frac{1}{8}.
+\end{align*}
+
+\end{document}

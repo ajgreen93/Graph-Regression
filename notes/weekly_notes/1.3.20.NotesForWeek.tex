@@ -162,7 +162,10 @@
 \date{\today}
 \maketitle
 
-Suppose we observe independent samples $X = \set{x_1,\ldots,x_n}$ from a distribution $P$ with density $p$ supported on $\mathcal{X} = [0,1]^d$. Let $G_{n,r}$ be the random geometric graph of radius $r$ formed over the samples $X$, that is, the neighborhood graph with kernel $K(x) = \1(\norm{x} \leq r)$, and let $L$ denote the corresponding graph Laplacian matrix. In this week's notes, we will show that as long as $r$ is chosen to be sufficiently small, the eigenvalues of $L$ we care about scale at an appropriate rate. More precisely, we will prove the following Lemma.
+Suppose we observe independent samples $X = \set{x_1,\ldots,x_n}$ from a distribution $P$ with density $p$ supported on $\mathcal{X} = [0,1]^d$. For a given kernel $K_r(x,y) = \frac{1}{r^d}K(\norm{x - y})$, let $G_{n,r}$ denote the random neighborhood graph formed over the samples $X$. Let $L = D - A$ be the corresponding combinatorial Laplacian. In this week's notes, we will show that as long as $r$ is chosen to be sufficiently small, the eigenvalues of $L$ we care about scale at an appropriate rate.
+
+\section{Random Geometric Graph}
+In the special case when $K(x) = 1(x \leq r)$ and $G_{n,r}$ is a random geometric graph, we can use results from optimal transport theory to  will prove the following Lemma.
 \begin{lemma}
 	\label{lem:higher_order_eigenvalue_tail_bound}
 	Let $\kappa = n^{2d/(4s + d)}$. Suppose $p$ is uniformly bounded away from $0$ and $\infty$ on its support,
@@ -177,6 +180,29 @@ Suppose we observe independent samples $X = \set{x_1,\ldots,x_n}$ from a distrib
 	with probability $1 - o(n^{-1})$ as $n \to \infty$.
 \end{lemma}
 Lemma~\ref{lem:higher_order_eigenvalue_tail_bound} establishes that eigenvalues of the graph Laplacian, suitably normalized, scale comparably to the eigenvalues of the continuum Laplacian operator $\mathcal{D}f := \textrm{div}(\nabla f)$. Along with an upper bound on the graph Sobolev semi-norm $R_{s,n}(f)$ (established in the \textit{12.20.19 Notes}), this allows us to argue that if $f$ is a smooth function with large $\mathcal{L}_2$ norm, then the projection of a function $f$ onto the eigenvectors $v_1,\ldots,v_{\kappa}$ is still quite large (measured in empirical norm); or, equivalently, the bias induced by projection onto these eigenvectors is small.
+
+\section{Higher-order kernels.}
+When $K$ is the uniform kernel, the aforementioned upper bound on the graph Sobolev semi-norm holds only when $s = 1$ or $s = 2$. For larger values of $s$, we require that $K$ be a higher-order kernel, that is that $K$ satisfy
+\begin{equation*}
+\int K(x) \,dx = 1,~~ \int x^{\ell}K(x) \,dx = 0~~\textrm{for $\ell = 1,\ldots,s-1$}
+\end{equation*}
+It seems difficult to extend the techniques used to prove Lemma~\ref{lem:higher_order_eigenvalue_tail_bound} to this setting. We will therefore use a different approach to prove the following Lemma.
+\begin{lemma}
+	Let $\kappa = n^{2d/(4s + d)}$. Suppose $p$ is uniformly bounded away from $0$ and $\infty$ on its support,
+	\begin{equation*}
+	0 < p_{\min} < p(x) < p_{\max} < \infty,~~\textrm{for all $x \in \Xset$.}
+	\end{equation*}
+	Let $K$ satisfy the following conditions:
+	
+	\textcolor{red}{TODO:} Specify conditions.
+	
+	Then there exists a constant $c$ such that the eigenvalue $\lambda_{\kappa}$ is lower bounded,
+	\begin{equation}
+	\label{eqn:higher_order_eigenvalue_tail_bound2}
+	\lambda_{\kappa} \geq c\kappa^{2/d}nr^{2 + d}
+	\end{equation}
+	with probability $1 - o(n^{-1})$ as $n \to \infty$.
+\end{lemma}
 
 \section{Proofs}
 
@@ -226,4 +252,13 @@ For all $j = 1,\ldots,N-1$, we have that $M\lambda_j(K_N) = MN = n$. Therefore,
 & \geq (3\sqrt{d} + 3)^{-(2+d)}nr^{d+2}\kappa^{2/d},
 \end{align*}
 where the last inequality can be verified by a quick calculation in light of $\kappa = n^{2d/(4s + d)}$ and $r \leq n^{-4/((2+d)(4s + d))}$. Since we've already shown $\lambda_{\kappa}(G_{n,r}) \geq \lambda_{\kappa}(H)$ with probability $1 - o(n^{-1})$, this completes the proof of Lemma~\ref{lem:higher_order_eigenvalue_tail_bound}. 
+
+\subsection{Proof of Lemma~\ref{lem:higher_order_eigenvalue_tail_bound}}
+
+Let $D_{\min} = \min_{i \in [n]} D_{ii}$ be the minimum degree of any sample $x \in X$ in the graph $G_{n,r}$. We have that
+\begin{equation*}
+\lambda_{\kappa}(L) \geq D_{\min} - \lambda_{n - \kappa}(A)
+\end{equation*}
+We 
+
 \end{document}
