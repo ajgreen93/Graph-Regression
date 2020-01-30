@@ -1,0 +1,915 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Meeting Notes for Week 1/23/20 - 1/30/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Suppose we observe samples $(y_i,x_i)$ for $i = 1,\ldots,n$, where $x_1,\ldots,x_n$ are sampled independently from a distribution $P$ with density $p$, and conditional on $X$ the responses $Y = \{y_1,\ldots,y_n\}$ are assumed to follow the model
+\begin{equation}
+\label{eqn:regression_random_design_known_variance}
+y_i = f(x_i) + \varepsilon_i, ~~ \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)
+\end{equation} 
+Our task is to distinguish
+\begin{equation*}
+\mathbf{H}_0: f = f_0 := 0 \quad \textrm{vs} \quad \mathbf{H}_{\textrm{a}}: f \neq f_0
+\end{equation*}
+and we worst-case risk to assess performance: for a test $\phi$ and function class $\mathcal{H}$,
+\begin{equation*}
+\mathcal{R}_{\epsilon}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, \norm{f - f_0}_{\Leb^2} \geq \epsilon} \Ebb_f(1 - \phi).
+\end{equation*}
+
+Theorem~\ref{thm:sobolev_testing_rate} presents our formal result, that the graph spectral test 
+\begin{equation*}
+\phi_{\spec}(G_{n,r}) := \1\bigl\{T_{\textrm{spec}}(G_{n,r}) \geq \tau\bigr\},~~ T_{\textrm{spec}}(G_{n,r}) := \frac{1}{n}\sum_{k = 1}^{\kappa} \biggl(\sum_{i = 1}^{n} v_{k,i}(G_{n,r}) y_i\biggr)
+\end{equation*} is a minimax optimal test over the Sobolev balls $W_{\sigma}^{s,2}(\mathcal{X};R)$ whenever $4s > d$ and $\Xset = [0,1]^d$. 
+
+Here, $W_{\sigma}^{s,2}(\Xset;L)$ consists of all those functions $f \in W^{s,2}(\Xset)$ such that $\mathrm{supp}(f^{(\alpha)}) \subseteq \Xset_{\sigma}$ for each $\abs{\alpha} \leq s$.
+
+\begin{theorem}
+	\label{thm:sobolev_testing_rate}
+	Suppose we observe samples $(x_i,y_i)_{i = 1}^{n}$ according to the model~\eqref{eqn:regression_random_design_known_variance}. Let $R,\sigma > 0$, $b,s,d \geq 1$ be fixed constants, with $s$ and $d$ integers. Suppose that $P$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]^d$ with density function $p \in C^{s-1}(\Xset;p_{\max})$ for some $p_{\max} < \infty$, and further that $p(x)$ is bounded away from zero, i.e. there exists $p_{\min} > 0$ such that 
+	\begin{equation*}
+	p_{\min} < p(x),~~ \textrm{for all $x \in \mathcal{X}$.}
+	\end{equation*}
+	Then the following statement holds for all $n$ sufficiently large: if the test $\phi_{\spec}(G_{n,r})$ is performed with parameter choices
+	\begin{equation*}
+	n^{-1/(2(s-1) + d)} \leq r(n) \leq \min\bigl\{n^{-4/((4s + d)(2+d))},\sigma/s\bigr\}, ~\kappa = n^{2d/(4s + d)}, ~\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*}
+	then there exists constants $c_1,c_2$ which do not depend on $n,b$ or $R$ such that for every $\epsilon \geq 0$ satisfying
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate}
+	\epsilon^2 \geq c_1^2 \cdot b^2 \cdot \max\{R^2,R^{2d/(4s + d)}\} \cdot n^{-{4s}/(4s + d)}
+	\end{equation}
+	the worst-case risk is upper bounded
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate_1}
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; W_{\sigma}^{s,2}(\mathcal{X};R)) \leq \frac{c_2}{b}.
+	\end{equation}
+\end{theorem}
+
+\section{Proofs}
+
+\subsection{Proof of Theorem~\ref{thm:sobolev_testing_rate}}
+
+We want to apply Lemma~\ref{lem:fixed_graph_testing}, which analyzes testing over an arbitrary graph $G$, to the case where $G = G_{n,r}$. In order to do this, we will need to show that when $r$ and $\kappa$ are appropriately tuned and $\norm{f}_{\Leb^2(\mathcal{X})}$ is sufficiently large, the inequality~\eqref{eqn:fixed_graph_testing_critical_radius} holds with respect to $G = G_{n,r}$ and $\beta = (f(x_1),\ldots,f(x_n))$. In particular, we will show that the following statements each hold with probability at least $1 - c/b$ for sufficiently large $n$ (Here and in what follows, $c$ denotes a constant which is fixed in $n$ and $f$ and does not depend on $b$, but may depend on other fixed quantities such as $d$, $s$, etc.): 
+\begin{enumerate}[label=(E\arabic*)]
+	\item 
+	\label{event:discrete_sobolev_norm}
+	\textbf{Graph Sobolev norm:} For any $n^{-1/(2(s - 1) + d)}\leq r \leq \sigma/s$,
+	\begin{equation}
+	\label{eqn:continuous_to_discrete_sobolev_norm}
+	f^T L^s f \leq c \cdot b \cdot \norm{f}_{W^{s,2}(\Xset)}^2 \cdot n^{s + 1} r^{s(d + 2)} 
+	\end{equation}
+	\item 
+	\label{event:eigenvalue_tail_decay_2}
+	\textbf{Eigenvalue tail bound:} There exists a constant $c$ such that for any $\kappa = 1,\ldots,n$, if $\max\{ 3 d_{\infty}(X,\ol{X}),n^{-1/d}\} \leq r \leq \kappa^{-2/(d(2 +d))}$ then,
+	\begin{equation}
+	\label{eqn:eigenvalue_tail_bound_2}
+	\lambda_{\kappa} \geq c \cdot n r^{d + 2} \kappa^{2/d}
+	\end{equation}
+	In particular, the inequality~\eqref{eqn:eigenvalue_tail_bound_2} is satisfied for sufficiently large $n$ when $\kappa = n^{2d/(4s + d)}$ and $c(\log n/n)^{1/d} \leq r \leq n^{-4/((2+d)(4s + d))}$. 
+	\item 
+	\label{event:l2_norm}
+	\textbf{Empirical norm of $f$:} There exists a constant $c_1$ such that if $\norm{f}_{\Leb^2(\Xset)} \geq c_1 \cdot b \cdot n^{-2s/(4s + d)}$ and $4s > d$,
+	\begin{equation}
+	\label{eqn:l2_to_empirical_norm}
+	\norm{f}_n^2 \geq \frac{1}{b} \cdot \norm{f}_{\Leb^2}^2
+	\end{equation}
+\end{enumerate} 
+
+\subsubsection{Proof of~\eqref{eqn:continuous_to_discrete_sobolev_norm}}
+
+The probabilistic bound~\eqref{eqn:continuous_to_discrete_sobolev_norm} follows from the more general Lemma~\ref{lem:roughness_functional_expectation_sobolev} by Markov's inequality. 
+\begin{lemma}
+	\label{lem:roughness_functional_expectation_sobolev}
+	Let $\Xset$ be a Lipschitz domain, let $s \geq 1$ be an integer, and let $0 < \sigma < 1$. Suppose that $f \in W_{\sigma}^{s,2}(\Xset)$, and further that $p \in C^{s-1}(\Xset;p_{\max})$ for some constant $p_{\max} < \infty$. Then for any $2$nd-order kernel $K$ and any $n^{-1/(2(s - 1) + d)} \leq r(n) < \sigma/s$, the expected graph Sobolev seminorm is upper bounded
+	\begin{equation}
+	\label{eqn:roughness_functional_expectation_sobolev}
+	\Ebb\bigl[f^T L^s f\bigr] \leq c \cdot \norm{f}_{W^{s,2}(\Xset)}^2 \cdot n^{s + 1}r^{s(d + 2)}
+	\end{equation}
+\end{lemma}
+
+We note that the proof of Lemma~\ref{lem:roughness_functional_expectation_sobolev} is where we rely on the fact that $f$ and its derivatives are supported on $\Xset_{\sigma}$. The proof of Lemma~\ref{lem:roughness_functional_expectation_sobolev} is lengthy, and we defer it to Section~\ref{sec:technical_lemma_proofs}.
+
+\subsubsection{Proof of~\eqref{eqn:eigenvalue_tail_bound_2}}
+
+We prove~\eqref{eqn:eigenvalue_tail_bound_2} by comparing $G_{n,r}$ to the tensor product of a $d$-dimensional lattice and a complete graph. The latter is a highly structured graph with known eigenvalues, which as we will see are sufficiently lower bounded for our purposes.
+
+Let $\wt{r} = r/(3(\sqrt{d} + 1)), M = (1/\wt{r})^d$ and $N = n\wt{r}^d$; assume without loss of generality that $M$ and $N$ are integers. Additionally for $m = M^{1/d}$ define
+\begin{equation*}
+\overline{Z} = \set{\frac{1}{m}(j_1,\ldots,j_d): j \in [m]^d}
+\end{equation*}
+to be the $M$ evenly spaced grid points over $[0,1]^d$.
+For a given $\overline{z}_j \in \overline{Z}$, we write $Q(z_j) = m^{-1}[j_1 - 1,j_1] \times \cdots \times m^{-1}[j_d - 1,j_d]$ for the cube of side length $1/m$ with $z_j$ at one corner. 
+
+Consider the graph $H = (\overline{X}, E_H)$, where $(\ol{x}_k, \ol{x}_{\ell}) \in E_H$ if
+\begin{equation*}
+\textrm{there exists}~\ol{z}_i, \ol{z}_j \in \ol{Z}~\textrm{such that}~\ol{x}_k \in Q(\ol{z}_i),~ \ol{x}_\ell \in Q(\ol{z}_j),~\textrm{and}~\norm{i - j}_1 \leq 1.
+\end{equation*}
+On the one hand $H \cong \ol{G}^M_d \otimes K_N$ where $\ol{G}^M_d$ is the $d$-dimensional lattice on $M$ nodes, and $K_N$ is the complete graph on $N$ nodes. On the other hand, we now show that when $\max\{3d_{\infty}(X,\ol{X}), n^{-1/d}\} \leq r$ then $G_{n,r} \succeq H$ as a result of the triangle inequality. If $(\ol{x}_k, \ol{x}_{\ell}) \in E(H)$, by definition there exist $\ol{z}_i, \ol{z}_j$ connected in $\ol{G}_d^M$ such that $\ol{x}_k \in Q(\ol{z}_i)$ and $\ol{x}_{\ell} \in Q(\ol{z}_j)$. This implies that $\ol{x}_k$ and $\ol{x}_{\ell}$ must themselves be close together, since
+\begin{equation*}
+\norm{\ol{x}_k - \ol{x}_{\ell}}_2 \leq \norm{\ol{x}_k - \ol{z}_{i}}_2 + \norm{\ol{z}_i - \ol{z}_j}_2 +  \norm{\ol{z}_{j} - \ol{x}_{\ell} }_2 \leq \wt{r}(1 + 2\sqrt{d}) = r/3.
+\end{equation*}
+Since we also assume $r/3 \geq d_{\infty}(X,\ol{X})$, another application of the triangle inequality gives
+\begin{equation*}
+\norm{\pi(\ol{x}_k) - \pi(\ol{x}_\ell)}_2 \leq \norm{\pi(\ol{x}_k) - \ol{x}_\ell}_2 + \norm{\ol{x}_k - \ol{x}_\ell}_2 \leq \norm{\ol{x}_{\ell} - \pi(\ol{x}_\ell)}_2 \leq r,
+\end{equation*}
+implying that $(\pi(\ol{x}_k), \pi(\ol{x}_{\ell})) \in E$ and consequently that $G_{n,r} \succeq \ol{G}^M_d \otimes K_N$.
+
+The eigenvalues of lattices and complete graphs are known to satisfy, respectively
+\begin{equation*}
+\lambda_k(\ol{G}^{M}_d) \geq \frac{k^{2/d}}{M^{2/d}}~\textrm{for $k = 0,\ldots,M - 1$},~~ \textrm{and}~\lambda_{j}(K_N) \geq N\1\{j > 0\}~\textrm{for $j = 0,\ldots,N-1$.}
+\end{equation*}
+and by standard facts regarding the eigenvalues of tensor product graphs, we have that the spectrum $\Lambda(H)$ satisfies
+\begin{equation*}
+\Lambda(H) = \set{N\lambda_k(\ol{G}^{M}_d) + M\lambda_j(K_N): \textrm{for $k = 0,\ldots,M - 1$ and $j = 0,\ldots,N-1$}}
+\end{equation*}
+For all $j = 1,\ldots,N-1$, we have that $M\lambda_j(K_N) = MN = n$. Therefore,
+\begin{align*}
+\lambda_{\kappa}(H) & \geq \{n \wedge N\lambda_{\kappa}(\ol{G}^{M}_d)\} \\
+& \geq \{n \wedge n\wt{r}^d\frac{\kappa^{2/d}}{M^{2/d}}\} \\
+& \geq \{n \wedge (3\sqrt{d} + 3)^{-(2+d)}nr^{d+2}\kappa^{2/d}\} \\
+& \geq (3\sqrt{d} + 3)^{-(2+d)}nr^{d+2}\kappa^{2/d},
+\end{align*}
+where the last inequality is satisfied since $r \leq \kappa^{-2/(d(d + 2))}$, completing the proof of~\eqref{eqn:eigenvalue_tail_bound_2}.
+
+\subsubsection{Proof of~\eqref{eqn:l2_to_empirical_norm}}
+
+\begin{lemma}
+	\label{lem:empirical_norm_sobolev}
+	Let $\Xset$ be a Lipschitz domain over which the density is upper and lower bounded 
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty ~~\textrm{for all $x \in \Xset$,}
+	\end{equation*}
+	and let $f \in W^{s,2}(\Xset)$.Then for any $b \geq 1$, there exists $c_1$ such that if 
+	\begin{equation}
+	\norm{f}_{\Leb^2(\Xset)} \geq 
+	\begin{cases*}
+	c_1 \cdot b \cdot \norm{f}_{W^{s,2}(\Xset)} \cdot \max\{n^{-1/2},n^{-s/d}\},~~\textrm{if}~2s \neq d \\
+	c_1 \cdot b \cdot \norm{f}_{W^{s,2}(\Xset)} \cdot n^{-a/2},~~\textrm{if}~ 2s = d ~\textrm{for any}~ 0 < a < 1
+	\end{cases*}
+	\end{equation}
+	then,
+	\begin{equation}
+	\label{eqn:l2_to_empirical_norm_sobolev}
+	\mathbb{P}\left[\norm{f}_n^2 \geq \frac{1}{b} \Ebb\bigl[\norm{f}_n^2\bigr]\right] \geq 1 - \frac{5}{b}
+	\end{equation}
+	where $c_1$ and $c_2$ are constants which may depend only on $s$, $\Xset$, $d$, $p_{\min}$ and $p_{\max}$.
+\end{lemma}
+The lower bound~\eqref{eqn:l2_to_empirical_norm} results from the more general Lemma~\ref{lem:empirical_norm_sobolev}, which can be verified by checking the various orderings of $2s/(4s + d)$, $s/d$ and $1/2$ whenever $4s < d$. 
+
+\paragraph{Proof of Lemma~\ref{lem:empirical_norm_sobolev}:}
+
+To prove~\eqref{eqn:l2_to_empirical_norm_sobolev} we will show
+\begin{equation*}
+\mathbb{E}\bigl[\norm{f}_n^4\bigr] \leq \left(1 + \frac{1}{b^2}\right)\cdot \left(\mathbb{E}\bigl[\norm{f}_n^2\bigr]\right)^2
+\end{equation*}
+whence the claim follows from the Paley-Zygmund inequality (Lemma~\ref{lem:paley_zygmund}). Since $p \leq p_{\max}$ is uniformly bounded, we can relate $\mathbb{E}\bigl[\norm{f}_n^4\bigr]$ to the $\Leb^4$ norm,
+\begin{equation*}
+\mathbb{E}\bigl[\norm{f}_n^4\bigr] = \frac{(n-1)}{n}\left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + \frac{\mathbb{E}\Bigl[\bigl(f(x_1)\bigr)^4\Bigr]}{n} \leq \left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + p_{\max}^2\frac{\norm{f}_{\Leb^4}^4}{n}.
+\end{equation*}
+We will use a Sobolev inequality to relate $\norm{f}_{\Leb^4}$ to $\norm{f}_{W_d^{s,2}(\Xset)}$. The nature of this inequality depends on the relationship between $s$ and $d$ (see Theorem 6 in Section 5.6.3 of \textcolor{red}{Evans} for a formal statement), so from this point on we divide our analysis into three cases: (i) the case where $2s > d$, (ii) the case where $2s < d$, and (iii) the borderline case $2s = d$.
+
+\textit{Case 1: $2s > d$.}
+When $2s > d$, since $\Xset$ is a Lipschitz domain the Sobolev inequality establishes that $f \in C^{\gamma}(\overline{\Xset})$ for some $\gamma > 0$ which depends on $s$ and $d$, with the accompanying estimate
+\begin{equation*}
+\sup_{x \in \Xset} \abs{f(x)} \leq \norm{f}_{C^{\gamma}(\Xset)} \leq c \norm{f}_{W^{s,2}(\Xset)}.
+\end{equation*}
+Therefore,
+\begin{align*}
+\norm{f}_{\Leb^4}^4 & = \int_{\Xset} [f(x)]^4 \,dx \\
+& \leq \left(\sup_{x \in \Xset} \abs{f(x)}\right)^2 \cdot \int_{\Xset} [f(x)]^2 \,dx \\
+& \leq c \norm{f}_{W^{s,2}(\Xset)}^2 \cdot \norm{f}_{\Leb^2(\Xset)}^2.
+\end{align*}
+Since by assumption
+\begin{equation*}
+\norm{f}_{\Leb^2(\Xset)}^2 \geq c_1^2 \cdot b^2 \cdot \norm{f}_{W_d^{s,2}(\Xset)}^2 \cdot \frac{1}{n},
+\end{equation*}
+we have
+\begin{equation*}
+p_{\max}^2\frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq c \norm{f}_{W^{s,2}(\Xset)}^2 \cdot \frac{\norm{f}_{\Leb^2(\Xset)}^4}{n \norm{f}_{\Leb^2(\Xset)}^2} \leq c \frac{\norm{f}_{\Leb^2(\Xset)}^4}{c_1^2 b^2} \leq \frac{\Ebb\bigl[\norm{f}_n^2\bigr]}{b^2},
+\end{equation*}
+where the last inequality follows by taking $c_1$ sufficiently large.
+
+\textit{Case 2: $2s < d$.}
+When $2s < d$, since $\Xset$ is a Lipschitz domain the Sobolev inequality establishes that $f \in \Leb^q(\Xset)$ for $q = 2d/(d - 2s)$, and moreover that
+\begin{equation*}
+\norm{f}_{\Leb^q(\Xset)} \leq c \norm{f}_{W^{s,2}(\Xset)}.
+\end{equation*}
+Since $4 = 2\theta + (1 - \theta)q$ for $\theta = 2 - d/(2s)$, Lyapunov's inequality implies
+\begin{equation*}
+\norm{f}_{\Leb^4(\Xset)}^4 \leq \norm{f}_{\Leb^2}^{2\theta} \cdot \norm{f}_{\Leb^q(\Xset)}^{(1 - \theta)q} \leq c \norm{f}_{\Leb^2(\Xset)}^{4} \cdot \left(\frac{\norm{f}_{W^{s,2}(\Xset)}}{\norm{f}_{\Leb^2(\Xset)}}\right)^{d/s}.
+\end{equation*}
+By assumption, $\norm{f}_{\Leb^2(\Xset)} \geq c_1 b \norm{f}_{W^{s,2}(\Xset)} n^{-s/d}$, and therefore
+\begin{equation*}
+p_{\max}^2 \frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq c\norm{f}_{\Leb^2(\Xset)}^4 \left(\frac{\norm{f}_{W^{s,2}(\Xset)}}{n^{s/d}\norm{f}_{\Leb^2(\Xset)}}\right)^{d/s} \leq \frac{c\norm{f}_{\Leb^2(\Xset)}^4}{c_1b^{d/s}} \leq \frac{\norm{f}_{\Leb^2(\Xset)}^4}{b^2}.
+\end{equation*}
+where the last inequality follows when $c_1$ is sufficiently large, and keeping in mind that $d/s > 2$ and $b \geq 1$. 
+
+\textit{Case 3: $2s = d$.}
+Assume $f$ satisfies~\eqref{eqn:paley_zygmund_1} for a given $0 < a < 1$. When $2s = d$, since $\Xset$ is a Lipschitz domain we have that $f \in L^q(\Xset)$ for any $q < \infty$, with the accompanying estimate
+\begin{equation*}
+\norm{f}_{\Leb^q(\Xset)} \leq c \norm{f}_{W^{s,2}(\Xset)}.
+\end{equation*}
+In particular the above holds for $q = 2/(1 - a)$ when $1/2 < a < 1$, and for any $q > 4$ when $0 < a < 1/2$. Using Lyapunov's inequality as in the previous case then implies the desired result.
+
+\subsection{Proof of Lemma~\ref{lem:roughness_functional_expectation_sobolev}}
+\label{sec:technical_lemma_proofs}
+
+To simplify exposition, we introduce the iterated difference operator, defined recursively as
+\begin{equation*}
+D_{jk}f(x) = (D_{k}f(x_j) - D_{k}f(x))\frac{K_r(x_j,x)}{r^d},~~ D_jf(x) = (f(x_j) - f(x))\frac{K_r(x_j,x)}{r^d}~~ \textrm{for $j \in [n], k \in [n]^q$}
+\end{equation*}
+We will also use the notation $d_jf(x) := (f(x_j) - f(x))$. We split our analysis into cases based on whether $s$ is even or odd. 
+
+\subsubsection{Case 1: $s$ is even.}
+When $s$ is even, letting $q = s/2$ we have the decomposition
+\begin{equation}
+\label{eqn:continuous_to_discrete_sobolev_norm_pf1}
+f^T L^s f =  r^{ds} \cdot \sum_{i = 1}^{n} \sum_{k \in [n]^q} \sum_{\ell \in [n]^q} D_kf(x_i) D_{\ell}f(x_i). 
+\end{equation}
+
+For given index vectors $k,\ell \in [n]^q$ and indices $i,j$, let $I = \abs{k \cup \ell \cup i}$ be the total number of unique indices. We separate our analysis into cases based on the magnitude of $I$, specifically whether $I = s + 1$ (the leading terms where all indices are distinct) $I < s + 1$ (the terms where at least one index is repeated) and show that
+\begin{equation}
+\label{eqn:expected_difference_operators_1}
+\Ebb(D_kf(x_i) D_\ell f(x_i)) =
+\begin{cases*}
+O(r^{2s}) \cdot \norm{f}_{W^{s,2}(\Xset)}^2, & ~~\textrm{if $I = s + 1$} \\
+O(r^{2} r^{d(I - (s + 1))}) \cdot [f]_{W^{1,2}(\Xset)}^2, & ~~\textrm{if $I < s + 1$}~ 
+\end{cases*}
+\end{equation}
+We will prove~\eqref{eqn:expected_difference_operators_1} in Section~\ref{subsec:expected_difference_operators_pf}. First, we verify that~\eqref{eqn:continuous_to_discrete_sobolev_norm_pf1} and \eqref{eqn:expected_difference_operators_1} are together enough to show Lemma~\ref{lem:roughness_functional_expectation_sobolev} when $s$ is even. In the sum on the right hand side of~\eqref{eqn:continuous_to_discrete_sobolev_norm_pf1}, there are $O(n^{I})$ terms with exactly $I$ distinct indices. When $I < s + 1$, by~\eqref{eqn:expected_difference_operators_1} the total contribution of such terms to the sum is $O(n^{I}r^{d(I - 1) + 2}) \cdot [f]_{W^{1,2}(\Xset)}^2$. Since by assumption $r \geq n^{-1/d}$, this increases with $I$. Taking $I = s$ to be the largest integer less than $s + 1$, the contribution of these terms to the sum is therefore $O(n^sr^{d(s - 1) + 2}) \cdot [f]_{W^{1,2}(\Xset)}^2$ which in light of the restriction $r \geq n^{-1/(2(s - 1) + d)}$ is $O(n^{s+1}r^{s(d +2)}) \cdot [f]_{W^{1,2}(\Xset)}^2$. On the other hand when $I = s + 1$, by~\eqref{eqn:expected_difference_operators_1} we immediately have that the total contribution of these terms is $O(n^{s + 1}r^{2(s + d)}) \cdot \norm{f}_{W^{s,2}(\Xset)}$. Therefore,
+\begin{equation*}
+\Ebb(f^T L^s f) = O(n^{s+1}r^{s(d+2)}) \cdot \norm{f}_{W^{s,2}(\Xset)}.
+\end{equation*}
+
+\subsubsection{Case 2: $s$ is odd.}
+When $s$ is odd, letting $q = (s - 1)/2$ we have
+\begin{equation}
+\label{eqn:roughness_functional_representation_odd}
+f^T L^s f =  r^{ds} \cdot \sum_{i,j = 1}^{n} \sum_{k \in [n]^q} \sum_{\ell \in [n]^q} \bigl(d_jD_kf(x_i)\bigr) \cdot  \bigl(d_jD_{\ell}f(x_i)\bigr) \cdot K_r(x_i,x_j).
+\end{equation}
+For given index vectors $k,\ell \in [n]^q$ and indices $i,j \in [n]$, let $I = \abs{k \cup \ell \cup i \cup j}$ be the total number of unique indices. Similar to the case when $s$ is even, we show that 
+\begin{equation}
+\label{eqn:expected_difference_operators_2}
+\Ebb(d_iD_kf(x_j) d_iD_\ell f(x_j)) =
+\begin{cases*}
+O(r^{2s}) \cdot \norm{f}_{W^{s,2}(\Xset)}^2, & ~~\textrm{if $I = s + 1$} \\
+O(r^{2} \cdot r^{d(I - (s + 1))}) \cdot [f]_{W^{1,2}(\Xset)}^2, & ~~\textrm{if $I < s + 1$}~ 
+\end{cases*}
+\end{equation}
+Then Lemma~\ref{lem:roughness_functional_expectation_sobolev} follows from similar reasoning to the case where $s$ was even.
+
+\subsubsection{Proof of~\eqref{eqn:expected_difference_operators_1} and~\eqref{eqn:expected_difference_operators_2}}
+\label{subsec:expected_difference_operators_pf}
+
+Note that if $f$ is constant almost everywhere in $\Xset$, the claim is immediate as $D_kf(x_i) = 0$ with probability one. Otherwise $[f]_{W^{1,2}(\Xset)} > 0$, which we shall assume in what follows.
+
+Let $\delta = \min\{r^{2s},1\}\cdot[f]_{W^{1,2}(\Xset)} > 0$. Our analysis will make heavy use of Taylor expansions, and we therefore would like to show that there exists some $g \in C^{s}(\Xset) \cap W_{\sigma/2}^{s,2}(\Xset)$ such that
+\begin{equation*}
+\Bigl|\Ebb[D_kf(x_i) D_{\ell} f(x_i)] - \Ebb[D_kg(x_i) D_\ell g(x_i)]\Bigr| <  \delta, ~~\textrm{and}~~[g]_{W^{\ell,2}(\Rd)} \leq c [f]_{W^{\ell,2}(\Rd)}~\textrm{for each $\ell = 0,\ldots,s$.}
+\end{equation*}
+Then if \eqref{eqn:expected_difference_operators_1} and \eqref{eqn:expected_difference_operators_2} hold with respect to $g$, they hold (up to constants) with respect to $f$ as well. 
+Note that since $f$ is supported on $\Xset_{\sigma}$, the extension
+\begin{equation*}
+\wt{f} := 
+\begin{cases*}
+f(x),~~ x \in \Xset_{\sigma} \\
+0,~~ x \in \Rd - \Xset_{\sigma}
+\end{cases*}
+\end{equation*}
+satisfies $\wt{f}(x) = f(x)$ for all $x \in \Xset$, and $\norm{\wt{f}}_{W^{s,2}(\Rd)} = \norm{f}_{W^{s,2}}(\Xset)$.  
+
+To construct our function $g$, we consider as candidates the convolutions
+\begin{equation}
+g_m := \wt{f} \ast \eta_{1/m},~~\textrm{for each $m \in \mathbb{N}$.}
+\end{equation}
+where $\eta$ is the standard mollifier (for a definition see \textcolor{red}{Evans}.) We make the following observations:
+\begin{itemize}
+	\item Since $\eta$ is a smooth function, $g_m \in C^{\infty}(\Rd)$ and therefore $g_m \in C^s(\Xset)$. 
+	\item For all sufficiently large $m$ and all multiindices $\alpha$,
+	\begin{equation*}
+	g_m^{(\alpha)}(x) = 0~~\textrm{if $x \in \Reals^d - X_{\sigma/2}$}.
+	\end{equation*}
+	and along with the previous observation this implies $g_m \in W_{\sigma/2}^{s,2}(\Xset)$. 
+	\item By Theorem~1 of \textcolor{red}{Evans 5.3.1}, $\norm{g_m - \wt{f}}_{W_{\mathrm{loc}}^{s,2}(\Rd)} \to 0$ as $m \to \infty$, which implies  $\norm{g_m - f}_{W^{s,2}(\Xset)} \to 0$.
+\end{itemize}
+By the Cauchy-Schwarz inequality
+\begin{equation*}
+\abs{\Ebb\bigl[D_kf(x_i) D_{\ell} f(x_i)\bigr] - \Ebb\bigl[D_kg_m(x_i) D_\ell g_m(x_i)\bigr]} \leq \frac{c}{r^{sd}} \cdot \norm{f - g_m}_{\Leb^2(\Xset)}
+\end{equation*}
+and taking $m$ to be sufficiently large, we can make the right hand side less than $\delta$. On the other hand, since $\norm{g_m - f}_{W^{s,2}(\Xset)} \to 0$, there exists $m$ sufficiently large such that $[g_m]_{W^{\ell,2}(\Xset)}$ is at most say $2 [f]_{W^{\ell,2}(\Xset)}$ for each $\ell = 0,\ldots,s$. We therefore take $g = g_m$ for $m$ large enough to satisfy both conditions. 
+
+Our task is now to prove that \eqref{eqn:expected_difference_operators_1} and \eqref{eqn:expected_difference_operators_2} hold with respect to $g$. We first prove the desired bounds in the case when some indices are repeated, and then the desired bounds in the case when all indices are distinct.
+
+\paragraph{Repeated indices.}
+
+Since the proofs of~\eqref{eqn:expected_difference_operators_1} and~\eqref{eqn:expected_difference_operators_2} are essentially the same for the case where some index is repeated, we will assume without loss of generality that $s$ is even. Let $k,\ell \in [n]^q$ be index vectors for $q = s/2$. 
+
+When at least one index is repeated, we obtain a sufficient upper bound by reducing the problem of upper bounding the iterated difference operator to that of upper bounding a single difference operator. Letting $k = (k_1,\ldots,k_q)$, we can show by induction that the absolute value of the iterated difference operator $\abs{D_kg(x_i)}$ is upper bounded by
+\begin{equation*}
+\abs{D_kg(x_i)} \leq \left(\frac{2K_{\max}}{r^d}\right)^{q-1} \sum_{h \in k \cup i} \abs{D_{k_q}g(x_h)} \cdot \1\{G_{n,r}[X_{k \cup i}]~\textrm{is a connected graph} \}.
+\end{equation*}
+Therefore,
+\begin{align}
+\abs{D_kg(x_i)} \cdot \abs{D_{\ell}g(x_i)} & \leq \left(\frac{2K_{\max}}{r^d}\right)^{2(q - 1)} \sum_{h,j \in k \cup \ell \cup i} \abs{D_{k_q}g(x_h)} \cdot \abs{D_{\ell_q}g(x_j)} \cdot \1\{G_{n,r}[X_{k \cup i}], G_{n,r}[X_{\ell \cup i}]~\textrm{are connected graphs.} \} \nonumber \\
+& =  \left(\frac{2K_{\max}}{r^d}\right)^{2(q - 1)} \sum_{h,j \in k \cup \ell \cup i} \abs{D_{k_q}g(x_h)} \cdot \abs{D_{\ell_q}g(x_j)} \cdot \1\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is a connected graph.} \} \label{eqn:expected_difference_operators_sobolev_pf0}
+\end{align}
+
+We now break our analysis into three cases, based on the number of distinct indices in $k_q,\ell_q,h,j$. In each case we will obtain the same rate
+\begin{equation*}
+\Ebb\Bigl[\abs{D_{k_q}g(x_h)} \cdot \abs{D_{\ell_q}g(x_j)}\Bigr] = O(r^{(\abs{k \cup \ell \cup i} - 3)d + 2}) \cdot [g]_{W^{1,2}(\Rd)}^2,
+\end{equation*}
+and plugging this back in to~\eqref{eqn:expected_difference_operators_sobolev_pf0} we have that for any $k, \ell \in [n]^q$
+\begin{equation*}
+\Ebb\Bigl[\bigl|D_{k}g(x_i)\bigr| \cdot \bigl|D_{\ell}g(x_i)\bigr|\Bigr] = O(r^{(\abs{k \cup \ell \cup i} - (2q + 1))d + 2}) \cdot [g]_{W^{1,2}(\Rd)}^2.
+\end{equation*}
+
+\textit{Case 1: Two distinct indices.}
+Let $k_q = \ell_q = i$, and $h = j$. Using the law of iterated expectation, we obtain
+\begin{align*}
+\Ebb \left[\bigl(D_{i}g(x_j)\bigr)^2 \cdot \1\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected} \}\right] &= \Ebb \left[\bigl(D_{i}g(x_j)\bigr)^2 \cdot \Pbb\bigl[\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected} \} |x_i,x_j\bigr]\right] \\
+& = O(r^{(\abs{k \cup \ell \cup i} - 2)d}) \cdot \Ebb\left[\bigl(D_{i}g(x_j)\bigr)^2\right] \\
+& = O(r^{(\abs{k \cup \ell \cup i} - 3)d}) \cdot \Ebb\left[\bigl(d_{i}g(x_j)\bigr)^2K_r(x_i,x_j)\right] \\
+& = O(r^{(\abs{k \cup \ell \cup i} - 3)d + 2}) \cdot [g]_{W^{1,2}(\Xset)}^2
+\end{align*}
+where the last equality follows from Lemma~\ref{lem:expected_first_order_seminorm}.
+
+\textit{Case 2: Three distinct indices.}
+Let $k_q = \ell_q = i$, for some $i \neq j \neq h$. Using the law of iterated expectation, we obtain
+\begin{align*}
+\Ebb \Bigl[ & \abs{D_{i}g(x_j)} \cdot \abs{D_ig(x_h)} \cdot \1\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected} \}\Bigr] = \nonumber \\
+& \Ebb\Bigl[\abs{D_{i}g(x_j)} \cdot \abs{D_ig(x_h)} \cdot \Pbb\bigl[\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected} \} |x_i,x_j,x_h\bigr]\Bigr] \nonumber \\
+& = O(r^{(\abs{k \cup \ell \cup i} - 3)d}) \cdot \Ebb\Bigl[\abs{D_{i}g(x_j)} \cdot \abs{D_ig(x_h)} \Bigr] \nonumber \\
+& = O(r^{(\abs{k \cup \ell \cup i} - 3)d + 2})\cdot[g]_{W^{1,2}(\Rd)}^2
+\end{align*}
+where the last equality follows from Lemma~\ref{lem:expected_first_order_seminorm_2}.
+
+
+\textit{Case 3: Four distinct indices.}
+Using the law of iterated expectation, we find that
+\begin{align*}
+\Ebb\Bigl[ &\abs{D_{k_q}g(x_i)}\cdot{\abs{D_{\ell_q}g(x_j)}} \cdot \1\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected} \}\Bigr] \\
+& = \Ebb\Bigl[\abs{D_{k_q}g(x_i)}\cdot{\abs{D_{\ell_q}g(x_j)}} \cdot\Pbb\bigl[G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected}|x_i,x_j,x_{k_q},x_{\ell_q}\bigr]\Bigr] \\
+& = O(r^{(\abs{k \cup \ell \cup i} - 4)d}) \cdot \Ebb\Bigl[\abs{D_{k_q}g(x_i)}\cdot{\abs{D_{\ell_q}g(x_j)}}\cdot\1\{\norm{x_i - x_j} \leq (2q + 1)r\}\Bigr] \\
+& = O(r^{(\abs{k \cup \ell \cup i} - 3)d + 2}) \cdot [g]_{W^{1,2}(\Rd)}^2
+\end{align*}
+where the last equality follows from Lemma~\ref{lem:expected_first_order_seminorm_3}.
+
+\paragraph{All indices distinct.}
+
+We first show the desired result when $s$ is even, and then when $s$ is odd. 
+
+\textit{Case 1: $s$ is even.}
+
+By Lemma~\ref{lem:leading_term_sobolev} there exists some $f_s \in \Leb^2(\Xset)$ which satisfies $\norm{f_s}_{\Leb^2(\Xset)} \leq c \norm{g}_{W^{s,2}(\Xset)}$ such that
+\begin{equation*}
+\Ebb\Bigl[\bigl(D_kg(x)\bigr)^2\Bigr] = r^{2s} \cdot \norm{f_s}_{\Leb^2(\Xset)}.
+\end{equation*} Therefore, by the law of iterated expectation 
+\begin{align*}
+\Ebb\bigl[D_kg(x_i)D_kg(x_j)\bigr] = \Ebb\Bigl[\bigl(\Ebb[D_kg(x_i)|x_i]\bigr)^2\Bigr] = r^{2s} \cdot \Ebb\Bigl[\bigl(f_s(x_i)\bigr)^2\Bigr] \leq r^{2s} \cdot c \norm{g}_{W^{s,2}(\Xset)},
+\end{align*}
+proving the claimed result.
+
+\textit{Case 2: $s$ is odd.}
+
+By the law of iterated expectation, we have
+\begin{align}
+\Ebb\biggl[\Bigl(d_iD_kg_m(x_j)\Bigr) \Bigl(d_iD_{\ell}g_m(x_j)\Bigr) K_r(x_i,x_j)\biggr] & = \Ebb\biggl[\Bigl(d_i\bigl(\Ebb[D_kf|x_i,x_j]\bigr)(x_j)\Bigr)^2K_r(x_i,x_j)\biggr] \nonumber \\
+& = \Ebb\biggl[\Bigl(d_i\bigl(r^{s - 1}\cdot f_{s - 1} + r^sf_s(x_j)\bigr)(x_j)\Bigr)^2K_r(x_i,x_j)\biggr]. \label{eqn:expected_difference_operators_sobolev_pf1}
+\end{align}
+where the latter equality follows from Lemma~\ref{lem:leading_term_sobolev} and $f_{s -1}$ and $f_s$ satisfy the conclusions of that Lemma, namely that $f_{s - 1} \in C^1(\Xset) \cap W^{1,2}(\Xset)$ and $f_s \in C^{0}(\Xset) \cap \Leb^2(\Xset)$, and
+\begin{equation*}
+\norm{f_{s - 1}}_{W^{1,2}(\Xset)}, \norm{f_s}_{\Leb^2(\Xset)} \leq c \norm{g}_{W^{s,2}(\Xset)}.
+\end{equation*}
+Applying these estimates inside \eqref{eqn:expected_difference_operators_sobolev_pf1}, we obtain
+\begin{align*}
+\Ebb\biggl[\Bigl(d_i\bigl(r^{s - 1}\cdot f_{s - 1} + r^s f_s(x_j)\bigr)(x_j)\Bigr)^2K_r(x_i,x_j)\biggr] & = \Ebb\biggl[\Bigl(r^{s - 1} \cdot d_if_{s - 1}(x_j) + r^s d_if_s(x_j)\Bigr)^2K_r(x_i,x_j)\biggr] \\
+& \leq 2r^{2(s - 1)} \Ebb\Bigl[\bigl(d_if_{s-1}(x_j)\bigr)^2K_r(x_i,x_j)\Bigr] + 2r^{2s}\Ebb\Bigl[\bigl(d_if_s(x_j)\bigr)^2\Bigr] \\
+& \leq 2r^{2(s - 1)} \Ebb\Bigl[\bigl(d_if_{s-1}(x_j)\bigr)^2K_r(x_i,x_j)\Bigr] + 4r^{2s} \norm{g}_{W^{s,2}(\Rd)}^2 \\
+& \leq r^{2s} \cdot c\norm{g}_{W^{s,2}(\Rd)}^2
+\end{align*}
+where the last inequality follows from Lemma~\ref{lem:expected_first_order_seminorm}. This concludes the proof of~\eqref{eqn:expected_difference_operators_1} and~\eqref{eqn:expected_difference_operators_2}.
+
+
+\section{Additional Results}
+
+\subsection{Fixed Graph Testing}
+
+\begin{lemma}
+	\label{lem:fixed_graph_testing}
+	Let $1 \leq \kappa \leq n$ be an integer.
+	\begin{enumerate}
+		\item \textbf{Type I error:} Under the null hypothesis $\beta = \beta_0 = 0$, the Type I error of $\phi_{\spec}$ is upper bounded
+		\begin{equation}
+		\label{eqn:graph_spectral_type_I_error}
+		\mathbb{E}_{\beta_0}(\phi_{\spec}) \leq \frac{1}{b^2}.
+		\end{equation}
+		\item \textbf{Type II error:} For any $b \geq 1$ and $\beta$ such that
+		\begin{equation}
+		\label{eqn:fixed_graph_testing_critical_radius}
+		\frac{1}{n} \sum_{i = 1}^{n} \beta_i^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}} + \frac{\beta^T L^s \beta}{n\lambda_{\kappa}^s}
+		\end{equation}
+		the Type II error of $\phi_{\spec}$ is upper bounded,
+		\begin{equation}
+		\label{eqn:graph_spectral_type_II_error}
+		\mathbb{E}_{\beta}(1 - \phi_{\spec}) \leq \frac{3}{b}.
+		\end{equation}
+	\end{enumerate}
+\end{lemma}
+
+\subsection{Integrals}
+
+For Lemmas~\ref{lem:expected_first_order_seminorm} - \ref{lem:expected_first_order_seminorm_3}, we will assume that $K$ is a kernel function compactly supported on $B(0,1)$ and upper bound $K(x) \leq K_{\max}$.
+
+\begin{lemma}
+	\label{lem:expected_first_order_seminorm}
+	Suppose $g \in C^{1}(\Xset)$ for $\Xset$ a Lipschitz domain and that $\abs{p(x)} \leq p_{\max}$ for all $x \in \Xset$. Then
+	\begin{equation*}
+	\Ebb\Bigl[(g(x_j) - g(x_i))^2K_r(x_i,x_j)\Bigr] \leq c K_{\max} p_{\max}^2 r^2 [g]_{W^{1,2}(\Xset)}^2
+	\end{equation*}
+	for a constant $c$ which depends only on $\Xset$ and $d$.
+\end{lemma}
+\begin{proof}
+	Since $\Xset$ is a Lipschitz domain, we may take $h \in C^1(\Rd)$ to be an extension of $g$ such that $h = g$ a.e. on $\Xset$, and additionally
+	\begin{equation*}
+	[h]_{W^{1,2}(\Rd)} \leq c[g]_{W^{1,2}(\Xset)}
+	\end{equation*}
+	Since $h = g$ a.e on $\Xset$, the expectations satisfy
+	\begin{equation*}
+	\Ebb\Bigl[(g(x_j) - g(x_i))^2K_r(x_i,x_j)\Bigr] = \Ebb\Bigl[(h(x_j) - h(x_i))^2K_r(x_i,x_j)\Bigr].
+	\end{equation*}
+	By the fundamental theorem of calculus we have for any $y,x \in \Rd$,
+	\begin{equation}
+	\label{eqn:expected_first_order_seminorm_pf1}
+	h(y) - h(x) = \int_{0}^{1} \frac{d}{dt}\bigl[h(x + t(y - x))\bigr] \,dt = \int_{0}^{1} \dotp{\nabla(h(x + t(y - x)))}{y - x} \,dt
+	\end{equation}
+	where the integral is well-defined as $\nabla h(z)$ exists almost everywhere since $h \in C^1(\Rd)$. We now perform some standard calculus:
+	\begin{align*}
+	\Ebb[(h(x_j) - h(x_i))^2K_r(x_i,x_j)] & \leq p_{\max}^2 \int_{\Rd} \int_{\Rd} (h(y) - h(x))^2 K_r(y,x) \,dy \,dx\\
+	& = p_{\max}^2 \int_{\Rd} \int_{\Rd} \left(\int_{0}^{1} \dotp{\nabla(h(x + t(y - x)))}{y - x} \,dt\right)^2 K_r(y,x) \,dy \,dx \\
+	& \overset{(i)}{\leq} p_{\max}^2 \int_{\Rd} \int_{\Rd} \left(\int_{0}^{1} \norm{\nabla(h(x + t(y - x)))}\norm{y - x} \,dt\right)^2 K_r(y,x) \,dy \,dx \\
+	& \overset{(ii)}{\leq} p_{\max}^2 r^2\int_{\Rd} \int_{\Rd} \left(\int_{0}^{1} \norm{\nabla(h(x + t(y - x)))}\,dt\right)^2 K_r(y,x) \,dy \,dx \\
+	& \overset{(iii)}{\leq} p_{\max}^2 r^2\int_{\Rd} \int_{\Rd} \int_{0}^{1} \norm{\nabla(h(x + t(y - x)))}^2 \,dt K_r(y,x) \,dy \,dx \\
+	& \overset{(iv)}{\leq} p_{\max}^2 K_{\max} r^{2 - d}\int_{\Rd} \int_{0}^{1} \int_{B(x,r)} \norm{\nabla(h(x + t(y - x)))}^2 \,dy \,dt \,dx \\
+	& \overset{(v)}{\leq}  p_{\max}^2 K_{\max} r^{2 - d}\int_{\Rd} \int_{0}^{1} \int_{B(0,r)} \norm{\nabla(h(x + z))}^2  \,dz \,dt \,dx
+	\end{align*}
+	where $(i)$ follows by Cauchy-Schwarz, $(ii)$ follows since either $\norm{y - x} \leq r$ or $K_r(y,x) = 0$, $(iii)$ follows by Jensen's, $(iv)$ follows by the assumption $K \leq K_{\max}$ supported on $B(0,1)$, and $(v)$ follows from the change of variables $z = x + t(y - x)$. Finally, again using Fubini's Theorem, we have
+	\begin{align*}
+	K_{\max} r^{2 - d}\int_{\Rd} \int_{0}^{1} \int_{B(0,r)} \norm{\nabla(h(x + z))}^2  \,dz \,dt \,dx & = r^{2 - d}\int_{B(0,r)} \int_{0}^{1} \int_{\Rd} \norm{\nabla(h(x + z))}^2  \,dz \,dt \,dx \\
+	& = K_{\max} r^2 [h]_{W_d^{1,2}(\Rd)}.
+	\end{align*}
+\end{proof}
+
+\begin{lemma}
+	\label{lem:expected_first_order_seminorm_2}
+	Suppose $f \in C^{1}(\Xset)$ for $\Xset$ a Lipschitz domain and that $\abs{p(x)} \leq p_{\max}$ for all $x \in \Xset$. Then
+	\begin{equation*}
+	\Ebb\Bigl[\abs{D_if(x_h)}\cdot\abs{D_if(x_j)} \Bigr] \leq c K_{\max}^3 p_{\max}^3 r^2 [f]_{W^{1,2}(\Xset)}^2
+	\end{equation*}
+	for a constant $c$ which depends only on $\Xset$ and $d$.
+\end{lemma}
+\begin{proof}
+	Since $\Xset$ is a Lipschitz domain, we may take $g \in C^1(\Rd)$ to be an extension of $f$ such that $g = f$ a.e. on $\Xset$, and additionally
+	\begin{equation*}
+	[g]_{W^{1,2}(\Rd)} \leq c[f]_{W^{1,2}(\Xset)}
+	\end{equation*}
+	Since $g = f$ a.e on $\Xset$, the expectations satisfy
+	\begin{equation*}
+	\Ebb\Bigl[\abs{D_if(x_h)}\cdot\abs{D_if(x_j)} \Bigr] =\Ebb\Bigl[\abs{D_ig(x_h)}\cdot\abs{D_ig(x_j)} \Bigr]
+	\end{equation*}
+	
+	We rewrite $\Ebb\bigl[\abs{D_{i}g(x_j)} \cdot \abs{D_ig(x_h)} \bigr]$ as follows,
+	\begin{align*}
+	\Ebb\Bigl[\abs{D_{i}g(x_j)} \cdot \abs{D_ig(x_h)} \Bigr] & = \int \int \int \abs{g(z) - g(x)} \cdot \abs{g(z) - g(y)} K_r(z,y) K_r(z,x) \,dP(x) \,dP(y) \,dP(x) \\
+	& = \int \left[\int \abs{g(z) - g(x)} K_r(z,x) \,dP(x)\right]^2 \,dP(z) \\
+	& \leq p_{\max}^3 \int_{\Xset} \left[\int_{\Xset} \abs{g(z) - g(x)} K_r(z,x) \,dx\right]^2 \,dz
+	\end{align*}
+	Applying~\eqref{eqn:expected_first_order_seminorm_pf1} inside the integral gives
+	\begin{align*}
+	\int_{\Xset} \abs{g(z) - g(x)} K_r(z,x) \,dx & \leq \int_{\Rd} \abs{g(z) - g(x)} K_r(z,x) \,dx \\
+	& = \int_{\Rd} \abs{\int_{0}^{1} \dotp{\nabla g(x + t(z - x))}{z - x} \,dt} K_r(z,x) \,dx \\
+	& \leq \int_{\Rd} \int_{0}^{1} \norm{\nabla g(x + t(z - x))}\cdot\norm{z - x} \,dt K_r(z,x) \,dx \\
+	& \leq r \int_{\Rd} \int_{0}^{1} \norm{\nabla g(x + t(z - x))} \,dt K_r(z,x) \,dx \\
+	& \leq r \frac{K_{\max}}{r^d} \int_{B(z,r)} \int_{0}^{1} \norm{\nabla g(x + t(z - x))} \,dt  \,dx \\
+	& \leq r K_{\max} \int_{B(0,1)} \int_{0}^{1} \norm{\nabla g(x - try)} \,dt  \,dy,
+	\end{align*}
+	and as a result, 
+	\begin{equation*}
+	p_{\max}^3 \int_{\Xset} \left[\int_{\Xset} \abs{g(z) - g(x)} K_r(z,x) \,dx\right]^2 \,dz \leq c\cdot p_{\max}^3 r^2 K_{\max}^3 [f]_{W_d^{1,2}(\Rd)}^2.
+	\end{equation*}
+\end{proof}
+
+\begin{lemma}
+	\label{lem:expected_first_order_seminorm_3}
+	Suppose $f \in C^{1}(\Xset)$ and that $\abs{p(x)} \leq p_{\max}$ for all $x \in \Xset$. Then for any distinct $i,j,k,\ell$ each in $[n]$,
+	\begin{equation*}
+	\Ebb\Bigl[\abs{D_{k}f(x_i)}\cdot{\abs{D_{\ell}f(x_j)}}\cdot\1\{\norm{x_i - x_j} \leq (2q + 1)r\}\Bigr] \leq c K_{\max} p_{\max}^2 r^{2 + d} [f]_{W^{1,2}(\Rd)}^2
+	\end{equation*}
+	for a constant $c$ which depends only on $\Xset$ and $d$.
+\end{lemma}
+\begin{proof}
+	Since $\Xset$ is a Lipschitz domain, we may take $g \in C^1(\Rd)$ to be an extension of $f$ such that $g = f$ a.e. on $\Xset$, and additionally
+	\begin{equation*}
+	[g]_{W^{1,2}(\Rd)} \leq c[f]_{W^{1,2}(\Xset)}
+	\end{equation*}
+	Since $g = f$ a.e on $\Xset$, the expectations satisfy
+	\begin{equation*}
+	\Ebb\Bigl[\abs{D_{k}f(x_i)}\cdot{\abs{D_{\ell}f(x_j)}}\cdot\1\{\norm{x_i - x_j} \leq (2q + 1)r\}\Bigr] = 	\Ebb\Bigl[\abs{D_{k}g(x_i)}\cdot{\abs{D_{\ell}g(x_j)}}\cdot\1\{\norm{x_i - x_j} \leq (2q + 1)r\}\Bigr].
+	\end{equation*}
+	We rewrite the expectation as an integral,
+	\begin{align*}
+	\Ebb\Bigl[& \abs{D_{k}g(x_i)}\cdot{\abs{D_{\ell}g(x_j)}}\cdot\1\{\norm{x_i - x_j} \leq (2q + 1)r\}\Bigr] \\
+	& \leq p_{\max}^4 \int_{\Xset^4} \abs{g(x) - g(y)} \cdot \abs{g(u) - g(v)} \cdot  K_r(x,y) K_r(u,v) \1\{\norm{y - v} \leq (2q + 1)r\} \,dy \,dx \,du \,dv
+	\end{align*}
+	By substituting $z_1 = (y - v)/r$, $z_2 = (u - v)/r$, and $z_3 = (x - y)/r = (x - v)/r + z_1$, we can simplify the integral in the previous display,
+	\begin{align*}
+	\int_{\Xset^4} & \abs{g(x) - g(y)} \cdot \abs{g(u) - g(v)} \cdot K_r(x,y) K_r(u,v) \1\{\norm{y - v} \leq (2q + 1)r\} \,dy \,dx \,du \,dv \\
+	& \leq K_{\max}^2 r^d \int_{\Xset} \int_{[B(0,1)]^3} \abs{g\bigl((z_3 + z_1)r + v\bigr) - g(z_1r + v)} \cdot \bigl|g(z_2r + v) - g(v)\bigr| \,dz_1 \,dz_2 \,dz_3 \,dv \\
+	& \leq  K_{\max}^2 r^{d + 2} \int_{[B(0,1)]^3} \int_{[0,1]^2} \int_{\Xset} \norm{\nabla g(t z_3 r + z_1r + v)} \cdot \norm{\nabla g(t z_2 r + v)} \,dv \,dt_1 \,dt_2 \,dz_1 \,dz_2 \,dz_3 \\
+	& \leq c \nu_d^3 K_{\max}^2 r^{d + 2} [f]_{W_{d}^{1,2}(\Xset)}^2.
+	\end{align*}
+\end{proof}
+
+
+\begin{lemma}
+	\label{lem:remainder_term}
+	Suppose that $f \in \Leb^2(U)$ for some open domain $U$, and that $h:U \times U \times [0,1] \to \Reals$ is uniformly bounded. Then, the function $g(x) = \int_{0}^{1} \int_{B(0,1)} f(x + aty) h(y,x, t) \,dy \,dt$ also belongs to $\Leb^2(U)$, with norm
+	\begin{equation*}
+	\norm{g}_{\Leb^2(U)} \leq \nu_d \cdot \norm{f}_{\Leb^2(U)} \cdot \norm{h}_{\infty}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We compute the squared norm of $g$,
+	\begin{align*}
+	\norm{g}_{\Leb^2(\Rd)}^2 & = \int_{U} \left(\int_{0}^{1} \int_{B(0,1)} f(x + aty) h(y,x,t) \,dt \,dy \right)^2 \,dx \\
+	& \leq \norm{h}_{\infty}^2 \int_{U} \left(\int_{0}^{1} \int_{B(0,1)} f(x + aty) \,dt \,dy \right)^2 \,dx \\
+	& \leq \nu_d^2 \norm{h}_{\infty}^2 \int_{U} \int_{0}^{1} \frac{1}{\nu_d}\int_{B(0,1)} f^2(x + aty) \,dt \,dy \,dx \tag{Jensen's inequality} \\
+	& = \nu_d^2 \norm{h}_{\infty}^2 \int_{0}^{1} \int_{B(0,1)} \frac{1}{\nu_d}\int_{U}f^2(x + aty) \,dt \,dy \,dx \tag{Fubini's theorem} \\
+	& = \nu_d^2 \norm{h}_{\infty}^2 \norm{f}_{\Leb^2(U)}^2.
+	\end{align*}
+\end{proof}
+
+\begin{lemma}
+	\label{lem:leading_term_sobolev}
+	Let $k \in [n]^q$ for some $q \geq 1$, let $K_r$ be a second order kernel, and suppose $f \in C^{s}(\Xset) \cap W_{\sigma}^{s,2}(\Xset)$ for some $s \in \mathbb{N}$ and $\sigma > 0$. Let $p$ be a density satisfying $p \in C^{0}(\Xset;p_{\max})$ if $s = 0$, and otherwise $p \in C^{s - 1}(\Xset;p_{\max})$ for some $p_{\max} > 0$. For any $qr < \sigma$, there exist functions $f_{\ell}$ for $\ell = 2q,\ldots,s - 1$ and $f_s$ satisfying $f_{\ell} \in C^{s - \ell}(\Xset) \cap W_{\sigma - qr}^{s - \ell,2}(\Xset)$ and
+	\begin{equation*}
+	\norm{f_{\ell}}_{W^{s - \ell,2}(\Xset)} \leq c \norm{f}_{W^{s,2}(\Xset)}
+	\end{equation*}
+	for some constant $c$ which depends only on $\sigma$, $d$, $\Xset$ and $p_{\max}$ such that
+	\begin{equation}
+	\label{eqn:leading_term_sobolev}
+	\Ebb(D_kf(x)) =
+	\begin{cases*}
+	\sum_{\ell = 2q}^{s} f_{\ell}(x) r^{\ell} ,~~& \textrm{if $2q < s$} \\
+	r^s \cdot f_{s}(x),~~& \textrm{if $2q \geq s$}
+	\end{cases*}
+	\end{equation}
+	for any $x \in \Xset$.
+\end{lemma}
+\begin{proof}	
+	We proceed by induction on $q$. 
+	
+	\paragraph{Base case.}
+	We begin with the base case of $q = 1$. When $s = 0$, we need to show that $\Ebb[D_kf(x)] = f_s(x)$ for some $f_s \in C^{0}(\Xset)$ satisfying $\mathrm{supp}(f_s) \subset X_{\sigma - r}$ and $\norm{f_s}_{\Leb^2(\Xset)} \leq c\norm{f}_{W^{s,2}(\Xset)}$. But
+	\begin{align*}
+	\Ebb\Bigl[D_kf(x)\Bigr] & = \int f(z) K_r(x,z) p(z) \,dz  - f(x)\Ebb\bigl[K_r(x_k,x)\bigr] \\
+	& = \int f(yr + x) K\bigl(\norm{y}\bigr) p(yr + z) \,dy - f(x)\Ebb\bigl[K_r(x_k,x)\bigr],
+	\end{align*}
+	whence the boundedness $f_s \in C^{0}(\Xset)$ follows from the boundedness of $f, K$ and $p$. We now analyze each term in the above difference. First, we have that $f(x)\Ebb[K_r(x_k,x)] = 0$ unless $x \in \Xset_{\sigma}$, and 
+	\begin{equation*}
+	\norm{f\Ebb[K_r(x_k,\cdot)]}_{\Leb^2(\Xset)} \leq p_{\max} \norm{f}_{\Leb^2(\Xset)}.
+	\end{equation*}
+	Moreover, since $K$ is compactly supported on $B(0,1)$, the integral $\int f(yr + x) K(\norm{y}) p(yr + x) \,dy = 0$ unless $x \in \Xset_{\sigma - r}$. Since
+	\begin{equation*}
+	\biggl\|\int f(yr + x) K(\norm{y}) p(yr + x) \,dy\biggr\|_{\Leb^2(\Xset)} \leq p_{\max} K_{\max} \norm{f}_{\Leb^2(\Xset)},
+	\end{equation*}
+	the claim follows.
+	
+	Now, when $s \geq 1$ since $f \in C^{s}(\Xset)$ it admits a Taylor expansion of the following form for all $x,z \in \Xset$:
+	\begin{equation*}
+	f(z) = \sum_{\abs{\alpha} < s} \frac{f^{(\alpha)}(x)}{\alpha!} (x - z)^{\alpha} + \frac{1}{(s - 1)!}\sum_{\abs{\alpha} = s} (x - z)^{\alpha} \int_{0}^{1}(1 - t)^{s - 1} f^{(\alpha)}(x + t(z - x)) \,dt
+	\end{equation*}
+	$f^{(\alpha)} \in C^{s - \abs{\alpha}}(\Xset)$ additionally satisfies
+	\begin{equation*}
+	\norm{f^{(\alpha)}}_{W^{s - \abs{\alpha},2}(\Xset)} \leq \norm{f}_{W^{s,2}(\Xset)} ~~\textrm{and}~~ \mathrm{supp}\bigl(f^{(\alpha)}\bigr) \subset {\Xset}_{\sigma}.
+	\end{equation*}
+	Replacing $f$ by its Taylor expansion inside the expected first order difference operator $\Ebb(D_kf(x))$ we have
+	\begin{equation}
+	\label{eqn:leading_term_sobolev_pf1}
+	\Ebb(D_kf(x)) = \sum_{1 \leq \abs{\alpha} < s} \frac{f^{(\alpha)}(x)}{\alpha!} E_{\alpha,x} + \frac{1}{(s - 1)!}\sum_{\abs{\alpha} = s} \int_{0}^{1}(1 - t)^{s - 1} E_{\alpha,x,t}(f)  \,dt 
+	\end{equation}
+	where we use the notation $E_{\alpha,x} := \Ebb\left[(x - x_k)^{\alpha}K_r(x_k,x)\right]$ and  $E_{\alpha,x,t}(f) := \Ebb\bigl[f^{(\alpha)}(x + t(x_k - x)) (x_k - x)^{\alpha} K_r(x_k,x)\bigr]$.
+	
+	By a change of variables, we have
+	\begin{align*}
+	E_{\alpha,x,t}(f) & = \frac{1}{r^d}\int_{\Rd} f^{(\alpha)}\bigl(x + t(z - x)\bigr) (z - x)^{\alpha}  K\biggl(\frac{\norm{z - x}}{r}\biggr) p(z) \,dz \\
+	& = r^s \int_{\Rd} y^{\alpha} f^{(\alpha)}\bigl(x + tyr) K\bigl(\norm{y}\bigr) p(yr + x) \,dy
+	\end{align*}
+	and as a result the remainder term in \eqref{eqn:leading_term_sobolev_pf1} reduces to
+	\begin{align*}
+	\frac{1}{(s - 1)!}\sum_{\abs{\alpha} = s} \int_{0}^{1}(1 - t)^{s - 1} E_{\alpha,x,t}(f)  \,dt & = \frac{r^s}{(s - 1)!}\sum_{\abs{\alpha} = s} \int_{0}^{1} \int_{\Rd} (1 - t)^{s - 1}  y^{\alpha} f^{(\alpha)}\bigl(x + tyr) K\bigl(\norm{y}\bigr) p(yr + x) \,dy \,dt \\
+	& =: r^s g_s(x) ~~\textrm{for $g_s \in C^{0}(\Xset) \cap \Leb_{\sigma - r}^2(\Xset)$},
+	\end{align*}
+	where additionally $\norm{g_s}_{\Leb^2(\Xset)} \leq c \norm{f}_{W^{s,2}(\Xset)}$ by Lemma~\ref{lem:remainder_term}. When $s = 1$, there are no multiindices $1 < \abs{\alpha} < s$, and so only the remainder term in \eqref{eqn:leading_term_sobolev_pf1} is non-zero; thus we have shown~\eqref{eqn:leading_term_sobolev} when $q = 1$ and $s = 1$.
+	
+	When $s \geq 2$, we can analyze $E_{\alpha,x}$ using a Taylor expansion of $p$.  For any $x,z \in \Xset$, we have
+	\begin{equation*}
+	p(z) = \sum_{\abs{\beta} < s  - 1} \frac{p^{(\beta)}(x)}{\beta!} (x - z)^{\beta} + \frac{1}{(s - 2)!}\sum_{\abs{\beta} = s - 1} (x - z)^{\beta} \int_{0}^{1}(1 - t)^{s - 2} p^{(\beta)}(x + t(z - x)) \,dt
+	\end{equation*}
+	and $p^{(\beta)} \in C^{s - \abs{\beta} - 1}(\Xset)$ additionally satisfies
+	\begin{equation*}
+	\norm{p^{(\beta)}}_{C^{s - \abs{\beta} - 1}(\Xset)} \leq p_{\max}.
+	\end{equation*}
+	Replacing $p$ by its Taylor expansion, we analyze the term $E_{\alpha,x}$. Note that by assumption $\sigma > r$, and therefore for any $x \in \Xset_{\sigma}$,
+	\begin{equation*}
+	\int_{\Xset} (x - z)^{\alpha + \beta} K_r(x,z) \,dz = \int_{\Rd} (x - z)^{\alpha + \beta} K_r(x,z) \,dz = r^{\abs{\alpha} + \abs{\beta}} \int_{\Rd} y^{\alpha + \beta} K\bigl(\norm{y}\bigr) \,dz
+	\end{equation*} 
+	and similarly
+	\begin{equation*}
+	\int_{\Xset} \int_{0}^{1} (1 - t)^{s - 2} (x - z)^{\alpha + \beta}  p^{(\beta)}(x + t(z - x)) K_r(x,z) \,dz \,dt = r^{\abs{\alpha} + \abs{\beta}}\int_{\Rd} \int_{0}^{1} (1 - t)^{s - 2} y^{\alpha + \beta}  p^{(\beta)}(x + try) K\bigl(\norm{y}\bigr) \,dy \,dt
+	\end{equation*}
+	Therefore for any such $x \in \Xset_{\sigma}$,
+	\begin{align*}
+	E_{\alpha,x} & = \int_{\Xset} (x - z)^{\alpha} K_r(x,z) p(z) \,dz \\
+	& =  \sum_{\abs{\beta} = 0}^{s - 2} \frac{p^{(\beta)}(x)}{\beta!} \int_{\Xset} (x - z)^{\alpha + \beta}K_r(x,z)\,dz ~~+ \\
+	& ~~~\frac{1}{(s - 2)!}\sum_{\abs{\beta} = s - 1} \int_{\Xset} \int_{0}^{1} (1 - t)^{s - 2} (x - z)^{\alpha + \beta}  p^{(\beta)}(x + t(z - x)) K_r(x,z) \,dz \,dt \\
+	& = \sum_{\abs{\beta} = 0}^{s - 2} r^{\abs{\alpha} + \abs{\beta}} \frac{p^{(\beta)}(x)}{\beta!} \int_{\Rd} y^{\alpha + \beta}K(y)\,dy +~ \frac{r^{\abs{\alpha} + s - 1}}{(s - 2)!} \sum_{\abs{\beta} = s - 1} \int_{\Rd} \int_{0}^{1} (1 - t)^{s - 2} y^{\alpha + \beta} p^{(\beta)}(x + ytr) K\bigl(\norm{y}\bigr) \,dy \,dt \\
+	& =: \sum_{\abs{\beta} = 0}^{s - 2} \1\{\abs{\alpha} + \abs{\beta} > 1\}r^{\abs{\alpha} + \abs{\beta}} p_{\abs{\beta}}(x) + r^s p_{s - 1}(x) ~~\textrm{for $p_{\abs{\beta}} \in C^{\infty}(\Xset), \norm{p_{\abs{\beta}}}_{C^{s - \abs{\beta} - 1}(\Xset)} \leq c \norm{p}_{C^{s - 1}(\Xset)}$},
+	\end{align*}
+	where the last line follows since $K$ is a 2nd order kernel. On the other hand when $x \not\in \Xset_{\sigma}$, the derivatives $f^{(\alpha)}(x) = 0$ for each $\alpha = 1,2,\ldots,s-1$. 
+	As a result, by substituting our expressions for $E_{\alpha,x}$ and $E_{\alpha,x,t}(f)$ back into~\eqref{eqn:leading_term_sobolev_pf1}, we obtain that for all $x \in \Xset$,
+	\begin{align*}
+	\Ebb\bigl[D_kf(x)\big] & = \sum_{\abs{\alpha} = 1}^{s - 1} \sum_{\abs{\beta} = 0}^{s-2} \1\{\abs{\alpha} + \abs{\beta} > 1\} r^{\abs{\alpha} + \abs{\beta}} \frac{f^{(\alpha)}(x)p_{\abs{\beta}}(x)}{\alpha!} + r^s \biggl(\sum_{\abs{\alpha} = 1}^{s - 1} \frac{f^{(\alpha)}(x)p_{s - 1}(x)}{\alpha!} + g_s(x)\biggr) \\
+	& = \sum_{\ell = 2}^{s - 1} r^{\ell} \sum_{ \substack{\abs{\alpha} + \abs{\beta} = \ell, \\ \abs{\beta} > 0} }   \frac{f^{(\alpha)}(x)p_{\abs{\beta}}(x)}{\alpha!} + r^s \biggl(\sum_{\abs{\alpha} = 1}^{s - 1} \frac{f^{(\alpha)}(x)p_{s - 1}(x)}{\alpha!} + g_s(x)\biggr) \\
+	& =: \sum_{\ell = 2}^{s - 1} r^{\ell} f_{\ell}(x) + r^s f_s(x).
+	\end{align*}
+	We have already shown $g_s \in C^{0}(\Xset) \cap \Leb_{\sigma - r}^2(\Xset)$. Since additionally $f^{(\alpha)} \in C^{s - \abs{\alpha}}(\Xset) \cap W_{\sigma}^{s - \abs{\alpha},2}(\Xset)$ and $p_{\abs{\beta}} \in C^{s - 1 - \abs{\beta}}(\Xset)$, the products 
+	\begin{equation*}
+	f^{(\alpha)} \cdot p_{\abs{\beta}} \in W_{\sigma}^{m,2}(\Xset) \cap C^{m}(\Xset) ~~\textrm{for $m = \min\{s - \abs{\alpha}, s - 1 - \abs{\beta}\}$.}
+	\end{equation*}
+	Finally, note that for $\abs{\alpha} + \abs{\beta} = \ell$ the inequality $s - \ell \leq m$ holds. Therefore, $f_{\ell} \in W_{\sigma}^{s - \ell,2}(\Xset) \cap C^{s - \ell}(\Xset)$ for each $\ell = 2,3,\ldots,s$, and 
+	\begin{equation*}
+	\norm{f^{(\alpha)}p_{\abs{\beta}}}_{W^{s - \ell,2}(\Rd)} \leq \norm{f^{(\alpha)}p_{\abs{\beta}}}_{W^{m,2}(\Rd)} \leq p_{\max} \norm{f^{(\alpha)}}_{W^{s - \abs{\alpha},2}(\Xset)} \leq p_{\max} \norm{f}_{W^{s,2}(\Rd)}
+	\end{equation*} 
+	which finishes the proof of Lemma~\ref{lem:leading_term_sobolev} when $q = 1$.
+	
+	\paragraph{Induction Step.}
+	
+	
+	Now, we assume \eqref{eqn:leading_term_sobolev} holds for all $k \in [n]^q$, and prove the desired estimate on $\Ebb[D_{k}D_jf(x)]$ for each $j \in [n]$. We will build a proof piece-by-piece, depending on the relative size of $s$ and $q$.
+	
+	If $s \leq 2$, by hypothesis there exists $f_s \in C^{0}(\Xset) \cap \Leb_{\sigma - r}^{2}(\Xset)$ satisfying
+	\begin{equation*}
+	\norm{f_s}_{\Leb^2(\Xset)} \leq c \norm{f}_{W^{s,2}(\Xset)}
+	\end{equation*}
+	such that for any $z \in \Xset$,
+	\begin{equation*}
+	\Ebb\Bigl[D_jf(z)\Bigr] = r^s f_s(z).
+	\end{equation*}
+	Therefore by the law of iterated expectation,
+	\begin{equation*}
+	\Ebb\Bigl[D_kD_jf(x)\Bigr] = \Ebb\Bigl[D_k(\Ebb[D_jf])(x)\Bigr] = \Ebb\Bigl[D_k\bigl(r^s f_s\bigr)(x)\Bigr] = r^s \Ebb\Bigl[D_kf_s(x)\Bigr]
+	\end{equation*}
+	Seeing as $f_s \in C^{0}(\Xset) \cap \Leb_{\sigma - r}^2(\Xset)$, we may apply the inductive hypothesis to obtain that $\Ebb[D_kf_s(x)] \in C^0(\Xset) \cap \Leb_{\sigma - (q + 1)r}^2(\Xset)$, and additionally
+	\begin{equation}
+	\label{eqn:leading_term_sobolev_pf3}
+	\biggl\|\Ebb\Bigl[D_kf_s(x)\Bigr]\biggr\|_{\Leb^2(\Xset)} \leq c \norm{f_s}_{\Leb^2(\Xset)}.
+	\end{equation}
+	We have therefore established~\eqref{eqn:leading_term_sobolev} for all $q$ in the case when $s \leq 2$. 
+	
+	Otherwise, when $s \geq 3$ by hypothesis there exist functions $f_{\ell} \in C^{s - \ell}(\Xset) \cap W_{\sigma - r}^{s - \ell,2}(\Xset)$ for each $\ell = 2,\ldots,s$ satisfying
+	\begin{equation*}
+	\norm{f_{\ell}}_{W^{s - \ell,2}(\Xset)} \leq c \norm{f}_{W^{s,2}(\Xset)}
+	\end{equation*}
+	such that for any $z \in \Xset$,
+	\begin{equation*}
+	\Ebb(D_jf(z)) = \sum_{\ell = 2}^{s} r^{\ell} f_{\ell}(z).
+	\end{equation*}
+	By the law of iterated expectation
+	\begin{align*}
+	\Ebb\Bigl[D_{k}D_jf(x)\Bigr] & = \Ebb\Bigl[D_k\bigl(\Ebb[D_jf]\bigr)(x)\Bigr] \\
+	& = \Ebb\biggl[D_k\Bigl(\sum_{\ell = 2}^{s - 1} r^{\ell} f_{\ell} + r^s f_s\Bigr)(x)\biggr] \\
+	& = \sum_{\ell = 2}^{s - 1} r^{\ell} \cdot \Ebb\Bigl[D_kf_{\ell}(x)\Bigr] + r^s \Ebb\Bigl[D_kf_s(x)\Bigr].
+	\end{align*}
+	Recalling that $\Ebb\Bigl[D_kf_s(x)\Bigr]$ satisfies~\eqref{eqn:leading_term_sobolev_pf3}, we now apply the inductive hypothesis to $\Ebb(D_kf_{\ell}(x))$ for each $\ell = 2,\ldots,s-1$, to prove~\eqref{eqn:leading_term_sobolev}.
+	
+	First we consider the case when $2(q + 1) \geq s$. Note that $2q \geq s - \ell$ for each $\ell \geq 2$. Therefore by hypothesis, for each $\ell = 2,\ldots,s - 1$ the expectation $\Ebb[D_kf_{\ell}(x)] = r^{s - \ell}f_{\ell,s}(x)$ for some $f_{\ell,s} \in C^{s - \ell}(\Xset) \cap \Leb_{\sigma - (q + 1)r}^2(\Rd)$ satisfying
+	\begin{equation}
+	\label{eqn:leading_term_sobolev_pf4}
+	\norm{f_{\ell,s}}_{\Leb^2(\Xset)} \leq c\norm{f_{\ell}}_{W^{s - \ell,2}(\Xset)} \leq c\norm{f}_{W^{s,2}(\Xset)}
+	\end{equation}
+	and as a result
+	\begin{equation*}
+	\sum_{\ell = 2}^{s - 1} r^{\ell} \cdot \Ebb(D_kf_{\ell}(x)) = r^s \sum_{\ell = 2}^{s - 1} f_{\ell,s}(x)
+	\end{equation*}
+	establishing that the second part of~\eqref{eqn:leading_term_sobolev} holds for all $q$ and all $s \leq 2(q + 1)$. 
+	
+	Otherwise $2(q + 1) < s - 1$. For each $\ell = 2,\ldots, s - 1$, if additionally  $2q \leq s - \ell - 1$, then by hypothesis
+	\begin{equation*}
+	\Ebb(D_kf_{\ell}(x)) = \sum_{m = 2q}^{s - \ell - 1} r^{m} \cdot f_{\ell, \ell + m}(x) + r^{s - {\ell}} f_{\ell,s}
+	\end{equation*}
+	where $f_{\ell,\ell + m} \in C^{s - (\ell + m)}(\Xset) \cap W_{\sigma - (q + 1)r}^{s - (\ell + m),2}(\Xset)$ satisfies
+	\begin{equation*}
+	\norm{f_{\ell,\ell + m}}_{W^{s - (\ell + m),2}(\Rd)} \leq c\norm{f_{\ell}}_{W^{s - \ell}} \leq c\norm{f}_{W^{s,2}(\Rd)}.
+	\end{equation*}
+	On the other hand if $2s > s - \ell - 1$, then
+	\begin{equation*}
+	\Ebb\bigl[D_kf_{\ell}(x)\bigr] = r^s f_{\ell,s}
+	\end{equation*}
+	for some $f_{\ell,s} \in C^0(\Xset) \cap \Leb_{\sigma - (q + 1)r}^{2}(\Xset)$ which additionally satisfies \eqref{eqn:leading_term_sobolev_pf4}. Therefore,
+	\begin{align*}
+	\sum_{\ell = 2}^{s - 1}  r^{\ell} \cdot \Ebb(D_kf_\ell(x)) & = \sum_{\ell = 2}^{s - 1 - 2q} r^{\ell} \cdot \left\{\sum_{m = 2q}^{s - \ell - 1} r^m \cdot f_{\ell,\ell + m}(x) + r^{s - \ell} \cdot f_{\ell,s}(x) \right\} + \sum_{\ell = s - 1 - 2q}^{s - 1} r^s \cdot f_{\ell,s}(x) \\
+	& = \sum_{\ell = 2}^{s - 1 - 2q} r^{\ell} \cdot \left\{\sum_{m = 2q}^{s - \ell - 1} r^m \cdot f_{\ell, \ell + m}(x)\right\}  + r^{s}\sum_{\ell = 2}^{s - 1}f_{\ell,s}(x) \\
+	& = \sum_{m = 2q}^{s - 3} \sum_{\ell = 2}^{s - m - 1} r^{m + \ell} \cdot f_{\ell, \ell + m}(x) + r^{s}\sum_{\ell = 2}^{s - 1}f_{\ell,s}(x).
+	\end{align*}
+	Rewriting the first sum in the final equation as a sum over $\ell + m = 2(q + 1),\ldots, s - 1$ establishes~\eqref{eqn:leading_term_sobolev}.
+\end{proof}
+
+\subsection{One-Sided Concentration}
+
+The proof of Lemma~\ref{lem:empirical_norm_sobolev} relies on (a variant of) the Paley-Zygmund Inequality.
+\begin{lemma}
+	\label{lem:paley_zygmund}
+	Let $f$ satisfy the following moment inequality for some $b \geq 1$:
+	\begin{equation}
+	\label{eqn:paley_zygmund_1}
+	\Ebb\bigl[\norm{f}_n^4\bigr] \leq \left(1 + \frac{1}{b^2}\right)\cdot\Bigl(\Ebb\bigl[\norm{f}_n^2\bigr]\Bigr)^2.
+	\end{equation}
+	Then,
+	\begin{equation}
+	\label{eqn:paley_zygmund_2}
+	\mathbb{P}\left[\norm{f}_n^2 \geq \frac{1}{b} \Ebb\bigl[\norm{f}_n^2\bigr]\right] \geq 1 - \frac{5}{b}.
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	Let $Z$ be a non-negative random variable such that $\mathbb{E}(Z^q) < \infty$. The Paley-Zygmund inequality says that for all $0 \leq \lambda \leq 1$,
+	\begin{equation}
+	\label{eqn:paley_zygmund_pf1}
+	\mathbb{P}(Z > \lambda \mathbb{E}(Z^p)) \geq \left[(1 - \lambda^p) \frac{\mathbb{E}(Z^p)}{(\mathbb{E}(Z^q))^{p/q}}\right]^{\frac{q}{q - p}}
+	\end{equation}
+	Applying~\eqref{eqn:paley_zygmund_pf1} with $Z = \norm{f}_n^2$, $p = 1$, $q = 2$ and $\lambda = \frac{1}{b}$, by assumption~\eqref{eqn:paley_zygmund_1} we have
+	\begin{equation*}
+	\mathbb{P}\Bigl(\norm{f}_n^2 > \frac{1}{b} \mathbb{E}[\norm{f}_n^2]\Bigr) \geq \Bigl(1 - \frac{1}{b}\Bigr)^2 \cdot  \frac{\bigl(\mathbb{E}[\norm{f}_n^2]\bigr)^2}{\mathbb{E}[\norm{f}_n^4]} \geq \frac{\Bigl(1 - \frac{2}{b}\Bigr)}{\Bigl(1 + \frac{1}{b^2}\Bigr)} \geq 1 - \frac{5}{b}.
+	\end{equation*}
+\end{proof}
+
+
+\end{document}

@@ -1,0 +1,312 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 1/23/20 - 1/30/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $t$ be an integer, $n = t^d$, and 
+\begin{equation*}
+\overline{X} := \Bigl\{\frac{1}{t}(j_1,\ldots,j_d): k \in [t]^d\Bigr\}
+\end{equation*}
+consist of $n$ total evenly spaced grid points on $[0,1]^d$. The lattice graph formed over these grid points is 
+\begin{equation*}
+\overline{G} := \bigl(\overline{X},\overline{E}\bigr),~~ \overline{E} := \set{(\overline{x},\overline{x}'): \norm{\overline{x} - \overline{x}'}_1 = \frac{1}{t}}.
+\end{equation*}
+We observe $n$ samples according to regression model
+\begin{equation}
+\label{eqn:grid_regression_model}
+y_j = f(\ol{x}_j) + \varepsilon_j, ~\varepsilon_j \overset{\mathrm{i.i.d}}{\sim} \mathcal{N}(0,1) ~~\textrm{for each $j \in [t]^d$,}
+\end{equation}
+and our goal is to perform the goodness-of-fit test
+\begin{equation*}
+\mathbb{H}_0 : f = f_0 := 0 ~~\textrm{vs.}~~ \mathbb{H}_a: f \neq f_0.
+\end{equation*}
+For a given test $\phi:\Reals^n \to \{0,1\}$ and function class $\mathcal{F}$, we evaluate $\phi$ through the lens of worst-case risk:
+\begin{equation*}
+\mathcal{R}(\phi; \mathcal{F}) := \Ebb_{f_0}(\phi) + \sup_{f \neq f_0 \in \mathcal{F}}\Ebb_{f}(1 - \phi)
+\end{equation*}
+Unless there exists some separation between functions $f \in \mathcal{F}$ and $f_0$, the type II error can be quite close to $1$. We enforce this separation by removing a ball of radius $\epsilon$ centered at $f_0$ from the function class $\mathcal{F}$, and let
+\begin{equation*}
+\mathcal{F}_{\epsilon} := \set{f \in \mathcal{F}: \norm{f}_{\Leb^2} \geq \epsilon}.
+\end{equation*}
+A classical way to study the properties of $\phi$ over $\mathcal{F}$ is through the critical radius: the smallest value of $\epsilon$ such that $\phi$ has small worst-case risk over the remaining function class $\mathcal{R}(\phi;\mathcal{F}_{\epsilon})$, which we shall write as $\mathcal{R}_{\epsilon}(\phi;\mathcal{F})$.  
+
+\section{Graph Laplacian Eigenvector Projection Test}
+For an arbitrary graph $G$ on $n$ nodes with graph Laplacian $L_G = D_G - A_G$, let $\Lambda(G)$ consist of the eigenvalues $0 = \lambda_1(G) \leq \lambda_2(G) \leq \cdots \leq \lambda_n(G)$ of $L_G$, with $v_k(G) = (v_{k,1}(G),\ldots,v_{k,n}(G)) \in \Reals^n$ denoting the eigenvector corresponding to the $i$th eigenvalues $\lambda_k(G)$. The graph Laplacian eigenvector projection test is a truncated-series test; letting $\kappa$ be some integer between $1$ and $n$ which indicates where we truncate the series $\bigl(Y^T v_k(G)\bigr)$, our test statistic is
+\begin{equation*}
+T_{\mathrm{spec}}(G) := \frac{1}{n} \sum_{k = 1}^{\kappa} \Biggl(\sum_{i = 1}^{n} y_i v_{k,i}(G)\Biggr)^2
+\end{equation*}
+and the test $\phi_{\spec}(G) := \1\{T_{\spec}(G) \geq \tau\}$ rejects the null hypothesis when the test statistic $T_{\mathrm{spec}}(G)$ is greater than a pre-specified cutoff $\tau$. 
+
+The truncation level $\kappa$ and cutoff $\tau$ are user-specified hyperparameters. When they are appropriately chosen, the test $\phi_{\spec}(\overline{G})$ is minimax optimal over the Holder ball $C^{1}(\Xset;R)$ when $d \leq 4$.
+\begin{theorem}
+	\label{thm:holder_testing_rate_grid}
+	Let $b \geq 1$ and $R > 0$ be fixed constants, and let $d \leq 4$. Suppose we observe data according to the model~\eqref{eqn:grid_regression_model}. Then when the test $\phi_{\spec}(\overline{G})$ is performed with the parameter choices
+	\begin{equation*}
+	\kappa = n^{2d/(4 + d)},~~ \tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*}
+	the following statement is true: there exists a constant $c$ such that for 
+	\begin{equation}
+	\label{eqn:holder_testing_rate_grid_1}
+	\epsilon^2 \geq c R^2 b^2 n^{-4/(4 + d)}
+	\end{equation}
+	the worst-case risk of $\phi_{\spec}(\overline{G})$ on $C^{1}(\Xset;R)$ is upper bounded
+	\begin{equation}
+	\label{eqn:holder_testing_rate_grid_2}
+	\mathcal{R}_{\epsilon}\Bigl(\phi_{\spec}(\overline{G});C^{1}(\Xset;R)\Bigr) \leq \frac{1}{b}
+	\end{equation}
+\end{theorem}
+The minimax rate for this problem is established by \textcolor{red}{(Abramovich, De Feis, Sapatinas)}, who consider the more general question of testing over Besov spaces. The test they use to establish the upper bound is related to our own, however, they use a continuum wavelet basis orthogonalized in $L^2([0,1]^d)$ rather than the grid Laplacian eigenvectors we consider. 
+
+\section{Proofs}
+
+\subsection{Proof of Theorem~\ref{thm:holder_testing_rate_grid}}
+
+In Lemma~\ref{lem:fixed_graph_testing}, we upper bound the Type I and Type II error of the test $\phi_{\spec}(G)$ over an arbitrary graph $G$ on $n$ vertices, where we observe data sampled according to the model
+\begin{equation}
+\label{eqn:regression_model_fixed_graph}
+y_i = \beta_i + \varepsilon_i,~~\varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)
+\end{equation}
+Our bound on the Type II error will be stated as a function of $\beta^T L^s \beta$--a measure of the smoothness the signal $\beta$ displays over the graph $G$--as well as the $\kappa$th eigenvalue of the Laplacian $\lambda_{\kappa}(G)$.
+
+\begin{lemma}
+	\label{lem:fixed_graph_testing}
+	Let $b \geq 1$ be a fixed constant. Suppose we observe data $Y$ according to the model~\eqref{eqn:regression_model_fixed_graph}, and perform the test $\phi_{\spec}(G)$ for some $1 \leq \kappa \leq n$ and
+	\begin{equation*}
+	\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}.
+	\end{equation*}
+	Then the following statements are true:
+	\begin{enumerate}
+		\item \textbf{Type I error:} Under the null hypothesis $\beta = \beta_0 = 0$, the Type I error of $\phi_{\spec}(G)$ is upper bounded
+		\begin{equation}
+		\label{eqn:graph_spectral_type_I_error}
+		\mathbb{E}_{\beta_0}\bigl(\phi_{\spec}(G)\bigr) \leq \frac{1}{b^2}.
+		\end{equation}
+		\item \textbf{Type II error:} For any $\beta \in \Reals^n$ such that
+		\begin{equation}
+		\label{eqn:fixed_graph_testing_critical_radius}
+		\frac{1}{n} \sum_{i = 1}^{n} \beta_i^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}} + \frac{\beta^T \bigl(L_G\bigr)^s \beta}{n\bigl[\lambda_{\kappa}(G)\bigr]^s}
+		\end{equation}
+		the Type II error of $\phi_{\spec}$ is upper bounded,
+		\begin{equation}
+		\label{eqn:graph_spectral_type_II_error}
+		\mathbb{E}_{\beta}\bigl(1 - \phi_{\spec}(G)\bigr) \leq \frac{3}{b}.
+		\end{equation}
+	\end{enumerate}
+\end{lemma}
+The proof of Lemma~\ref{lem:fixed_graph_testing} can be seen in the \textit{graph\_testing} document. The eigenvalues of the lattice $\ol{G}$ are known exactly, and standard manipulations \textcolor{red}{Sadhanala} lead to the lower bound
+\begin{equation}
+\label{eqn:eigenvalue_tail_bound_grid}
+\lambda_k(\ol{G}) \geq c n^{-2/d}k^{2/d}~\textrm{for $k = 1,\ldots,n$.}
+\end{equation}
+
+In light of~\eqref{eqn:eigenvalue_tail_bound_grid} and Lemma~\ref{lem:fixed_graph_testing}, in order to prove Theorem~\ref{thm:holder_testing_rate_grid} it will be sufficient to show the following two inequalities:
+\begin{enumerate}[label=(E\arabic*)]
+	\item 
+	\label{event:test_1}
+	
+	For every $f \in C^1(\Xset;R)$,
+	\begin{equation}
+	\label{eqn:discrete_sobolev_norm_grid}
+	f^T \bigl(L_{\ol{G}}\bigr) f \leq 4R^2 n^{1 - 2/d}
+	\end{equation}
+	\item 
+	\label{event:test_2}
+	
+	When $d \leq 4$, for every $f \in C^1(\Xset;R)$ satisfying $\norm{f}_{\Leb^2(\Xset)} \geq R^2 n^{-2/(4 + d)}$, additionally
+	\begin{equation}
+	\label{eqn:l2_to_empirical_norm_grid}
+	\frac{1}{n}\sum_{i = 1}^{n} f(x_i)^2 \geq \frac{1}{4}\norm{f}_{\Leb^2(\Xset)}^2
+	\end{equation}
+\end{enumerate}
+Once we have shown these inequalities, some basic algebra yields that for the specific choice $\kappa = (Rn)^{2d/(4s + d)}$ and a sufficiently large choice of $c$ in \eqref{eqn:holder_testing_rate_grid_1},
+\begin{align*}
+2b\sqrt{\frac{2\kappa}{n^2}} + \frac{f^T \bigl(L_{\ol{G}}\bigr)^s f}{n\bigl[\lambda_{\kappa}(\ol{G})\bigr]^s} \leq \frac{1}{n}\sum_{i = 1}^{n}\bigl[f(x_i)\bigr]^2
+\end{align*}
+and~\eqref{eqn:holder_testing_rate_grid_2} follows from Lemma~\ref{lem:fixed_graph_testing}.
+
+\paragraph{Proof of~\eqref{eqn:discrete_sobolev_norm_grid}:}
+The upper bound~\eqref{eqn:discrete_sobolev_norm_grid} follows straightforwardly from the Holder property,
+\begin{align*}
+f^T (L_{\ol{G}}) f & = \sum_{i \in [t]^d} \sum_{j \in [t]^d} \bigl(f(\ol{x}_i) - f(\ol{x}_j\bigr)^2 \1\{\norm{i - j}_1 = t\} \\
+& \leq R^2 \sum_{i \in [t]^d} \sum_{j \in [t]^d} \norm{\ol{x}_i - \ol{x}_j}_2^2 \cdot  \1\{\norm{i - j}_1 = t\} \\
+& = R^2 n^{-2/d} \sum_{i \in [t]^d} \sum_{j \in [t]^d} \1\{\norm{i - j}_1 = t\}  \\
+& \leq 4 R^2 n^{1 - 2/d}.
+\end{align*}
+
+\paragraph{Proof of~\eqref{eqn:l2_to_empirical_norm_grid}:}
+For $x \in \Rd$, let $Q(x)$ be the $d$-dimensional cube of side length $1/t$ with $x$ at its corner,
+\begin{equation*}
+Q(x) = [x_1 - 1/t,x_1] \otimes \cdots \otimes [x_d - 1/t,x_d]
+\end{equation*}
+The difference between $f(\ol{x})$ and the average of $f$ over the cube $Q(\ol{x})$ can be bounded using the Holder property,
+\begin{equation*}
+\int_{Q(\ol{x})} (f(x) - f(\ol{x}))^2 \,dx \leq \frac{1}{n} R^2 n^{-2/d}.
+\end{equation*}
+Dividing $\Xset$ into cubes and summing over the cubes, we have
+\begin{align*}
+\norm{f}_{\Leb^2(\Xset)}^2 & = \sum_{j \in [t]^d} \int_{Q(\ol{x}_j)} \bigl[f(x)\bigr]^2 \,dx \\
+& \leq 2 \sum_{j \in [t]^d} \frac{1}{n} \Bigl\{\bigl[f(\ol{x}_j)\bigr]^2 + \int_{Q(\ol{x}_j)} \bigl[f(x) - f(\ol{x}_j)]^2 \,dx \Bigr\} \\
+& \leq \frac{2}{n}\sum_{j \in [t]^d} \bigl[f(\ol{x}_j)\bigr]^2 + R^2n^{-2/d} \\
+& \leq \frac{2}{n}\sum_{j \in [t]^d} \bigl[f(\ol{x}_j)\bigr]^2 + \frac{1}{2}\norm{f}_{\Leb^2(\Xset)}^2
+\end{align*}
+where the last inequality follows by the assumption $\norm{f}_{\Leb^2(\Xset)}^2 \geq R^2n^{-4/(4 + d)}$ along with the fact that $4/(4 + d) \leq 2/d$ when $d \leq 4$.
+
+\end{document}
