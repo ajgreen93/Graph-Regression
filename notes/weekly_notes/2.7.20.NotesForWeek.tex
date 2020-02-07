@@ -1,0 +1,659 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\norm}[1]{\left \lVert #1 \right \rVert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Rdp}{\Reals_+^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\dist}{\mathrm{dist}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 1/30/20 - 2/7/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Suppose we observe samples $(y_i,x_i)$ for $i = 1,\ldots,n$. Here $x_1,\ldots,x_n$ are random design points, sampled independently from a distribution $P$ with density $p$ supported on an open set $\Xset \subset \Rd$. The responses $Y = \{y_1,\ldots,y_n\}$ are then assumed to follow the model
+\begin{equation}
+\label{eqn:regression_random_design_known_variance}
+y_i = f(x_i) + \varepsilon_i, ~~ \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)
+\end{equation} 
+Our task is to distinguish
+\begin{equation*}
+\mathbf{H}_0: f = f_0 := 0 \quad \textrm{vs} \quad \mathbf{H}_{\textrm{a}}: f \neq f_0
+\end{equation*}
+and we worst-case risk to assess performance: for a test $\phi$ and function class $\mathcal{H}$,
+\begin{equation*}
+\mathcal{R}_{\epsilon}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, \norm{f - f_0}_{\Leb^2} \geq \epsilon} \Ebb_f(1 - \phi).
+\end{equation*}
+
+\paragraph{Test statistics.}
+
+For a graph $G$ with Laplacian $L_G = D_G - A_G$, we arrange the eigenvalues in ascending order and denote them $\lambda_1(G) \leq \ldots \leq \lambda_n(G)$. We let $v_k(G)$ be the eigenvector associated with the $k$th eigenvalue $\lambda_k(G)$. 
+
+We define the graph Laplacian eigenvector projection test to be the magnitude of the projection of the responses $y$ onto the first $\kappa$ graph Laplacian eigenvectors, 
+\begin{equation*}
+\phi_{\spec}(G_{n,r}) := \1\bigl\{T_{\textrm{spec}}(G_{n,r}) \geq \tau\bigr\},~~ T_{\textrm{spec}}(G_{n,r}) := \frac{1}{n}\sum_{k = 1}^{\kappa} \biggl(\sum_{i = 1}^{n} v_{k,i}(G_{n,r}) y_i\biggr)^2.
+\end{equation*}
+
+The action of the graph Laplacian $L_{n,r}f(x)$ (we use the abbreviation $L_{n,r} := L_{G_{n,r}}$ to avoid the double subscripts) can be viewed as approximating the action of a continuum weighted Laplacian operator $\varDelta_Pf(x)$. The latter operator is a 2nd order differential operator; however the graph Laplacian does a poor job of tracking the 2nd derivative of $f$ when $x$ is sufficiently close to the boundary of the domain $\Xset$. The problem is only exacerbated when we consider the iterated graph Laplacian operator $L_{n,r}^sf(x)$, and view it as an estimate of the continuum weighted Laplacian operator $\varDelta_P^sf(x)$. To rectify the situation, we will assume that $f \in C_c^{s}(\Xset)$, so that tracking derivatives near the boundary is no longer an issue. We let $\Xset_r := \{x \in \Xset: \dist(x,\Xset) > r\}$ denote the remainder of $\Xset$ once a tube of radius $r$ around the boundary has been removed.
+
+\begin{lemma}
+	\label{lem:leading_term_holder_compact}
+	Fix integers $s \geq 0$ and $q \geq 1$, and index vector $k \in (n)^q$. Suppose that $f \in C_c^s(\Xset)$, that $p \in C^0(\Xset;p_{\max})$, and additionally that $p \in C^{s-1}(\Xset;p_{\max})$ if $s \geq 2$. 
+	\begin{itemize}
+		\item If $x \in \Xset_{qr}$ and $2q < s$, then there exist functions $f_{\ell,q} \in C_c^{s - \ell}(\Xset)$ which additionally satisfy
+		\begin{equation}
+		\label{eqn:leading_term_holder_compact_0}
+		\norm{f_{\ell,q}}_{C^{s - \ell}(\Xset)} \leq c \norm{f}_{C^s(\Xset)},
+		\end{equation}
+		for each $\ell = 2q,\ldots,s-1$, such that 
+		\begin{equation}
+		\label{eqn:leading_term_holder_compact_1}
+		\abs{\Ebb\Bigl[D_kf(x)\Bigr] -
+		\sum_{\ell = 2q}^{s - 1} f_{\ell,q}(x) r^{\ell}} \leq c r^s \norm{f}_{C^s(\Xset)} ~~\textrm{if $2q < s$,}
+		\end{equation},
+		\item Otherwise if $2q \geq s$ or $x \in \Xset \setminus \Xset_{qr}$,
+		\begin{equation}
+		\label{eqn:leading_term_holder_compact_2}
+		\biggl|\Ebb\Bigl[D_kf(x)\Bigr]\biggr| \leq cr^s\norm{f}_{C^s(\Xset)}.
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+
+Lemma~\ref{lem:leading_term_sobolev_compact} supplies an equivalent result when $f \in H_0^{s}(\Xset)$. In this Lemma, we write $\Ebb[D_kf]:\Xset \to \Reals$ for the mapping $x \mapsto \Ebb[D_kf(x)]$. We will also denote $U_r = \Xset \setminus \Xset_{r}$.
+\begin{lemma}
+	\label{lem:leading_term_sobolev_compact}
+	Fix integers $s \geq 0$ and $q \geq 1$, and an index vector $k \in (n)^q$. Suppose that $p \in C^0(\Xset;p_{\max})$, and additionally that $p \in C^{s-1}(\Xset;p_{\max})$ if $s \geq 2$. Then there exists an $r' > 0$ such that for all $0 < r < r'$, the following statements hold for all $f \in H_0^{s}(\Xset)$:
+	\begin{itemize}
+		\item The expected difference operator $\Ebb[D_kf]$ belongs to $\Leb^2(U_{qr})$, with norm
+		\begin{equation}
+		\label{eqn:leading_term_sobolev_compact_1}
+		\Bigl\|\Ebb\bigl[D_kf\bigr]\Bigr\|_{\Leb^2(U_{qr})} \leq c r^s \norm{f}_{H^s(\Xset)}
+		\end{equation}
+		\item If $2q \geq s$, then additionally $\Ebb[D_kf]$ belongs to $\Leb^2(\Xset_{qr})$, with norm
+		\begin{equation}
+		\label{eqn:leading_term_sobolev_compact_2}
+		\Bigl\|\Ebb\bigl[D_kf\bigr]\Bigr\|_{\Leb^2(\Xset_{qr})} \leq c r^s \norm{f}_{H^s(\Xset)}.
+		\end{equation}
+		Otherwise there exist functions $f_{\ell} \in H_0^{s - \ell}(\Xset)$, which additionally satisfy
+		\begin{equation}
+		\label{eqn:leading_term_sobolev_compact_3}
+		\norm{f_{\ell}}_{H^{s - \ell}(\Xset)} \leq c \norm{f}_{H^s(\Xset)}
+		\end{equation}
+		for each $\ell = 2q,\ldots,s-1$, such that
+		\begin{equation}
+		\label{eqn:leading_term_sobolev_compact_4}
+		\Bigl\|\Ebb\bigl[D_kf\bigr] - \sum_{\ell = 2q}^{s - 1} r^{\ell} f_{\ell}\Bigr\|_{\Leb^2(\Xset_{qr})} \leq c r^s \norm{f}_{H^s(\Xset)}
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+
+\section{Proofs}
+
+\subsection{Proof of Lemma~\ref{lem:leading_term_sobolev_compact}}
+
+One can interpret the conclusions of Lemma~\ref{lem:leading_term_sobolev_compact} as demonstrating that expected difference operators behave similarly to derivatives over $H_0^{s}(\Xset)$. The proof of Lemma~\ref{lem:leading_term_sobolev_compact} is therefore naturally centered on taking Taylor expansions, but in order to do this, we must relate $f$ to a function $g$ which has classical derivatives. 
+
+Since $f \in H_0^s(\Xset)$, there exists a sequence $(f_m) \subset C_c^s(\Xset)$ such that $\norm{f_m - f}_{H^s(\Xset)} \to 0$ as $m \to \infty$ (Indeed $f_m$ will be smooth for each $m$, but we will not need that fact.) Picking $m$ large enough so that
+\begin{equation*}
+\norm{f_m - f}_{H^s(\Xset)} \leq r^s \norm{f}_{H^s(\Xset)}
+\end{equation*}
+we have that for any $\wt{f} \in \Leb^2(\Xset)$,
+\begin{align*}
+\norm{\Ebb\Bigl[D_kf\Bigr] - \wt{f}}_{\Leb^2(\Xset)} & \leq \norm{\Ebb\Bigl[D_kf_m\Bigr] - \wt{f}}_{\Leb^2(\Xset)} + \norm{\Ebb\Bigl[D_k(f - f_m)\Bigr]}_{\Leb^2(\Xset)} \\
+& \leq \norm{\Ebb\Bigl[D_kf_m\Bigr] - \wt{f}}_{\Leb^2(\Xset)} + c \norm{f - f_m}_{\Leb^2(\Xset)} \\
+& \leq \norm{\Ebb\Bigl[D_kf_m\Bigr] - \wt{f}}_{\Leb^2(\Xset)} + c r^s \norm{f}_{H^s(\Xset)}
+\end{align*}
+Since $f_m \in C_c^s(\Xset)$, it can be continuously extended to $g: \Rd \to \Reals,~ g \in C_c^s(\Xset)$ by taking $g(x) = 0$ for all $x \in \Rd \setminus \Xset$, such that $\norm{g}_{H^s(\Rd)} = \norm{f_m}_{H^s(\Xset)}$ and $g = f$ everywhere on $\Xset$. Therefore $\Ebb[D_kg] =\Ebb[D_kf_m]$, and it suffices to prove the estimates~\eqref{eqn:leading_term_sobolev_compact_1}-\eqref{eqn:leading_term_sobolev_compact_4} hold with respect to $g$. 
+
+Before we do so, let us establish some notation. When $s \geq 1$, since $g \in C_c^s(\Rd)$ it admits a Taylor expansion of the form
+\begin{equation*}
+g(y) =  \sum_{\abs{\alpha} = 0}^{s - 1} g^{(\alpha)}(x) (z - x)^{\alpha} + \sum_{\abs{\alpha} = s} (y - x)^{\alpha} G_{\alpha}(x,y),
+\end{equation*}
+for any $y,x \in \Rd$. When $s \geq 2$, since $p \in C_c^{s - 1}(\Xset)$ it also admits a Taylor expansion,
+\begin{equation*}
+p(y) = \sum_{\abs{\beta} = 0}^{s - 2} p^{\beta}(x) (y - x)^{\beta} + \sum_{\abs{\beta} = s - 1} (x - y)^s P_{\beta}(x,y).
+\end{equation*}
+for any $y,x \in \Xset$.
+In both cases we use the integral form of the remainders:
+\begin{align*}
+G_{\alpha}(x,y) & = \int_{0}^{1} g^{(\alpha)}\bigl(x + t(y - x)\bigr)(1 - t)^{\abs{\alpha}} \,dt \\
+P_{\beta}(x,y) & = \int_{0}^{1} p^{(\beta)}\bigl(x + t(y - x)\big) (1 - t)^{\abs{\beta}}  \,dt 
+\end{align*}
+where by Rademacher's Theorem $g^{(\alpha)}$ and $p^{(\beta)}$ exist almost everywhere, and the preceding integrals are therefore well defined.
+
+It will also be helpful to introduce some notation. For $G: \Xset \times \Xset \to \Reals$, let
+\begin{align*}
+\Bigl(\Ebb_{\alpha}[G]\Bigr)(x) & := \int_{\Xset} (y - x)^{\alpha} G(x,y) K_r(y,x) p(y) \,dy,~~ && \Ebb_{\alpha}(x) := \Bigl(\Ebb_{\alpha}[1]\Bigr)(x) \\
+\Bigl(\Ibb_{\alpha}[G]\Bigr)(x) & := \int_{\Xset} (y - x)^{\alpha} G(x,y) K_r(y,x) \,dy,~~ && \Ibb_{\alpha}(x)  := \Bigl(\Ibb_{\alpha}[1]\Bigr)(x)
+\end{align*}
+Additionally we define
+\begin{equation*}
+I_{\alpha} := \int z^{\alpha} K\bigl(\norm{z}\bigr) \,dz.
+\end{equation*}
+and note that when $B(x,r) \subset \Xset$, the following two facts are true: first, that $\Ibb_{\alpha,x} = r^{\abs{\alpha}} I_{\alpha}$, and second that $I_{\alpha} = 0$ when $\abs{\alpha} = 1$.
+
+We begin with $s = 0$. When $q = 1$, we have
+\begin{align*}
+\norm{\Ebb\bigl[D_kg\bigr]}_{\Leb^2(\Xset)} & = \int_{\Xset} \biggl[\int_{\Xset} \Bigl(g(y) - g(x)\Bigr)K_r(y,x) p(y) \,dy \biggr]^2 \,dx \\
+& \leq p_{\max}^2 \int_{\Rd} \biggl[\int_{\Rd} \Bigl(\abs{g(y)} + \abs{g(x)}\Bigr)K_r(y,x) \,dy \biggr]^2 \,dx \\
+& \leq K_{\max}^2 p_{\max}^2 \int_{\Rd} \biggl[\int_{B(0,1)} \abs{g(zr + x)} + \abs{g(x)} \,dz \biggr]^2 \,dx
+\end{align*}
+and the statement follows by Lemma~\textcolor{red}{11}. The same result holds (up to different constants) for $s = 0$ and general $q$ by induction.
+
+For $s \geq 1$, we first show the desired estimate over $U_{qr}$.
+
+\subsubsection{Boundary region}
+
+Take $q = 1$, and $k \in [n]$. We begin by relating the $\Leb^2$ norm of $\Ebb[D_kg]$ over $U_r$ to the $\Leb^2$ norm of $g$ over $U_{2r}$, as follows:
+\begin{align*}
+\Bigl\|\Ebb\bigl[D_kg\bigr]\Bigr\|_{\Leb^2(U_r)}^2 & = \int_{U_r} \biggl[\int_{\Xset} \bigl(g(y) - g(x)\bigr)K_r(x,y) p(y) \,dy \biggr]^2 \,dx \\
+& \leq p_{\max}^2 \int_{U_r} \biggl[\int_{\Xset} \bigl(\abs{g(y)} +  \abs{g(x)}\bigr)K_r(x,y) \,dy \biggr]^2 \,dx \\
+& \overset{(i)}{\leq}  p_{\max}^2 K_{\max}^2 \int_{U_r} \biggl[\int_{B(0,1) \cap (\Xset - x)/r} \bigl(\abs{g(zr + x)} +  \abs{g(x)}\bigr)\,dz \biggr]^2 \,dx \\
+& \overset{(ii)}{\leq} 2 p_{\max}^2 K_{\max}^2 \int_{U_r} \nu_d^2 \bigl(g(x)\bigr)^2 \,dx + 2 p_{\max}^2 K_{\max}^2 \nu_d \int_{U_r}\biggl[\int_{B(0,1) \cap (\Xset - x)/r} \bigl(g(zr + x)\bigr)^2\,dz\biggr] \,dx \\
+& \leq 2 p_{\max}^2 K_{\max}^2 \int_{U_r} \nu_d^2 \bigl(g(x)\bigr)^2 \,dx + 2 p_{\max}^2 K_{\max}^2 \nu_d \int_{B(0,1)} \int_{U_r} \bigl(g(zr + x)\bigr)^2\,dz \,dx \\
+& \leq 4 p_{\max}^2 K_{\max}^2 \nu_d^2 \norm{g}_{\Leb^2(U_{2r})}^2
+\end{align*}
+where $(i)$ follows from change of variables and $(ii)$ from Young's and Jensen's inequality. Reasoning by induction, we see that it suffices to show that
+\begin{equation*}
+\norm{g}_{\Leb^2(U_{(q + 1)r})}^2 \leq c r^{2s} \norm{g}_{H^s(\Xset)}^2
+\end{equation*}
+to establish~\eqref{eqn:leading_term_sobolev_compact_1}. The previous inequality is established in Lemma~\ref{lem:boundary_term_sobolev} for all $r > 0$ sufficiently small, and we have therefore proved the desired estimate over the boundary. 
+
+\subsubsection{Interior region}
+
+To show the desired bounds on $\Xset_{qr}$ when $s \geq 1$, we reason by induction on $q$.
+
+\paragraph{Base case.}
+In the base case $q = 1$, meaning $D_kg$ is only a single-difference operator.
+Since $s \geq 1$, replacing $g$ by its Taylor expansion inside the first order expected difference operator $\Ebb[D_kg(x)]$ yields
+\begin{equation}
+\label{eqn:leading_term_sobolev_compact_pf1}
+\Ebb\Bigl[D_kg(x)\Bigr] = \sum_{1 \leq \abs{\alpha} < s} \Ebb_{\alpha}(x) \cdot g^{(\alpha)}(x)  + \sum_{\abs{\alpha} = s} \Bigl(\Ebb_{\alpha}\bigl[G_{\alpha}\bigr]\Bigr)(x)
+\end{equation}
+When $s = 1$ only the second term in the previous expression is non-zero, and we therefore begin by analyzing this term, obtaining that for each $\abs{\alpha} = s$,
+\begin{align}
+\biggl\|\Bigl(\Ebb_{\alpha}\bigl[G_{\alpha}\bigr]\Bigr)\biggr\|_{\Leb^2(\Xset_{r})}^2 & = \biggl\|\int (y - \cdot)^{\alpha} G_{\alpha}(\cdot,y) K_r(y,\cdot) p(y) \,dy\biggr\|_{\Leb^2(\Xset_{r})}^2 \nonumber \\
+& \leq r^{2s} p_{\max}^2 K_{\max}^2  \biggl\|\int_{B(0,1)} G_{\alpha}(\cdot,zr + \cdot) \,dy\biggr\|_{\Leb^2(\Xset_{r})}^2 \nonumber \\
+& \leq r^{2s} p_{\max}^2 K_{\max}^2 \nu_d \int_{B(0,1)} \Bigl\|G_{\alpha}(\cdot,zr + \cdot)\Bigr\|_{\Leb^2(\Xset_{r})}^2 \,dz \nonumber \\
+& \leq r^{2s} p_{\max}^2 K_{\max}^2 \nu_d^2 \norm{g^{(\alpha)}}_{\Leb^2(\Xset)}^2 \nonumber \\
+& \leq r^{2s} p_{\max}^2 K_{\max}^2 \nu_d^2 \norm{g}_{H^s(\Xset)}^2; \nonumber
+\end{align}
+hence~\eqref{eqn:leading_term_sobolev_compact_2} follows when $q = 1, s = 1$.
+
+When $s \geq 2$ we must analyze $\Ebb_{\alpha}(x) \cdot g^{(\alpha)}(x)$, which we do by using the Taylor expansion of $p$. Since $B(x,r) \subset \Xset$, we recall that $\Ibb_{\alpha + \beta,x} = r^{\abs{\alpha} + \abs{\beta}}I_{\alpha,\beta}$; thus
+\begin{align*}
+\Ebb_{\alpha}(x) & = \int(y - x)^{\alpha} K_r(y,x) p(y) \,dy \\
+& = \sum_{\abs{\beta} = 0}^{s - 2} p^{(\beta)}(x) \Ibb_{\alpha + \beta,x} + \sum_{\abs{\beta} = s - 1} \Bigl(\Ibb_{\alpha + \beta}\bigl[P_{\beta}\bigr]\Bigr)(x) \\
+& = \sum_{\abs{\beta} = 0}^{s - 2} p^{(\beta)}(x) r^{\abs{\alpha} + \abs{\beta}} I_{\alpha + \beta} + \sum_{\abs{\beta} = s - 1} \Bigl(\Ibb_{\alpha + \beta}\bigl[P_{\beta}\bigr]\Bigr)(x).
+\end{align*}
+Replacing $\Ebb_{\alpha}(x)$ by this expansion in~\eqref{eqn:leading_term_sobolev_compact_pf1} gives
+\begin{equation*}
+\Ebb\Bigl[D_kg(x)\Bigr] = \sum_{\abs{\alpha} = 1}^{s - 1} \sum_{\abs{\beta} = 0}^{s - 2} r^{\abs{\alpha} + \abs{\beta}} I_{\alpha + \beta} g^{(\alpha)}(x) p^{(\beta)}(x)  + \sum_{\abs{\alpha} = 1}^{s} \sum_{\abs{\beta} = s - 1} g^{(\alpha)}(x) \Bigl( \Ibb_{\alpha + \beta}\bigl[P_{\beta}\bigr]\Bigr)(x)  + \sum_{\abs{\alpha} = s} \Bigl(\Ebb_{\alpha}\bigl[G_{\alpha}\bigr]\Bigr)(x)
+\end{equation*}
+We now divide the sum in the first term based on the size of $\abs{\alpha} + \abs{\beta}$. The critical fact is that $I_{\alpha + \beta} = 0$ when $\abs{\alpha} + \abs{\beta} = 1$. When $s = 2$ this leaves
+\begin{equation*}
+\Ebb\Bigl[D_kg(x)\Bigr] = \sum_{\abs{\alpha} = 1}^{s} \sum_{\abs{\beta} = s - 1} \Bigl(\Ibb_{\alpha + \beta}\bigl[P_{\beta}\bigr]\Bigr)(x) g^{(\alpha)}(x) + \sum_{\abs{\alpha} = s} \Bigl(\Ebb_{\alpha}\bigl[G_{\alpha}\bigr]\Bigr)(x).
+\end{equation*}
+We have already shown that the second term belongs to $\Leb^2(\Xset)$, and provided an appropriate upper bound on its norm. The first term is similarly upper bounded, since for each term inside the sum
+\begin{equation*}
+\norm{\Ibb_{\alpha + \beta}\bigl[P_{\beta}\bigr]g^{(\alpha)}}_{\Leb^2(\Xset)}^2 \leq r^{2(\abs{\alpha} + \abs{\beta})} p_{\max}^2 \norm{g^{(\alpha)}}_{\Leb^2(\Xset)}^2 \leq r^{2(\abs{\alpha} + \abs{\beta})} p_{\max}^2 \norm{g}_{H^s(\Xset)}^2 \nonumber
+\end{equation*}
+thus establishing~\eqref{eqn:leading_term_holder_compact_2} when $s = 2$. Otherwise when $s > 2$, we rearrange
+\begin{equation*}
+\sum_{\abs{\alpha} = 1}^{s} \sum_{\abs{\beta} = 0}^{s - 2} r^{\abs{\alpha} + \abs{\beta}} I_{\alpha + \beta} g^{(\alpha)}(x) p^{(\beta)}(x) = \sum_{\ell = 2}^{s - 1} r^{\ell} \Biggl\{\underbrace{\sum_{\abs{\alpha} + \abs{\beta} = \ell} I_{\alpha + \beta} g^{(\alpha)}(x) p^{(\beta)}(x)}_{:=g_{\ell,1}(x)}\Biggr\} + \sum_{\ell = s + 1}^{2s - 2} r^{\ell} \sum_{\abs{\alpha} + \abs{\beta} = \ell} I_{\alpha + \beta} g^{(\alpha)}(x) p^{(\beta)}(x).
+\end{equation*}
+and therefore
+\begin{align*}
+& \Ebb\Bigl[D_kg(x)\Bigr] - \sum_{\ell = 2}^{s - 1} r^{\ell} g_{\ell,1}(x) = \\ & ~~~~ \sum_{\ell = s + 1}^{2s - 2} r^{\ell} \sum_{\abs{\alpha} + \abs{\beta} = \ell} I_{\alpha + \beta} g^{(\alpha)}(x) p^{(\beta)}(x) +  \sum_{\abs{\alpha} = 1}^{s} \sum_{\abs{\beta} = s - 1} \Bigl(\Ibb_{\alpha + \beta}\bigl[P_{\beta}\bigr]\Bigr)(x) g^{(\alpha)}(x) + \sum_{\abs{\alpha} = s} \Bigl(\Ebb_{\alpha}\bigl[G_{\alpha}\bigr]\Bigr)(x)
+\end{align*}
+On the left hand side, taking $\ell = \abs{\alpha} + \abs{\beta}$, note that for each $\ell < s$ the function $g_{\ell,1} \in C_c^{s - \ell}(\Xset) \subset H_0^{s - \ell}(\Xset)$ and further
+\begin{equation}
+\label{eqn:leading_term_sobolev_compact_pf3}
+\norm{g_{\ell,1}}_{H^{s - \ell}(\Xset)} \leq c p_{\max} \norm{g}_{H^s(\Xset)}.
+\end{equation}
+
+The right hand side consists of three terms, and we have already obtained sufficient estimates on the second and third term, so it remains to deal with the first term. We have that $g^{(\alpha)}\cdot p^{(\beta)} \in C_c^{0}(\Xset) \subset \Leb_0^2(\Xset)$ and
+\begin{equation}
+\label{eqn:leading_term_sobolev_compact_pf4}
+\norm{g^{(\alpha)}p^{(\beta)}}_{\Leb^2(\Xset)} \leq p_{\max} \norm{g}_{H^s(\Xset)},
+\end{equation}
+establishing~\eqref{eqn:leading_term_holder_compact_1} when $s > 2$.
+
+\paragraph{Induction step.}
+We now assume that~\eqref{eqn:leading_term_sobolev_compact_2}-\eqref{eqn:leading_term_sobolev_compact_4} hold with respect to $g$ for all $k \in (n)^q$, and show the desired estimates on $\Ebb[D_jD_kg]$ for all $(kj) \in (n)^{q + 1}$.
+
+We first consider the case where $s \leq 2q$. Then,
+\begin{align*}
+\norm{\Ebb\bigl[D_jD_kg\bigr]}_{\Leb^2(X_{(q + 1)r})}^2 \leq 2 p_{\max}^2 K_{\max}^2 \nu_d^2 \norm{D_kg}_{\Leb^2(X_{qr})}^2 \leq c r^{2s} \norm{g}_{H^s(\Xset)}
+\end{align*}
+where the final inequality follows by hypothesis, and gives the desired estimate.
+
+Otherwise $s \geq 2q + 1$. We make use of the inductive hypothesis through the following three facts:
+\begin{enumerate}
+	\item There exist functions $g_{2q,q}, \ldots, g_{s - 1,q}$ satisfying~\eqref{eqn:leading_term_sobolev_compact_4} such that
+	\begin{equation*}
+	\norm{\Ebb\bigl[D_kg\bigr] - \sum_{\ell = 2q}^{s - 1}r^{\ell}g_{\ell,q}}_{\Leb^2(X_{qr})} \leq c r^s \norm{g}_{H^s(\Xset)}
+	\end{equation*}
+	\item The functions $f_{\ell,q}$ belong to $H_0^{s - \ell}(\Xset)$. Thus by hypothesis, when $\ell = s - 1$ or $\ell = s - 2$,
+	\begin{equation*}
+	\norm{\Ebb\bigl[D_jg_{\ell,q}\bigr]}_{\Leb^2(\Xset_r)} \leq c r^s \norm{f}_{H^s(\Xset)}.
+	\end{equation*}
+	\item Otherwise if $s - \ell > 2$, there exist further functions $g_{\ell,m,q}$ for $m = 2,\ldots,s - \ell - 1$ such that
+	\begin{equation*}
+	\norm{\Ebb\bigl[D_jf\bigr] - \sum_{m = 2}^{s - \ell - 1}r^{m}g_{\ell,m,q}}_{\Leb^2(\Xset_r)} \leq  c r^s \norm{g}_{H^s(\Xset)}
+	\end{equation*}
+	The functions $g_{\ell,m,q} \in H_0^{s - (\ell + m)}(\Xset)$ additionally satisfy
+	\begin{equation*}
+	\norm{g_{\ell,m,q}}_{H^{s - (\ell + m)}(\Xset)} \leq c \norm{g_{\ell}}_{H^{s - \ell}(\Xset)} \leq c \norm{g}_{H^s(\Xset)}.
+	\end{equation*}
+\end{enumerate}
+Making use of the law of iterated expectation and the Fact 1, we have
+\begin{align}
+\Ebb\Bigl[D_jD_kg(x)\Bigr] & = \Ebb\biggl[\Bigl(\Ebb\bigl[D_kg(x_j)|x_j\bigr] - \Ebb\bigl[D_kg(x)\bigr]\Bigr)K_r(x_j,x)\biggr] \nonumber \\
+& = \sum_{\ell = 2q}^{s - 1} r^{\ell} \Ebb\bigl[D_jg_{\ell}(x)\bigr] + \Ebb\biggl[\Bigl(\Ebb\bigl[D_kg\bigr](x_j) - \sum_{\ell = 2q}^{s - 1}r^{\ell} g_{\ell}(x_j)\Bigr)K_r(x_j,x)\biggr] + \Ebb\bigl[D_kg\bigr](x) - \sum_{\ell = 2q}^{s - 1}r^{\ell} g_{\ell}(x). \label{eqn:leading_term_sobolev_compact_pf6}
+\end{align}
+The above expansion consists of three terms. By Fact 1, the third term has bounded norm
+\begin{equation*}
+\norm{\Ebb\bigl[D_kg\bigr] - \sum_{\ell = 2q}^{s - 1}r^{\ell} g_{\ell}}_{\Leb^2(\Xset_{(q + 1)r})} \leq \norm{\Ebb\bigl[D_kg\bigr] - \sum_{\ell = 2q}^{s - 1}r^{\ell} g_{\ell}}_{\Leb^2(\Xset_{(q)r})} \leq c r^{s} \norm{g}_{H^s(\Xset)}
+\end{equation*}
+By Fact 1 and Lemma~\ref{lem:remainder_term_sobolev}, the same estimate holds with respect to the second term (up to constants). 
+
+When $s = (2q + 1)$ or $s = (2q + 2)$, by Fact 2
+\begin{equation*}
+\norm{ \sum_{\ell = 2q}^{s - 1} r^{\ell} \Ebb\bigl[D_jg_{\ell}\bigr]}_{\Leb^2(\Xset_r)} \leq c r^s \norm{g}_{H^s(\Xset)}
+\end{equation*}
+and the desired result~\eqref{eqn:leading_term_sobolev_compact_2} follows from the triangle inequality. Finally when $s > (2q + 2)$, by using Facts 2 and 3 we obtain
+\begin{align*}
+\norm{\sum_{\ell = 2q}^{s - 1} r^{\ell} \Ebb\bigl[D_jg_{\ell}\bigr] - \sum_{\ell = 2q}^{s - 3} \sum_{m = 2}^{s - \ell - 1} r^{\ell + m} g_{\ell,m,q}}_{\Leb^2(X_r)} \leq cr^s \norm{g}_{H^s(X)}
+\end{align*}
+Rewriting the double sum as a single sum over $\ell + m = 2q,\ldots,s - 1$ and plugging back in to~\eqref{eqn:leading_term_sobolev_compact_pf6} gives the desired result~\eqref{eqn:leading_term_sobolev_compact_4}.
+
+\subsection{Proof of Lemma~\ref{lem:leading_term_holder_compact}}
+
+The proof of Lemma~\ref{lem:leading_term_holder_compact} is centered on taking Taylor expansions of the function $f$ and the density $p$. When $s \geq 1$, since $f \in C_c^s(\Xset)$ it admits a Taylor expansion of the form
+\begin{equation*}
+f(y) =  \sum_{\abs{\alpha} = 0}^{s - 1} f^{(\alpha)}(x) (z - x)^{\alpha} + \sum_{\abs{\alpha} = s} (y - x)^{\alpha} F_{\alpha,x}(y),
+\end{equation*}
+and when $s \geq 2$, since $p \in C_c^{s - 1}(\Xset)$ it also admits a Taylor expansion,
+\begin{equation*}
+p(y) = \sum_{\abs{\beta} = 0}^{s - 2} p^{\beta}(x) (y - x)^{\beta} + \sum_{\abs{\beta} = s} (x - y)^s G_{\beta}(x,y).
+\end{equation*}
+In both cases $x$ and $y$ are arbitrary points in $\Xset$, and we use the integral form of the remainders:
+\begin{align*}
+F_{\alpha}(x,y) & = \int_{0}^{1} f^{(\alpha)}(x + t(y - x)) \,dt, && \Bigl|F_{\alpha}(x,y)\Bigr| \leq \norm{f}_{C^s(\Xset)} \\
+G_{\beta}(x,y) & = \int_{0}^{1} p^{(\beta)}(x + t(y - x)) \,dt, && \Bigl|G_{\beta}(x,y)\Bigr| \leq \norm{p}_{C^{s - 1}(\Xset)}
+\end{align*}
+where by Rademacher's Theorem $f^{(\alpha)}$ and $p^{(\beta)}$ exist almost everywhere, and the preceding integrals are therefore well defined.
+
+It will also be helpful to introduce some notation. For $F: \Xset \times \Xset \to \Reals$, let
+\begin{align*}
+\Bigl(\Ebb_{\alpha}[F]\Bigr)(x) & := \int (y - x)^{\alpha} F(x,y) K_r(y,x) p(y) \,dy,~~ && \Ebb_{\alpha,x} := \Bigl(\Ebb_{\alpha}[1]\Bigr)(x) \\
+\Bigl(\Ibb_{\alpha}[F]\Bigr)(x) & := \int (y - x)^{\alpha} F(x,y) K_r(y,x) \,dy,~~ && \Ibb_{\alpha,x}  := \Bigl(\Ibb_{\alpha}[1]\Bigr)(x)
+\end{align*}
+Additionally we define
+\begin{equation*}
+I_{\alpha} := \int z^{\alpha} K\bigl(\norm{z}\bigr) \,dz.
+\end{equation*}
+and note that when $B(x,r) \subset \Xset$, the following two facts are true: first, that $\Ibb_{\alpha,x} = r^{\abs{\alpha}} I_{\alpha}$, and second that $I_{\alpha} = 0$ when $\abs{\alpha} = 1$.
+
+The case when $s = 0$ follows from the boundedness of $f$, as a simple inductive argument yields
+\begin{equation*}
+\abs{\Ebb\Bigl[D_kf(x)\Bigr]} \leq 2^qp_{\max}^q \norm{f}_{C^0(\Xset)}.
+\end{equation*}
+for any $x \in \Xset$.
+
+For $s \geq 1$, we first show the desired estimate when $x \in \Xset \setminus \Xset_{qr}$. 
+
+\subsubsection{Boundary point.}
+
+Since $f \in C_c^{s}(\Xset)$, there exists an open set $V$ compactly contained $V \subset \bar{V} \subset U$ such that $\mathrm{supp}(f) \subset V$. Furthermore, since $\dist(x,\partial \Xset) < r$ there exists a particular $x_0$ in $\Xset \setminus V$ such that $\norm{x_0 - x} \leq r$. Since there exists some $\delta > 0$ such that $B(x_0,\delta) \subset \Xset \setminus V$, we know
+\begin{equation*}
+f^{(\beta)}(x_0) = 0,~~\textrm{for all $\beta$}
+\end{equation*}
+and as a result $f(x)$ must itself be quite small,
+\begin{align*}
+\bigl|f(x)\bigr| & = \biggl|\sum_{\abs{\alpha} = 0}^{s - 1} f^{(\alpha)}(x_0) (x - x_0)^{\alpha} + \sum_{\abs{\alpha} = s}(x - x_0)^{\alpha}F_{\alpha}(x_0,x)\biggr| \\
+& = \biggl|\sum_{\abs{\alpha} = s}(x - x_0)^{\alpha}F_{\alpha}(x_0,x)\biggr| \\
+& \leq c r^{s} \abs{F_{\alpha}(x_0,x)} \leq c r^{s} \norm{f}_{C^s(\Xset)}.
+\end{align*}
+Observe $\Ebb\Bigl[D_kf(x)\Bigr] = 0$ unless $x_j \in B(x,qr)$ for each $j \in k$, which implies $x_j \in \Xset \setminus \Xset_{2qr}$. Thus,
+\begin{equation*}
+\abs{\Ebb\Bigl[D_kf(x)\Bigr]} \leq 2^q p_{\max}^q \max_{\wt{x} \in x_k, x} \bigl\{\abs{f(\wt{x})}\bigr\}  \leq c r^s \norm{f}_{C^s(\Xset)},
+\end{equation*}
+establishing~\eqref{eqn:leading_term_holder_compact_2} for $x \in \Xset \setminus \Xset_{qr}$.
+
+\subsubsection{Interior point.}
+To show the desired result when $x \in \Xset_{qr}$ and $s \geq 1$, we use induction on $q$. 
+
+\paragraph{Base case.}
+In the base case $q = 1$, meaning $D_kf$ is only a single-difference operator.
+Since $s \geq 1$, replacing $f$ by its Taylor expansion inside the first order expected difference operator $\Ebb[D_kf(x)]$ yields
+\begin{equation}
+\label{eqn:leading_term_holder_compact_pf1}
+\Ebb\Bigl[D_kf(x)\Bigr] = \sum_{1 \leq \abs{\alpha} < s} \Ebb_{\alpha,x} \cdot f^{(\alpha)}(x)  + \sum_{\abs{\alpha} = s} \Bigl(\Ebb_{\alpha}\bigl[F_{\alpha}\bigr]\Bigr)(x)
+\end{equation}
+When $s = 1$ only the second term in the previous expression is non-zero, and we therefore begin by analyzing this term, obtaining that for any $x \in \Xset$ and each $\abs{\alpha} = s$,
+\begin{align}
+\biggl|\Bigl(\Ebb_{\alpha}\bigl[F_{\alpha}\bigr]\Bigr)(x)\biggr| & = \biggl|\int (y - x)^{\alpha} F_{\alpha}(x,y) K_r(y,x) p(y) \,dy\biggr| \nonumber \\
+& \leq r^s p_{\max} \abs{F_{\alpha}(x,y)} \nonumber \\
+& \leq r^s p_{\max} \norm{f}_{C^s(\Xset)}. \label{eqn:leading_term_holder_compact_pf2}
+\end{align}
+Therefore $\Ebb_{\alpha}\bigl[F_{\alpha}\bigr] \in C^0(\Xset)$ additionally satisfies~\eqref{eqn:leading_term_holder_compact_2}, and the claim of Lemma~\ref{lem:leading_term_holder_compact} is established for $q = 1$ and $s = 1$.
+
+When $s \geq 2$ we must analyze $\Ebb_{\alpha,x} \cdot f^{(\alpha)}(x)$, which we do by using the Taylor expansion of $p$. Since $B(x,r) \subset \Xset$, we recall that $\Ibb_{\alpha + \beta,x} = r^{\abs{\alpha} + \abs{\beta}}I_{\alpha,\beta}$; thus
+\begin{align*}
+\Ebb_{\alpha,x} & = \int(y - x)^{\alpha} K_r(y,x) p(y) \,dy \\
+& = \sum_{\abs{\beta} = 0}^{s - 2} p^{(\beta)}(x) \Ibb_{\alpha + \beta,x} + \sum_{\abs{\beta} = s - 1} \Bigl(\Ibb_{\alpha + \beta}\bigl[G_{\beta}\bigr]\Bigr)(x) \\
+& = \sum_{\abs{\beta} = 0}^{s - 2} p^{(\beta)}(x) r^{\abs{\alpha} + \abs{\beta}} I_{\alpha + \beta} + \sum_{\abs{\beta} = s - 1} \Bigl(\Ibb_{\alpha + \beta}\bigl[G_{\beta}\bigr]\Bigr)(x).
+\end{align*}
+Replacing $\Ebb_{\alpha,x}$ by this expansion in~\eqref{eqn:leading_term_holder_compact_pf1} gives
+\begin{equation*}
+\Ebb\Bigl[D_kf(x)\Bigr] = \sum_{\abs{\alpha} = 1}^{s - 1} \sum_{\abs{\beta} = 0}^{s - 2} r^{\abs{\alpha} + \abs{\beta}} I_{\alpha + \beta} f^{(\alpha)}(x) p^{(\beta)}(x)  + \sum_{\abs{\alpha} = 1}^{s} \sum_{\abs{\beta} = s - 1} \Bigl(\Ibb_{\alpha + \beta}\bigl[G_{\beta}\bigr]\Bigr)(x) f^{(\alpha)}(x) + \sum_{\abs{\alpha} = s} \Bigl(\Ebb_{\alpha}\bigl[F_{\alpha}\bigr]\Bigr)(x)
+\end{equation*}
+We now divide the sum in the first term based on the size of $\abs{\alpha} + \abs{\beta}$. The critical fact is that $I_{\alpha + \beta} = 0$ when $\abs{\alpha} + \abs{\beta} = 1$. When $s = 2$ this leaves
+\begin{equation*}
+\Ebb\Bigl[D_kf(x)\Bigr] = \sum_{\abs{\alpha} = 1}^{s} \sum_{\abs{\beta} = s - 1} \Bigl(\Ibb_{\alpha + \beta}\bigl[G_{\beta}\bigr]\Bigr)(x) f^{(\alpha)}(x) + \sum_{\abs{\alpha} = s} \Bigl(\Ebb_{\alpha}\bigl[F_{\alpha}\bigr]\Bigr)(x).
+\end{equation*}
+In~\eqref{eqn:leading_term_holder_compact_pf2} we have already shown that the second term belongs to $C^{0}(\Xset)$, and provided an appropriate upper bound on its norm. Similar analysis shows that when $1 \leq \abs{\alpha} \leq s$ and $\abs{\alpha} + \abs{\beta} \geq s$,
+\begin{align}
+\norm{\Ibb_{\alpha + \beta}\bigl[G_{\beta}\bigr]f^{(\alpha)}}_{C^0(\Xset)} & \leq r^{\abs{\alpha} + \abs{\beta}} p_{\max} \norm{f^{(\alpha)}}_{C^0(\Xset)} \nonumber \\
+& \leq r^{\abs{\alpha} + \abs{\beta}} p_{\max} \norm{f}_{C^s(\Xset)} \nonumber \\
+& \leq r^s p_{\max} \norm{f}_{C^s(\Xset)}, \label{eqn:leading_term_holder_compact_pf5}
+\end{align}
+taking care of the first term, and establishing~\eqref{eqn:leading_term_holder_compact_2} when $s = 2$. Otherwise when $s > 2$, we rearrange
+\begin{equation*}
+\sum_{\abs{\alpha} = 1}^{s} \sum_{\abs{\beta} = 0}^{s - 2} r^{\abs{\alpha} + \abs{\beta}} I_{\alpha + \beta} f^{(\alpha)}(x) p^{(\beta)}(x) = \sum_{\ell = 2}^{s - 1} r^{\ell} \Biggl\{\underbrace{\sum_{\abs{\alpha} + \abs{\beta} = \ell} I_{\alpha + \beta} f^{(\alpha)}(x) p^{(\beta)}(x)}_{:=f_{\ell,1}(x)}\Biggr\} + \sum_{\ell = s + 1}^{2s - 2} r^{\ell} \sum_{\abs{\alpha} + \abs{\beta} = \ell} I_{\alpha + \beta} f^{(\alpha)}(x) p^{(\beta)}(x).
+\end{equation*}
+and therefore
+\begin{align*}
+& \abs{\Ebb\Bigl[D_kf(x)\Bigr] - \sum_{\ell = 2}^{s - 1} r^{\ell} f_{\ell,1}(x)} = \\ & ~~~~ \sum_{\ell = s + 1}^{2s - 2} r^{\ell} \sum_{\abs{\alpha} + \abs{\beta} = \ell} I_{\alpha + \beta} f^{(\alpha)}(x) p^{(\beta)}(x) +  \sum_{\abs{\alpha} = 1}^{s} \sum_{\abs{\beta} = s - 1} \Bigl(\Ibb_{\alpha + \beta}\bigl[G_{\beta}\bigr]\Bigr)(x) f^{(\alpha)}(x) + \sum_{\abs{\alpha} = s} \Bigl(\Ebb_{\alpha}\bigl[F_{\alpha}\bigr]\Bigr)(x)
+\end{align*}
+On the left hand side, taking $\ell = \abs{\alpha} + \abs{\beta}$, note that for each $\ell < s$ the function $f_{\ell,1} \in C_c^{s - \ell}(\Xset)$ and further
+\begin{equation}
+\label{eqn:leading_term_holder_compact_pf3}
+\norm{f_{\ell,1}}_{C^{s - \ell}(\Xset)} \leq c p_{\max} \norm{f}_{C^s(\Xset)}.
+\end{equation}
+
+The right hand side consists of three terms, and we have already obtained sufficient estimates on the second and third term in~\eqref{eqn:leading_term_holder_compact_pf2} and~\eqref{eqn:leading_term_holder_compact_pf5}, respectively. It remains to deal with the first term. We have that $f^{(\alpha)}\cdot p^{(\beta)} \in C_c^{0}(\Xset)$ and
+\begin{equation}
+\label{eqn:leading_term_holder_compact_pf4}
+\norm{f^{(\alpha)}p^{(\beta)}}_{C^{0}(\Xset)} \leq p_{\max} \norm{f}_{C^s(\Xset)},
+\end{equation}
+establishing~\eqref{eqn:leading_term_holder_compact_1} when $s > 3$.
+
+\paragraph{Induction Step.}
+
+We now assume that~\eqref{eqn:leading_term_holder_compact_1} and~\eqref{eqn:leading_term_holder_compact_2} hold for all $k \in (n)^q$ and $x \in \Xset_{qr}$, and prove the desired estimates hold with respect to $\Ebb[D_jD_kf(x)]$ for all $(kj) \in (n)^{q + 1}$ and $x \in \Xset_{(q+1)r}$.
+
+We first consider the case where $s \leq 2q$. Here,
+\begin{equation*}
+\abs{\Ebb\Bigl[D_jD_kf(x)\Bigr]} \leq 2p_{\max} \sup_{x \in \Xset} \biggl\{\Ebb[D_kf(x)]\biggr\} \leq c r^s \norm{f}_{C^s(\Xset)}
+\end{equation*}
+--with the last inequality following by the inductive hypothesis--and~\eqref{eqn:leading_term_holder_compact_2} is established. 
+
+Otherwise $s \geq 2q + 1$. Our strategy will be to apply the inductive hypothesis twice, once to expand the $q$th order operator $D_k$ and once to expand the first order operator $D_j$. To achieve the former, we first note that by the law of iterated expectation
+\begin{equation}
+\label{eqn:leading_term_holder_compact_pf6}
+\Ebb\Bigl[D_jD_kf(x)\Bigr] = \Ebb\biggl[\Bigl(\Ebb\bigl[D_kf(x_j)|x_j\bigr] - \Ebb\bigl[D_kf(x)\bigr]\Bigr)K_r(x_j,x)\biggr].
+\end{equation}
+We now apply the inductive hypothesis to both $\Ebb\Bigl[D_kf(x)\Bigr]$ and  $\Ebb\Bigl[D_kf(x_j)|x_j\Bigr]$, which states that
+\begin{equation*}
+\abs{\Ebb\Bigl[D_kf(x)\Bigr] - \sum_{\ell = 2q}^{s - 1} r^{\ell}f_{\ell,q}(x)}, \abs{K_r(x_j,x)\biggl(\Ebb\Bigl[D_kf(x_j)|x_j\Bigr] - \sum_{\ell = 2q}^{s - 1} r^{\ell}f_{\ell,q}(x_j)\biggr)} \leq cr^s \norm{f}_{C^s(\Xset)}.
+\end{equation*}
+We emphasize that we may imply the inductive hypothesis in the latter case since $x \in \Xset_{(q+1)r}$ implies either $K_r(x_j,x) = 0$, or $x_j \in \Xset_{qr}$.
+Plugging back in to~\eqref{eqn:leading_term_holder_compact_pf6} gives
+\begin{equation}
+\label{eqn:leading_term_holder_compact_pf7}
+\abs{\Ebb\Bigl[D_jD_kf(x)\Bigr] - \sum_{\ell = 2q}^{s - 1} r^{\ell} \Ebb\Bigl[D_jf_{\ell,q}(x)\Bigr]} \leq c r^s \norm{f}_{C^s(\Xset)}.
+\end{equation}
+Next, we note that $f_{\ell,q} \in C_c^{s-\ell}(\Xset)$, for each $\ell = 2q,\ldots,s - 1$. We now apply the inductive hypothesis again, this time to $\Ebb[D_jf_{\ell,q}(x)]$. If $s - \ell \leq 2$,
+\begin{equation*}
+\abs{\Ebb\Bigl[D_jf_{\ell,q}(x)\Bigr]} \leq c r^{s - \ell} \norm{f_{\ell,q}}_{C^{s - \ell}(\Xset)} \leq c r^{s - \ell} \norm{f}_{C^{s}(\Xset)}.
+\end{equation*}
+Therefore when $s = 2q + 1$ or $s = 2q + 2$, by~\eqref{eqn:leading_term_holder_compact_pf7}
+\begin{equation*}
+\abs{\Ebb\Bigl[D_jD_kf(x)\Bigr]} \leq \sum_{\ell = 2q}^{s - 1} r^{\ell}\abs{\Ebb\Bigl[D_jf_{\ell,q}(x)\Bigr]} + c r^s \norm{f}_{C^s(\Xset)} \leq cr^s\norm{f}_{C^s(\Xset)}
+\end{equation*}
+completing the proof of~\eqref{eqn:leading_term_holder_compact_2}.
+
+On the other hand if $s - \ell > 2$, there exist functions $\wt{f}_{\ell + \wt{\ell},q} \in C_c^{s - \ell - \wt{\ell}}(\Xset)$ satisfying $\norm{\wt{f}_{\ell + \wt{\ell},q}}_{C^{s - \ell}(\Xset)} \leq c \norm{f_{\ell,q}}_{C^s(\Xset)}$ such that
+\begin{equation*}
+\abs{\Ebb\Bigl[D_jf_{\ell,q}(x)\Bigr] - \sum_{\ell = 2}^{s - \ell  - 1} r^{\wt{\ell}} f_{\ell + \wt{\ell},q}(x)} \leq c r^{(s - \ell - \wt{\ell})} \norm{f_{\ell,q}}_{C^{s - \ell}(\Xset)} \leq c r^{(s - \ell - \wt{\ell})} \norm{f}_{C^{s}(\Xset)}.
+\end{equation*}
+Plugging in to~\eqref{eqn:leading_term_holder_compact_pf7}, we have
+\begin{equation*}
+\abs{\Ebb\Bigl[D_jD_kf(x) - \sum_{\ell = 2q}^{s - 3} \sum_{\wt{\ell} = 2}^{s - \ell - 1} \wt{f}_{\ell + \wt{\ell},q}(x) r^{\ell + \wt{\ell}}\Bigr]} \leq cr^s \norm{f}_{C^s(\Xset)}
+\end{equation*}
+and rewriting the sum inside the absolute value over $\ell + \wt{\ell} = 2q + 2,\ldots,s - 1$, we have completed the proof of~\eqref{eqn:leading_term_holder_compact_1}.
+
+
+\section{Additional Results}
+
+To show equation~\eqref{eqn:leading_term_sobolev_compact_1} in Lemma~\ref{lem:leading_term_sobolev_compact}, it suffices to prove an equivalent bound on the $\Leb^2$ norm $\norm{f}_{\Leb^2(U_{2qr})}$. We show this in the case where the domain is the positive halfspace in $\Rd$, that is $\Xset = R_+^d = \set{x \in \Reals^d: x_d > 0}$. 
+
+\begin{lemma}
+	Suppose $g \in C_c^{s}(\Rdp) \cap H^s(\Rdp)$. Then
+	\begin{equation}
+	\norm{g}_{L^2(U_{r})} \leq 2 r^s\norm{g}_{H^s(\Rdp)}
+	\end{equation}  
+\end{lemma}
+\begin{proof}
+	We immediately take advantage of the axis-oriented structure of $\Rdp$. Write $x \in U_{2qr}$ as $x = (x',te_d)$, where $x' \in \Reals^{d - 1} \cap \{x_d = 0\}$ lies on the plane at $x_d = 0$, and $0 \leq \abs{t} \leq r$. Since $g$ is compactly supported on $\Rdp$, by taking a Taylor expansion we obtain
+	\begin{align*}
+	g(x) & = \sum_{\ell = 0}^{s - 1} \frac{\partial^\ell}{\partial e_d^\ell}g(x') t^{\ell} + \int_{0}^{t} \frac{\partial^s}{\partial e_d^s} g(x' + he_d) t^{s - 1} \,dh \\
+	& = \int_{0}^{t} \frac{\partial^s}{\partial e_d^s} g(x' + he_d) h^{s - 1} \,dh
+	\end{align*}
+	We then bound the squared $\Leb^2$ norm of $g$ using Hardy's inequality,
+	\begin{align*}
+	\int_{\Xset} \bigl(g(x)\bigr)^2 \,dx & = \int_{\Reals^{d - 1}} \int_{0}^{r} \biggl(\int_{0}^{t} \frac{\partial^s}{\partial e_d^s} g(x' + he_d) h^{s - 1} \,dh\biggr)^2 \,dt \,dx' \\
+	& \leq r^{2s} \int_{\Reals^{d - 1}} \int_{0}^{r} \biggl(\frac{1}{t}\int_{0}^{t} \frac{\partial^s}{\partial e_d^s} g(x' + he_d) \,dh\biggr)^2 \,dt \,dx' \\
+	& \leq 4 r^{2s} \int_{\Reals^{d - 1}} \int_{0}^{\infty} \Bigl(\frac{\partial^s}{\partial e_d^s} g(x' + te_d)\Bigr)^2  \,dt \,dx' \\
+	& \leq 4 r^{2s} \norm{g}_{H^s(\Rdp)}^2.
+	\end{align*}
+\end{proof}
+
+Now we show a similar result when $\Xset \subset \Rd$ is assumed to be a bounded open set with Lipschitz boundary. The proof is slightly more complicated, but the key ideas are the same.
+
+\begin{lemma}
+	\label{lem:boundary_term_sobolev}
+	Let $\Xset \subset \Rd$ be a bounded open set with Lipschitz boundary. For any $g \in C_c^{\infty}(\Xset)$, we have that 
+	\begin{equation*}
+	\norm{g}_{\Leb^2(U_r)}^2 \leq c r^s \norm{g}_{H^s(\Xset)}
+	\end{equation*}
+	for all $r > 0$ sufficiently small.
+\end{lemma}
+\begin{proof}
+	Fix $x_0 \in \partial \Xset$, and let $Q_d(x_0,r)$ be the $d$-dimensional cube centered at $x_0$ of side length $r$. We will show that for all sufficiently small $r > 0$,
+	\begin{equation}
+	\norm{g}_{\Xset \cap \Leb^2(Q_d(x_0,r))} \leq c r^s \norm{g}_{H^s(Q_d(x_0,r))}
+	\end{equation}
+	The Lemma then follows by taking a finite covering of $\partial X$ -- possible since $X$ is assumed to be bounded -- in a similar manner to e.g. Theorem 18.1 of \textcolor{red}{(Leoni)} or Theorem 1 in 5.5 of \textcolor{red}{(Evans)}.
+	
+	We begin by straightening the boundary. Since $\Xset$ has a Lipschitz boundary, for any $x_0 \in \partial X$ there exists a rigid motion $\Phi: \Rd \to \Rd$ with $T(x_0) = 0$, a Lipschitz continuous function $\gamma: \Reals^{d-1} \to \Reals^d$, and a radius $r_0' > 0$ such that, setting $y = \Phi(x)$ and writing $y = (y',y_d)$, we have that for all $r < r_0$,
+	\begin{equation*}
+	\Phi(\Xset \cap Q(x_0,r)) = \bigl\{y \in Q(0,r): y_d > \gamma(y')\bigr\}.
+	\end{equation*}
+	Fixing $0 < r < r_0/[\mathrm{Lip}(\gamma)\sqrt{d}]$, we have that $\gamma(y') > -r$ for all $y' \in Q_{d - 1}(x_0,r)$; writing $\wt{g}(y) = g(T^{-1}(y))$, taking a Taylor expansion of $\wt{g}(y)$ around $\wt{g}((y',\gamma(y')))$ thus yields
+	\begin{align*}
+	\wt{g}(y) & = \sum_{\ell = 1}^{s - 1} g^{(\ell e_d)}\bigl((y',\gamma(y'))\bigr) (y_d - \gamma(y'))^{\ell} + \int_{\gamma(y')}^{y_d} \wt{g}^{(se_d)}\bigl((y',he_d)\bigr) h^{s - 1}\,dh \\
+	& = \int_{\gamma(y')}^{y_d} \wt{g}^{(se_d)}\bigl((y',he_d)\bigr) h^{s - 1}\,dh
+	\end{align*}
+	where the second equality follows from the assumption $g \in C_c^{\infty}(\Xset)$. We now analyze the $\Leb^2$ norm over $Q_d(x_0,r)$,
+	\begin{align*}
+	\norm{g}_{\Xset \cap \Leb^2(Q_d(x_0,r))}^2 & = \norm{\wt{g}}_{\Leb^2(\Phi(\Xset \cap Q(0,r)))}^2 \\
+	& = \int_{Q_{d - 1}(0,r)} \int_{\gamma(y')}^{r} \biggl[\int_{\gamma(y')}^{y_d} \wt{g}^{(se_d)}\bigl((y',he_d)\bigr)h^{s - 1} \,dh\biggr]^2 \,dy_d \,dy' \\
+	& \overset{(i)}{\leq} (2r)^{2(s - 1)} \int_{Q_{d - 1}(0,r)} \int_{\gamma(y')}^{r} \bigl(y_d - \gamma(y')\bigr)^2 \biggl[\frac{1}{y_d - \gamma(y')}\int_{\gamma(y')}^{y_d} \wt{g}^{(se_d)}\bigl((y',he_d)\bigr) \,dh\biggr]^2 \,dy_d \,dy' \\
+	& \overset{(ii)}{\leq}  (2r)^{2(s - 1)} \int_{Q_{d - 1}(0,r)} \int_{\gamma(y')}^{r} \bigl(y_d - \gamma(y')\bigr) \int_{\gamma(y')}^{y_d} \biggl[\wt{g}^{(se_d)}\bigl((y',he_d)\bigr)\biggr]^2 \,dh \,dy_d \,dy' \\
+	& \overset{(iii)}{\leq}  (2r)^{2s - 1} \int_{Q_{d - 1}(0,r)} \int_{\gamma(y')}^{r} \int_{\gamma(y')}^{r} \biggl[\wt{g}^{(se_d)}\bigl((y',he_d)\bigr)\biggr]^2 \,dh \,dy_d \,dy' \\
+	& \leq  (2r)^{2s} \int_{Q_{d - 1}(0,r)}  \int_{\gamma(y')}^{r} \biggl[\wt{g}^{(se_d)}\bigl((y',he_d)\bigr)\biggr]^2 \,dh  \,dy' \\
+	& \overset{(iv)}{\leq} (2r)^{2s} \int_{Q(x_0,r)} \bigl[g^{(se_d)}(x)\bigr]^2 \,dx \leq (2r)^{2s} \norm{g}_{H^s(B(x_0,r))}^2
+	\end{align*} 
+	where $(i)$ follows since $0 < y_d - \gamma(y') < r - \gamma(y') < 2r$, $(ii)$ follows by Jensen's inequality, $(iii)$ follows since $y_d < r$, and $(iv)$ follows from a change of variables. This completes the proof of Lemma~\ref{lem:boundary_term_sobolev}.
+\end{proof}
+
+The following Lemma helps us deal with remainder terms in the Sobolev case.
+\begin{lemma}
+	\label{lem:remainder_term_sobolev}
+	Suppose $f \in \Leb^2(U_r)$ and $k \in (n)$. Then,
+	\begin{equation*}
+	\norm{\Ebb\bigl[D_kf\bigr]}_{\Leb^2(U)}, \norm{\Ebb\bigl[fK_r(x_k,\cdot)\bigr]}_{\Leb^2(U)} \leq c \norm{f}_{\Leb^2(U_r)}
+	\end{equation*}
+\end{lemma}
+
+
+
+\end{document}
