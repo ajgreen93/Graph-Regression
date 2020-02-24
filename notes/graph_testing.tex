@@ -659,12 +659,11 @@ We want to apply Lemma~\ref{lem:fixed_graph_testing} to the case where $G = G_{n
 \begin{enumerate}[label=(E\arabic*)]
 	\item 
 	\label{event:discrete_sobolev_norm}
-	\textbf{Graph Sobolev norm:} For any $n^{-1/(2(s - 1) + d)}\leq r$ such that $r \to 0$ as $n \to \infty$,
+	\textbf{Graph Sobolev norm:} There exists an $r^{\star}$ (which does not depend on $f$) such that for any $n^{-1/(2(s - 1) + d)}\leq r \leq r^{\star}$,
 	\begin{equation}
 	\label{eqn:continuous_to_discrete_sobolev_norm}
 	f^T L^s f \leq c \cdot b \cdot \norm{f}_{H^s(\Xset)}^2 \cdot n^{s + 1} r^{s(d + 2)}.
 	\end{equation}
-	for all $n$ sufficiently large.
 	\item 
 	\label{event:eigenvalue_tail_decay_2}
 	\textbf{Eigenvalue tail bound:} There exists a constant $c$ such that for any $\kappa = 1,\ldots,n$, if $\max\{ 3 d_{\infty}(X,\ol{X}),n^{-1/d}\} \leq r \leq \kappa^{-2/(d(2 +d))}$ then,
@@ -1845,7 +1844,7 @@ Here are a couple of Lemmas which helped us with the proof of Lemma~\ref{lem:lea
 The following Lemma helps us deal with remainder terms in the Sobolev case.
 \begin{lemma}
 	\label{lem:remainder_term_sobolev}
-	Suppose $f \in \Leb^2(U_r)$ and $k \in (n)$. Then,
+	Let $U \subset \Rd$ be an open set, and $U_r = \set{x \in \Rd: \mathrm{dist}(x,U) < x}$. Suppose $f \in \Leb^2(U_r)$ and $k \in (n)$. Then,
 	\begin{equation*}
 	\norm{\Ebb\bigl[D_kf\bigr]}_{\Leb^2(U)}, \norm{\Ebb\bigl[fK_r(x_k,\cdot)\bigr]}_{\Leb^2(U)} \leq c \norm{f}_{\Leb^2(U_r)}
 	\end{equation*}
