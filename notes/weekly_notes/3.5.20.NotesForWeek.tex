@@ -1,0 +1,533 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\makeatletter
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 2/28/20 - 3/5/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $N$ be an integer, $n = N^d$, and 
+\begin{equation*}
+\wb{X} := \Bigl\{\frac{1}{N}(j_1,\ldots,j_d): j \in [N]^d\Bigr\}
+\end{equation*}
+consist of $n$ total evenly spaced grid points on $[0,1]^d$. We observe $n$ samples according to regression model
+\begin{equation}
+\label{eqn:grid_regression_model}
+y_j = f(\wb{x}_j) + \varepsilon_j, ~\varepsilon_j \overset{\mathrm{i.i.d}}{\sim} \mathcal{N}(0,1) ~~\textrm{for each $j \in [N]^d$,}
+\end{equation}
+and our goal is to perform the goodness-of-fit testing
+\begin{equation*}
+\mathbb{H}_0 : f = f_0 := 0 ~~\textrm{vs.}~~ \mathbb{H}_a: f \neq f_0.
+\end{equation*}
+
+For an arbitrary graph $G$ on $n$ nodes with graph Laplacian $L_G = D_G - A_G$, let $\Lambda(G)$ consist of the eigenvalues $0 = \lambda_1(G) \leq \lambda_2(G) \leq \cdots \leq \lambda_n(G)$ of $L_G$, with $v_k(G) = (v_{k,1}(G),\ldots,v_{k,n}(G)) \in \Reals^n$ denoting the eigenvector corresponding to the $i$th eigenvalues $\lambda_k(G)$. The graph Laplacian eigenvector projection test is a linear projection test; letting $\kappa$ be some integer between $1$ and $n$, we define $\Pi_{k,G}(\theta) := \frac{1}{\sqrt{n}}\sum_{k = 1}^{\kappa} \dotp{v_k}{\theta}$ to be a suitable rescaling of the projection of $\theta$ onto the span of $v_1(G),\ldots,v_k(G)$. 
+
+Our test statistic will be
+\begin{equation*}
+T_{\mathrm{spec}}(G) := \norm{\Pi_{\kappa,G}(Y)}_n^2 - \frac{\kappa}{n},
+\end{equation*}
+a simple function of the projection of the data $Y$ onto the span of the first $\kappa$ eigenvectors of the graph Laplacian $L(G)$; we will suitably choose $G$ based on the assumptions we make on $f$.
+
+\section{Sobolev testing with fixed design.}
+For now, we confine our attention to the periodic Sobolev space $H_{\textrm{per}}^{s}([0,1]^d)$ which consists of all those functions $f \in \Leb^2([0,1]^d)$ whose tensor product Fourier coefficients decay at a sufficiently fast rate. When $d = 1$ and $x \in [0,1]$, let
+\begin{align*}
+\phi_1(x) & = 1 \\
+\phi_{2k}(x) & = \cos(2k\pi x),~~ k \in \mathbb{N} \\
+\phi_{2k + 1}(x) & = \sin(2k\pi x),~~ k \in \mathbb{N}
+\end{align*}
+be the trigonometric basis over $[0,1]$. The tensor product Fourier basis is defined on $[0,1]^d$ as
+\begin{equation*}
+\phi_k(x) = \prod_{i = 1}^{d} \phi_{k_i}(x_i),
+\end{equation*}
+the Sobolev space $H_{\textrm{per}}^{s}([0,1]^d)$ as 
+\begin{equation*}
+H^{\textrm{per}}([0,1]^d) = \set{\sum_{k \in \mathbb{N}^d} \theta_k \phi_k^{(d)}: \sum_{k \in \mathbb{N}^d} \theta_k^2 \abs{k}^{2s} < \infty},
+\end{equation*}
+and the unit ball $H_{\textrm{per}}^{s}([0,1]^d, L)$ as 
+\begin{equation*}
+H^{\textrm{per}}([0,1]^d;L) = \set{\sum_{k \in \mathbb{N}^d} \theta_k \phi_k^{(d)}: \sum_{k \in \mathbb{N}^d} \theta_k^2 \abs{k}^{2s} \leq L},
+\end{equation*}
+
+Intuitively, a good choice of graph $G$ for our test statistic $T_{\spec}(G)$ will be one which keeps the approximation error
+\begin{equation*}
+\norm{f}_{\Leb^2}^2 - \Ebb\Bigl[\norm{\Pi_{\kappa,G}(Y)}_{n}^2\Bigr] =  \norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,G}(f)}_{n}^2
+\end{equation*}
+small when $\kappa$ is not too large.
+
+\subsection{Torus Graph}
+
+We will see that the torus graph $\wt{G}_d$ fulfills this purpose. The $1$-dimensional torus (ring) graph is defined as
+\begin{equation*}
+\wt{G}_1 = (\wb{X}; \wt{E}),~~ \wt{E} = \Bigl\{(\wb{x}_i,\wb{x}_j): i \in [n], j = (i + 1) \mod n\Bigr\};
+\end{equation*}
+when $d > 1$, we define $\wt{G}_d = \wt{G}_1 \otimes \cdot \wt{G}_1$ as the tensor product of $\wt{G}_1$ iterated $d$ times.
+
+\begin{lemma}
+	\label{lem:grid_sobolev_approximation_error}
+	Let $K := \kappa^{1/d}$. For any $2s > d$ and $f \in H_{\textrm{per}}^s([0,1]^d;L)$, 
+	\begin{equation}
+	\label{eqn:grid_sobolev_approximation_error}
+	\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,G}(f)}_{n}^2 \leq c n^{1/2 - s/d} \kappa^{1/2} \norm{f}_2 + \sum_{k \in \mathbb{N}^d - [K]^d} \theta_k^2
+	\end{equation}
+	for a constant $c$ which depends only on $L$ and $d$. 
+\end{lemma}
+
+It is possible to improve on Lemma~\ref{lem:grid_sobolev_approximation_error} under \textcolor{red}{(relatively mild)} additional assumptions. Specifically, we assume the existence of $\varepsilon_j$ satisfying $j \varepsilon_j$ is monotone non-increasing in $j$, such that for every $f \in H_{\textrm{per}}^{s}([0,1]^d)$, $f = \sum_{k \in \mathbb{N}^d} \theta_k \phi_k$,
+\begin{equation}
+\label{asmp:fourier_coefficient_decay}
+\abs{\theta_k} \leq \prod_{i = 1}^{d} \varepsilon_{k_i}~~\textrm{for all $k \in \mathbb{N}^d$},~~ \sum_{j = 1}^{\infty} \varepsilon_j = C,~~ \sum_{j = 1}^{\infty} \varepsilon_j^2 \leq C \biggl(\sum_{k \in \mathbb{N}^d} \theta_k^2\biggr)^{1/d}
+\end{equation}
+for some constant $C < \infty$. 
+
+\textcolor{red}{(TODO:)} {Unfortunately these additional assumptions are not mild at all, but instead relatively close to assuming the function is $s$-Holder.}
+
+\begin{lemma}
+	\label{lem:grid_sobolev_approximation_error_2}
+	Suppose that~\eqref{asmp:fourier_coefficient_decay} holds with respect to $H_{\textrm{per}}^{s}([0,1]^d)$. Then for every $f \in H_{\textrm{per}}^{s}([0,1]^d)$,
+	\begin{equation}
+	\label{eqn:grid_sobolev_approximation_error_2}
+	\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,G}(f)}_{n}^2 \leq c \norm{f}_{\Leb^2}^2 \Biggl( \frac{K^{1/2}}{N \norm{f}_{\Leb^2}^{1/d}} + \frac{K^{d/2}}{n\norm{f}_{\Leb^2}}\Biggr) + \sum_{k \in \mathbb{N}^d - [K]^d} \theta_k^2
+	\end{equation}
+\end{lemma}
+When we choose $\kappa = n^{2d/(4s + d)}$, and additionally $\norm{f}_{\Leb^2} \geq n^{-2s/(4s + d)}$, we note that 
+\begin{equation*}
+\frac{K^{1/2}}{N \norm{f}_{\Leb^2}^{1/d}} + \frac{K^{d/2}}{n\norm{f}_{\Leb^2}} = o(1)
+\end{equation*}
+and therefore the discretization error is asymptotically negligible.
+
+Now we will attempt to find a sharper bound on discretization error than Lemma~\ref{lem:grid_sobolev_approximation_error}, but that requires less severe assumptions than Lemma~\ref{lem:grid_sobolev_approximation_error_2}.
+\begin{lemma}
+	\label{lem:grid_sobolev_approximation_error_3}
+	For any $2s > d$ and $f \in H_{\textrm{per}}^s([0,1]^d;L)$, 
+	\begin{equation*}
+	\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,G}(f)}_{n}^2 \leq c n^{1/2 - s/d} \norm{f}_2 + \sum_{k \in \mathbb{N}^d - [K]^d} \theta_k^2
+	\end{equation*}
+\end{lemma}
+
+\subsection{Grid graph}
+In this section we will find it convenient to assume the grid points are symmetric in $[0,1]^d$, so we now treat
+\begin{equation*}
+\wb{X} := \set{\frac{1}{2N}(2j_1 - 1,\ldots,2j_d - 1): j \in [N]^d}.
+\end{equation*}
+
+The grid graph $\wb{G}_d = \wb{G} \otimes \cdots \otimes \wb{G}$, where
+\begin{equation*}
+\wb{G} = (\wb{X}; \wb{E}),~~ \wb{E} = \Bigl\{(\wb{x}_i,\wb{x}_j): i \in [n - 1], j = (i + 1)\Bigr\}; 
+\end{equation*}
+is the path (i.e. the torus with the edge connecting $1$ to $n$ removed.) The eigenvectors of the path can be written as follows:
+\begin{equation*}
+v_{k,i}(\wb{G}) = \cos\Bigl(\frac{\pi (k - 1) (i - 1/2)}{n}\Bigr), \textrm{for $i = 1,\ldots,n$ and $k = 1,\ldots,n - 1$}
+\end{equation*}
+with the usual consequence for the eigenvectors of the grid:
+\begin{equation*}
+v_{k,i}(\wb{G}_d) = \prod_{j = 1}^d v_{k_j,i_j}(\wb{G}),~~ \textrm{for $i \in [N]^d$, $j \in [N]^d$.}
+\end{equation*}
+We extend these eigenvectors to an orthonormal system over $\Leb^2([0,1]^d)$ as follows. Let
+\begin{equation*}
+\varphi_k(x) = \sqrt{2}\cos\biggl(\pi (k - 1) x\biggr),~~\textrm{for $k \in \Nbb, x \in [0,1]$},~~\textrm{and}~~ \varphi_k(x) = \prod_{j = 1}^{d} \varphi_{k_j}(x_j),~~\textrm{for $k \in \Nbb^d, x \in [0,1]^d$},
+\end{equation*}
+and note that by shifting the location of the design points $\wb{X}$, we have that $\varphi_k(\wb{x}_i) = \sqrt{n} v_{k,i}(\wb{G}_d)$ for all $k,i \in [N]^d$.
+
+We let the space 
+\begin{equation*}
+\wt{H}^{s}([0,1]^d;L) = \Bigl\{ \sum_{k \in \mathbb{N}^d} \theta_k \varphi_k: \sum_{k \in \mathbb{N}^d} \theta_k^2 a_k^{2} < L \Bigr\}
+\end{equation*}
+where in the one-dimensional case,
+\begin{equation*}
+a_{k - 1} =
+\begin{cases*}
+(k - 1)^s,~~ \textrm{if $k - 1$ is even} \\
+(k - 2)^s,~~ \textrm{if $k - 1$ is odd}
+\end{cases*}
+\end{equation*}
+and for general $d$, $a_k = \sqrt{\sum_{j = 1}^{d} a_{k_j}^2}$. It is not hard to show that $\wt{H}^s([0,1]^d)$ consists of those functions in $H^s([0,1]^d)$ which satisfy some boundary conditions
+\begin{equation*}
+\wt{H}^s([0,1]^d;L) = \Bigl\{f \in H^{s}([0,1]^d;L'): \forall x_0 \in \partial [0,1]^d, \frac{\partial^{\ell} f}{\partial \mathbf{n}^{\ell}}(x_0) = 0,~~\textrm{for $\ell = 1,\ldots,s-1$} \Bigr \} \supseteq H_0^s([0,1]^d;L')
+\end{equation*}
+for a constant $L'$ which depends only on $L$ and $s'$; we work through the details for the case $d = 1$ in Section~\ref{subsec:sobolev_class_equivalence}.
+
+For functions $f \in \wt{H}^{s}([0,1]^d;L)$, the error in approximating the continuum norm $\norm{f}_{\Leb^2}$ by the discrete norm of a projection of $f$ onto the eigenvectors of the grid is not too large. 
+
+\begin{lemma}
+	\label{lem:grid_sobolev_approximation_error_4}
+	Suppose $2s < d$ and $f = \sum_{k \in \mathbb{N}^k} \theta_k \varphi_k$ satisfies $f \in \wt{H}_{\textrm{per}}^{s}([0,1]^d;L)$. Then
+	\begin{equation*}
+	\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,\wb{G}_d}(f)}_{n}^2 \leq c n^{1/2 - s/d} \norm{f}_2 + \sum_{k \in \mathbb{N}^d - [K]^d} \theta_k^2
+	\end{equation*}
+\end{lemma}
+
+\section{Proofs}
+\subsection{Proof of Lemma~\ref{lem:grid_sobolev_approximation_error}}
+Recall that the eigenvectors of the torus graph $v_k := v_k(\wt{G}_d)$ satisfy
+\begin{equation*}
+v_{k}(\wb{x}_i) = \frac{1}{\sqrt{n}} \phi_{k}(\wb{x}_i)
+\end{equation*}
+for each $i \in [N]^d$ and $k \in \mathbb{N}^d$. Rewriting $\Pi_{\kappa,G}$ as a function of the tensor product Fourier basis, we obtain
+\begin{align*}
+\Pi_{\kappa,G}(f) & = \frac{1}{n} \sum_{k \in [K]^d} \Bigl\{\sum_{i \in [N]^d} f(\wb{x}_i) \phi_k(\wb{x}_i)\Bigr\} \phi_k \\
+& :=  \sum_{k \in [K]^d} \wt{\theta}_k \phi_k
+\end{align*}
+where the right hand side is interpreted as a function over $\wb{X}$. Since $\phi_k$ are $L_2(\wb{X})$ orthonormal, we obtain
+\begin{align*}
+\norm{\Pi_{\kappa,G}(f)}_n^2 & = \sum_{k \in [K]^d} \wt{\theta}_k^2 \\ 
+& = \sum_{k \in [K]^d} {\theta}_k^2 + \sum_{k \in [K]^d} \wt{\theta}_k^2 - \theta_k^2 \\
+& = \norm{f}_{\Leb^2([0,1]^d)}^2 - \sum_{k \in \mathbb{N}^d - [K]^d} \theta_k^2 + \sum_{k \in [K]^d} \wt{\theta}_k^2 - \theta_k^2
+\end{align*}
+and rearranging, we have
+\begin{equation*}
+\norm{f}_{\Leb^2([0,1]^d)}^2 - \norm{\Pi_{\kappa,G}(f)}_n^2 = \sum_{k \in [K]^d} \theta_k^2 - \wt{\theta}_k^2 + \sum_{k \in \mathbb{N}^d - [K]^d} \theta_k^2
+\end{equation*}
+The second term in the above equation corresponds to the second term in~\eqref{eqn:grid_sobolev_approximation_error}, and so we focus our attention on the first term, which represents discretization error. Applying the parallelogram law and the Cauchy-Schwarz inequality gives
+\begin{equation}
+\label{eqn:grid_sobolev_approximation_error_pf2}
+\begin{aligned}
+\sum_{k \in [K]^d} \theta_k^2 - \wt{\theta}_k^2 & \leq \sum_{k \in [K]^d} \max\Bigl\{(\theta_k + \wt{\theta}_k)(\theta_k - \wt{\theta}_k),0\Bigr\} \\
+& \leq \left(\sum_{k \in [K]^d} \max\Bigl\{(\theta_k + \wt{\theta}_k)^2,0\Bigr\}\right)^{1/2} \left(\sum_{k \in [K]^d} (\theta_k - \wt{\theta}_k)^2\right)^{1/2} \\
+& \leq \sqrt{2} \norm{f}_{\Leb^2([0,1]^d)} \left(\sum_{k \in [K]^d} (\theta_k - \wt{\theta}_k)^2\right)^{1/2}
+\end{aligned}
+\end{equation}
+
+We focus on the differences $\theta_k - \wt{\theta}_k$, and using the same steps as \textcolor{red}{(Tsybakov)} Lemma 1.8 we obtain
+\begin{equation}
+\label{eqn:grid_sobolev_approximation_error_pf1}
+\max_{k \in [K]^d}\abs{\theta_k - \wt{\theta}_k} \leq 2 L^{1/2} \left(\sum_{j \in \mathbb{N}^d - [N]^d} \abs{j}^{-2s}\right)^{1/2}
+\end{equation}
+so long as $K^d \leq n - 1$. Upper bounding the Riemann sum in~\eqref{eqn:grid_sobolev_approximation_error_pf1} by a corresponding integral, and converting to spherical coordinates, we have
+\begin{align*}
+\sum_{j \in \mathbb{N}^d - [N]^d} \abs{j}^{-2s} & \leq d \sum_{j \in \mathbb{N}^d: j_1 \geq N + 1} \abs{j}^{-2s} \\
+& \leq d \int_{\Reals^d \setminus B(0,N+1)} \abs{x}^{-2s} \,dx \\
+& \leq c \int_{N + 1}^{\infty} r^{-2s} r^{d - 1} \,dr \\
+& \leq c N^{d - 2s} = c n^{1 - 2s/d}
+\end{align*}
+where the last inequality holds since $2s > d$, and $c$ is a constant which depends only on $d$. By plugging back in to~\eqref{eqn:grid_sobolev_approximation_error_pf1} we obtain
+\begin{equation*}
+\max_{k \in [K]^d}\abs{\theta_k - \wt{\theta}_k} \leq   c n^{1/2 - s/d}
+\end{equation*}
+and the claim then follows from~\eqref{eqn:grid_sobolev_approximation_error_pf2}.
+
+\subsection{Proof of Lemma~\ref{lem:grid_sobolev_approximation_error_2}}
+As shown in the proof of Lemma~\ref{lem:grid_sobolev_approximation_error}, 
+\begin{equation}
+\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,G}(f)}_n^2 \leq \sqrt{2} \norm{f}_{\Leb^2([0,1]^d)} \left(\sum_{k \in [K]^d} (\theta_k - \wt{\theta}_k)^2\right)^{1/2} + \sum_{k \in \mathbb{N}^d - [K]^d} \theta_k^2 \label{eqn:grid_sobolev_approximation_error_2_pf2}
+\end{equation}
+We rewrite the discrete Fourier coefficients $\wt{\theta}_k$ as a weighted sum of continuum Fourier coefficients $\theta_k$,
+\begin{align}
+\wt{\theta}_k - \theta_k & = \frac{1}{n} \sum_{i \in [N]^d} \biggl\{\sum_{l \in \Nbb^d} \theta_l \phi_{l}(\wb{x}_i)\biggr\} \phi_k(\wb{x}_i)  - \theta_k \nonumber \\
+& = \sum_{l \in \Nbb^d}  \theta_l \biggl\{\frac{1}{n} \sum_{i \in [N]^d} \phi_{l}(\wb{x}_i) \phi_k(\wb{x}_i)\biggr\}  - \theta_k \label{eqn:grid_sobolev_approximation_error_2_pf1}
+\end{align}
+Using the tensor decomposition of $\phi_k$, we obtain
+\begin{align*}
+\frac{1}{n} \sum_{i \in [N]^d} \phi_{l}(\wb{x}_i) \phi_k(\wb{x}_i) & = \frac{1}{n} \sum_{i \in [N]^d} \biggl\{\prod_{j = 1}^{d} \phi_{l_j}(\wb{x}_{ij}) \phi_{k_j}(\wb{x}_{ij}) \biggr\} \\
+& = \frac{1}{n} \prod_{j = 1}^{d} \biggl\{\sum_{i_j = 1}^{N}  \phi_{l_j}(\wb{x}_{ij}) \phi_{k_j}(\wb{x}_{ij})  \biggr\} \\
+& = \prod_{j = 1}^{d} \Bigl(\delta_{l_j k_j} + \Delta_{l_j k_j}^{(N)}\Bigr)
+\end{align*}
+where the last line follows from Lemma~\ref{lem:polyak90} (a restatement of results of \textcolor{red}{(Polyak 90)}) and $\Delta_{l_jk_j}$ is as in that Lemma. Inserting this into~\eqref{eqn:grid_sobolev_approximation_error_pf2} gives
+\begin{align*}
+\abs{\wt{\theta}_k - \theta_k} & = \abs{\sum_{l \in \Nbb^d}  \theta_l \prod_{j = 1}^{d}\Bigl( \delta_{l_j k_j} + \Delta_{l_jk_j}^{(N)}\Bigr)  - \theta_k} \\
+& \overset{(i)}{=} \abs{\sum_{l \in \Nbb^d \setminus [N]^d}  \theta_l \prod_{j = 1}^{d}\Bigl( \delta_{l_j k_j} + \Delta_{l_jk_j}^{(N)}\Bigr)} \\
+& \overset{(ii)}{\leq} \sum_{l \in \Nbb^d \setminus [N]^d} \prod_{j = 1}^{d} \varepsilon_{l_j}\Bigl(\delta_{l_j k_j} + \abs{\Delta_{l_jk_j}^{(N)}}\Bigr) \\
+& \overset{(iii)}{=} \sum_{b \in \{0,1\}^d: \abs{b} \geq 1}\prod_{j: b_j = 0} \varepsilon_{k_j}\prod_{j: b_j = 1} \biggl(\sum_{m = N + 1}^{\infty} \varepsilon_{m} \abs{\Delta_{mk_j}^{(N)}}\biggr) \\
+& \overset{(iv)}{\leq} c \sum_{b \in \{0,1\}^d : \abs{b} \geq 1} N^{-\abs{b}} \prod_{j: b_j = 0} \varepsilon_{k_j} 
+\end{align*}
+where $(i)$ and $(iv)$ follow from Lemma~\ref{lem:polyak90}, $(ii)$ follows from the condition~\eqref{asmp:fourier_coefficient_decay}, and $(iii)$ follows since for each index $l_j$ at most one of $\delta_{l_j k_j}$ or $\Delta_{l_j k_j}^{(N)}$ can be non-zero, and $\delta_{l_j k_j}$ must equal $0$ for at least one $j = 1,\ldots,d$. 
+
+We can now upper bound the sum of squared differences between discrete Fourier coefficients and Fourier coefficients,
+\begin{align*}
+\sum_{k \in [K]^d} (\wt{\theta}_k - \theta_k)^2 & \leq c \sum_{k \in [K]^d} \biggl(\sum_{b \in \{0,1\}^d : \abs{b} \geq 1} N^{-\abs{b}} \prod_{j: b_j = 0} \varepsilon_{k_j} \biggr) \\
+& \leq c \sum_{k \in [K]^d} \sum_{b \in \{0,1\}^d : \abs{b} \geq 1} N^{-2\abs{b}} \prod_{j: b_j = 0} \varepsilon_{k_j}^2 \\
+& \leq c \sum_{b \in \{0,1\}^d : \abs{b} \geq 1} N^{-2\abs{b}} \sum_{k \in [K]^d} \prod_{j: b_j = 0} \varepsilon_{k_j}^2 \\
+& \overset{(v)}{\leq} c \sum_{b \in \{0,1\}^d : \abs{b} \geq 1} N^{-2\abs{b}} \norm{f}_{\Leb^2}^{2(d - \abs{b})/d} K^{\abs{b}} \\
+& \overset{(vi)}{\leq} c \norm{f}_{\Leb^2}^2 \Bigl( \frac{K}{N^2 \norm{f}_{\Leb^2}^{2/d}} + \frac{K^d}{N^{2d} \norm{f}_{\Leb^2}^{2}} \Bigr)
+\end{align*}
+where $(v)$ follows from condition~\eqref{asmp:fourier_coefficient_decay}, $(vi)$ since the summand achieves its maximum either when $b = 1$ or $b = d$, and in the above expression $c \geq 0$ is a constant which changes from line to line. Plugging back into~\eqref{eqn:grid_sobolev_approximation_error_pf2} implies Lemma~\ref{lem:grid_sobolev_approximation_error_2}.
+
+\subsection{Proof of Lemma~\ref{lem:grid_sobolev_approximation_error_3}}
+As shown in the proof of Lemma~\ref{lem:grid_sobolev_approximation_error}, 
+\begin{equation}
+\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,G}(f)}_n^2 \leq \sqrt{2} \norm{f}_{\Leb^2([0,1]^d)} \left(\sum_{k \in [K]^d} (\theta_k - \wt{\theta}_k)^2\right)^{1/2} + \sum_{k \in \mathbb{N}^d - [K]^d} \theta_k^2 \label{eqn:grid_sobolev_approximation_error_3_pf1}
+\end{equation}
+
+By Lemma~\ref{lem:polyak90}, we have
+\begin{align*}
+\abs{\wt{\theta}_k - \theta_k} & = \abs{\sum_{l \in \Nbb^d}  \theta_l \prod_{j = 1}^{d}\Bigl( \delta_{l_j k_j} + \Delta_{l_jk_j}^{(N)}\Bigr)  - \theta_k} \\
+& = \abs{\sum_{l \in \Nbb^d \setminus [N]^d}  \theta_l \prod_{j = 1}^{d}\Bigl( \delta_{l_j k_j} + \Delta_{l_jk_j}^{(N)}\Bigr)} \\
+& = \sum_{b \in \{0,1\}^d: \abs{b} < N} \sum_{l \in I_b(k)} \abs{\theta_l} \prod_{j: b_j = 1}^{d} \abs{\Delta_{l_jk_j}^{(N)}}
+\end{align*}
+and therefore, upper bounding $l_2$ norm by $l_1$ norm and exchanging sums, we have
+\begin{align*}
+\biggl(\sum_{k \in [K]^d} (\wt{\theta}_k - \theta_k)^2\biggr)^{1/2} & \leq \sum_{k \in [K]^d} \abs{\wt{\theta}_k - \theta_k} \\
+& \leq \sum_{b \in \{0,1\}^d: \abs{b} < N} \sum_{k \in [K]^d}  \sum_{l \in I_b(k)} \abs{\theta_l} \prod_{j: b_j = 1}^{d} \abs{\Delta_{l_jk_j}^{(N)}}.
+\end{align*}
+In Lemma~\ref{lem:double_counting}, we establish that the following upper bound holds for each $b \in \{0,1\}^d$ such that $\abs{b} < N$:
+\begin{equation*}
+\sum_{k \in [K]^d}  \sum_{l \in I_b(k)} \abs{\theta_l} \prod_{j: b_j = 1}^{d} \abs{\Delta_{l_jk_j}^{(N)}} \leq 2^d \sum_{l \in \Nbb^d - [N]^d} \abs{\theta_l}
+\end{equation*}
+and therefore,
+\begin{align*}
+\biggl(\sum_{k \in [K]^d} (\wt{\theta}_k - \theta_k)^2\biggr)^{1/2} & \leq 4^d \sum_{l \in \mathbb{N}^d - [N]^d} \abs{\theta_l} \\
+& \leq 4^d \biggl(\sum_{l \in \mathbb{N}^d - [N]^d} \abs{\theta_l}^2 \abs{l}^{2s}\biggr)^{1/2} \biggl(\sum_{l \in \mathbb{N}^d - [N]^d} \abs{l}^{-2s}\biggr)^{1/2}  \\
+& \leq 4^d L^{1/2} \biggl(\sum_{l \in \mathbb{N}^d - [N]^d} \abs{l}^{-2s}\biggr)^{1/2}.
+\end{align*}
+Note that this upper bound~\eqref{eqn:grid_sobolev_approximation_error_pf1}, which upper bounds the maximum over $k \in [K]^d$ rather than the sum over all $k \in [K]^d$ by the same term, and therefore incurs an additional loss of $K^{d/2}$. Continuing as in the proof of Lemma~\ref{eqn:grid_sobolev_approximation_error} yields the claimed result.
+
+\subsection{Proof of Lemma~\ref{lem:grid_sobolev_approximation_error_4}}
+This proof follows the along the same lines as the proof of Lemma~\ref{lem:grid_sobolev_approximation_error_3}, replacing functions $\phi$ in the Fourier basis by functions $\varphi$ in the modified Fourier basis when necessary.
+
+\section{Supporting Theory}
+\begin{lemma}[Restatement and Extension of Lemma 1 of \textcolor{red}{(Polyak 90)}]
+	\label{lem:polyak90}
+	\begin{equation*}
+	\frac{1}{n}\sum_{i = 1}^{n} \phi_{k}(\wb{x}_i)\phi_{l}(\wb{x}_i) = \delta_{kl} + \Delta_{kl}^{(n)}
+	\end{equation*}
+	where $\Delta_{kl}^{(n)} = 0$ if $k,l \leq n$ or $k$ and $l$ are of different parities, and otherwise
+	\begin{equation*}
+	\abs{\Delta_{kl}} \leq \sum_{m = 1}^{\infty} \delta_{\abs{[k/2] - [l/2]} = mn} + \delta_{\abs{[k/2] + [l/2]} = mn}
+	\end{equation*}
+	
+	The same statement holds true when replacing $\phi_k$ by $\varphi_k$ and $\phi_l$ by $\varphi_l$, and using symmetric grid points $\wb{X}_i$.
+\end{lemma}
+\begin{proof}
+	We prove only the statement involving $\varphi_k$ and $\varphi_l$. Note that for $k = 1,\ldots,n$, and $i = 1,\ldots,n$,
+	\begin{equation*}
+	v_{k,i} = \frac{1}{\sqrt{n}}\varphi_k(\wb{x}_i)
+	\end{equation*}
+	and $\Delta_{kl}^{(n)} = 0$ for $1 \leq k,l \leq n$ immediately follows. 
+	
+	By restricting the basis $\varphi_k$ to the nodes $\wb{x}_i$ we induce periodicity. In particular, for $k = mn + (j + 1)$ where $m$ and $j$ are non-negative integers and $0 \leq j < n$, we have
+	\begin{equation*}
+	\varphi_k(\wb{x}_i) \propto
+	\begin{cases*}
+	\varphi_{j + 1}(\wb{x}_i),& ~~\textrm{if $m \mod 2 = 0$} \\
+	\varphi_{n - j}(\wb{x}_i),& ~~\textrm{if $m \mod 2 = 1$}
+	\end{cases*}
+	\end{equation*}
+	Writing $l = m'n + j' + 1$, we therefore see that $\dotp{\varphi_k}{\varphi_l}_n \in \{-1,+1\}$ if and only if (a) $m \mod 2 = m' \mod 2$ and $j = j'$, or (b) $m \mod 2 \neq m' \mod 2$ and $j + 1 = n - j'$; otherwise, $\dotp{\varphi_k}{\varphi_l}_n = 0$. Condition (a) is equivalent to $|[k/2] - [l/2]| = mn$ for some $m \in \mathbb{N}$, and Condition (b) is equivalent to $[k/2] + [m/2] = mn$ for some $m \in \Nbb$, thus proving the claim.
+	
+\end{proof}
+
+\begin{lemma}
+If $(\theta_k) \in \ell^2(\Nbb)$ satisfies~\eqref{asmp:fourier_coefficient_decay}, then additionally
+\begin{equation*}
+\max_{1 \leq k \leq n} \biggl(\sum_{l = n + 1}^{\infty} \theta_l \Delta_{kl}\biggr)^2 \leq \frac{C'}{n^2}
+\end{equation*}
+for some $C'$ which depends only on $C$.
+\end{lemma}	
+
+For $b \in \{0,1\}^d$, let $I_b(k) = \set{l \in \Nbb^d: l_ib_i = k_ib_i~~\textrm{for each}~~i = 1,\ldots,d}$.
+
+\begin{lemma}
+	\label{lem:double_counting}
+	For any $\theta: \mathbb{N}^d \to \Reals^+$, any $K \leq N$, and any $b \in \{0,1\}^d$ such that $\abs{b} < N$, 
+	\begin{equation}
+	\label{eqn:double_counting}
+	\abs{\sum_{k \in [K]^d} \sum_{l \in I_b(k)} \theta_l \prod_{j:b_j = 0} \Delta_{l_jk_j}^{(N)}} \leq 2^d \sum_{\mathbb{N}^d -[N]^d} \abs{\theta_l}
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	Without loss of generality, suppose $b_1 = \ldots = b_{\abs{b}} = 1$, and $b_{\abs{b} + 1} = \ldots = b_{d} = 0$. We can upper bound the left hand side of ~\eqref{eqn:double_counting} as 
+	\begin{equation*}
+	\abs{\sum_{k \in [K]^d} \sum_{l \in I_b(k)} \theta_l \prod_{j:b_j = 0} \Delta_{l_jk_j}^{(N)}} \leq \sum_{k_1,\ldots,k_{\abs{b}} = 1}^{K} \sum_{k_{\abs{b} + 1},\ldots,k_{d} = 1}^{K} \sum_{l_{\abs{b} + 1}, \ldots, l_d = N + 1}^{\infty} \abs{\theta_{k_1\ldots k_{\abs{b}} l_{\abs{b} + 1} \ldots l_d}} \prod_{j = \abs{b} + 1}^{d} \abs{\Delta_{l_jk_j}^{(N)}}
+	\end{equation*}
+	and it is therefore sufficient to show that
+	\begin{equation}
+	\label{eqn:double_counting_pf1}
+	\sum_{k_{\abs{b} + 1},\ldots,k_{d} = 1}^{K} \sum_{l_{\abs{b} + 1}, \ldots, l_d = N + 1}^{\infty} \abs{\theta_{k_1\ldots k_{\abs{b}} l_{\abs{b} + 1} \ldots l_d}} \prod_{j = \abs{b} + 1}^{d} \abs{\Delta_{l_jk_j}^{(N)}} \leq \sum_{l_{\abs{b} + 1},\ldots,l_{d} = N + 1}^{\infty} \abs{\theta_{k_1\ldots k_{\abs{b}} l_{\abs{b} + 1} \ldots l_d}}
+	\end{equation}
+	Using the upper bound on $\Delta_{kl}$ given by Lemma~\ref{lem:double_counting}, for a given $k_{\abs{b} + 1},\ldots,k_d$ we have
+	\begin{align}
+	\sum_{l_{\abs{b} + 1}, \ldots, l_d = N + 1}^{\infty} & \abs{\theta_{k_1\ldots k_{\abs{b}} l_{\abs{b} + 1} \ldots l_d}} \prod_{j = \abs{b} + 1}^{d} \abs{\Delta_{l_jk_j}^{(N)}} \nonumber \\
+	& \leq \sum_{l_{\abs{b} + 1}, \ldots, l_d = N + 1}^{\infty} \abs{\theta_{k_1\ldots k_{\abs{b}} l_{\abs{b} + 1} \ldots l_d}} \sum_{m_{\abs{b} + 1,\ldots, m_d} = 1}^{\infty} \prod_{j = \abs{b} + 1}^{d} \delta_{\abs{[k_j/2] - [l_j/2]} = m_jN} + \delta_{\abs{[k_j/2] + [l_j/2]} = m_jN} \nonumber \\
+	& = \sum_{m_{\abs{b} + 1,\ldots, m_d} = 1}^{\infty} \sum_{l_{\abs{b} + 1}, \ldots, l_d = N + 1}^{\infty} \abs{\theta_{k_1\ldots k_{\abs{b}} l_{\abs{b} + 1} \ldots l_d}} \prod_{j = \abs{b} + 1}^{d} \delta_{\abs{[k_j/2] - [l_j/2]} = m_jN} + \delta_{\abs{[k_j/2] + [l_j/2]} = m_jN} \nonumber \\
+	& = \sum_{m_{\abs{b} + 1,\ldots, m_d} = 1}^{\infty} \sum_{l \in L(m,k)} \abs{\theta_l}. \label{eqn:double_counting_pf2}
+	\end{align}
+	In the above lines, the sums are always over $l_j$ such that $l_j$ and $k_j$ have the same parity, since otherwise $\Delta_{l_j k_j}^{(N)} = 0$ by Lemma~\ref{lem:polyak90}, and $L(m,k) := \cap_{j = 1}^{d} S_j(m,k) \cap \cap_{j = 1}^{d} R_j(l)$ for
+	\begin{align*}
+	S_j(m,k) & = 
+	\begin{cases*}
+	\Bigl\{l_j \in \mathbb{N}: l_j = k_j\Bigr\}, & ~\textrm{for $j = 1,\ldots,\abs{b}$} \\
+	\Bigl\{l_j \in \mathbb{N} \setminus [N]: [l_j/2] - [k_j/2] = m_j N \Bigr\} \cup \Bigl\{l_j \in \mathbb{N} \setminus{N}: [l_j/2] + [k_j/2] = m_j N \Bigr\}, & ~\textrm{for $j = \abs{b} + 1,\ldots,d$}.
+	\end{cases*} \\
+	R_j(k) & = \Bigl\{l_j \in \mathbb{N}: l_j \mod 2 = k_j \mod 2\Bigr\}
+	\end{align*}
+	The key point is that for any distinct $k_j,k_j' \in [K]$ the sets $S_j(m,k)$ and $S_j(m,k')$ are disjoint unless (a) $[k_j/2] = [k_j'/2]$, in which case $R_j(k)$ and $R_j(k')$ are disjoint since $k_j$ and $k_j'$ are of different parity, or (b) $[k_j/2] = N - [k_j/2]$ and $k_j,k_j'$ are of the same parity. Therefore, for any $k \in [K]^d$ and $m \in \mathbb{N}^d$, there are at most $2^{d - \abs{b}} < 2^d$ choices of $k'$ such that $L(m,k)$ and $L(m,k')$ are not disjoint. Moreover, for any $m \in \mathbb{N}^d$ the inclusion $l_j \in S_j(m,k)$ implies that $\abs{l_j} \geq N + 1$. As a result,
+	\begin{equation*}
+	\bigcup_{k_{\abs{b} + 1},\ldots,k_d = 1}^{N}\Bigl\{\bigcup_{m \in \mathbb{N}^d} L(m,k)\Bigr\} \subseteq \bigcup_{l_{\abs{b} + 1},\ldots, l_{d} = N}^{\infty} (k_1,\ldots,k_{\abs{b}},l_{\abs{b} + 1},\ldots,l_d)
+	\end{equation*} Plugging~\eqref{eqn:double_counting_pf2} back into the left hand side of~ \eqref{eqn:double_counting_pf1}, we have
+	\begin{align*}
+	\sum_{k_{\abs{b} + 1},\ldots,k_{d} = 1}^{K} \sum_{l_{\abs{b} + 1}, \ldots, l_d = N + 1}^{\infty} \abs{\theta_{k_1\ldots k_{\abs{b}} l_{\abs{b} + 1} \ldots l_d}} \prod_{j = \abs{b} + 1}^{d} \abs{\Delta_{l_jk_j}^{(N)}} & \leq \sum_{k_{\abs{b} + 1},\ldots,k_{d} = 1}^{K} \sum_{m_{\abs{b} + 1,\ldots, m_d} = 1}^{\infty} \sum_{l \in L(m,k)} \abs{\theta_l} \\
+	& \leq 2^d \sum_{l_{\abs{b} + 1},\ldots,l_{d} = N + 1}^{\infty} \abs{\theta_{k_1\ldots k_{\abs{b}} l_{\abs{b} + 1} \ldots l_d}}
+	\end{align*}
+	and the proof~\eqref{eqn:double_counting_pf1}--and therefore the proof the Lemma--is complete.
+\end{proof}
+
+\subsection{Equivalence between Sobolev classes}
+\label{subsec:sobolev_class_equivalence}
+
+\textcolor{red}{Work through details.}
+
+
+\end{document}
