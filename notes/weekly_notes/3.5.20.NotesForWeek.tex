@@ -196,8 +196,8 @@ a simple function of the projection of the data $Y$ onto the span of the first $
 For now, we confine our attention to the periodic Sobolev space $H_{\textrm{per}}^{s}([0,1]^d)$ which consists of all those functions $f \in \Leb^2([0,1]^d)$ whose tensor product Fourier coefficients decay at a sufficiently fast rate. When $d = 1$ and $x \in [0,1]$, let
 \begin{align*}
 \phi_1(x) & = 1 \\
-\phi_{2k}(x) & = \cos(2k\pi x),~~ k \in \mathbb{N} \\
-\phi_{2k + 1}(x) & = \sin(2k\pi x),~~ k \in \mathbb{N}
+\phi_{2k}(x) & = \sqrt{2}\cos(2k\pi x),~~ k \in \mathbb{N} \\
+\phi_{2k + 1}(x) & = \sqrt{2}\sin(2k\pi x),~~ k \in \mathbb{N}
 \end{align*}
 be the trigonometric basis over $[0,1]$. The tensor product Fourier basis is defined on $[0,1]^d$ as
 \begin{equation*}
@@ -236,14 +236,12 @@ when $d > 1$, we define $\wt{G}_d = \wt{G}_1 \otimes \cdot \wt{G}_1$ as the tens
 	for a constant $c$ which depends only on $L$ and $d$. 
 \end{lemma}
 
-It is possible to improve on Lemma~\ref{lem:grid_sobolev_approximation_error} under \textcolor{red}{(relatively mild)} additional assumptions. Specifically, we assume the existence of $\varepsilon_j$ satisfying $j \varepsilon_j$ is monotone non-increasing in $j$, such that for every $f \in H_{\textrm{per}}^{s}([0,1]^d)$, $f = \sum_{k \in \mathbb{N}^d} \theta_k \phi_k$,
+It is possible to improve on Lemma~\ref{lem:grid_sobolev_approximation_error} under additional assumptions. Specifically, we assume the existence of $\varepsilon_j$ satisfying $j \varepsilon_j$ is monotone non-increasing in $j$, such that for every $f \in H_{\textrm{per}}^{s}([0,1]^d)$, $f = \sum_{k \in \mathbb{N}^d} \theta_k \phi_k$,
 \begin{equation}
 \label{asmp:fourier_coefficient_decay}
 \abs{\theta_k} \leq \prod_{i = 1}^{d} \varepsilon_{k_i}~~\textrm{for all $k \in \mathbb{N}^d$},~~ \sum_{j = 1}^{\infty} \varepsilon_j = C,~~ \sum_{j = 1}^{\infty} \varepsilon_j^2 \leq C \biggl(\sum_{k \in \mathbb{N}^d} \theta_k^2\biggr)^{1/d}
 \end{equation}
 for some constant $C < \infty$. 
-
-\textcolor{red}{(TODO:)} {Unfortunately these additional assumptions are not mild at all, but instead relatively close to assuming the function is $s$-Holder.}
 
 \begin{lemma}
 	\label{lem:grid_sobolev_approximation_error_2}
@@ -259,7 +257,8 @@ When we choose $\kappa = n^{2d/(4s + d)}$, and additionally $\norm{f}_{\Leb^2} \
 \end{equation*}
 and therefore the discretization error is asymptotically negligible.
 
-Now we will attempt to find a sharper bound on discretization error than Lemma~\ref{lem:grid_sobolev_approximation_error}, but that requires less severe assumptions than Lemma~\ref{lem:grid_sobolev_approximation_error_2}.
+Unfortunately the additional assumption~\eqref{asmp:fourier_coefficient_decay} is not mild at all, but instead relatively close to assuming the function is $s$-Holder.
+Finally, we state a sharper bound on discretization error than Lemma~\ref{lem:grid_sobolev_approximation_error}, but that requires less severe assumptions than Lemma~\ref{lem:grid_sobolev_approximation_error_2}.
 \begin{lemma}
 	\label{lem:grid_sobolev_approximation_error_3}
 	For any $2s > d$ and $f \in H_{\textrm{per}}^s([0,1]^d;L)$, 
@@ -314,10 +313,29 @@ For functions $f \in \wt{H}^{s}([0,1]^d;L)$, the error in approximating the cont
 
 \begin{lemma}
 	\label{lem:grid_sobolev_approximation_error_4}
-	Suppose $2s < d$ and $f = \sum_{k \in \mathbb{N}^k} \theta_k \varphi_k$ satisfies $f \in \wt{H}_{\textrm{per}}^{s}([0,1]^d;L)$. Then
+	Suppose $2s < d$ and $f = \sum_{k \in \mathbb{N}^k} \theta_k \varphi_k$ satisfies $f \in \wt{H}^{s}([0,1]^d;L)$. Then
 	\begin{equation*}
 	\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,\wb{G}_d}(f)}_{n}^2 \leq c n^{1/2 - s/d} \norm{f}_2 + \sum_{k \in \mathbb{N}^d - [K]^d} \theta_k^2
 	\end{equation*}
+\end{lemma}
+
+So we've done a lot of interesting work, but we only obtained a sufficient bound on the approximation error when $n^{1/2 - s/d} = o(\norm{f}_2)$, which is still not good enough for our purposes. In the following Lemma, we state a tighter bound on approximation error when $d = 1$.
+\begin{lemma}
+	\label{lem:grid_sobolev_approximation_error_5}
+	Suppose $2s > 1$. Then there exists a constant $c$ which depends only on $s$ such that for any $f = \sum_{k = 1}^{\infty} \theta_k \varphi_k \in \wt{H}_{\textrm{per}}^{s}([0,1]^d;L)$, the following bound holds:
+	\begin{equation*}
+	\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,\wb{G}_1}(f)}_{n}^2 \leq c L^{1/2} \norm{f}_{\Leb^2} n^{-s} + \sum_{k = \kappa + 1}^{\infty} \theta_k^2
+	\end{equation*} 
+\end{lemma}
+
+We extend the results of Lemma~\ref{lem:grid_sobolev_approximation_error_5} to hold for all $d \geq 1$ in Lemma~\ref{lem:grid_sobolev_approximation_error_6}. Although Lemma~\ref{lem:grid_sobolev_approximation_error_6} strictly dominates Lemma~\ref{lem:grid_sobolev_approximation_error_5}, we keep the latter around since its proof is somewhat easier to follow. 
+\begin{lemma}
+	\label{lem:grid_sobolev_approximation_error_6}
+	Suppose $f = \sum_{k \in \Nbb^d} \theta_k \varphi_k$ satisfies $f \in \wt{H}^s([0,1]^d;L)$ for some $2s > d$. Then, there exists a constant $c$ which depends only on $s$ and $d$ such that
+	\begin{equation}
+	\label{eqn:grid_sobolev_approximation_error_6}
+	\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,\wb{G}_d}(f)}_{n}^2 \leq c L^{1/2} \norm{f}_{\Leb^2} n^{-s/d} + \sum_{k \in \Nbb \setminus [K]^d} \theta_k^2
+	\end{equation}
 \end{lemma}
 
 \section{Proofs}
@@ -437,6 +455,125 @@ Note that this upper bound~\eqref{eqn:grid_sobolev_approximation_error_pf1}, whi
 \subsection{Proof of Lemma~\ref{lem:grid_sobolev_approximation_error_4}}
 This proof follows the along the same lines as the proof of Lemma~\ref{lem:grid_sobolev_approximation_error_3}, replacing functions $\phi$ in the Fourier basis by functions $\varphi$ in the modified Fourier basis when necessary.
 
+\subsection{Proof of Lemma~\ref{lem:grid_sobolev_approximation_error_5}}
+Recall that the eigenvectors of the grid graph $v_k := v_k(\wb{G})$ satisfy
+\begin{equation*}
+v_{k}(\wb{x}_i) = \frac{1}{\sqrt{n}} \varphi_{k}(\wb{x}_i)
+\end{equation*}
+for each $i \in [n]$ and $k \in \mathbb{N}$. Therefore we may rewrite $\Pi_{\kappa,\wb{G}}$ as a function of the cosine Fourier basis,
+\begin{align*}
+\Pi_{\kappa,\wb{G}}(f) & = \frac{1}{n} \sum_{k = 1}^{\kappa} \Bigl\{\sum_{i \in [n]} f(\wb{x}_i) \varphi_k(\wb{x}_i)\Bigr\} \varphi_k \\
+& :=  \sum_{k = 1}^{\kappa} \wt{\theta}_k \varphi_k
+\end{align*}
+where we interpret the right hand side as a function over $\wb{X}$. Since $(\varphi_k)$ is an $L_2(\wb{X})$ orthonormal sequence, we obtain
+\begin{align*}
+\norm{\Pi_{\kappa,\wb{G}}(f)}_n^2 & = \sum_{k = 1}^{\kappa} \wt{\theta}_k^2 \\ 
+& = \sum_{k = 1}^{\kappa} {\theta}_k^2 + \sum_{k = 1}^{\kappa} \wt{\theta}_k^2 - \theta_k^2 \\
+& = \norm{f}_{\Leb^2([0,1]^d)}^2 - \sum_{k = \kappa + 1}^{\infty} \theta_k^2 + \sum_{k = 1}^{\kappa} \wt{\theta}_k^2 - \theta_k^2
+\end{align*}
+or equivalently
+\begin{equation*}
+\norm{f}_{\Leb^2([0,1]^d)}^2 - \norm{\Pi_{\kappa,\wb{G}}(f)}_n^2 = \sum_{k = 1}^{\kappa} \theta_k^2 - \wt{\theta}_k^2 + \sum_{k = \kappa + 1}^{\infty} \theta_k^2
+\end{equation*}
+The second term in the above equation is exactly the second term in~\eqref{eqn:grid_sobolev_approximation_error}, and so we focus our attention on the first term, which represents discretization error. Applying the parallelogram law and the Cauchy-Schwarz inequality gives
+\begin{equation}
+\label{eqn:grid_sobolev_approximation_error5_pf2}
+\begin{aligned}
+\sum_{k = 1}^{\kappa} \theta_k^2 - \wt{\theta}_k^2 & \leq \sum_{k = 1}^{\kappa} \max\Bigl\{(\theta_k + \wt{\theta}_k)(\theta_k - \wt{\theta}_k),0\Bigr\} \\
+& \leq \left(\sum_{k = 1}^{\kappa} \max\Bigl\{(\theta_k + \wt{\theta}_k)^2,0\Bigr\}\right)^{1/2} \left(\sum_{k = 1}^{\kappa} (\theta_k - \wt{\theta}_k)^2\right)^{1/2} \\
+& \leq \sqrt{2} \norm{f}_{\Leb^2([0,1])} \left(\sum_{k = 1}^{\kappa} (\theta_k - \wt{\theta}_k)^2\right)^{1/2}
+\end{aligned}
+\end{equation}
+
+It is known that the error $\theta_k - \wt{\theta}_k$ is due to the aliasing phenomenon, where high frequency sinusoidal waves agree with low frequency waves at evenly spaced points. This phenomenon has a very precise periodic nature -- expressed in Lemma~\ref{lem:alias}--and we use this Lemma to get the upper bound
+\begin{align*}
+\abs{{\theta}_k - \wt{\theta}_k} & = \abs{\sum_{\ell = 1}^{\infty} \theta_{\ell} \frac{1}{n} \sum_{i = 1}^{n} \varphi_{\ell}(\wb{x}_i) \varphi_{k}(\wb{x}_i)} \\
+& = \sum_{m = 1}^{\infty} \abs{\theta_{2mn + k}} + \sum_{m = 0}^{\infty}\abs{\theta_{2(m + 1)n - (k - 1)}}.
+\end{align*}
+Since $\theta$ belongs to the Sobolev ellipsoid $\Theta(s,L)$, by applying Cauchy-Schwarz we can convert the above two tail sums to bounds which explicitly depend on $n$. Applying this logic to the first tail sum gives us
+\begin{align}
+\sum_{m = 1}^{\infty} \abs{\theta_{2mn + k}} & \leq \biggl(\sum_{m = 1}^{\infty} \bigl(a_{2mn + k}\theta_{2mn + k}\bigr)^2\biggr)^{1/2} \biggl(\sum_{m = 1}^{\infty} \bigl(a_{2mn + k})^{-2}\biggr)^{1/2}\nonumber \\
+& \leq \biggl(\sum_{m = 1}^{\infty} \bigl(a_{2mn + k}\theta_{2mn + k}\bigr)^2\biggr)^{1/2} \biggl( \sum_{m = 1}^{\infty} (2mn)^{-2s}\biggr)^{1/2} \nonumber \\
+& \leq \biggl(\sum_{m = 1}^{\infty} \bigl(a_{2mn + k}\theta_{2mn + k}\bigr)^2\biggr)^{1/2} \biggl( \Bigl(1 + \int_{1}^{\infty} x^{-2s} \,dx \Bigr) \biggr)^{1/2} (2n)^{-s}   \nonumber \\
+& = \biggl(\sum_{m = 1}^{\infty} \bigl(a_{2mn + k}\theta_{2mn + k}\bigr)^2\biggr)^{1/2} \biggl( \Bigl(1 + \frac{1}{2s - 1} \Bigr) \biggr)^{1/2} (2n)^{-s}\label{eqn:grid_sobolev_approximation_error5_pf3}
+\end{align}
+where we have used the fact that the Riemann sum of a monotone non-increasing function evaluated at right end points is always no greater than the corresponding integral, and the last equality holds since $2s > 1$. By using essentially equivalent reasoning, we obtain a comparable bound on the second tail sum
+\begin{equation*}
+\sum_{m = 0}^{\infty}\abs{\theta_{2(m + 1)n - (k - 1)}} \leq \biggl(\sum_{m = 1}^{\infty} \bigl(a_{2(m + 1)n - (k - 1)}\theta_{2(m + 1)n - (k - 1)}\bigr)^2\biggr)^{1/2} \biggl( \Bigl(2 + \frac{1}{2s - 1} \Bigr) \biggr)^{1/2} (2n)^{-s}
+\end{equation*}
+Thus,
+\begin{align}
+\sum_{k = 1}^{\kappa} \bigl(\theta_k - \wt{\theta}_k\bigr)^2 & \leq c(s) n^{-2s}\sum_{k = 1}^{\kappa} \biggl(\sum_{m = 1}^{\infty} \bigl(a_{2mn + k}\theta_{2mn + k}\bigr)^2 + \sum_{m = 0}^{\infty}\bigl(a_{2(m + 1)n - (k - 1)}\theta_{2(m + 1)n - k + 1} \bigr)^2\biggr) \nonumber \\
+& \leq c(s) n^{-2s} \sum_{j = n + 1}^{\infty} \bigl(\theta_j^2 a_j^2)
+\nonumber \\
+& \leq L c(s) n^{-2s}. \label{eqn:grid_sobolev_approximation_error5_pf4}
+\end{align}
+where the second inequality in the preceding display follows since for any $(m,k) \neq (m',k') \in \mathbb{N} \times [n]$,
+\begin{equation*}
+2mn + k \neq 2m'n + k',~~ 2(m + 1)n - k + 1 \neq 2(m' + 1)n - k' + 1, ~~\textrm{and}~~  2mn + k \neq 2(m' + 1)n - k' + 1
+\end{equation*}
+We plug~\eqref{eqn:grid_sobolev_approximation_error5_pf4} back in to~\eqref{eqn:grid_sobolev_approximation_error5_pf2} to obtain the claim of the Lemma.
+
+\subsection{Proof of Lemma~\ref{lem:grid_sobolev_approximation_error_6}}
+Recall that the eigenvectors of the grid graph $v_k := v_k(\wb{G}_d)$ satisfy
+\begin{equation*}
+v_{k}(\wb{x}_i) = \frac{1}{\sqrt{n}} \varphi_{k}(\wb{x}_i)
+\end{equation*}
+for each $i \in [N]^d$ and $k \in \mathbb{N}^d$. Therefore we may rewrite $\Pi_{\kappa,\wb{G}_d}$ as a function of the tensor product cosine Fourier basis,
+\begin{align*}
+\Pi_{\kappa,\wb{G}_d}(f) & = \frac{1}{n} \sum_{k \in [K]^d} \Bigl\{\sum_{i \in [N]^d} f(\wb{x}_i) \varphi_k(\wb{x}_i)\Bigr\} \varphi_k \\
+& :=  \sum_{k \in [K]^d} \wt{\theta}_k \varphi_k
+\end{align*}
+where we interpret the right hand side as a function over $\wb{X}$. Since $(\varphi_k)$ is an $L_2(\wb{X})$ orthonormal sequence, we obtain
+\begin{align*}
+\norm{\Pi_{\kappa,\wb{G}_d}(f)}_n^2 & = \sum_{k \in [K]^d} \wt{\theta}_k^2 \\ 
+& = \sum_{k \in [K]^d} {\theta}_k^2 + \sum_{k \in [K]^d} \wt{\theta}_k^2 - \theta_k^2 \\
+& = \norm{f}_{\Leb^2([0,1]^d)}^2 - \sum_{k \in \Nbb^d \setminus [K]^d} \theta_k^2 + \sum_{k \in [K]^d} \wt{\theta}_k^2 - \theta_k^2
+\end{align*}
+or equivalently
+\begin{equation*}
+\norm{f}_{\Leb^2([0,1]^d)}^2 - \norm{\Pi_{\kappa,\wb{G}_d}(f)}_n^2 = \sum_{k \in [K]^d} \theta_k^2 - \wt{\theta}_k^2 + \sum_{k \in \Nbb^d \setminus [K]^d} \theta_k^2
+\end{equation*}
+The second term in the above equation is exactly the second term in~\eqref{eqn:grid_sobolev_approximation_error_6}, and so we focus our attention on the first term, which represents discretization error. Applying the parallelogram law and the Cauchy-Schwarz inequality gives
+\begin{equation}
+\label{eqn:grid_sobolev_approximation_error6_pf1}
+\begin{aligned}
+\sum_{k = 1}^{\kappa} \theta_k^2 - \wt{\theta}_k^2 & \leq \sum_{k \in [K]^d} \max\Bigl\{(\theta_k + \wt{\theta}_k)(\theta_k - \wt{\theta}_k),0\Bigr\} \\
+& \leq \left(\sum_{k \in [K]^d} \max\Bigl\{(\theta_k + \wt{\theta}_k)^2,0\Bigr\}\right)^{1/2} \left(\sum_{k \in [K]^d} (\theta_k - \wt{\theta}_k)^2\right)^{1/2} \\
+& \leq \sqrt{2} \norm{f}_{\Leb^2([0,1])} \left(\sum_{k \in [K]^d} (\theta_k - \wt{\theta}_k)^2\right)^{1/2}
+\end{aligned}
+\end{equation}
+
+It is known that the error $\theta_k - \wt{\theta}_k$ is due to the aliasing phenomenon, where high frequency sinusoidal waves agree with low frequency waves at evenly spaced points. This phenomenon has a very precise periodic nature, as expressed in Lemma~\ref{lem:alias}, which allows us to rewrite $\wt{\theta}_k$. Note that for every $\ell \in \mathbb{N}^d$, there exists exactly one $m \in \mathbb{N}_0^d$, $o \in [N]^d$ and $b \in \{0,1\}^d$ such that $\ell = 2mN + (1 - b)o + b(-(o - 1))$ (where for $a,b \in \Reals^d$ we denote $ab := (a_1b_1,\ldots,a_db_d)$). Adopting the convention $\theta_{\ell} := 0$ if $\ell$ contains a negative index, we have
+\begin{align*}
+\wt{\theta}_k & = \frac{1}{n} \sum_{i \in [N]^d} f(\wb{x}_i) \varphi_k(\wb{x}_i) \\
+& = \frac{1}{n} \sum_{i \in [N]^d} \Bigl(\sum_{\ell \in \Nbb^d} \theta_{\ell} \varphi_{\ell}(\wb{x}_i) \Bigr) \varphi_k(\wb{x}_i) \\
+& = \sum_{\ell \in \mathbb{N}^d} \theta_{\ell} \Bigl(\frac{1}{n} \sum_{i \in [N]^d} \varphi_{\ell}(\wb{x}_i) \varphi_{k}(\wb{x}_i)\Bigr) \\
+& = \sum_{m \in \mathbb{N}_0^d} \sum_{o \in [N]^d}\sum_{b \in \{0,1\}^d} \theta_{I_N(m,b,o)}  \Bigl(\frac{1}{n} \sum_{i \in [N]^d} \varphi_{I_N(m,b,o)}(\wb{x}_i) \varphi_{k}(\wb{x}_i)\Bigr) \\
+& = \sum_{m \in \mathbb{N}_0^d} \sum_{b \in \{0,1\}^d} \theta_{I_N(m,b,k)} 
+\end{align*}
+where the last equality follows from Lemma~\ref{lem:alias}. By applying the Cauchy-Schwarz inequality, and noting that $I_N(m,b,k) \geq mN$ (where inequality between two vectors is interpreted entrywise) we get
+\begin{align*}
+\abs{\wt{\theta}_k - \theta_k} & \leq \sum_{m \in \Nbb_0^d \setminus \{0\}} \sum_{b \in \{0,1\}^d} \abs{\theta_{I_N(m,b,k)}} \\
+& \leq \biggl(\sum_{m \in \Nbb_0^d \setminus \{0\}} \sum_{b \in \{0,1\}^d} \Bigl(\theta_{I_N(m,b,k)}a_{I_N(m,b,k)}\Bigr)^2 \biggr)^{1/2} \biggl(\sum_{m \in \Nbb_0^d \setminus \{0\}} \sum_{b \in \{0,1\}^d} \Bigl(a_{I_N(m,b,k)}\Bigr)^{-2} \biggr)^{1/2} \\
+& \leq 2^{d/2}N^{-s } \biggl(\sum_{m \in \Nbb_0^d \setminus \{0\}} \sum_{b \in \{0,1\}^d} \Bigl(\theta_{I_N(m,b,k)}a_{I_N(m,b,k)}\Bigr)^2 \biggr)^{1/2} \biggl(\sum_{m \in \Nbb_0^d \setminus \{0\}}\sum_{j = 1}^{d} m_j^{-2s} \biggr)^{1/2} 
+\end{align*}
+Letting $c(d,s)$ be a finite constant which may change from line to line but can depend only on $d$ and $s$, and letting $\Nbb_2 = \Nbb \setminus \{1\}$, we can upper bound the second sum in the previous display,
+\begin{align*}
+\sum_{m \in \Nbb_0^d \setminus \{0\}}\sum_{j = 1}^{d} m_j^{-2s} & \overset{(i)}{\leq} d^{2(s + 1)} \sum_{m \in \Nbb_0^d \setminus \{0\}} \Bigl(\sum_{j = 1}^{d} m_j^{-2}\Bigr)^s \\
+& \overset{(ii)}{\leq} d^{2(s + 1)} \sum_{\wt{d} = 1}^{d} 2^{\wt{d}} \frac{d!}{\wt{d}!} \sum_{m \in \Nbb_2^{\wt{d}}} \Bigl(\sum_{j = 1}^{d} m_j^{-2}\Bigr)^s \\
+& \overset{(iii)}{\leq} d^{2(s + 1)} \sum_{\wt{d} = 1}^{d} 2^{\wt{d}} \frac{d!}{\wt{d}!} \int_{[1,\infty)^{\wt{d}}} \Bigl(\sum_{j = 1}^{\wt{d}} x_j^{-2}\Bigr)^{s} \,dx_1 \ldots \,dx_{\wt{d}} \\
+& \leq \sum_{\wt{d} = 1}^{d} c(d,s) \int_{\sqrt{\wt{d}}}^{\infty} r^{-2s + d - 1} \,dr \\
+& \overset{(iv)}{\leq} c(d,s) < \infty.
+\end{align*}
+where $(i)$ is an equality when $d = 1$, and otherwise follows from Jensen's inequality when $d \geq 2$ and $s \geq 1$; $(ii)$ follows from specially considering the edge cases where $m_j = 0$ or $m_j = 1$ for $j = \wt{d} + 1,\ldots, d$; $(iii)$ uses the fact that the Riemann sum of a monotone non-increasing function evaluated at right end points is always no greater than the corresponding integral; and $(iv)$ follows since $2s > d$. We are now in a position to conclude that
+\begin{align}
+\sum_{k \in [K]^d} (\theta_k - \wt{\theta}_k)^2 & \leq c(d,s) N^{-2s} \sum_{k \in [K]^d} \sum_{m \in \Nbb_0^d \setminus \{0\}} \sum_{b \in \{0,1\}^d} \Bigl(\theta_{I_N(m,b,k)}a_{I_N(m,b,k)}\Bigr)^2 \nonumber \\
+& \leq c(d,s) N^{-2s} \sum_{k \in \Nbb^d \setminus [N]^d} \theta_k^2 a_k^2 \nonumber \\
+& \leq L c(d,s) N^{-2s} \label{eqn:grid_sobolev_approximation_error6_pf2}
+\end{align}
+where the second inequality in the preceding display follows since for any $(m,k,b) \neq (m',k',b')$, $I_N(m,b,k) \neq I_N(m',b',k')$. We plug~\eqref{eqn:grid_sobolev_approximation_error6_pf2} back in to~\eqref{eqn:grid_sobolev_approximation_error6_pf1} to obtain the claim of the Lemma.
+
 \section{Supporting Theory}
 \begin{lemma}[Restatement and Extension of Lemma 1 of \textcolor{red}{(Polyak 90)}]
 	\label{lem:polyak90}
@@ -450,23 +587,35 @@ This proof follows the along the same lines as the proof of Lemma~\ref{lem:grid_
 	
 	The same statement holds true when replacing $\phi_k$ by $\varphi_k$ and $\phi_l$ by $\varphi_l$, and using symmetric grid points $\wb{X}_i$.
 \end{lemma}
-\begin{proof}
-	We prove only the statement involving $\varphi_k$ and $\varphi_l$. Note that for $k = 1,\ldots,n$, and $i = 1,\ldots,n$,
+
+The following Lemma is similar to~\eqref{lem:polyak90}, but tweaked to be more useful for our setting. It applies to the elements in the cosine basis of period $2$, rather than elements in the Fourier basis of period $1$, and is stated slightly differently.
+\begin{lemma}
+	\label{lem:alias}
+	Let $k \in [n]$ and let $\ell \in \Nbb$. There exists a unique $m \in \Nbb_{0}$, $j \in [n]$ and $b \in \{0,1\}$ such that $\ell = 2mn + (1 - b)j - b(j - 1)$. Then
 	\begin{equation*}
-	v_{k,i} = \frac{1}{\sqrt{n}}\varphi_k(\wb{x}_i)
-	\end{equation*}
-	and $\Delta_{kl}^{(n)} = 0$ for $1 \leq k,l \leq n$ immediately follows. 
-	
-	By restricting the basis $\varphi_k$ to the nodes $\wb{x}_i$ we induce periodicity. In particular, for $k = mn + (j + 1)$ where $m$ and $j$ are non-negative integers and $0 \leq j < n$, we have
-	\begin{equation*}
-	\varphi_k(\wb{x}_i) \propto
+	\frac{1}{n}\sum_{i = 1}^{n} \varphi_{k}(\wb{x}_i)\varphi_{\ell}(\wb{x}_i) =  
 	\begin{cases*}
-	\varphi_{j + 1}(\wb{x}_i),& ~~\textrm{if $m \mod 2 = 0$} \\
-	\varphi_{n - j}(\wb{x}_i),& ~~\textrm{if $m \mod 2 = 1$}
+	1,& ~~ \textrm{if $j = k$} \\
+	0,& ~~ \textrm{otherwise.}
 	\end{cases*}
 	\end{equation*}
-	Writing $l = m'n + j' + 1$, we therefore see that $\dotp{\varphi_k}{\varphi_l}_n \in \{-1,+1\}$ if and only if (a) $m \mod 2 = m' \mod 2$ and $j = j'$, or (b) $m \mod 2 \neq m' \mod 2$ and $j + 1 = n - j'$; otherwise, $\dotp{\varphi_k}{\varphi_l}_n = 0$. Condition (a) is equivalent to $|[k/2] - [l/2]| = mn$ for some $m \in \mathbb{N}$, and Condition (b) is equivalent to $[k/2] + [m/2] = mn$ for some $m \in \Nbb$, thus proving the claim.
-	
+\end{lemma}
+
+\begin{proof}
+	Note that for $k = 1,\ldots,n$, and $i = 1,\ldots,n$,
+	\begin{equation*}
+	v_{k,i} = \frac{1}{\sqrt{n}}\varphi_k(\wb{x}_i).
+	\end{equation*}
+	Additionally, it is easy to check that
+	\begin{equation*}
+	\varphi_{\ell}(\wb{x}_i) \propto
+	\begin{cases*}
+	\varphi_{j}(\wb{x}_i),& ~~\textrm{if $j \in [n]$} \\
+	\varphi_{-(j - 1)}(\wb{x}_i),& ~~\textrm{if $j \in [-(n - 1)]$} \\
+	\varphi_{1}(\wb{x}_i),& ~~\textrm{if $j = 0$.}
+	\end{cases*}
+	\end{equation*}
+	The claim follows since $(v_k)$ is orthonormal in empirical norm.	
 \end{proof}
 
 \begin{lemma}
