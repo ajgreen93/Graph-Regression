@@ -15,6 +15,11 @@
 \renewcommand{\bibname}{REFERENCES}
 \renewcommand{\bibsection}{\subsubsection*{\bibname}}
 
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
 \DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
 
 \newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
@@ -63,6 +68,7 @@
 \newcommand{\D}{\mathcal{D}}
 \newcommand{\R}{\mathcal{R}}
 \newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
 
 %%% Vectors
 \newcommand{\thetast}{\theta^{\star}}
@@ -104,6 +110,7 @@
 \newcommand{\Xsetxpr}{\,dx'}
 \newcommand{\Xsetypr}{\,dy'}
 \newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
 \newcommand{\spec}{\mathrm{spec}}
 
 %%% Order of magnitude
@@ -158,130 +165,341 @@
 
 This document details the current status of the graph testing project. We divide by section based on the testing problem under consideration. At the end of each section, we list some areas we are interested in investigating. All proofs are left until the end.
 
-We establish some notation that we will use throughout. Let $X = \{x_1,
-\ldots, x_n\}$ be a sample drawn i.i.d. from a distribution $P$ on $\Rd$,
-with density~$p$.  For a radius $r > 0$, we define $G_{n,r}=(V,E)$ to be the
-\emph{$r$-neighborhood graph} of $X$, an unweighted, undirected graph with
-vertices $V=X$, and an edge $(x_i,x_j) \in E$ if and only if $K_r(x_i,x_j) = \norm{x_i -x_j} \leq r$, where $\norm{\cdot}$ is the Euclidean norm. We denote by $A \in
-\Reals^{n \times n}$ the adjacency matrix, with entries $A_{uv} = 1$ if
-$(u,v) \in E$ and $0$ otherwise.  We also denote by $D$ the diagonal degree
-matrix, with entries $D_{uu} := \sum_{v \in V} A_{uv}$. The graph Laplacian is $L = D - A$, and we write its spectral decomposition as $L = V S V^T$. 
+\section{Summary and Major TODOs}
 
-\section{Regression goodness-of-fit testing with random design.}
+Here is a list of results we've obtain so far. All rates are stated on the squared scale.
+\begin{itemize}
+	\item Assuming a random design regression model, the graph eigenvector projection test achieves the minimax optimal rate $n^{-4s/(4s + d)}$ over the Sobolev balls $H_0^s([0,1]^d;L)$ when $4s > d$. The restriction to compact support is unnecessary when $s = 1$.
+	\item Assuming a random design regression model, the graph eigenvector projection test achieves the minimax optimal rate $n^{-1/2}$ over the $\Leb^4$ ball $\Leb^4([0,1]^d;L)$. 
+	\item Assuming a fixed grid design regression model, the graph eigenvector projection test achieves the rate $n^{-4s/(4s + d)}$ over the Holder balls $C_0^s([0,1]^d;L)$ when $4s > d$. The restriction to compact support is unnecessary when $s = 1$
+	\item Assuming a fixed grid design regression model, the graph eigenvector projection test achieves the rate $n^{-2s/d}$ over the Holder balls $C_0^s([0,1]^d;L)$ for any $s$ and $d$. This is the minimax optimal rate when $4s \leq d$.
+	\item Assuming a fixed grid design regression model, the graph eigenvector projection test achieves the rate $n^{-4s/(4s + d)}$ over the Sobolev balls $\wt{H}^s([0,1]^d;L)$ when $2s > d$.
+	\item Simulation results for $d = 1$ showing that (a) when the density is uniform, the graph eigenvector projection test has similar testing error to the Fourier projection test, and the MMD using a Gaussian kernel, and (b) when the density is non-uniform and the regression function is spatially heterogeneous, the graph eigenvector projection test outperforms the latter two tests. 
+\end{itemize}
 
-Let $P$ be a distribution with density $p$ supported on $\mathcal{X} \subseteq \Reals^d$. Suppose we observe random design points $X = \set{x_1,\ldots,x_n} \sim P$, and additionally responses
+Here is a list of results that are in progress.
+\begin{itemize}
+	\item All of the above statements apply equally to the Laplacian smoothing test.
+	\item Estimation results for the graph eigenvector projection and Laplacian smoothing estimators in $\Leb^2(P_n)$.
+\end{itemize}
+
+Here is a list of TODOs which I would say are high priority.
+\begin{itemize}
+	\item Defining ``out-of-sample'' estimators which agree with the graph eigenvector projection and Laplacian smoothing estimators at design points. Upper bounds on $\Leb^2(P)$ error of these estimators.
+	\item Upper bounds in testing and estimation when the data is assumed to lie on a manifold $\mathcal{M}$ with intrinsic dimension $m < d$.
+	\item Develop simulation results to include (a) the estimation problem, (b) dimensions $d > 1$, (c) more competitors.
+\end{itemize}
+Here is a list of TODOs which I would say are lower priority.
+\begin{itemize}
+	\item (Asymptotic) null distribution of our test statistics.
+	\item Investigate whether in the random design case, our assumptions on the smoothness of the density may be relaxed.
+	\item Show that for an appropriate modification of the Laplacian operator, our grid results can be stated without restricting the Sobolev space $H$ at the boundary.
+\end{itemize}
+	
+
+
+\section{Preliminaries}
+
+We establish some notation that we will use throughout. A graph $G = (V,W)$ consists of a collection of vertices $V = \{v_1,\ldots,v_n\}$, and a weight matrix $W \in \Reals^{\abs{V} \times \abs{V}}$ with $(ij)$th entry $W_{ij}$ encoding affinity between $v_i$ and $v_j$. We will sometimes write $W_G$ to make it clear which graph a weight matrix is associated with. When the weight matrix $W_G$ consists only of $0$s and $1$s, we will use the equivalent representation $G = (V,E(G))$ when convenient; here $E(G) = V \times V \cap \{(v_i,v_j): W_{ij} = 1\}$. 
+
+We will focus our attention on neighborhood graphs, and operators associated with them. For a kernel $K:\Reals \to \Reals$ and radius $r > 0$, we define $G_{n,K}=(V,W)$ to be the neighborhood graph with vertices $V = X$, and weights $W_{ij} = K(\norm{x_i - x_j}/r)$. Of particular interest to us will be the \emph{random geometric graph} $G_{n,r}$, the neighborhood graph constructed using the uniform kernel $K(z) := \1\{z \leq 1\}$. The weight matrix $W(G_{n,r})$ consists only of $0$s and $1$s, and we will thus use the equivalent representation $G_{n,r} = (X,E(G_{n,r}))$.
+
+The primary operator we are interested in (at this point) is the graph Laplacian. Let $D_G$ be the diagonal degree
+matrix of a graph $G$, with entries $D_{uu} := \sum_{v \in V} W_{uv}$. The graph Laplacian is then $L_G = D_G - W_G$. Let $\Lambda(G)$ consist of the eigenvalues $0 = \lambda_1(G) \leq \lambda_2(G) \leq \cdots \leq \lambda_n(G)$ of $L_G$, with $v_k(G) = (v_{k,1}(G),\ldots,v_{k,n}(G)) \in \Reals^n$ denoting the eigenvector corresponding to the $k$th eigenvalue $\lambda_k(G)$.  
+
+\section{Regression goodness-of-fit testing.}
+
+Suppose we observe samples $(y_i,x_i)$ for $i = 1,\ldots,n$, where conditional on $X$ the responses $Y = \{y_1,\ldots,y_n\}$ are assumed to follow the model
 \begin{equation}
 \label{eqn:regression_known_variance}
 y_i = f(x_i) + \varepsilon_i, ~~ \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)
 \end{equation} 
-
-We wish to distinguish
+and our task is to distinguish
 \begin{equation*}
 \mathbf{H}_0: f = f_0 := 0 \quad \textrm{vs} \quad \mathbf{H}_{\textrm{a}}: f \neq f_0
 \end{equation*}
+
 We will evaluate our performance using worst-case risk: for a given function class $\mathcal{H}$ and test function $\phi: \Reals^n \to \set{0,1}$, let
 \begin{equation*}
 \mathcal{R}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, f \neq f_0} \Ebb_f(1 - \phi).
 \end{equation*}
-The worst-case risk may be quite close to $1$ unless we enforce some separation between null and alternative spaces. A more realistic measure of performance is therefore
+(Not that the expectation here may taken over the random responses $Y$ when $X$ is assumed to be fixed, or jointly over the randomness of $(X,Y)$ when $X$ is assumed random.) The worst-case risk may be quite close to $1$ unless we enforce some separation between null and alternative spaces. A more realistic measure of performance is therefore
 \begin{equation*}
 \mathcal{R}_{\epsilon}(\phi; \mathcal{H}) = \Ebb_{f = f_0}(\phi) + \sup_{f \in \mathcal{H}, \norm{f - f_0}_{\Leb^2} \geq \epsilon} \Ebb_f(1 - \phi).
 \end{equation*}
-
+For a given level $\alpha$ of tolerated error, the minimax critical radius
+\begin{equation*}
+\epsilon^{\star}(\mathcal{H},\alpha) := \inf \Bigl\{\epsilon > 0: \inf_{\phi} R_{\epsilon}(\mathcal{H}) \leq \alpha \Bigr\}
+\end{equation*}
+then provides a lens through which one may examine the hardness of testing over $\mathcal{H}$. We will sometimes suppress the dependence of the minimax critical radius on $\alpha$ and simply write $\epsilon^{\star}(\mathcal{H})$.
 
 \subsection{Test Statistics.}
 We list the test statistics we use for the regression testing problem.
 
 \paragraph{Eigenvector projection test statistic.}
-Let $VSV^T$ be the spectral decomposition of the Laplacian matrix $L$ of the neighborhood graph $G_{n,r}$. To test whether $f = f_0$, we propose the following \emph{eigenvector projection} test statistic:
+The graph Laplacian eigenvector projection test is a truncated-series test. Suppose we are given a graph $G = (X,W)$ defined on the sample points $X$.  Letting $\kappa$ be some integer between $1$ and $n$, our test projects $Y$ onto the eigenvectors $v_1(G),\ldots,v_{\kappa}(G)$, and then takes the empirical norm of this projection to be the test statistic. Formally, let
+\begin{equation*}
+\Pi_{\kappa,G}(f) := \frac{1}{n}\sum_{k = 1}^{\kappa} \Biggl(\sum_{i = 1}^{n} f(x_i) v_{k,i}(G)\Biggr) v_{k}(G),~~ T_{\mathrm{spec}}(G) := \norm{\Pi_{\kappa,G}(f)}_n^2
+\end{equation*}
+where $\norm{\theta}_n^2 := \frac{1}{n} \sum_{i = 1}^{n} \theta_i^2$ for $\theta \in \Reals^n$.
+Then the test $\phi_{\spec}(G) := \1\{T_{\spec}(G) \geq \tau\}$ rejects the null hypothesis when the test statistic $T_{\mathrm{spec}}(G)$ is greater than a pre-specified cutoff $\tau$.
+
+\subsection{Random design.}
+In the random design case, we assume that each design point $x_i$ is sampled independently from some distribution $P$. Formally, our model for the samples is the following:
 \begin{equation}
-\label{eqn:graph_spectral_projections}
-T_{\mathrm{spec}} := \frac{1}{n} \sum_{k = 0}^{\kappa} \left(\sum_{i = 1}^{n} v_{k,i} y_i\right)^2
+\label{eqn:regression_random_design_known_variance}
+x_1,\ldots,x_n \overset{\textrm{i.i.d}}{\sim} P,~~ \varepsilon_i \overset{\textrm{i.i.d}}{\sim} \mathcal{N}(0,1)~\textrm{and}~ \varepsilon \perp X,~~ y_i = f(x_i) + \varepsilon_i.
 \end{equation}
 
-\subsection{Current Results.}
+In Theorem~\ref{thm:sobolev_testing_rate_order1} we show that under some typical regularity conditions on $P$, the neighborhood graph Laplacian eigenvector projection test $\phi_{\textrm{spec}}(G_{n,r})$ is a minimax optimal test over the Sobolev ball $H^1(\mathcal{X};R)$ for $d = 1,2,3$ and $\Xset = [0,1]^d$. Let $p_d$ equal $3/4$ when $d = 2$ and equal $1/d$ for $d \geq 3$.
 
-In Theorem~\ref{thm:sobolev_testing_rate} we show that under some typical regularity conditions on $P$, the test $\phi_{\textrm{spec}} := \1\{T_{\mathrm{spec}} \geq \tau\}$ is, up to log factors, a minimax optimal test over the Sobolev ball $W^{1,2}(\mathcal{X};R)$. To conveniently state our results we introduce the notation
-\begin{equation*}
-h(a,d) = a(d+2) + (1 + 2/d),~~\textrm{for $a > 0$}
-\end{equation*}
+\begin{theorem}
+	\label{thm:sobolev_testing_rate_order1}
+	Suppose we observe samples $(x_i,y_i)_{i = 1}^{n}$ according to the model~\eqref{eqn:regression_random_design_known_variance}. Let $R > 0$ and $b \geq 1$ be fixed constants, and $d = 1,2$ or $3$. Suppose that $P$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]^d$ with density function $p(x)$ bounded away from zero and infinity, 
+	\begin{equation*}
+	0 < p_{\min} < p(x) < p_{\max} < \infty,~~ \textrm{for all $x \in \mathcal{X}$.}
+	\end{equation*}
+	and the test $\phi_{\spec}(G_{n,r})$ is performed with parameter choices
+	\begin{equation*}
+	c \frac{(\log n)^{p_d}}{n^{1/d}} \leq r(n) \leq n^{-4/((4 + d)(2+d))}, ~\kappa = (nR)^{2d/(4 + d)}, ~\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*}
+	for $c$ a constant that depends only on $\Xset, p_{\min}$ and $p_{\max}$. Then the following statements holds for every $n$ sufficiently large: there exists constants $c_1,c_2$ which do not depend on $n,b$ or $R$ such that for every $\epsilon \geq 0$ satisfying
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate_order1}
+	\epsilon^2 \geq c_1^2 \cdot b^2 \cdot \max\{R^2,R^{2d/(4 + d)}\} \cdot n^{-4/(4 + d)}
+	\end{equation}
+	the worst-case risk is upper bounded
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate_order1_1}
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}(G_{n,r}); H^1(\mathcal{X};R)) \leq \frac{c_2}{b}.
+	\end{equation}
+\end{theorem}
+
+The testing problem in the random design case with known variance fundamentally changes in the low-smoothness regime, where the number of bounded derivatives is small compared to the dimension $d$. In the case where $f \in H^1(\Xset;R)$ is assumed to have one derivative which is bounded in $\Leb^2(\Xset)$ norm, this transition occurs at $d = 4$. We shall discuss testing in the low-smoothness regime shortly. First, let's consider the situation when we are willing assume $f$ possesses additional derivatives bounded in $\Leb^2$ norm.
+
+Theorem~\ref{thm:sobolev_testing_rate_order1} establishes that a truncated series test using graph eigenvectors performs just as well, in a minimax sense, as a truncated series test using a classic Fourier series; for analysis of the latter test as well as derivation of the minimax rate of nonparametric goodness-of-fit testing over Sobolev classes see \textcolor{red}{(Ingster)}. Intuitively, we can understand this by thinking of the graph eigenvectors as estimates of eigenfunctions of a density-weighted continuum Laplacian operator. When the density is uniform, and the domain $\Xset$ is the unit cube, under appropriate boundary conditions these eigenfunctions are themselves elements of the Fourier basis. When the density is merely close to uniform, the eigenfunctions no longer belong to the Fourier basis; nevertheless, they share enough properties with the latter that the resulting minimax rate is unchanged. Theorem~\ref{thm:sobolev_testing_rate_order1} shows that the additional error due to using \textit{estimates} of these eigenfunctions does not fundamentally change the minimax rate. 
+
+When we are additionally willing to assume $H^s(\Xset)$, we know (again from \textcolor{red}{Ingster}) that the minimax testing rate is $n^{-4s/(4s + d)}$. Now, however, our estimates of the eigenvectors no longer track the derivatives finely enough at the boundaries of $\Xset$ to establish the same minimax rate over all $H^s(\mathcal{X})$. However, if we assume $f$ and its derivatives are compactly supported on $\Xset$, we recover the usual rate. Theorem~\ref{thm:sobolev_testing_rate} presents our formal result, that $\phi_{\textrm{spec}}(G_{n,r})$ is a minimax optimal test over the Sobolev balls $H_0^s(\mathcal{X};R)$ whenever $4s > d$ and $\Xset = [0,1]^d$.
 
 \begin{theorem}
 	\label{thm:sobolev_testing_rate}
-	Let $b \geq 1$ and $a > 0$ be fixed constants, and let $d < 4$. Suppose that $\Pbb$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]^d$ with density function $p$ bounded above and below by constants, i.e
+	Suppose we observe samples $(x_i,y_i)_{i = 1}^{n}$ according to the model~\eqref{eqn:regression_random_design_known_variance}. Let $R > 0$, $b,s,d \geq 1$ be fixed constants, with $s$ and $d$ integers. Suppose that $P$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]^d$ with density function $p \in C^{s-1}(\Xset;p_{\max})$ for some $p_{\max} < \infty$, and further that $p(x)$ is bounded away from zero, i.e. there exists $p_{\min} > 0$ such that 
 	\begin{equation*}
-	0 < p_{\min} < p(x) < p_{\max} < \infty, \quad \textrm{for all $x \in \mathcal{X}$.}
+	p_{\min} < p(x),~~ \textrm{for all $x \in \mathcal{X}$.}
 	\end{equation*}
-	Then the following statement holds: if the test $\phi_{\spec}$ is performed with parameter choices 
+	Then the following statement holds for all $n$ sufficiently large: if the test $\phi_{\spec}(G_{n,r})$ is performed with parameter choice
 	\begin{equation*}
-	r = \log^a n \cdot \left(\frac{\log n}{n}\right)^{1/d}, ~\kappa = n^{2d/(4 + d)}, ~\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	n^{-1/(2(s-1) + d)} \leq r(n) \leq n^{-4/((4s + d)(2+d))}, ~\kappa = (Rn)^{2d/(4s + d)}, ~\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
 	\end{equation*}
-	then there exists a constant $c$ which may depend on $d,R,p_{\max},b$ and $a$ but is independent of the sample size $n$ such that for every $\epsilon \geq 0$ satisfying
+	then there exists constants $c_1,c_2$ which do not depend on $n,b$ or $R$ such that for every $\epsilon \geq 0$ satisfying
 	\begin{equation}
 	\label{eqn:sobolev_testing_rate}
-	\epsilon^2 \geq c \cdot b \cdot n^{-4/(4 + d)} (\log n)^{h(a,d)}
+	\epsilon^2 \geq c_1^2 \cdot b^2 \cdot \max\{R^2,R^{2d/(4s + d)}\} \cdot n^{-{4s}/(4s + d)}
 	\end{equation}
 	the worst-case risk is upper bounded
 	\begin{equation}
 	\label{eqn:sobolev_testing_rate_1}
-	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; W^{1,2}(\mathcal{X};R)) \lesssim \frac{1}{b}.
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; H_0^{s}(\mathcal{X};R)) \leq \frac{c_2}{b}.
 	\end{equation}
 \end{theorem}
 
-When $d \geq 4$ the compact embedding
+The restriction that $p$ be supported on the unit cube is mostly for convenience. If instead $p$ is supported on any compact set with Lipschitz boundary, the Theorem statement should hold (up to constants), with only a few modifications to our proofs. However, we do not work through the details.
+
+The restriction $4s > d$ is a fundamental consequence of the tightness of the Sobolev embedding theorem. When $4s \geq d$ the compact embedding
 \begin{equation*}
-W_d^{1,2}(\mathcal{X}) \subseteq \mathcal{L}_d^4(\mathcal{X}) 
+H^{s}(\mathcal{X}) \subseteq \Leb^4(\mathcal{X}) 
 \end{equation*}
-does not hold (as it does when $d < 4$). However, if we directly assume $f \in \mathcal{L}_d^4(\mathcal{X};R)$ (regardless of $d$) we obtain the following result.
+does not hold (as it does when $d < 4s$). However, if we directly assume $f \in \mathcal{L}_d^4(\mathcal{X};R)$ (regardless of $d$) we obtain the following result.
 \begin{proposition}
 	\label{prop:L4_testing_rate}
-	If $f \in \mathcal{L}_d^4(\mathcal{X};R)$, there exists a constant $c$ such that if
+	If $f \in \Leb^4(\mathcal{X};R)$, there exists a constant $c$ such that if
 	\begin{equation}
 	\label{eqn:L4_testing_rate}
-	\epsilon^2 > b \cdot n^{-1/2}
+	\epsilon^2 > c^2 b \cdot n^{-1/2}
 	\end{equation}
 	then the test
 	\begin{equation*}
-	\phi_{\mathrm{mean}} = \1\{\frac{1}{n}\sum_{i = 1}^{n} y_i^2 \geq 1\}
+	\phi_{\mathrm{mean}} = \1\Bigl\{\frac{1}{n}\sum_{i = 1}^{n} y_i^2 \geq 1\Bigr\}
 	\end{equation*}
 	has worst-case risk
 	\begin{equation*}
-	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; W^{1,2}(\mathcal{X};R)) \lesssim \frac{1}{b}. 
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; H^1(\mathcal{X};R)) \lesssim \frac{1}{b}. 
+	\end{equation*}
+\end{proposition}
+Note that when $4s > d$ the critical radius~\eqref{eqn:sobolev_testing_rate} is smaller than \eqref{eqn:L4_testing_rate}. 
+
+\subsection{Fixed Design}
+Frequently in nonparametric regression problems, it is assumed that the design points are fixed, and, in the simplest case, uniformly spaced on the unit cube. For convenience in this setting we let $n = N^d$ for some integer $N$. The fixed grid design $\wb{X}$ consists of $n$ total evenly spaced grid points on $[0,1]^d$,
+\begin{equation*}
+\wb{X} := \Bigl\{\Bigl(\frac{2i_1 - 1}{2N},\ldots,\frac{2i_d - 1}{2N}\Bigr): i \in [N]^d\Bigr\}
+\end{equation*}
+Suppose we observe $n$ samples according to regression model
+\begin{equation}
+\label{eqn:grid_regression_model}
+y_i = f(\wb{x}_i) + \varepsilon_i, ~\varepsilon_i \overset{\mathrm{i.i.d}}{\sim} \mathcal{N}(0,1) ~~\textrm{for each $i \in [N]^d$,}
+\end{equation}
+Clearly model~\eqref{eqn:grid_regression_model} bears some similarity with model~\eqref{eqn:regression_random_design_known_variance}, the main difference being that the design $\wb{X}$ is now fixed instead of random. 
+
+We study the behavior of $\phi_{\spec}(\wb{G})$, where $\wb{G}$ is the lattice
+\begin{equation*}
+\wb{G} := \bigl(\wb{X},\wb{E}\bigr),~~ \wb{E} := \set{(\wb{x}_i,\wb{x}_j): i,j \in [N]^d, \norm{i - j}_1 = 1},
+\end{equation*}
+a very natural graph to build given our assumed grid design. Note that for a given $d$, we also have the recursive relation
+\begin{equation*}
+\wb{G} := \wb{G}_1 \otimes \ldots \otimes \wb{G}_1
+\end{equation*}
+where the tensor product is taken $d$ total times, and $\wb{G}_1$ is the $1$d lattice (i.e. the path) graph on $N$ vertices. For this reason it will be convenient to change notation slightly, and index by $d$-tuples of numbers rather than by numbers. In particular, we index the eigenvalues and eigenvectors of $L_{\wb{G}}$ as
+\begin{equation*}
+\lambda_k(\wb{G}) = \prod_{j = 1}^{d} \lambda_{k_j}(\wb{G}_1), v_{k,i}(\wb{G}) = \prod_{j = 1}^{d} v_{k_j,i_j}(\wb{G}_1)~~\textrm{for $k,i \in [N]^d$.}
+\end{equation*}
+Then, for a given $\kappa \in [n]$, letting $K = \kappa^{1/d}$, we see that our graph spectral test statistic may be written equivalently as
+\begin{equation*}
+T_{\spec}(\wb{G}) = \frac{1}{n} \sum_{k \in [K]^d} \Biggl(\sum_{i \in [N]^d} y_i v_{k,i}(G)\Biggr)^2
+\end{equation*}
+
+We see the test $\phi_{\spec}(\wb{G})$ achieves the same rate over the Holder ball $C^{1}(\Xset;L)$ when $d \leq 4$, as the test $\phi_{\spec}(G_{n,r})$ does over the Holder ball $C^1(\Xset;L)$.
+\begin{theorem}
+	\label{thm:holder_testing_rate_grid}
+	Let $L > 0$ be a fixed constant, and let $d \leq 4$. Suppose we observe data according to the model~\eqref{eqn:grid_regression_model}. Then when the test $\phi_{\spec}(\wb{G})$ is performed with the parameter choices
+	\begin{equation*}
+	\kappa = (Ln)^{2d/(4 + d)},~~ \tau(b) = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*}
+	for some $b \geq 1$, the following statement is true: there exists a constant $c$ such that for 
+	\begin{equation}
+	\label{eqn:holder_testing_rate_grid_1}
+	\epsilon^2 \geq c \cdot \max\{L^{d/(4+d)}, L^{d/(4 + d) + 1}\} \cdot b n^{-4/(4 + d)}
+	\end{equation}
+	the worst-case risk of $\phi_{\spec}(\wb{G})$ on $C^{1}(\Xset;L)$ is upper bounded
+	\begin{equation}
+	\label{eqn:holder_testing_rate_grid_2}
+	\mathcal{R}_{\epsilon}\Bigl(\phi_{\spec}(\wb{G});C^{1}(\Xset;L)\Bigr) \leq \frac{4}{b^2} + \frac{8}{b\sqrt{2\kappa}}.
+	\end{equation}
+\end{theorem}
+
+As was the case with the neighborhood graph in the random design setting, the grid Sobolev norm fails to track the higher order derivatives of $f$ near the boundary of $\Xset$. We therefore will again insist that $f$ be compactly supported within $\Xset$. Under this condition, we find that the test $\phi_{\spec}(\wb{G})$ achieves the same rate over the Holder ball $C_c^{s}(\Xset;L)$ when $4s \geq d$ as did the test $\phi_{\spec}(G_{n,r})$ over the Holder ball $C_c^s(\Xset;L)$.
+
+\begin{theorem}
+	\label{thm:holder_testing_rate_grid_higher_order}
+	Let $L > 0$ be a fixed constant, $s \geq 2$ be a fixed integer, and let $d \leq 4s$.  Suppose we observe data according to the model~\eqref{eqn:grid_regression_model}. Then when the test $\phi_{\spec}(\wb{G})$ is performed with the parameter choices
+	\begin{equation*}
+	\kappa = (Ln)^{2d/(4s + d)},~~ \tau(b) =  \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*} 
+	for some $b \geq 1$, the following statement is true: there exists a constant $c$ such that for any
+	\begin{equation*}
+	\epsilon^2 \geq c L^2 b n^{-4s/(4s + d)},
+	\end{equation*}
+	the worst-case risk of $\phi_{\spec}(\wb{G})$ is upper bounded
+	\begin{equation*}
+	\mathcal{R}_{\epsilon}\Bigl(\phi_{\spec}(\wb{G});C_c^{s}(\Xset;L)\Bigr) \leq \frac{4}{b^2} + \frac{8}{b\sqrt{2\kappa}}.
+	\end{equation*}
+\end{theorem}
+
+Roughly speaking, we have shown that in the high-smoothness regime $4s > d$, testing over Holder classes in the grid design and random design cases is an equally difficult problem from the minimax perspective. The same is not true for the corresponding Sobolev spaces. When $2s > d$, the Sobolev spaces $H^s(\Xset;L)$ embed compactly into (lower-order) Holder classes, implying that every equivalence class $u \in H^s(\Xset;L)$ contains a favored representer which is bounded and Holder continuous, with bounded Holder norm. When $2s < d$, the situation is less nice; the spaces $H^s(\Xset;L)$ now contain (equivalence classes of) bump functions of arbitrarily large height and small width. By placing such bump functions at design points, it is possible to make the sampling model~\eqref{eqn:grid_regression_model} contain arbitrarily little information about the overall behavior of the function $f$ over $\Xset$. It is not hard to construct a function $f \in H^s(\Xset;L)$ for which, say, $\norm{f}_{\Leb^2(\Xset)} = 1$ yet $f(\wb{x}) = 0$ for all $\wb{x} \in \wb{X}$, implying that the critical radius $\epsilon^{\star}(H^s(\Xset;L)) = \Omega(1)$. We note that this is not an issue in the random design setting, because the design points are (randomly) chosen only after the function $f$ is fixed.
+
+\textcolor{red}{(TODO): Make this discussion more rigorous. Perhaps appeal to the concept of precise representatives defined in (Evans and Gariepy).}
+
+The above discussion leaves hope that when $2s > d$, consistent testing might still be possible. We can in fact go beyond this and show that the graph spectral test $\phi_{\spec}(\wb{G})$ achieves the same rate over the Sobolev space $\wt{H}^s(\Xset;L)$ as the test $\phi_{\spec}(G_{n,r})$ did over $H_0^s(\Xset;L)$.
+
+\begin{theorem}
+	\label{thm:sobolev_testing_rate_grid}
+	Let $L > 0$ be a fixed constant, $s \geq 1$ be a fixed integer, and let $2s > d$.  Suppose we observe data according to the model~\eqref{eqn:grid_regression_model}. Then when the test $\phi_{\spec}(\wb{G})$ is performed with the parameter choices
+	\begin{equation*}
+	\kappa = n^{2d/(4s + d)},~~ \tau(b) =  \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*} 
+	for some $b \geq 1$, the following statement is true: there exists a constant $c$ such that for any
+	\begin{equation*}
+	\epsilon^2 \geq c L^2 b n^{-4s/(4s + d)},
+	\end{equation*}
+	the worst-case risk of $\phi_{\spec}(\wb{G})$ is upper bounded
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate_grid_1}
+	\mathcal{R}_{\epsilon}\Bigl(\phi_{\spec}(\wb{G});\wt{H}^s(\Xset;L)\Bigr) \leq \frac{4}{b^2} + \frac{8}{b\sqrt{2\kappa}}
+	\end{equation}
+	for all $n$ sufficiently large.
+\end{theorem}
+
+\subsubsection{Low-smoothness regime with fixed design}
+In the low-smoothness regime $d > 4s$, the coupling between empirical norm over $\wb{X}$ and the continuum $\Leb^2$ norm is sufficiently weak that the discretization error can become the dominant source of error, as we show in Lemma~\ref{lem:holder_testing_rate_grid_low_smoothness_lb}.
+
+\begin{lemma}
+	\label{lem:holder_testing_rate_grid_low_smoothness_lb}
+	For any $L > 0$ and any integers $s$ and $d$, there exists a function $g \in C^s(\Xset;L)$ such that
+	\begin{equation*}
+	\norm{g}_{\Leb^2}^2 \geq \frac{L^2}{2^d \pi^{2s} (d + 1)^{2s}}n^{-2s/d} 
+	\end{equation*}
+	but $g(\wb{x}) = 0$ for all $\wb{x} \in \wb{X}$. 
+\end{lemma}
+Lemma~\ref{lem:holder_testing_rate_grid_low_smoothness_lb} implies the critical radius over the Holder classes $C^s(\Xset;L)$ must be at least on the order of $\epsilon^{\star}(C^s(\Xset;L)) \gtrsim n^{-s/d}$. When $4s \geq d$, this term is neglible relative to $n^{-2s/(4s + d)}$, and we arrive at the ``usual'' rates of minimax testing we see in Theorems~\ref{thm:holder_testing_rate_grid} and~\ref{thm:holder_testing_rate_grid_higher_order}. On the other hand when $4s < d$, this becomes the dominant term, and we can no longer achieve the typical rate $\epsilon^2 \asymp n^{-4s/(4s + d)}$. 
+
+In this setting, when we enforce the wider radius $\epsilon^2 \asymp n^{-2s/d}$, Proposition~\ref{prop:holder_testing_rate_grid_low_smoothness_ub} shows that a very simply test has small worst-case risk $\mathcal{R}_{\epsilon}$. 
+
+\begin{proposition}
+	\label{prop:holder_testing_rate_grid_low_smoothness_ub}
+	Let $L > 0$ be a fixed constant, $s \geq 1$ a fixed integer, and let $d \geq 4s$. Suppose we observe data according to the grid design regression model~\eqref{eqn:grid_regression_model}. Then when the test $\phi_{\spec}(\wb{G})$ is performed with the parameter choices
+	\begin{equation*}
+	\kappa = n,~~ \tau(b) = 1 + b\sqrt{\frac{2}{n}}
+	\end{equation*}
+	for some $b \geq 1$, the following statement is true: there exists a constant $c$ such that for any 
+	\begin{equation*}
+	\epsilon^2 \geq c b L^2 n^{-2s/d}
+	\end{equation*}
+	the worst case risk of $\phi_{\spec}(\wb{G})$ is upper bounded
+	\begin{equation*}
+	\mathcal{R}_{\epsilon}(\phi_{\spec}(\wb{G}); C^s(\Xset;L)) \leq \frac{4}{b^2} + \frac{8}{b\sqrt{2n}}
 	\end{equation*}
 \end{proposition}
 
-Note that when $d < 4$ the rate~\eqref{eqn:sobolev_testing_rate} is sharper than \eqref{eqn:L4_testing_rate}. 
+\begin{itemize}
+	\item The test statistic $T_{\spec}(\wb{G})$ is simply the empirical norm of $Y$. 
+	\item Together, Lemma~\ref{lem:holder_testing_rate_grid_low_smoothness_lb} and Proposition~\eqref{prop:holder_testing_rate_grid_low_smoothness_ub} characterize the minimax rate of the grid design regression testing problem when $4s > d$.
+	\item This minimax rate does not match the upper bound established in Proposition~\ref{prop:L4_testing_rate}---the fixed design problem is harder. 
+	\item Note that the usual minimax rate of estimation error over Holder classes is always $n^{-2s/(2s + d)}$, regardless of the relation between $s$ and $d$, and regardless of whether loss is measured in $\Leb^2$-norm or empirical norm. The explanation for this is that the rate $n^{-2s/(2s + d)}$ is always larger than $n^{-2s/d}$, and so the discretization error is never the dominant source of error in estimation. This reveals an interesting distinction between the testing and estimation problems, as testing is easy enough in a statistical sense that error incurred by the discrete nature of the problem may be the bottleneck.
+\end{itemize}
 
-The minimax testing rate over the higher-order smoothness classes $W_d^{s,2}(\Xset;L)$ and $C_d^s(\Xset;L)$ is known to be $n^{-4s/(4s + d)}$ when $4s < d$. Hence the testing rate~\eqref{eqn:sobolev_testing_rate} matches the minimax critical radius when $s = 1$ up to a factor of $\log^{h(a,d)}n$. The eigenvector projection test is also minimax optimal over the balls in higher order Holder spaces $C_d^s(\Xset;L)$.
 
-\begin{theorem}
-	\label{thm:higher_order_holder_testing_rate}
-	Let $b \geq 1$ be a fixed constant, and let $d$ and $s$ be positive integers such that $d < 4s$. Suppose that $P$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]^d$ with density function $p \in C^{s-1}(\mathcal{X};R)$ bounded above and below by constants, i.e
-	\begin{equation*}
-	0 < p_{\min} < p(x) < p_{\max} < \infty, \quad \textrm{for all $x \in \mathcal{X}$.}
-	\end{equation*}
-	Then the following statement holds: if the test $\phi_{\spec}$ is performed with parameter choices 
-	\begin{equation*}
-	\textrm{$K_r$ the uniform kernel with}~ n^{-1/(2(s - 1) + d)} \leq r(n) \leq n^{-4/((4s + d)(2+d))}, ~\kappa = n^{2d/(4s + d)}, ~\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
-	\end{equation*}
-	then there exists constants $c_1,c_2$ which may depend on $d,R,$ and $s$ but are independent of the sample size $n$ such that for every $\epsilon \geq 0$ satisfying
-	\begin{equation}
-	\label{eqn:higher_order_holder_testing_rate}
-	\epsilon^2 \geq c_1 \cdot b^2 \cdot n^{-4s/(4s + d)}
-	\end{equation}
-	the worst-case risk is upper bounded
-	\begin{equation}
-	\label{eqn:higher_order_holder_testing_rate_1}
-	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}; C_d^{s}(\mathcal{X};R)) \leq \frac{c_2}{b}.
-	\end{equation}
-\end{theorem}
+
+\subsection{Analysis}
+
+To prove Theorem~\ref{thm:sobolev_testing_rate}, we show that there exists a high-probability set $E \subseteq \Xset^n$ such that conditional on $X \in E$, the test $\phi_{\spec}(G_{n,r})$ has small risk. Since $G_{n,r}$ is a function only of $X$ and not of $Y$, this amounts to reasoning about the behavior of the test $\phi_{\spec}$ over a fixed graph $G = (X,E)$, where we observe
+\begin{equation}
+\label{eqn:fixed_graph_regression_model}
+y_i = \beta_i + \varepsilon_i,~~\varepsilon_i \sim \mathcal{N}(0,1)
+\end{equation}
+for some fixed $\beta \in \Reals^n$.  In Lemma~\ref{lem:fixed_graph_testing}, we upper bound the Type I and Type II error of the test $\phi_{\spec}(G)$. Our bound on the Type II error will be stated as a function of $\beta^T L^s \beta$--a measure of the smoothness the signal $\beta$ displays over the graph $G$--as well as the $\kappa$th eigenvalue $\lambda_{\kappa}$.
+
+\begin{lemma}
+	\label{lem:fixed_graph_testing}
+	Let $1 \leq \kappa \leq n$ be an integer. Suppose we observe data according to the model~\eqref{eqn:fixed_graph_regression_model}, and perform the test $\phi_{\spec}(G)$ with $\tau(b) = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}$.
+	\begin{enumerate}
+		\item \textbf{Type I error:} Under the null hypothesis $\beta = \beta_0 = 0$, the Type I error of $\phi_{\spec}(G)$ is upper bounded
+		\begin{equation}
+		\label{eqn:graph_spectral_type_I_error}
+		\mathbb{E}_{\beta_0}(\phi_{\spec}) \leq \frac{2}{b^2}.
+		\end{equation}
+		\item \textbf{Type II error:} For any $b \geq 1$ and $\beta$ such that
+		\begin{equation}
+		\label{eqn:fixed_graph_testing_critical_radius_1}
+		\norm{\Pi_{\kappa,G}(\beta)}_n^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}}
+		\end{equation}
+		the Type II error of $\phi_{\spec}(G)$ is upper bounded,
+		\begin{equation}
+		\label{eqn:graph_spectral_type_II_error}
+		\mathbb{E}_{\beta}(1 - \phi_{\spec}) \leq \frac{2}{b^2} + \frac{8}{b\sqrt{2\kappa}}.
+		\end{equation}
+		In particular if
+		\begin{equation}
+		\label{eqn:fixed_graph_testing_critical_radius}
+		\frac{1}{n} \sum_{i = 1}^{n} \beta_i^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}} + \frac{\beta^T L^s \beta}{n\lambda_{\kappa}^s}
+		\end{equation}
+		then~\eqref{eqn:fixed_graph_testing_critical_radius_1} and thus~\eqref{eqn:graph_spectral_type_II_error} follow.
+	\end{enumerate}
+\end{lemma}
 
 \subsection{Areas to Investigate}
 
 \begin{enumerate}[(i)]
 	\item When $d \geq 4$, is it true that there does not exist a uniformly consistent
 	test over the Sobolev ball $W_d^{1,2}(\mathcal{X};R)$?
-	\item Does the testing rate of $\phi_{\mathrm{spec}}$ over Sobolev spaces $W_d^{s,2}(\mathcal{X};R)$ match the minimax rate, for an appropriate choice of kernel $K$?
 	\item Assume the distribution $P$ is supported on a manifold $\mathcal{M}$ of intrinsic dimension $s < d$. Does $\mathrm{\phi_{\mathrm{spec}}}$ display adaptivity to the intrinsic dimension of $\mathcal{M}$?
 	\item Assume that $f$ belongs to the Holder space $C_d^s(\mathcal{X})$. Moreover, suppose that instead of observing ${y_i}$ according to the regression testing model \eqref{eqn:regression_known_variance}, we observe
 	\begin{equation*}
@@ -337,7 +555,7 @@ T_{\mathrm{TV}} := \sup_{\substack{\theta \in \Theta_{1,1}, \\ \lambda \norm{\th
 
 \subsection{Current results.}
 
-In Theorem~\ref{thm:twosample_sobolev_testing_rate} we show that under some typical regularity conditions on $P$, the test $\phi_{\textrm{spec}}^{(2)} := \1\{T_{\mathrm{spec}}^{(2)} \geq \tau\}$ is, up to log factors, a minimax optimal test over the Sobolev ball $W^{1,2}(\mathcal{X};R)$ when $d = 1$.
+In Theorem~\ref{thm:twosample_sobolev_testing_rate} we show that under some typical regularity conditions on $P$, the test $\phi_{\textrm{spec}}^{(2)} := \1\{T_{\mathrm{spec}}^{(2)} \geq \tau\}$ is, up to log factors, a minimax optimal test over the Sobolev ball $H^1(\mathcal{X};R)$ when $d = 1$.
 
 \begin{theorem}
 	\label{thm:twosample_sobolev_testing_rate}
@@ -369,24 +587,26 @@ We prove Theorem~\ref{thm:twosample_sobolev_testing_rate} by relating the densit
 	\item When $1 < d < 4$, is the test $\phi_{\spec}^{(2)}$ minimax optimal?
 	\item Are either or both of the test statistics \eqref{eqn:graph_spectral_projections_2}-\eqref{eqn:sobolev_IPM} minimax optimal over $C_d^1(\mathcal{X};R)$ for all values of $d$?
 	\item Are either or both of the test statistics \eqref{eqn:graph_spectral_projections_2}-\eqref{eqn:sobolev_IPM} minimax optimal over $W_d^{1,2}(\mathcal{X};R)$ when $d \leq 4$?
-	\item Is the test statistic \eqref{eqn:graph_spectral_projections_2}, computed over a graph with suitable choice of kernel $K$, minimax optimal over higher order derivative classes $C_d^s$ and $W^{s,2}$? 
+	\item Is the test statistic \eqref{eqn:graph_spectral_projections_2}, computed over a graph with suitable choice of kernel $K$, minimax optimal over higher order derivative classes $C_d^s$ and $H^s$? 
 	\item Modify the test statistic \eqref{eqn:sobolev_IPM} by replacing the function class $\Theta_{1,2}$ with
 	\begin{equation}
 	\Theta_{s,2} := \{\theta \in \Reals^n:~ C_n^{-1} \norm{B^{(s)}\theta}_2 \leq 1\} 
 	\end{equation}
-	Is the modified test statistic, computed over a graph with suitable choice of kernel $K$, minimax optimal over higher order derivative classes $C_d^s$ and $W^{s,2}$?
+	Is the modified test statistic, computed over a graph with suitable choice of kernel $K$, minimax optimal over higher order derivative classes $C_d^s$ and $H^s$?
 	\item What is the minimax testing rate over $BV_d^{1}(\mathcal{X};R)$? Does it exhibit a phase transition analogous to the minimax estimation rate over bounded variation spaces?
 	\item Is the test statistic \eqref{eqn:total_variation_IPM} minimax optimal over $BV_d^{1}(\mathcal{X};R)$?
 	\item Is the test statistic \eqref{eqn:total_variation_IPM} minimax optimal over Sobolev and Holder function classes?
 \end{enumerate}
 
-\section{Definitions}
+\section{Definitions and Notation}
 
 Here we collect definitions of some common function spaces and graph operators.
 
 \subsection{Function Spaces}
 
-\paragraph{Lebesgue spaces.}
+Here we formally define, discuss some function spaces and associated norms.
+
+\subsubsection{Lebesgue spaces}
 
 We say a Borel measurable function $f: \mathcal{X} \to \Reals$ is in the space $\mathcal{L}^p(\mathcal{X})$ for $1 \leq p < \infty$ if 
 $$\norm{f}_{\mathcal{L}^p(\mathcal{X})} := \int_{\mathcal{X}} \abs{f(x)}^p \,dx < \infty$$
@@ -396,22 +616,49 @@ and we let
 \end{equation*}
 be a ball in the Lebesgue space.
 
-
-\paragraph{Holder spaces.}
+\subsubsection{Holder spaces}
 
 For a given $s > 0$, let $\ell = \floor{s}$ be the largest integer strictly less than $s$. Then the $s$th Holder norm is given by
 \begin{equation*}
-\norm{f}_{C_d^{s}(\mathcal{X})} := \sum_{\abs{\alpha} < s} \norm{D^{\alpha}f}_{\infty} + \sum_{\abs{\alpha} = \ell} \sup_{x,y \in \mathcal{X}} \frac{\abs{D^{\alpha}f(y) - D^{\alpha}f(x)}}{\norm{x - y}_2^{s - \ell}}
+\norm{f}_{C^{s}(\mathcal{X})} := \sum_{\abs{\alpha} < s} \norm{D^{\alpha}f}_{\infty} + \sum_{\abs{\alpha} = \ell} \sup_{x,y \in \mathcal{X}} \frac{\abs{D^{\alpha}f(y) - D^{\alpha}f(x)}}{\norm{x - y}_2^{s - \ell}}
 \end{equation*}
-and the $s$th Holder space $C_d^{s}(\mathcal{X})$ consists of all functions which are $\ell$ times continuously differentiable with finite Holder norm $\norm{\cdot}_{C_d^{s}(\mathcal{X})}$. Denote the Holder ball by $C_d^{s}(\mathcal{X},R) = \set{f \in C_d^{s}(\mathcal{X}): \norm{f}_{C_d^{s}(\mathcal{X})} \leq R}$.
+and the $s$th Holder space $C^{s}(\mathcal{X})$ consists of all functions which are $\ell$ times continuously differentiable with finite Holder norm $\norm{\cdot}_{C^{s}(\mathcal{X})}$. Denote the Holder ball by $C_d^{s}(\mathcal{X},R) = \set{f \in C^{s}(\mathcal{X}): \norm{f}_{C_d^{s}(\mathcal{X})} \leq R}$. Let $C_c^{s}(\Xset)$ consist of those functions in $C^s(\Xset)$ which are compactly supported within $\Xset$; formally $f \in C_c^{s}(\Xset)$ if and only if $f \in C^s(\Xset)$ and there exists an open set $V \subset \ol{V} \subset \Xset$ such that $\mathrm{supp}(f) \subset V$. 
 
-\paragraph{Sobolev spaces.}
+\subsubsection{Sobolev spaces}
 
-For a given $s > 0$, the Sobolev space $W_d^{s,2}(\mathcal{X})$ consists of all functions $f \in \mathcal{L}^2(\mathcal{X})$ such that for each $\alpha = (\alpha_1,\ldots,\alpha_d)$ with $\abs{\alpha} := \sum_{i = 1}^{d} \alpha_i \leq s$, the weak derivative $D^{\alpha}f$ belongs to $\mathcal{L}^2(\mathcal{X})$. The Sobolev $\{s,2\}$ norm is then 
+For a given $s$ and $p > 0$, the Sobolev space $W^{s,p}(\mathcal{X})$ consists of all functions $f \in \Leb^2(\mathcal{X})$ such that for each $\alpha = (\alpha_1,\ldots,\alpha_d)$ with $\abs{\alpha} := \sum_{i = 1}^{d} \alpha_i \leq s$, the weak derivative $D^{\alpha}f$ belongs to $\mathcal{L}^2(\mathcal{X})$. The Sobolev $\{s,p\}$ norm is then 
 \begin{equation*}
-\norm{f}_{W_d^{s,2}(\mathcal{X})}^2 = \sum_{\abs{\alpha} \leq s} \int_{\mathcal{X}} \abs{D^{\alpha}f}^2 \,dx
+\norm{f}_{W^{s,p}(\mathcal{X})}^2 = \sum_{\abs{\alpha} \leq s} \int_{\mathcal{X}} \abs{D^{\alpha}f}^p \,dx
 \end{equation*}
-and for a given $L > 0$, the corresponding ball is $W_d^{s,2}(\Xset; L) = \set{f: \norm{f}_{W^{s,2}(\Xset)} \leq L}$.
+and for a given $R > 0$, the corresponding ball is $W^{s,p}(\Xset; R) = \set{f: \norm{f}_{H^s(\Xset)} \leq R}$. In the special case when $p = 2$, the Sobolev space $W$ is a Hilbert space; we adopt the usual convention of writing $H^s(\Xset) = H^s(\Xset)$. 
+
+We write $W_0^{s,p}(\Xset)$ for the completion of $C_c^{\infty}(\Xset)$, and let $H_0^s(\Xset) = W_0^{s,2}(\Xset)$.  
+
+\paragraph{Defining Sobolev spaces using Fourier series.}
+
+Let the cosine basis on $\Leb^2([0,1])$ be defined as 
+\begin{equation*}
+\varphi_k(x) = 
+\begin{cases*}
+1,~~\textrm{for $k = 1$.} \,
+\sqrt{2}\cos\Bigl(\pi (k - 1) x\Bigr),~~\textrm{for $k \in \Nbb_1$}
+\end{cases*}
+\end{equation*}
+for any $x \in [0,1]$. Let the tensor product cosine basis on $\Leb^2([0,1]^d)$ be defined as
+\begin{equation*}
+\varphi_k(x) = \prod_{j = 1}^{d} \varphi_{k_j}(x_j), ~~\textrm{for $k \in \Nbb^d$},
+\end{equation*}
+for any $x \in [0,1]^d$. Observe that $\varphi_k(\wb{x}_i) = \sqrt{n} v_{k,i}(\wb{G}_d)$ for all $k,i \in [N]^d$.
+
+We let the space 
+\begin{equation*}
+\wt{H}^{s}(\Xset;L) = \Bigl\{ \sum_{k \in \mathbb{N}^d} \theta_k \varphi_k: \sum_{k \in \mathbb{N}^d} \theta_k^2 a_k^{2} \leq L \Bigr\}
+\end{equation*}
+where in the one-dimensional case $a_{k} = (k - 1)^s$ and for general $d$, $a_k = \sqrt{\sum_{j = 1}^{d} a_{k_j}^2}$. It is not hard to show that, when $s$ is an integer, $\wt{H}^s([0,1]^d)$ consists of those functions in $H^s([0,1]^d)$ which satisfy some Neumann-type boundary conditions. For example when $d = 1$,
+\begin{equation*}
+\wt{H}^s([0,1];L) = \Bigl\{f \in H^{s}([0,1];L \pi^{s}): f^{(\ell)}(0) = f^{(\ell)}(1) = 0,~~\textrm{for all odd integers $0 < \ell < s$} \Bigr \} \supseteq H_0^s([0,1];L'),
+\end{equation*}
+a fact which we prove in Section~\ref{subsec:sobolev_class_equivalence}.
 
 \paragraph{Bounded Variation spaces.}
 
@@ -425,7 +672,7 @@ and we write $BV_d(\mathcal{X})$ for the subset of functions $f \in L^1(\mathcal
 \end{equation*}
 For a given $R > 0$, the corresponding ball is $BV_d^{1}(\mathcal{X};R) = \set{f: \norm{f}_{BV_d(\mathcal{X})} \leq R}$. 
 
-\subsection{Graph Operators.}
+\subsection{Graph Operators}
 Let $s \geq 1$ be an integer. The $s$th-order difference operator on $G_{n,r}$, denoted $B^{(s)}$, is defined by
 \begin{equation*}
 B^{(s)} :=
@@ -434,5 +681,25 @@ L^{s/2},& ~~ s \textrm{ even} \\
 BL^{(s - 1)/2},& ~~ s \textrm{ odd.}
 \end{cases}
 \end{equation*}
+
+\subsection{Kernels}
+We say a kernel function $K(\cdot)$ is a $2$nd order kernel if $K$ is compactly supported on $B(0,1)$, uniformly upper bound $\abs{K(x)} \leq K_{\max} < \infty$ for all $x \in B(0,1)$, and
+\begin{equation*}
+\int K(x) \,dx = \nu_d,~~ \int x K(x) \,dx = 0.
+\end{equation*}
+Note that the uniform kernel, defined as $K(x) = \1\{\norm{x} \leq 1\}$, is a $2$nd order kernel. 
+
+\subsection{Notation}
+
+We will treat $f$ interchangeably as a function $f:\Rd \to \Reals$, and as a vector $f = (f(x_1),\ldots,f(x_n))$. More generally, for $U \subset V$ and $f:V \to \Reals$, the action of $f$ on $U$ is naturally defined via the restriction operator $R_U$; we will forego additional notation and simply treat $f$ as a function on $U$, defined as $f(x) = R_Uf(x)$ for $x \in U$. It should always be clear from context how we are using $f$. 
+
+For sequences $(a_n), (b_n)$, we say $a_n = O(b_n)$ if there exists a constant $c$ such that $a_n \leq cb_n$ for all $c$. We use the notation $a \wedge b$ for the minimum of $a$ and $b$.
+
+We use the notation $\Lambda(H)$ to denote the spectrum of a matrix $H$, and $\lambda_k(H)$ to denote the $k$th smallest eigenvalue of $H$.
+
+We sometimes -- and currently not in a consistent manner -- denote the lattice Laplacian $L_{\wb{G}} =: \wb{L}$. 
+
+We write $\mathbb{N}_k$ for the natural numbers excluding $0,\ldots,k - 1$. We write $\mathbb{N}_0$ for the natural numbers including $0$, and $\mathbb{N} = \mathbb{N}_1$.
+
 
 \end{document}
