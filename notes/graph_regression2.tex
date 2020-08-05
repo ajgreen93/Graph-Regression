@@ -205,15 +205,15 @@ and the degree matrix ${\bf D}$ is the $n \times n$ diagonal matrix with entries
 \label{eqn:laplacian_eigenmaps}
 \wh{f}_{\textrm{LE}} = \sum_{k = 1}^{\kappa} \Dotp{Y}{v_k(G_{n,r})}_n v_{k}(G_{n,r})
 \end{equation}
-where $\kappa \in \{1,...,n\}$ is a tuning parameter. (Here $\dotp{u}{v}_n = \frac{1}{n}\sum_{i = 1}^{n} u_i v_i$ for vectors $u,v \in \Reals^n$.) The Laplacian smoothing estimator $\wh{f}_{\LS}$ \citep{smola2003} is given by
+where $\kappa \in \{1,...,n\}$ is a tuning parameter. (Here $\dotp{u}{v}_n = \frac{1}{n}\sum_{i = 1}^{n} u_i v_i$ for vectors $u,v \in \Reals^n$.) The Laplacian smoothing estimator $\wt{f}_{\LS}$ \citep{smola2003} is given by
 \begin{equation}
 \label{eqn:laplacian_smoothing}
-\wh{f}_{\LS}= \min_{f \in \Reals^n} \Bigl\{\sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^T L^s f \Bigr\}
+\wt{f}_{\LS}= \min_{f \in \Reals^n} \Bigl\{\sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^T L^s f \Bigr\}
 \end{equation}
 where $\rho > 0$ acts a tuning parameter. Then, assuming~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing} are reasonable estimators of $f_0$, the size of the statistics
 \begin{align}
 T_{\LE} & = \norm{\wh{f}_{\LE}}_n^2 \label{eqn:laplacian_eigenmaps_test}\\
-T_{\LS} & = \norm{\wh{f}_{\LS}}_n^2 \label{eqn:laplacian_smoothing_test}
+T_{\LS} & = \norm{\wt{f}_{\LS}}_n^2 \label{eqn:laplacian_smoothing_test}
 \end{align}
 can be used to test whether or not $f_0 = 0$.
 
@@ -258,7 +258,7 @@ Before we can state our main results, we must formally define minimaxity in both
 	\item \textbf{Our contributions, long version.}
 	\begin{itemize}
 		\item \textbf{Minimax optimal estimation.}
-		We show that with high probability,  $\norm{\wh{f}_{\LE} - f_0}_{n}^2 \lesssim n^{-2s/(2s + d)}$ whenever $f_0 \in C^s(\mc{X})$ for any $s \leq 1$, or $f_0 \in H^s(P)$ for $s = 1$. The same conclusions hold with respect to $\wh{f}_{\LS}$ when $d \leq 4$. 
+		We show that with high probability,  $\norm{\wh{f}_{\LE} - f_0}_{n}^2 \lesssim n^{-2s/(2s + d)}$ whenever $f_0 \in C^s(\mc{X})$ for any $s \leq 1$, or $f_0 \in H^s(P)$ for $s = 1$. The same conclusions hold with respect to $\wt{f}_{\LS}$ when $d \leq 4$. 
 		\item \textbf{Minimax optimal testing.}
 		We show that with high probability, a level-$\alpha$ test constructed using $T_{\LE}$ has non-trivial power whenever $f_0 \in C^s(\mc{X})$ for any $s \leq 1$---or $f_0 \in H^s(P)$ for $s = 1$---additionally satisfies $\norm{f_0}_{\Leb^2(P)} \gtrsim \max\{n^{-4s/(4s + d)},n^{-1/4}\}$. \textcolor{red}{The same conclusions hold with respect to $\wh{f}_{LS}$.}
 		\item \textbf{Manifold adaptivity.}
@@ -271,11 +271,63 @@ Before we can state our main results, we must formally define minimaxity in both
 
 \section{Minimax optimal graph Laplacian methods}
 
-The estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and the resulting test statistics~\eqref{eqn:laplacian_eigenmaps_test} and ~\eqref{eqn:laplacian_smoothing_test}, achieve the standard minimax optimal estimation and hypothesis testing rates, respectively. 
+Let us start by assuming $f_0 \in H^1(P,M)$. In this case, the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and the resulting test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test}, achieve the standard minimax optimal estimation and hypothesis testing rates, respectively. 
 
 \subsection{Minimax optimal estimation}
 
-Under appropriate conditions, the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ achieves minimax rates over all $f_0 \in H_0^s(P,M)$ with high probability. These conditions will take two forms. The first pair of conditions will be on the neighborhood graph $G_{n,r}$. These assumptions are mild, as the construction of the graph is in the user's control.
+Under appropriate conditions, the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ achieves minimax rates over all $f_0 \in H^1(P,M)$ with high probability. The conditions we impose will be on the neighborhood graph $G_{n,r}$. As the construction of the graph is in the user's control, these assumptions are therefore mild.
+\begin{enumerate}[label=(K\arabic*)]
+	\item 
+	\label{asmp:kernel_form}
+	The kernel function $K(z) = \1\Bigl\{\norm{z}_2/r \leq 1 \Bigr\}$.
+	\item 
+	\label{asmp:kernel_radius}
+	The radii $r = r(n)$ satisfies $r(n) \to 0$ as $n \to \infty$, and additionally
+	\begin{equation*}
+	n^{-1/d}\leq r(n) \leq M^{2/(2 + d)}n^{-1/(2 + d)}
+	\end{equation*}
+	for all $n$ sufficiently large.
+\end{enumerate}
+
+We use~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius} to ensure that the approximation error (bias) of $\wh{f}_{\LE}$ is of the correct order. On the other hand, bounding the estimation error of $\wh{f}_{\LE}$ -- both in expectation and in probability-- is straightforward. Together, bounds on these two sources of error imply Theorem~\ref{thm:laplacian_eigenmaps_estimation1}.
+\begin{theorem}
+	\label{thm:laplacian_eigenmaps_estimation1}
+	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}. Suppose that $f_0 \in H^1(P,M)$, that $P$ satisfies~\ref{asmp:bounded_density}, and that neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius}. Then, for the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ as given by~\eqref{eqn:laplacian_eigenmaps}, when $\kappa = M^{2/(2 + d)}n^{d/(2 + d)}$, the following statement holds: for all $n$ sufficiently large, there exist constants $c$ and $C$ such that
+	\begin{equation*}
+	\Bigl\|\wh{f}_{\LE} - f_0\Bigr\|_n^2 \leq \frac{C}{\delta} M^{2d/(4 + d)} n^{-2/(2 + d)}
+	\end{equation*}
+	with probability at least $1 - \delta -  Cr^{-d}\exp\{-cnr^d\} - \exp(-\kappa)$.
+\end{theorem}
+
+\begin{itemize}
+	\item Discuss the choice of radius $r$ imposed by~\ref{asmp:kernel_radius}.
+	\item Comment on the distinction between error rates as measured by the norm in $L^2(P_n)$ vs. $L^2(P)$. 
+\end{itemize}
+
+Theorem~\ref{thm:laplacian_smoothing_estimation1} is analogous to Theorem~\ref{thm:laplacian_eigenmaps_estimation1}, dealing with the Laplacian smoothing estimator $\wt{f}_{\LS}$. The key difference is that it holds only when the dimension $d < 4$.  
+\begin{theorem}
+	\label{thm:laplacian_smoothing_estimation1}
+	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}. Suppose that $f_0 \in H^1(P,M)$, that $P$ satisfies~\ref{asmp:bounded_density}, and that neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius}. Then, for the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ as given by~\eqref{eqn:laplacian_eigenmaps}, when $\kappa = M^{2/(2 + d)}n^{d/(2 + d)}$, the following statement holds: for all $n$ sufficiently large, there exist constants $c$ and $C$ such that
+	\begin{equation*}
+	\Bigl\|\wh{f}_{\LE} - f_0\Bigr\|_n^2 \leq \frac{C}{\delta} M^{2d/(4 + d)} n^{-2/(2 + d)}
+	\end{equation*}
+	with probability at least $1 - \delta -  Cr^{-d}\exp\{-cnr^d\} - \exp(-\kappa)$.
+\end{theorem}
+
+\begin{itemize}
+	\item A restriction on the maximum value of dimension $d$ such as $d \leq 4$ is unsurprising. In a related context (estimation over a $d$-dimensional lattice graph), \cite{sadhanala2016} require the same restriction. The underlying phenomenon is similar to that elucidated by the seminal papers~\cite{birge1993} and~\cite{birge1998}: when the dimension $d$ is too large, the entropy function is irregular and (penalized) least squares approaches are no longer minimax optimal.
+\end{itemize}
+
+\subsection{Minimax optimal hypothesis testing}
+
+
+
+\section{Higher-order smoothness classes.}
+\label{sec:higher_order_smoothness_classes}
+Suppose we are willing to assume $f_0$ possesses more than one smooth derivative. We can show that in this situation, the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} obtain the faster (known) minimax rates in the nonparametric estimation and testing problems. However, these conclusions hold only for certain values of the dimension $d$. 
+
+\subsection{Minimax optimal estimation}
+Under  conditions, the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ achieves minimax rates over all $f_0 \in H_0^s(P,M)$ with high probability. These conditions will take two forms. The first pair of conditions will be on the neighborhood graph $G_{n,r}$. These assumptions are mild, as the construction of the graph is in the user's control.
 \begin{enumerate}[label=(K\arabic*)]
 	\item 
 	\label{asmp:kernel_form}
@@ -311,11 +363,6 @@ Together these assumptions are used to ensure that the approximation error (bias
 	\item \textcolor{red}{(TODO)}: Comment a bit on the proof strategy; i.e., how we don't convergence properties of the eigenvectors $v_k$ towards eigenfunctions of the weighted Laplace-Beltrami operator, why we think that's advantageous, and how it might be limiting.
 \end{enumerate}
 
-\subsection{Minimax optimal hypothesis testing}
-
-
-
-\section{Higher-order adaptivity}
 
 \section{Fixed graph results}
 
