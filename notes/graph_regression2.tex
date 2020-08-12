@@ -181,12 +181,12 @@
 
 \section{Introduction}
 
-In the random design nonparametric regression setup, we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$, where $X_1,\ldots,X_n$ are independent samples from a distribution $P$ on a domain $\Xset \subset \Rd$ and 
+In the random design nonparametric regression setup, we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$, where $X_1,\ldots,X_n$ are independent samples from a distribution $P$ supported on a domain $\Xset \subset \Rd$, and 
 \begin{equation}
 \label{eqn:random_design_regression}
 Y_i = f_0(X_i) + \varepsilon_i
 \end{equation}
-with independent Gaussian noise $\varepsilon_i \sim N(0,1)$. The goal is to perform statistical inference on the unknown regression function $f_0: \Xset \to \Reals$, by which we mean either (a) \emph{estimating} $f_0$ by $\wh{f}$, an estimator constructed from the data $(X_1,Y_1),\ldots,(X_n,Y_n)$ or (b) simply \emph{testing} whether or not $f_0 = 0$, i.e whether or not there is a signal present. 
+with independent Gaussian noise $\varepsilon_i \sim N(0,1)$. Our goal is to perform statistical inference on the unknown regression function $f_0: \Xset \to \Reals$, by which we mean either (a) \emph{estimating} $f_0$ by $\wh{f}$, an estimator constructed from the data $(X_1,Y_1),\ldots,(X_n,Y_n)$ or (b) simply \emph{testing} whether or not $f_0 = 0$, i.e whether or not there is a signal present. 
 
 In graph based nonparametric regression, the idea is to perform the above inferential tasks by first building a neighborhood graph $G_{n,r}$ which captures the geometry of $P$ and $\mc{X}$ in an appropriate sense, and then constructing an estimate $\wh{f}$ which is smooth with respect to the graph $G_{n,r}$. For a kernel function $K: [0,\infty) \to \Reals$ and connectivity radius $r > 0$, the neighborhood graph $G_{n,r} = ([n],{\bf W})$ is a weighted, undirected graph on vertices $[n] = \{1,...,n\}$, which we associate with the samples $\{X_1,\ldots,X_n\}$. The weight matrix ${\bf W} = ({\bf W}_{ij})_{ij}$ is an $n \times n$ matrix with entries
 \begin{equation*}
@@ -206,7 +206,7 @@ The two graph-based regression methods we will consider are \emph{Laplacian eige
 where $\kappa \in \{1,...,n\}$ is a tuning parameter. (Here $\dotp{u}{v}_n = \frac{1}{n}\sum_{i = 1}^{n} u_i v_i$ for vectors $u,v \in \Reals^n$.) The Laplacian smoothing estimator $\wt{f}_{\LS}$ \citep{smola2003} is given by
 \begin{equation}
 \label{eqn:laplacian_smoothing}
-\wt{f}_{\LS}= \min_{f \in \Reals^n} \Bigl\{\sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^T L^s f \Bigr\}
+\wt{f}_{\LS}= \min_{f \in \Reals^n} \Bigl\{\sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^T \Lap_{n,r}^s f \Bigr\}
 \end{equation}
 where $\rho > 0$ acts a tuning parameter. Then, assuming~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing} are reasonable estimators of $f_0$, the size of the statistics
 \begin{equation}
@@ -219,7 +219,7 @@ T_{\LS} = \Bigl\|\wt{f}_{\LS}\Bigr\|_n^2 \label{eqn:laplacian_smoothing_test}
 can be used to test whether or not $f_0 = 0$.
 
 \begin{itemize}
-	\item \textbf{Motivate graph Laplacians.} There already exist a vast number of methods for both the nonparametric testing and, especially, the nonparametric estimation problems. Nevertheless, methods such as~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} deserve a place in the nonparametric regression toolbox. Their advantages include:
+	\item \textbf{Motivate graph Laplacians.} There already exist a vast number of methods for both the nonparametric testing and, especially, the nonparametric estimation problems. In fact, as we will see in Section~\ref{sec:problem_setup_and_background} some of these methods are actually quite analogous to the graph Laplacian estimation and testing methods we have just introduced. Nevertheless, methods such as~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} deserve a place in the nonparametric regression toolbox. Their advantages include:
 	\begin{itemize}
 		\item Simplicity.
 		\item Computational efficiency.
@@ -306,7 +306,7 @@ We use~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_estimation} to ensure 
 	\item \textbf{Proof techniques}: to prove results we rely on both (a) classical bias-variance decomposition of orthogonal series estimators (see e.g. \textcolor{red}{Tsybakov}), and (b) pointwise and variational results on neighborhood graph Laplacian semi-norms and eigenvalues (see e.g. \textcolor{red}{Belkin04, Belkin08, GarciaTrillos18, Calder19})
 \end{itemize}
 
-Theorem~\ref{thm:laplacian_smoothing_estimation1} is analogous to Theorem~\ref{thm:laplacian_eigenmaps_estimation1}, except it deals with the Laplacian smoothing estimator $\wt{f}_{\LS}$ rather than the Laplacian eigenmaps estimator $\wh{f}_{\LE}$. The key difference is that it holds only when the dimension $d < 4$.  
+Theorem~\ref{thm:laplacian_smoothing_estimation1} is analogous to Theorem~\ref{thm:laplacian_eigenmaps_estimation1}, except it deals with the Laplacian smoothing estimator $\wt{f}_{\LS}$ rather than the Laplacian eigenmaps estimator $\wh{f}_{\LE}$.   
 \begin{theorem}
 	\label{thm:laplacian_smoothing_estimation1}
 	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}. Suppose that $f_0 \in H^1(P,M)$, that $P$ satisfies~\ref{asmp:bounded_density}, and that neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_estimation}. Then, for the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ as given by~\eqref{eqn:laplacian_eigenmaps}, when we set $\kappa = M^{2/(2 + d)}n^{d/(2 + d)}$ the following statement holds: for all $n$ sufficiently large, there exist constants $c$ and $C$ such that
@@ -318,7 +318,7 @@ Theorem~\ref{thm:laplacian_smoothing_estimation1} is analogous to Theorem~\ref{t
 
 \begin{itemize}
 	\item \textbf{Proof techniques}: Because the solution to~\eqref{eqn:laplacian_smoothing} has an analytic form, we can rely on a bias-variance decomposition---as opposed to empirical process theory---to derive~Theorem~\ref{thm:laplacian_smoothing_estimation1}.
-	\item The restriction in Theorem~\ref{thm:laplacian_smoothing_estimation1} that the dimension $d$ be less than $4$ is unsurprising. In a related context (estimation over a $d$-dimensional lattice graph), \cite{sadhanala2016} require the same restriction. The underlying phenomenon is similar to that elucidated by the seminal papers~\cite{birge1993} and~\cite{birge1998}: when the dimension $d$ is at least $4$, the parameter space is too large, and (penalized) least squares approaches are no longer minimax optimal.
+	\item A key difference between Theorems~\ref{thm:laplacian_eigenmaps_estimation1} and~\ref{thm:laplacian_smoothing_estimation1} is that the latter holds only when $d \leq 4$. This restriction is unsurprising, and reflects a fundamental drawback in (penalized) least squares estimators more generally. The underlying phenomenon is similar to that elucidated by the seminal papers~\cite{birge1993} and~\cite{birge1998}: when the dimension $d$ is at least $4$, the parameter space is too large, and (penalized) least squares approaches are no longer minimax optimal. We should also mention that in a related context (estimation over a $d$-dimensional lattice graph), \cite{sadhanala2016} require the same restriction. 
 \end{itemize}
 
 \subsection{Minimax optimal hypothesis testing}
@@ -337,7 +337,7 @@ Under appropriate conditions, the Laplacian eigenmaps test statistic $T_{\LE}$ h
 
 \begin{theorem}
 	\label{thm:laplacian_eigenmaps_testing1}
-	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}. Suppose that $f_0 \in H^1(P,M)$, that
+	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}, with $d \leq 3$. Suppose that $f_0 \in H^1(P,M)$, that
 	$P$ satisfies~\ref{asmp:bounded_density}, and that the neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_testing}.
 	Then for the Laplacian eigenmaps test statistic $T_{\LE}$ as in~\eqref{eqn:laplacian_eigenmaps_test} with $\kappa = n^{2d/(4 + d)} M^{4d/(4 + d)}$, the following statement holds true for all $n$ sufficiently large: there exist constants $C_1$ and $C_2$ which do not depend on $f_0$ such that if
 	\begin{equation}
@@ -351,15 +351,17 @@ Under appropriate conditions, the Laplacian eigenmaps test statistic $T_{\LE}$ h
 \end{theorem}
 \begin{itemize}
 	\item Explain why Theorem~\ref{thm:laplacian_eigenmaps_testing1} implies minimax optimality.
+	\item Include results regarding the low-smoothness regime (i.e. the case when $d \geq 4$.)
 \end{itemize}
-
-The estimation and testing rates derived in Section~\ref{sec:minimax_optimal_graph_Laplacian_methods} exhibit the curse of dimensionality: as $d$ gets large, inference becomes hard. As covered in Section~\ref{sec:problem_setup_and_background}, it is well known that by making additional structural assumptions---either on the regression function $f_0$, the distribution $P$, or both---one can derive improved minimax rates. In the following two sections, we show that under such assumptions, the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} can in certain situations obtain the faster (known) minimax rates in the nonparametric estimation and testing problems.
 
 \section{Higher-order smoothness classes}
 \label{sec:higher_order_smoothness_classes}
+The estimation and testing rates derived in Section~\ref{sec:minimax_optimal_graph_Laplacian_methods} exhibit a classic curse of dimensionality: as $d$ gets larger, inference becomes (much) harder. As covered in Section~\ref{sec:problem_setup_and_background}, it is well known that by making additional structural assumptions---either on the regression function $f_0$, the distribution $P$, or both---one can derive improved minimax rates. In the following two sections, we show that under such assumptions, the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} can in certain situations obtain the faster (known) minimax rates in the nonparametric estimation and testing problems.
+
 In this section, we will assume that $f_0 \in H^s(P,M)$ for some integer $s > 1$. In other words, we will assume that $f_0$ has at least two smooth derivatives. 
 
 \subsection{Minimax optimal estimation}
+\label{subsec:minimax_estimation_higher_order}
 Under the following three conditions, the estimation error of the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ achieves the minimax optimal rate for any $f_0 \in H^s(P,M)$.
 \begin{enumerate}[label=(K\arabic*)]
 	\setcounter{enumi}{2}
@@ -383,10 +385,6 @@ Under the following three conditions, the estimation error of the Laplacian eige
 	\label{asmp:smooth_density}\textbf{$\beta$-Holder density}: The design distribution $P$ has a density $p \in C^{\beta}([0,1]^d;p_{\max})$ for some $\beta \geq 0$. 
 \end{enumerate}
 
-We note that the assumption~\ref{asmp:kernel_radius_higher_order} is rather mild, since the construction of the neighborhood graph $G_{n,r}$ is in the user's control. whereas the latter two assumptions are more stringent. That being said, some restrictions on the boundary behavior of the regression function $f_0$ are typical in the analysis of orthogonal series estimators (see e.g. \textcolor{red}{Tsybakov}), as are assumptions on the smoothness of the density $p$ under a random design setup (see e.g. \textcolor{red}{Mukherjee16}).
-
-
-Together, conditions~\ref{asmp:boundary} and~\ref{asmp:smooth_density} are used to ensure that the approximation error (bias) of $\wh{f}_{\LE}$ is of the correct order. Bounds on the estimation error of $\wh{f}_{\LE}$ -- both in expectation and in probability-- are straightforward. Together, bounds on these two sources of error imply Theorem~\ref{thm:laplacian_eigenmaps_estimation}.
 \begin{theorem}
 	\label{thm:laplacian_eigenmaps_estimation}
 	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}. Suppose that $f_0 \in H_0^s(P,M)$, that $P$ satisfies~\ref{asmp:smooth_density} with $\beta = s - 1$, and that neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_higher_order}. Then, for the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ as in~\eqref{eqn:laplacian_eigenmaps}, when $\kappa = M^{2/(2s + d)}n^{d/(2s + d)}$, the following statement holds: for all $n$ sufficiently large, there exist constants $c$ and $C$ such that
@@ -396,11 +394,48 @@ Together, conditions~\ref{asmp:boundary} and~\ref{asmp:smooth_density} are used 
 	with probability at least $1 - \delta -  Cr^{-d}\exp\{-cnr^d\} - \exp(-\kappa)$.
 \end{theorem}
 
+We note that the assumption~\ref{asmp:kernel_radius_higher_order} is rather mild, since the user can choose how to construct the neighborhood graph $G_{n,r}$. The assumptions~\ref{asmp:boundary} and~\ref{asmp:smooth_density} are more stringent. That being said, some restrictions on the boundary behavior of the regression function $f_0$ are typical in the analysis of orthogonal series estimators (see e.g. \textcolor{red}{Tsybakov}). On the other hand, restrictions on the smoothness of the density $p$ are also typical when analyzing orthogonal series estimators under a random design setup (see e.g. \textcolor{red}{Mukherjee16}).
+
 \begin{enumerate}
-	\item \textcolor{red}{(TODO)}: Comment on the difference between this and minimax optimality. Cite others \textcolor{red}{(Wainwright, Liu)} who do the same thing.
-	\item \textcolor{red}{(TODO)}: Comment on why we insist that $f_0$ satisfy a boundary condition.
-	\item \textcolor{red}{(TODO)}: Comment a bit on the proof strategy; i.e., how we don't convergence properties of the eigenvectors $v_k$ towards eigenfunctions of the weighted Laplace-Beltrami operator, why we think that's advantageous, and how it might be limiting.
+	\item \textcolor{red}{(TODO)}: Comment a bit on the proof strategy; i.e., 
 \end{enumerate}
+
+\subsection{Minimax optimal hypothesis testing}
+\label{subsec:minimax_testing_higher_order}
+
+Under appropriate conditions, the Laplacian eigenmaps test statistic $T_{\LE}$ has non-trivial power over all $f_0 \in H_0^s(P,M)$ that are separated from $0$ in $\Leb^2(P)$ norm by at least the minimax critical radius. These conditions include~\ref{asmp:kernel_form} and~\ref{asmp:smooth_density}. Additionally, we will require the following scaling of the neighborhood graph radii.
+\begin{enumerate}[label=(K\arabic*)]
+	\setcounter{enumi}{2}
+	\item 
+	\label{asmp:kernel_radius_testing}
+	The radii $r = r(n)$ satisfy $r(n) \to 0$ as $n \to \infty$, and additionally
+	\begin{equation*}
+	n^{-1/(2(s - 1) + d)} \leq r(n)~~\textrm{and}~~ r(n) \leq n^{-2/(4s + d)}
+	\end{equation*}
+	for all $n$ sufficiently large.
+\end{enumerate}
+In one sense this is still a mild condition, in that the neighborhood graph radius is still a tuning parameter to be selected by the user. However, some elementary calculations show that when $d > 4$, it is in fact the case that $n^{-1/(2(s - 1) + d)} > n^{-2/(4s + d)}$; hence no choice of $r$ can satisfy~\ref{asmp:kernel_radius_testing}. As a result, our theory applies only when $d \leq 4$.
+
+\begin{theorem}
+	\label{thm:laplacian_eigenmaps_testing}
+	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}. Suppose that $d \leq 4$, that $f_0 \in H_0^s(P,M)$, that
+	$P$ satisfies~\ref{asmp:smooth_density} with $\beta = s - 1$, and that the neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_testing}.
+	Then for the Laplacian eigenmaps test statistic $T_{\LE}$ given by~\eqref{eqn:laplacian_eigenmaps_test} with tuning parameter $\kappa = n^{2d/(4s + d)} M^{4d/(4s + d)}$, the following statement holds true for all $n$ sufficiently large: there exist constants $C_1$ and $C_2$ which do not depend on $f_0$ such that if
+	\begin{equation}
+	\label{eqn:laplacian_eigenmaps_testing}
+	\norm{f_0}_{\Leb^2(P)}^2 \geq \frac{C_1}{\delta^2} M^{2d/(4s + d)} n^{-4s/(4s + d)}
+	\end{equation}
+	then
+	\begin{equation*}
+	\Pbb \biggl(T_{\LE} \geq \frac{\kappa}{n} + \frac{1}{\delta}\sqrt{\frac{2\kappa}{n^2}}\biggr) \geq 1 - C_2\Bigl(\delta + r^{-d} \exp\{- c n r^d\}\Bigr).
+	\end{equation*}
+\end{theorem}
+
+\begin{itemize}
+	\item \textbf{Test based on the Laplacian smoothing test statistic}. 
+	\item \textbf{Low-smoothness regime}. Include results on minimax testing when $4s < d$.
+	\item \textbf{Head off potential criticism}. Acknowledge frankly that there is a regime---when $4 < d < 4s$---where minimax testing rates are known, but for which we cannot prove that either of our test statistics achieve these rates.
+\end{itemize}
 
 \section{Manifold Assumption}
 \label{sec:manifold_assumption}
@@ -409,7 +444,11 @@ Together, conditions~\ref{asmp:boundary} and~\ref{asmp:smooth_density} are used 
 \section{Discussion}
 
 \begin{itemize}
-	\item Comment on the different types of relationships between $s$ and $d$. (1) Those due to fundamental lower bounds on testing; (2) those due to largeness of the parameter space for Laplacian smoothing, and (3) those which (potentially) could be improved by different proof techniques.
+	\item \textbf{Relationships between $s$ and $d$}. Comment on the different types of relationships between $s$ and $d$. (1) Those due to fundamental lower bounds on testing; (2) those due to ``defects'' in the proposed methods, i.e. largeness of the parameter space for Laplacian smoothing, and (3) those (potentially) due to ``defects'' in our proof strategy.
+	\item \textbf{Proof techniques}. On the subject of our proof techniques, the careful reader will note that our proofs do not rely on convergence of the Laplacian eigenvectors $v_k(G_{n,r})$ towards eigenfunctions of a limiting (weighted) Laplace-Beltrami operator.
+	
+	\textcolor{red}{(TODO) Flesh the following out.} This is helpful for at least the following two reasons. First, proving convergence of eigenvectors is harder than proving convergence of eigenvalues, a fact which is reflected in the gap between the best known rates for the two problems. Second, because in order for our methods to be minimax optimal, orthogonal series estimators rely on projecting onto $\kappa$ basis functions, where $\kappa$ is a number growing in $n$. Thus we have an accumulation of error problem.
+	\item \textbf{Possible extensions}.
 \end{itemize}
 
 \section{Simulations}
@@ -520,10 +559,10 @@ The two terms on the right hand side of~\eqref{eqn:le_fixed_graph_estimation} an
 		\label{eqn:graph_spectral_type_I_error}
 		\Pbb\biggl(T_{\LE}(G) \geq \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}\biggr) \leq \frac{2}{b^2}.
 		\end{equation}
-		\item \textbf{Type II error:} Assume that
+		\item \textbf{Type II error:} Under the alternative hypothesis $f_0 \neq 0$, suppose that
 		\begin{equation}
 		\label{eqn:fixed_graph_testing_critical_radius_1}
-		\Bigl\|\sum_{k = 1}^{\kappa} \dotp{f_0}{n}_n v_k\Bigr\|_n^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}}.
+		\Bigl\|\sum_{k = 1}^{\kappa} \dotp{f_0}{v_k}_n v_k\Bigr\|_n^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}}.
 		\end{equation}
 		Then,
 		\begin{equation}
@@ -533,7 +572,7 @@ The two terms on the right hand side of~\eqref{eqn:le_fixed_graph_estimation} an
 		In particular if
 		\begin{equation}
 		\label{eqn:fixed_graph_testing_critical_radius}
-		\frac{1}{n} \sum_{i = 1}^{n} f_{0,i}^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}} + \frac{f_0^T L_G^s f_0}{n\lambda_{\kappa}(G)^s}
+		\frac{1}{n} \sum_{i = 1}^{n} (f_{0,i})^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}} + \frac{f_0^T L_G^s f_0}{n\lambda_{\kappa}(G)^s}
 		\end{equation}
 		then~\eqref{eqn:fixed_graph_testing_critical_radius_1} and thus~\eqref{eqn:graph_spectral_type_II_error} follow.
 	\end{enumerate}
@@ -568,16 +607,15 @@ Lemma~\ref{lem:neighborhood_eigenvalue} establishes a scaling rate which holds f
 	\lambda_k(G_{n,r}) \geq c \cdot \min\Bigl\{nr^{d + 2}k^{2/d}, nr^d\Bigr\}.
 	\end{equation}	
 \end{lemma}
-The first term on the right hand side of~\eqref{eqn:neighborhood_eigenvalue} is the scaling of the eigenvalues we desire. The second term reflects the fact that the maximum eigenvalue of the Laplacian can never be more than twice the maximum degree of the graph. It is a bit of simple algebra to derive the conditions under which the first term is the smaller of the two when $k = \kappa = M^{2/(2s + d)} n^{d/(2s + d)}$.
-\begin{corollary}
-	\label{cor:neighborhood_eigenvalue}
-	Let $\kappa = M^{2/(2s + d)} n^{d/(2s + d)}$. For any $r \leq M^{-2/(d(2s +d))} n^{-1/(2s + d)}$, 
-	\begin{equation}
-	\label{eqn:neighborhood_eigenvalue_1}
-	\lambda_{\kappa}(G_{n,r}) \geq c \cdot nr^{d+2}{\kappa}^{2/d}
-	\end{equation}
-	with probability at least $1 - C r^{-d} \exp\{- c n r^d\}$. The constants $c$ and $C$ are the same as in Lemma~\ref{lem:neighborhood_eigenvalue}.
-\end{corollary}
+As those readers familiar with Sobolev spaces will be aware of, the scaling $k^{2/d}$ is the \textcolor{red}{typical scaling of a Sobolev ellipsoid}, and is thus the scaling of the eigenvalues we desire. On the other hand, the second term on the right hand side of~\eqref{eqn:neighborhood_eigenvalue} is an artifact of the well known inequality $\lambda_n(G) \leq 2 \max_{i = 1,\ldots,n} \mathbf{D}_{ii}$--- in words, that the maximum eigenvalue of the Laplacian can never be more than twice the maximum degree of the graph. Doing some algebra, we may deduce the conditions on $k$ and $r$ under which the graph eigenvalue follows the desired scaling, i.e. $\lambda_k(G_{n,r}) \sim n r^{d + 2}k^{2/d}$. 
+
+First, when $k = M^{2/(2s + d)} n^{d/(2s + d)}$, it holds that for any $r \leq M^{-2/(d(2s +d))} n^{-1/(2s + d)}$, 
+\begin{equation}
+\label{eqn:neighborhood_eigenvalue_1}
+\lambda_{k}(G_{n,r}) \geq c \cdot nr^{d+2}{k}^{2/d}
+\end{equation}
+with probability at least $1 - C r^{-d} \exp\{- c n r^d\}$. Second, when $k$
+
 
 \section{Proofs of Theorems}
 \label{sec:proofs_theorems}
