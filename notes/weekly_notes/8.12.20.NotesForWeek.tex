@@ -26,7 +26,6 @@
 \newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
 \newcommand{\Graph}{\mathcal{G}}
 \newcommand{\Reals}{\mathbb{R}}
-\newcommand{\Identity}{\mathbb{I}}
 \newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
 \newcommand{\convprob}{\overset{p}{\to}}
 \newcommand{\convdist}{\overset{w}{\to}}
@@ -85,9 +84,10 @@
 \newcommand{\Lgrid}{L_{\grid}}
 \newcommand{\Xsetgrid}{D_{\grid}}
 \newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
-\newcommand{\Lap}{{\bf L}}
+\newcommand{\Lap}{L}
 \newcommand{\NLap}{{\bf N}}
 \newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
 
 %%% Sets and classes
 \newcommand{\Xset}{\mathcal{X}}
@@ -178,5 +178,164 @@
 \author{Alden Green}
 \date{\today}
 \maketitle
+
+\section{Fixed graph regression}
+
+Suppose we observe a graph $G = \bigl([n],W\bigr)$, and responses
+\begin{equation}
+\label{eqn:fixed_graph_regression_model}
+Y_i = \theta_{0,i} + \varepsilon_i
+\end{equation}
+with signal vector $\theta_0 = (\theta_{0,1},\ldots,\theta_{0,n}) \in \Reals^n$, and noise vector $\varepsilon = (\varepsilon_1,\ldots,\varepsilon_n) \sim N(0,\Id_{n \times n})$. Letting $L$ denote the Laplacian matrix of graph $G$, the \emph{Laplacian smoothing} estimator $\wt{\theta}(G) \in \Reals^n$ is given by
+\begin{equation}
+\label{eqn:ls_G}
+\wt{\theta}(G) := \argmin_{\theta \in \Reals^n} \biggl\{ \sum_{i = 1}^{n}(Y_i - \theta_i)^2 + \rho \cdot \theta^T \Lap_G^{s}  \theta \biggr\} = (\rho \Lap_G^s + I)^{-1}Y.
+\end{equation}
+Now suppose we wish to test 
+\begin{equation}
+\mathbf{H}_0: \theta_0 = 0 ~~\textrm{vs.}~~ \mathbf{H}_a: \theta_0 \neq 0
+\end{equation}
+
+ A natural candidate is the quadratic form
+\begin{equation}
+\label{eqn:ls_ts_G}
+\wt{T}(G) := \frac{1}{n}\sum_{i = 1}^{n} \bigl(\wt{\theta}_i(G)\bigr)^2
+\end{equation}
+In Lemma~\ref{lem:ls_fixed_graph_testing}, we provide concentration bounds on the test statistic $\wt{T}(G)$, under both the null and alternative hypotheses. These statements are a function of the spectral decomposition $\Lap_G = \sum_{k = 1}^{n} \lambda_k(G) \cdot v_k(G) v_k(G)^T$. 
+\begin{lemma}
+	\label{lem:ls_fixed_graph_testing}
+	Define the threshold $\wt{t}_b$ to be
+	\begin{equation*}
+	\wt{t}_b := \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k^s + 1\bigr)^2} + \frac{2b}{n}\sqrt{\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k^s + 1\bigr)^4}}
+	\end{equation*}
+	Then,
+	\begin{itemize}
+		\item \textbf{Type I error.}
+		\begin{equation}
+		\label{eqn:ls_fixed_graph_testing_typeI}
+		\Pbb_0\Bigl(\wt{T}(G) > \wt{t}_b\Bigr) \leq \frac{1}{b^2}
+		\end{equation}
+		\item \textbf{Type II error.} If
+		\begin{equation}
+		\label{eqn:ls_fixed_graph_testing_critical_radius}
+		\frac{1}{n}\norm{\theta_0}_2^2 \geq \frac{2 \rho}{n} \bigl(\theta_0^T \Lap^s \theta_0\bigr) + \frac{4b}{n} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k^s + 1)^4} \Biggr)^{1/2}
+		\end{equation}
+		then
+		\begin{equation}
+		\label{eqn:ls_fixed_graph_testing_typeII}
+		\Pbb_{\theta_0}\Bigl(\wt{T}(G) \leq \wt{t}_b\Bigr) \leq \frac{4}{b^2} + \frac{8}{b} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k^s + 1)^4} \Biggr)^{-1/2}
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+
+\subsection{Notation}
+\begin{itemize}
+	\item When the graph $G$ is obvious from context, we may drop the notational dependence on $G$ and simply write the Laplacian of $G$ as $\Lap$, and the $k$th eigenvalue of the Laplacian as $\lambda_k$.
+\end{itemize}
+
+\section{Proofs}
+
+\subsection{Proof of Lemma~\ref{lem:ls_fixed_graph_testing}}
+
+Let $\wt{S} := (\rho \Lap^s + \Id)^{-1}$. The matrix $\wt{S} \in \Reals^{n \times n}$ is symmetric and positive semidefinite, and $\wt{T}(G) = \frac{1}{n}Y^T \wt{S}^2 Y$. The desired result thus follows from Lemma~\ref{lem:linear_smoother_fixed_graph_testing}. To see that the conditions of this Lemma are satisfied, we first note that since
+\begin{equation*}
+\lambda_k(S) = \frac{1}{(\rho\lambda_k^s + 1)}
+\end{equation*}
+and $\rho, \lambda_k > 0$, it is evident that $\lambda_{\max}(\wt{S}) \leq 1$.  Then, by assumption~\eqref{eqn:ls_fixed_graph_testing_critical_radius}
+\begin{equation*}
+\theta_0^{T} \wt{S}^2 \theta_0 = \norm{\theta_0}_2^2 - \theta_0^T(I - \wt{S}^2)\theta_0 \geq 2 \rho (\theta_0^T \Lap^s \theta_0) + \theta_0^T(I - \wt{S}^2)\theta_0 + 4b \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k^s + 1)^4} \Biggr)^{-1/2},
+\end{equation*}
+and along with the following calculations,
+\begin{equation*}
+\begin{aligned}
+\theta_0^T \Bigl(\Id - \wt{S}^2\Bigr) \theta_0  & \overset{(i)}{=} \theta_0^T L^{s/2} L^{-s/2}\Bigl(\Id - \wt{S}^2\Bigr) L^{-s/2} L^{s/2} \theta_0 \\ 
+& \leq \theta_0^T L^{s} \theta_0 \cdot  \lambda_{\max}\biggl(L^{-s/2}\Bigl(\Id - \wt{S}^2\Bigr) L^{-s/2}\biggr) \\ 
+& \overset{(ii)}{=}  \theta_0^T L^{s} \theta_0 \cdot \max_{k} \biggl\{ \frac{1}{\lambda_k^s} \Bigl(1 - \frac{1}{(\rho \lambda_k^s + 1)^2}\Bigr) \biggr\} \\
+& \overset{(iii)}{\leq} \theta_0^T L^{s} \theta_0 \cdot 2\rho,
+\end{aligned}
+\end{equation*}
+we have that
+\begin{equation*}
+\theta_0^{T} \wt{S}^2 \theta_0 \geq 2b \biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k^s + 1)^4} \biggr)^{-1/2}.
+\end{equation*} 
+In other words condition~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius} in Lemma~\ref{lem:linear_smoother_fixed_graph_testing} is met, and applying that Lemma completes the proof.
+
+(In the previous derivation: in $(i)$ when we write $\Lap^{-s/2}$ we are referring to the pseudoinverse of $\Lap$, since the Laplacian always has at least one eigenvalue equal to $0$; in $(ii)$ the maximum is over all indices $k$ such that the eigenvalue $\lambda_k$ is strictly positive; and $(iii)$ follows from the basic algebraic identity $1 - 1/(1 + \rho x)^2 \leq 2 \rho x$ for any $x, \rho > 0$.
+
+\section{Technical Lemmas}
+
+\subsection{Type I and Type II error of quadratic forms.}
+Let $S \in \Reals^{n \times n}$ be a square symmetric matrix. The quadratic form
+\begin{equation}
+T = Y^T S^2 Y
+\end{equation}
+can be used as a test statistic to distinguish $\mathbf{H}_0$ from $\mathbf{H}_a$. In Lemma~\ref{lem:linear_smoother_fixed_graph_testing}, we establish conditions under which a test based on $T$ has small Type I and Type II error.
+\begin{lemma}
+	\label{lem:linear_smoother_fixed_graph_testing}
+	Define the threshold $t_b$ to be 
+	\begin{equation}
+	t_{b} := \sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^2 + 2b \sqrt{\sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^4}
+	\end{equation}
+	Suppose the eigenvalues $0 \leq \lambda_{\min}(S) \leq \lambda_{\max}(S) \leq 1$. Then,
+	\begin{itemize}
+		\item \textbf{Type I error.}
+		\begin{equation}
+		\label{eqn:linear_smoother_fixed_graph_testing_typeI}
+		\Pbb_0\bigl(T > t_b\bigr) \leq \frac{1}{b^2}
+		\end{equation}
+		\item \textbf{Type II error.} Assuming that
+		\begin{equation}
+		\label{eqn:linear_smoother_fixed_graph_testing_critical_radius}
+		\theta_0^T S^2 \theta_0 \geq 4b \sqrt{\sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^4}
+		\end{equation}
+		then
+		\begin{equation}
+		\label{eqn:linear_smoother_fixed_graph_testing_typeII}
+		\Pbb_{\theta_0}\bigl(T \leq t_b\bigr) \leq \frac{4}{b^2} + \frac{8}{b} \Biggl(\sum_{k = 1}^{n}\bigl(\lambda_k(S)\bigr)^4\Biggr)^{-1/2}
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lem:linear_smoother_fixed_graph_testing}]
+	We compute the mean and variance of $T$ as a function of $\theta_0$, then apply Chebyshev's inequality.
+	\paragraph{Mean.}
+	Writing $Y = \theta_0 + \varepsilon$, we make use of the eigendecomposition $S = \sum_{k = 1}^{n} \lambda_k(S) \cdot v_k(S) v_k(S)^T$---where in this case we fix the eigenvectors $v_1(S),\ldots,v_n(S)$ to be unit-norm---and obtain
+	\begin{equation}
+	\label{pf:linear_smoother_fixed_graph_testing1}
+	\begin{aligned}
+	T & = \theta_0^T S^2 \theta_0 + 2 \theta_0^T S^2 \varepsilon + \varepsilon^T S^2 \varepsilon \\
+	& = \theta_0^T S^2 \theta_0 + 2 \theta_0^T S^2 \varepsilon + \sum_{k = 1}^{n}  \bigl(\lambda_k(S)\bigr)^2 (\varepsilon^T v_k(S))^2 \\
+	& = \theta_0^T S^2 \theta_0 + 2 \theta_0^T S^2 \varepsilon + \sum_{k = 1}^{n}  \bigl(\lambda_k(S)\bigr)^2 Z_k^2
+	\end{aligned}
+	\end{equation}
+	where in the last line $Z_k = (\varepsilon^T v_k(S))$, and $Z = (Z_1,\ldots,Z_k) \sim N(0,\Id)$ follows from the rotational invariance of the Gaussian distribution. Thus
+	\begin{equation}
+	\label{pf:linear_smoother_fixed_graph_testing_mean}
+	\Ebb_{\theta_0}[T] = \theta_0^T S^2 \theta_0 + \sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^2.
+	\end{equation}
+	\paragraph{Variance.}  
+	Starting from~\eqref{pf:linear_smoother_fixed_graph_testing1} and recalling the basic fact $\Var(Z_k^2) = 2$, we derive
+	\begin{equation}
+	\label{pf:linear_smoother_fixed_graph_testing_var}
+	\Var_{\theta_0}[T] \leq 8 \theta_0^T S^4 \theta_0 + 4 \sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^4 \leq 8 \theta_0^T S^2 \theta_0 + 4 \sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^4
+	\end{equation}
+	where the second inequality follows since by assumption $\lambda_{\max}(S) \leq 1$.
+	
+	\paragraph{Bounding Type I and Type II error.}
+	The bound~\eqref{eqn:linear_smoother_fixed_graph_testing_typeI} follows directly from Chebyshev's inequality, along with our above calculations on the mean and variance of $T$.
+	
+	The bound~\eqref{eqn:linear_smoother_fixed_graph_testing_typeII} also follows from Chebyshev's inequality, as can be seen by the following manipulations,
+	\begin{equation*}
+	\begin{aligned}
+	\Pbb_{\theta_0}\bigl(T \leq t_b\bigr) & = \Pbb_{\theta_0}\bigl(T - \Ebb_{\theta_0}[T] \leq t_b - \Ebb_{\theta_0}[T]\bigr) \\
+	& \overset{(i)}{\leq} \Pbb_{\theta_0}\bigl(\abs{T - \Ebb_{\theta_0}[T]} \geq \abs{t_b - \Ebb_{\theta_0}[T]}\bigr) \\ 
+	& \overset{(ii)}{\leq} 4 \frac{\Var_{\theta_0}[T]}{(\theta_0^T S^2 \theta_0)^2} \\
+	& \overset{(iii)}{\leq} \frac{32}{\theta_0^T S^2 \theta_0} + \frac{4}{b^2} \\
+	& \overset{(iv)}{\leq} \frac{8}{b} \Biggl(\sum_{k = 1}^{n}\bigl(\lambda_k(S)\bigr)^4\Biggr)^{-1/2} + \frac{4}{b^2}
+	\end{aligned}
+	\end{equation*}
+	In the previous expression, $(i)$ and $(ii)$ follow since assumption~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius} and equation~\eqref{pf:linear_smoother_fixed_graph_testing_mean} together imply $\Ebb_{\theta_0}(T) - \frac{1}{2}\theta_0^T S^2\theta_0 \geq t_b$, $(iii)$ follows from assumption~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius} and the inequality~\eqref{pf:linear_smoother_fixed_graph_testing_var}, and $(iv)$ follows assumption~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius}.
+\end{proof}
+
+
 
 \end{document}
