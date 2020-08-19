@@ -4,8 +4,6 @@
 \usepackage{graphicx}
 \usepackage[colorlinks]{hyperref}
 \usepackage[parfill]{parskip}
-\usepackage{algpseudocode}
-\usepackage{algorithm}
 \usepackage{enumerate}
 \usepackage[shortlabels]{enumitem}
 \usepackage{fullpage}
@@ -14,6 +12,11 @@
 \usepackage{natbib}
 \renewcommand{\bibname}{REFERENCES}
 \renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
 
 \DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
 
@@ -114,7 +117,7 @@
 %%% Order of magnitude
 \newcommand{\soom}{\sim}
 
-% \newcommand{\span}{\textrm{span}}
+
 
 \newtheoremstyle{alden}
 {6pt} % Space above
@@ -161,18 +164,18 @@
 \date{\today}
 \maketitle
 
-Let $t$ be an integer, $n = t^d$, and 
+Let $N$ be an integer, $n = N^d$, and 
 \begin{equation*}
-\overline{X} := \Bigl\{\frac{1}{t}(j_1,\ldots,j_d): k \in [t]^d\Bigr\}
+\wb{X} := \Bigl\{\frac{1}{N}(j_1 - 1/2,\ldots,j_d - 1/2): j \in [N]^d\Bigr\}
 \end{equation*}
 consist of $n$ total evenly spaced grid points on $[0,1]^d$. The lattice graph formed over these grid points is 
 \begin{equation*}
-\overline{G} := \bigl(\overline{X},\overline{E}\bigr),~~ \overline{E} := \set{(\overline{x},\overline{x}'): \norm{\overline{x} - \overline{x}'}_1 = \frac{1}{t}}.
+\wb{G} := \bigl(\wb{X},\wb{E}\bigr),~~ \wb{E} := \set{(\wb{x},\wb{x}'): \norm{\wb{x} - \wb{x}'}_1 = \frac{1}{t}}.
 \end{equation*}
 We observe $n$ samples according to regression model
 \begin{equation}
 \label{eqn:grid_regression_model}
-y_j = f(\ol{x}_j) + \varepsilon_j, ~\varepsilon_j \overset{\mathrm{i.i.d}}{\sim} \mathcal{N}(0,1) ~~\textrm{for each $j \in [t]^d$,}
+y_j = f(\wb{x}_j) + \varepsilon_j, ~\varepsilon_j \overset{\mathrm{i.i.d}}{\sim} \mathcal{N}(0,1) ~~\textrm{for each $j \in [t]^d$,}
 \end{equation}
 and our goal is to perform the goodness-of-fit test
 \begin{equation*}
@@ -189,31 +192,117 @@ Unless there exists some separation between functions $f \in \mathcal{F}$ and $f
 A classical way to study the properties of $\phi$ over $\mathcal{F}$ is through the critical radius: the smallest value of $\epsilon$ such that $\phi$ has small worst-case risk over the remaining function class $\mathcal{R}(\phi;\mathcal{F}_{\epsilon})$, which we shall write as $\mathcal{R}_{\epsilon}(\phi;\mathcal{F})$.  
 
 \section{Graph Laplacian Eigenvector Projection Test}
-For an arbitrary graph $G$ on $n$ nodes with graph Laplacian $L_G = D_G - A_G$, let $\Lambda(G)$ consist of the eigenvalues $0 = \lambda_1(G) \leq \lambda_2(G) \leq \cdots \leq \lambda_n(G)$ of $L_G$, with $v_k(G) = (v_{k,1}(G),\ldots,v_{k,n}(G)) \in \Reals^n$ denoting the eigenvector corresponding to the $i$th eigenvalues $\lambda_k(G)$. The graph Laplacian eigenvector projection test is a truncated-series test; letting $\kappa$ be some integer between $1$ and $n$ which indicates where we truncate the series $\bigl(Y^T v_k(G)\bigr)$, our test statistic is
-\begin{equation*}
-T_{\mathrm{spec}}(G) := \frac{1}{n} \sum_{k = 1}^{\kappa} \Biggl(\sum_{i = 1}^{n} y_i v_{k,i}(G)\Biggr)^2
-\end{equation*}
-and the test $\phi_{\spec}(G) := \1\{T_{\spec}(G) \geq \tau\}$ rejects the null hypothesis when the test statistic $T_{\mathrm{spec}}(G)$ is greater than a pre-specified cutoff $\tau$. 
+For an arbitrary graph $G$ on $n$ nodes with graph Laplacian $L_G = D_G - A_G$, let $\Lambda(G)$ consist of the eigenvalues $0 = \lambda_1(G) \leq \lambda_2(G) \leq \cdots \leq \lambda_n(G)$ of $L_G$, with $v_k(G) = (v_{k,1}(G),\ldots,v_{k,n}(G)) \in \Reals^n$ denoting the eigenvector corresponding to the $i$th eigenvalues $\lambda_k(G)$. The graph Laplacian eigenvector projection test is a linear projection test; letting $\kappa$ be some integer between $1$ and $n$, we define $\Pi_{k,G}(\theta) := \frac{1}{\sqrt{n}}\sum_{k = 1}^{\kappa} \dotp{v_k}{\theta}$ to be a suitable rescaling of the projection of $\theta$ onto the span of $v_1(G),\ldots,v_k(G)$. 
 
-The truncation level $\kappa$ and cutoff $\tau$ are user-specified hyperparameters. When they are appropriately chosen, the test $\phi_{\spec}(\overline{G})$ is minimax optimal over the Holder ball $C^{1}(\Xset;R)$ when $d \leq 4$.
+Our test statistic
+\begin{equation*}
+T_{\mathrm{spec}}(G) := \norm{\Pi_{\kappa,G}(Y)}_n^2 - \frac{\kappa}{n}
+\end{equation*}
+is a simple function of the projection of the data $Y$ onto the span of the first $\kappa$ eigenvectors of the graph Laplacian $L(G)$ -- it is a standard calculation to show that
+\begin{equation*}
+\Ebb_{Y|X}\Bigl[\norm{\Pi_{\kappa,G}(Y)}_n^2\Bigr] = \norm{\Pi_{\kappa,G}(f)}_n^2 + \frac{\kappa}{n}
+\end{equation*}
+and hence our test statistic is an unbiased estimate of the norm $\norm{\Pi_{\kappa,G}(f)}_n^2$. The graph Laplacian eigenvector test $\phi_{\spec}(G) := \1\{T_{\spec}(G) \geq \tau(b)\}$ rejects the null hypothesis when the test statistic $T_{\mathrm{spec}}(G)$ is greater than a pre-specified cutoff $\tau(b)$, where the number $b$---or more precisely, $1/b$---encodes the level of error the user is willing to tolerate. 
+
+The number of eigenvectors $\kappa$ and cutoff $\tau(b)$ are user-specified hyperparameters. When they are appropriately chosen, the test $\phi_{\spec}(\wb{G})$ is minimax optimal over the Holder ball $C^{1}(\Xset;R)$ when $d \leq 4$.
 \begin{theorem}
 	\label{thm:holder_testing_rate_grid}
-	Let $b \geq 1$ and $R > 0$ be fixed constants, and let $d \leq 4$. Suppose we observe data according to the model~\eqref{eqn:grid_regression_model}. Then when the test $\phi_{\spec}(\overline{G})$ is performed with the parameter choices
+	Let $L > 0$ be a fixed constant, and let $d \leq 4$. Suppose we observe data according to the model~\eqref{eqn:grid_regression_model}. Then when the test $\phi_{\spec}(\wb{G})$ is performed with the parameter choices
 	\begin{equation*}
-	\kappa = n^{2d/(4 + d)},~~ \tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}
+	\kappa = n^{2d/(4 + d)},~~ \tau(b) = b\sqrt{\frac{2\kappa}{n^2}}
 	\end{equation*}
-	the following statement is true: there exists a constant $c$ such that for 
+	for some $b \geq 1$, the following statement is true: there exists a constant $c$ such that for 
 	\begin{equation}
 	\label{eqn:holder_testing_rate_grid_1}
-	\epsilon^2 \geq c R^2 b^2 n^{-4/(4 + d)}
+	\epsilon^2 \geq c L^2 b^2 n^{-4/(4 + d)}
 	\end{equation}
-	the worst-case risk of $\phi_{\spec}(\overline{G})$ on $C^{1}(\Xset;R)$ is upper bounded
+	the worst-case risk of $\phi_{\spec}(\wb{G})$ on $C^{1}(\Xset;L)$ is upper bounded
 	\begin{equation}
 	\label{eqn:holder_testing_rate_grid_2}
-	\mathcal{R}_{\epsilon}\Bigl(\phi_{\spec}(\overline{G});C^{1}(\Xset;R)\Bigr) \leq \frac{1}{b}
+	\mathcal{R}_{\epsilon}\Bigl(\phi_{\spec}(\wb{G});C^{1}(\Xset;L)\Bigr) \leq \frac{1}{b}.
 	\end{equation}
 \end{theorem}
 The minimax rate for this problem is established by \textcolor{red}{(Abramovich, De Feis, Sapatinas)}, who consider the more general question of testing over Besov spaces. The test they use to establish the upper bound is related to our own, however, they use a continuum wavelet basis orthogonalized in $L^2([0,1]^d)$ rather than the grid Laplacian eigenvectors we consider. 
+
+As was the case with the neighborhood graph in the random design setting, the grid Sobolev norm fails to track the higher order derivatives of $f$ near the boundary of $\Xset$. We therefore must insist that $f$ be compactly supported in order for the grid eigenvector projection test to achieve minimax optimal testing rates over higher-order Holder classes.
+
+\begin{theorem}
+	\label{thm:holder_testing_rate_grid_higher_order}
+	Let $L > 0$ be fixed constants, $s \geq 2$ be a fixed integer, and let $d \leq 4s$.  Suppose we observe data according to the model~\eqref{eqn:grid_regression_model}. Then when the test $\phi_{\spec}(\wb{G})$ is performed with the parameter choices
+	\begin{equation*}
+	\kappa = n^{2d/(4s + d)},~~ \tau(b) =  b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*} 
+	for some $b \geq 1$, the following statement is true: there exists a constant $c$ such that for any
+	\begin{equation*}
+	\epsilon^2 \geq c L^2 b^2 n^{-4s/(4s + d)},
+	\end{equation*}
+	the worst-case risk of $\phi_{\spec}(\wb{G})$ is upper bounded
+	\begin{equation*}
+	\mathcal{R}_{\epsilon}\Bigl(\phi_{\spec}(\wb{G});C_c^{s}(\Xset;L)\Bigr) \leq \frac{1}{b}.
+	\end{equation*}
+\end{theorem}
+
+In order to prove Theorems~\ref{thm:holder_testing_rate_grid} and~\ref{thm:holder_testing_rate_grid_higher_order}, we decompose
+\begin{equation*}
+T_{\spec}(\wb{G}) - \norm{f}_{\Leb^2}^2 = \Bigl\{\norm{\Pi_{\kappa,\wb{G}}Y}_n^2 - \frac{\kappa}{n} - \norm{\Pi_{\kappa,\wb{G}}f}_n^2\Bigr\} + \Bigl\{\norm{\Pi_{\kappa,\wb{G}}f}_n^2 - \norm{f}_n^2\Bigr\} + \Bigl\{\norm{f}_n^2 - \norm{f}_{\Leb^2}^2\Bigr\},
+\end{equation*}
+where we refer to the three terms on the right hand side as the estimation error, approximation error, and the discretization error, respectively. 
+
+Our technical work consists of upper bounding these three sources of error. When $4s \geq d$, the discretization error is negligible regardless of our choice of $\kappa$, and we focus our attention on minimizing the sum of approximation and estimation errors. This is the standard tradeoff in nonparametric testing problems, and the usual choice of projecting our data $Y \in \Reals^n$ onto a subspace of dimension $\kappa = n^{2d/(4s + d)}$ balances the contribution of these two terms. 
+
+\subsection{Low-smoothness regime}
+In the low-smoothness regime $d > 4s$, the coupling between empirical norm over $\wb{X}$ and the continuum $\Leb^2$ norm is sufficiently weak that the discretization error can become the dominant source of error, as we show in Lemma~\ref{lem:holder_testing_rate_grid_low_smoothness_lb}.
+
+\begin{lemma}
+	\label{lem:holder_testing_rate_grid_low_smoothness_lb}
+	For any $L > 0$ and any integers $s$ and $d$, there exists a function $f \in C^s(\Xset;L)$ such that
+	\begin{equation*}
+	\norm{f}_{\Leb^2}^2 \geq \frac{1}{2^d} L^2 n^{-2s/d} 
+	\end{equation*}
+	but $f(\wb{x}) = 0$ for all $\wb{x} \in \wb{X}$. 
+\end{lemma}
+Lemma~\ref{lem:holder_testing_rate_grid_low_smoothness_lb} implies the critical radius over the Holder classes $C^s(\Xset;L)$ must be at least on the order of $\epsilon^{\star}(C^s(\Xset;L)) \gtrsim n^{-s/d}$. When $4s \geq d$, this term is neglible relative to $n^{-2s/(4s + d)}$, and we arrive at the ``usual'' rates of minimax testing we see in Theorems~\ref{thm:holder_testing_rate_grid} and~\ref{thm:holder_testing_rate_grid_higher_order}. On the other hand when $4s < d$, this becomes the dominant term, and we can no longer achieve the typical rate $\epsilon^2 \asymp n^{-4s/(4s + d)}$. 
+
+In this setting, when we enforce the wider radius $\epsilon^2 \asymp n^{-2s/d}$, Proposition~\ref{prop:holder_testing_rate_grid_low_smoothness_ub} shows that a very simply test has small worst-case risk $\mathcal{R}_{\epsilon}$. 
+
+\begin{proposition}
+	\label{prop:holder_testing_rate_grid_low_smoothness_ub}
+	Let $L > 0$ be a fixed constant, $s \geq 1$ a fixed integer, and let $d \geq 4s$. Suppose we observe data according to the grid design regression model~\eqref{eqn:grid_regression_model}. Then when the test $\phi_{\spec}(\wb{G})$ is performed with the parameter choices
+	\begin{equation*}
+	\kappa = n,~~ \tau(b) = b\sqrt{\frac{2}{n}}
+	\end{equation*}
+	for some $b \geq 1$, the following statement is true: there exists a constant $c$ such that for any 
+	\begin{equation*}
+	\epsilon^2 \geq c b^2 L^2 n^{-2s/d}
+	\end{equation*}
+	the worst case risk of $\phi_{\spec}(\wb{G})$ is upper bounded
+	\begin{equation*}
+	\mathcal{R}_{\epsilon}(\phi_{\spec}(\wb{G}); C^s(\Xset;L)) \leq \frac{1}{b}. 
+	\end{equation*}
+\end{proposition}
+
+\begin{itemize}
+	\item The test statistic $T_{\spec}(\wb{G})$ is simply the empirical norm of $Y$. 
+	\item Together, Lemma~\ref{lem:holder_testing_rate_grid_low_smoothness_lb} and Proposition~\eqref{prop:holder_testing_rate_grid_low_smoothness_ub} characterize the minimax rate of the grid design regression testing problem when $4s > d$.
+	\item This minimax rate does not match the upper bound established in Proposition~\textcolor{red}{(Holder testing random design)}---the fixed design problem is harder. 
+	\item Note that the usual minimax rate of estimation error over Holder classes is always $n^{-2s/(2s + d)}$, regardless of the relation between $s$ and $d$, and regardless of whether loss is measured in $\Leb^2$-norm or empirical norm. The explanation for this is that the rate $n^{-2s/(2s + d)}$ is always larger than $n^{-2s/d}$, and so the discretization error is never the dominant source of error in estimation. This reveals an interesting distinction between the testing and estimation problems, as testing is easy enough in a statistical sense that error incurred by the discrete nature of the problem may be the bottleneck.
+\end{itemize}
+
+\subsection{Continuum Sobolev class.}
+
+Now suppose we assume $f \in H^s(\Xset;L)$ belongs to a relevant Sobolev ball, rather than a Holder ball, and we again ask about the worst case risk $\mathcal{R}_{\epsilon}(\phi;H^s(\Xset;L))$.
+
+When $2s < d$, the situation is hopeless. The Sobolev class $H^s(\Xset;L)$ includes bump functions of arbitrarily small radius and arbitrarily large height---in the limit, delta functions. By placing these bump functions at design points $\wb{x}$, we can construct a function $f$ which satisfies $f \equiv L$ almost everywhere on $\Xset$, while $f(\wb{x}) = 0$ for all $\wb{x} \in \wb{X}$. No test based on data observed according to model~\eqref{eqn:grid_regression_model} can have more than trivial power against $f$, implying that for all tests $\phi$ the worst case risk $\mathcal{R}_{\epsilon}(\phi;H^s(\Xset;L))$ is $1$ unless $\epsilon = \Omega(1)$.
+
+When $2s > d$, we are not sure how the situation changes. The Sobolev Embedding Theorem gives us that the critical radius 
+\begin{equation*}
+\epsilon^{\star}\bigl(H^s(\Xset;L)\bigr) \leq c \epsilon^{\star}\bigl(C^{s'}(\Xset;L)\bigr),~~\textrm{for $s' = s - d/2$.}
+\end{equation*}
+where we recall that the critical radius over Holder functions is
+\begin{equation*}
+\epsilon^{\star}\bigl(C^{s}(\Xset;L)\bigr) \asymp \max\bigl\{n^{-2s/(4s + d)}, n^{-s/d}\bigr\}
+\end{equation*}
+We might hope to do better, but it is hard to say.
 
 \section{Proofs}
 
@@ -230,7 +319,7 @@ Our bound on the Type II error will be stated as a function of $\beta^T L^s \bet
 	\label{lem:fixed_graph_testing}
 	Let $b \geq 1$ be a fixed constant. Suppose we observe data $Y$ according to the model~\eqref{eqn:regression_model_fixed_graph}, and perform the test $\phi_{\spec}(G)$ for some $1 \leq \kappa \leq n$ and
 	\begin{equation*}
-	\tau = \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}.
+	\tau = b\sqrt{\frac{2\kappa}{n^2}}.
 	\end{equation*}
 	Then the following statements are true:
 	\begin{enumerate}
@@ -251,10 +340,10 @@ Our bound on the Type II error will be stated as a function of $\beta^T L^s \bet
 		\end{equation}
 	\end{enumerate}
 \end{lemma}
-The proof of Lemma~\ref{lem:fixed_graph_testing} can be seen in the \textit{graph\_testing} document. The eigenvalues of the lattice $\ol{G}$ are known exactly, and standard manipulations \textcolor{red}{Sadhanala} lead to the lower bound
+The proof of Lemma~\ref{lem:fixed_graph_testing} can be seen in the \textit{graph\_testing} document. The eigenvalues of the lattice $\wb{G}$ are known exactly, and standard manipulations \textcolor{red}{Sadhanala} lead to the lower bound
 \begin{equation}
 \label{eqn:eigenvalue_tail_bound_grid}
-\lambda_k(\ol{G}) \geq c n^{-2/d}k^{2/d}~\textrm{for $k = 1,\ldots,n$.}
+\lambda_k(\wb{G}) \geq c n^{-2/d}k^{2/d}~\textrm{for $k = 1,\ldots,n$.}
 \end{equation}
 
 In light of~\eqref{eqn:eigenvalue_tail_bound_grid} and Lemma~\ref{lem:fixed_graph_testing}, in order to prove Theorem~\ref{thm:holder_testing_rate_grid} it will be sufficient to show the following two inequalities:
@@ -265,7 +354,7 @@ In light of~\eqref{eqn:eigenvalue_tail_bound_grid} and Lemma~\ref{lem:fixed_grap
 	For every $f \in C^1(\Xset;R)$,
 	\begin{equation}
 	\label{eqn:discrete_sobolev_norm_grid}
-	f^T \bigl(L_{\ol{G}}\bigr) f \leq 4R^2 n^{1 - 2/d}
+	f^T \bigl(L_{\wb{G}}\bigr) f \leq 4R^2 n^{1 - 2/d}
 	\end{equation}
 	\item 
 	\label{event:test_2}
@@ -278,15 +367,15 @@ In light of~\eqref{eqn:eigenvalue_tail_bound_grid} and Lemma~\ref{lem:fixed_grap
 \end{enumerate}
 Once we have shown these inequalities, some basic algebra yields that for the specific choice $\kappa = (Rn)^{2d/(4s + d)}$ and a sufficiently large choice of $c$ in \eqref{eqn:holder_testing_rate_grid_1},
 \begin{align*}
-2b\sqrt{\frac{2\kappa}{n^2}} + \frac{f^T \bigl(L_{\ol{G}}\bigr)^s f}{n\bigl[\lambda_{\kappa}(\ol{G})\bigr]^s} \leq \frac{1}{n}\sum_{i = 1}^{n}\bigl[f(x_i)\bigr]^2
+2b\sqrt{\frac{2\kappa}{n^2}} + \frac{f^T \bigl(L_{\wb{G}}\bigr)^s f}{n\bigl[\lambda_{\kappa}(\wb{G})\bigr]^s} \leq \frac{1}{n}\sum_{i = 1}^{n}\bigl[f(x_i)\bigr]^2
 \end{align*}
 and~\eqref{eqn:holder_testing_rate_grid_2} follows from Lemma~\ref{lem:fixed_graph_testing}.
 
 \paragraph{Proof of~\eqref{eqn:discrete_sobolev_norm_grid}:}
 The upper bound~\eqref{eqn:discrete_sobolev_norm_grid} follows straightforwardly from the Holder property,
 \begin{align*}
-f^T (L_{\ol{G}}) f & = \sum_{i \in [t]^d} \sum_{j \in [t]^d} \bigl(f(\ol{x}_i) - f(\ol{x}_j\bigr)^2 \1\{\norm{i - j}_1 = t\} \\
-& \leq R^2 \sum_{i \in [t]^d} \sum_{j \in [t]^d} \norm{\ol{x}_i - \ol{x}_j}_2^2 \cdot  \1\{\norm{i - j}_1 = t\} \\
+f^T (L_{\wb{G}}) f & = \sum_{i \in [t]^d} \sum_{j \in [t]^d} \bigl(f(\wb{x}_i) - f(\wb{x}_j\bigr)^2 \1\{\norm{i - j}_1 = t\} \\
+& \leq R^2 \sum_{i \in [t]^d} \sum_{j \in [t]^d} \norm{\wb{x}_i - \wb{x}_j}_2^2 \cdot  \1\{\norm{i - j}_1 = t\} \\
 & = R^2 n^{-2/d} \sum_{i \in [t]^d} \sum_{j \in [t]^d} \1\{\norm{i - j}_1 = t\}  \\
 & \leq 4 R^2 n^{1 - 2/d}.
 \end{align*}
@@ -296,17 +385,348 @@ For $x \in \Rd$, let $Q(x)$ be the $d$-dimensional cube of side length $1/t$ wit
 \begin{equation*}
 Q(x) = [x_1 - 1/t,x_1] \otimes \cdots \otimes [x_d - 1/t,x_d]
 \end{equation*}
-The difference between $f(\ol{x})$ and the average of $f$ over the cube $Q(\ol{x})$ can be bounded using the Holder property,
+The difference between $f(\wb{x})$ and the average of $f$ over the cube $Q(\wb{x})$ can be bounded using the Holder property,
 \begin{equation*}
-\int_{Q(\ol{x})} (f(x) - f(\ol{x}))^2 \,dx \leq \frac{1}{n} R^2 n^{-2/d}.
+\int_{Q(\wb{x})} (f(x) - f(\wb{x}))^2 \,dx \leq \frac{1}{n} R^2 n^{-2/d}.
 \end{equation*}
 Dividing $\Xset$ into cubes and summing over the cubes, we have
 \begin{align*}
-\norm{f}_{\Leb^2(\Xset)}^2 & = \sum_{j \in [t]^d} \int_{Q(\ol{x}_j)} \bigl[f(x)\bigr]^2 \,dx \\
-& \leq 2 \sum_{j \in [t]^d} \frac{1}{n} \Bigl\{\bigl[f(\ol{x}_j)\bigr]^2 + \int_{Q(\ol{x}_j)} \bigl[f(x) - f(\ol{x}_j)]^2 \,dx \Bigr\} \\
-& \leq \frac{2}{n}\sum_{j \in [t]^d} \bigl[f(\ol{x}_j)\bigr]^2 + R^2n^{-2/d} \\
-& \leq \frac{2}{n}\sum_{j \in [t]^d} \bigl[f(\ol{x}_j)\bigr]^2 + \frac{1}{2}\norm{f}_{\Leb^2(\Xset)}^2
+\norm{f}_{\Leb^2(\Xset)}^2 & = \sum_{j \in [t]^d} \int_{Q(\wb{x}_j)} \bigl[f(x)\bigr]^2 \,dx \\
+& \leq 2 \sum_{j \in [t]^d} \frac{1}{n} \Bigl\{\bigl[f(\wb{x}_j)\bigr]^2 + \int_{Q(\wb{x}_j)} \bigl[f(x) - f(\wb{x}_j)]^2 \,dx \Bigr\} \\
+& \leq \frac{2}{n}\sum_{j \in [t]^d} \bigl[f(\wb{x}_j)\bigr]^2 + R^2n^{-2/d} \\
+& \leq \frac{2}{n}\sum_{j \in [t]^d} \bigl[f(\wb{x}_j)\bigr]^2 + \frac{1}{2}\norm{f}_{\Leb^2(\Xset)}^2
 \end{align*}
 where the last inequality follows by the assumption $\norm{f}_{\Leb^2(\Xset)}^2 \geq R^2n^{-4/(4 + d)}$ along with the fact that $4/(4 + d) \leq 2/d$ when $d \leq 4$.
+
+\subsection{Proof of Theorem~\ref{thm:holder_testing_rate_grid_higher_order}}
+Referring again to Lemma~\ref{lem:fixed_graph_testing}, to prove Theorem~\ref{thm:holder_testing_rate_grid_higher_order} it will be sufficient to prove the following inequalities
+\begin{enumerate}[label=(E\arabic*)]
+	\item 
+	\label{event:grid_sobolev_norm_higher_order}
+	For any $f \in C_c^s(\Xset;L)$,
+	\begin{equation}
+	\label{eqn:grid_sobolev_norm_higher_order}
+	f^T \wb{L}^s f \leq c L^2 n^{1 - 2s/d}.
+	\end{equation}
+	\item 
+	\label{event:grid_empirical_norm_higher_order}
+	There exists a sufficiently small constant $c_1$ and a sufficiently large constant $c_2$ such that for any $f \in C^s(\Xset;L)$,
+	\begin{equation}
+	\label{eqn:grid_empirical_norm_higher_order}
+	c_1 \norm{f}_n^2 \geq \norm{f}_{\Leb^2(\Xset)}^2 - c_2 L n^{-2s/d}
+	\end{equation}
+	for all $n$ sufficiently large.
+\end{enumerate}
+The proof of \eqref{eqn:grid_empirical_norm_higher_order} is the content of Lemma~\ref{lem:discretization_error_holder}. Here, we focus our attention on proving~\eqref{eqn:grid_sobolev_norm_higher_order}.
+
+To obtain this upper bound, first observe that by letting $D_{e_i^2}f := f(\wb{x} + he_i) + f(\wb{x} - he_i) - 2f(\wb{x})$ and taking a $2$nd order Taylor expansion, for all points $\wb{x} \in \Xset_{h} \cap \wb{X} =: \wb{X}_{h}$ we can express the grid Laplacian as
+\begin{align}
+\wb{L}f(\wb{x}) & = \sum_{i = 1}^{d} D_{e_i^2}f(\wb{x}) \nonumber \\
+& = \sum_{i = 1}^{d} \biggl[\frac{\partial}{\partial e_i} f(\wb{x})(e_ih - e_ih) + \frac{h^2}{2} \int_{-h}^{h} \frac{\partial^2}{\partial e_i^2} f(\wb{x} + e_it) \,dt \biggr] \nonumber \\
+& = \frac{h^2}{2} \int_{-h}^{h} \sum_{i = 1}^{d} \frac{\partial^2}{\partial e_i^2} f(\wb{x} + e_it) \,dt \label{eqn:grid_sobolev_norm_higher_order_pf1}
+\end{align} 
+as a second-order differential operator which roughly approximates the continuum Laplace operator $\Delta = -\sum_{i = 1}^{d} \frac{\partial^2}{\partial e_i^2}$. Motivated by this, in Lemma~\ref{lem:grid_laplacian_approximation_error} we provide estimates on the absolute difference between the action of the iterated grid Laplacian and the iterated continuum Laplace operator. Specifically, we show that at all sufficiently interior points $\wb{x} \in \wb{X} \cap \Xset_{qh}$ 
+\begin{equation*}
+\begin{rcases*}
+\abs{\wb{L}^{(s - 2)/2}f(\wb{x}) - h^{(s - 2)/2}\Delta^{(s - 2)/2}f(\wb{x})}, &\textrm{when $s$ is even} \\
+\abs{\wb{L}^{(s - 1)/2}f(\wb{x}) - h^{(s - 1)/2}\Delta^{(s - 1)/2}f(\wb{x})}, & \textrm{when $s$ is odd} \\
+\end{rcases*}
+\leq cLh^{s}
+\end{equation*}
+For those remaining points $\wb{x} \in \wb{X} \cap \Xset_{qh}$ sufficiently near the boundary of $\Xset$, since $f$ is compactly supported in $\Xset$ there exists a point $x_0$ and some $\delta > 0$ such that $\mathrm{dist}(\wb{x},x_0) < qh$, and $f(z) = 0$ for all $z \in B(x_0,r)$. Therefore the partial derivatives $D^qf(x_0) = 0$ for each $q = 0,\ldots,s - 1$, and by taking a Taylor expansion of $f(x)$ around $f(x_0)$ we obtain
+\begin{equation*}
+\abs{f(x)} \leq c L h^{s}
+\end{equation*}
+where we have additionally used the Holder property of $f$. A crude bound of the form
+\begin{equation*}
+\abs{\wb{L}^s f(\wb{x})} \leq 2^s \cdot \max_{\wb{z} \in Q_{2qh}(\wb{x})} \bigl\{\abs{f(\wb{z})} \bigr\} \leq c L h^{s}
+\end{equation*}
+will suffice for our purposes. When $s$ is even, the graph Sobolev seminorm is then
+\begin{align*}
+f^T \wb{L}^s f & \leq \sum_{\wb{x} \in \wb{X}_{qh}} \Bigl\{\sum_{i = 1}^d D_{e_i^2} \wb{L}^{(s - 2)/2}f(\wb{x}) \Bigr\}^2 + cL^2h^{2s}n^{1 - 1/d} \\
+& \leq h^{2s - 4}\sum_{\wb{x} \in \wb{X}_{qh}} \Bigl\{\sum_{i = 1}^d D_{e_i^2} \Delta^{(s - 2)/2}f(\wb{x}) \Bigr\}^2 + cL^2h^{2s}n^{1 - 1/d} \\
+& \leq \frac{h^{2s}}{4}\sum_{\wb{x} \in \wb{X}_{qh}} \Bigl\{\sum_{i = 1}^d \int_{-h}^{h} \Bigl(\frac{\partial^2}{\partial e_i^2}\Delta^{(s - 2)/2}f\Bigr)(\wb{x} + te_i) \,dt \Bigr\}^2 + cL^2h^{2s}n^{1 - 1/d} \\
+& \leq d^2 h^{2s} L^2 n + cL^2h^{2s}n^{1 - 1/d}
+\end{align*}
+where we have used, in order, our bounds on the absolute value of $\wb{L}^sf(\wb{x})$ and $\abs{f}(\wb{x})$ at points $\wb{x}$ near the boundary, our estimate on the approximation error between the grid Laplacian and continuum Laplace operator, 
+the representation~\eqref{eqn:grid_sobolev_norm_higher_order_pf1}, and finally the Holder property
+\begin{equation*}
+\norm{\Delta^{(s - 2)/2}f}_{C^2(\Xset)} \leq \norm{f}_{C^s(\Xset)} \leq L.
+\end{equation*}
+Similar manipulations supply an equivalent bound when $s$ is odd
+\begin{align*}
+f^T \wb{L}^s f & \leq \sum_{\wb{x} \in \wb{X}_{qh}} \Bigl\{\sum_{i = 1}^d \wb{L}^{(s - 1)/2}f(\wb{x} + he_i) - \wb{L}^{(s - 1)/2}f(\wb{x}) \Bigr\}^2 + cL^2h^{2s}n^{1 - 1/d} \\
+& \leq h^{2s - 2}\sum_{\wb{x} \in \wb{X}_{qh}} \Bigl\{\sum_{i = 1}^d \wb{\Delta}^{(s - 1)/2}f(\wb{x} + he_i) - \wb{\Delta}^{(s - 1)/2}f(\wb{x}) \Bigr\}^2 + cL^2h^{2s}n^{1 - 1/d} \\
+& \leq d^2 h^{2s} L^2 n + cL^2h^{2s}n^{1 - 1/d}
+\end{align*}
+where this time we have invoked the Holder property $\norm{\Delta^{(s - 1)/2}f}_{C^1(\Xset)} \leq \norm{f}_{C^s(\Xset)} \leq L$. This establishes~\eqref{eqn:grid_sobolev_norm_higher_order} and concludes the proof of Theorem~\ref{thm:holder_testing_rate_grid_higher_order}.
+
+\subsection{Proof of Lemma~\ref{lem:holder_testing_rate_grid_low_smoothness_lb}}
+
+\textcolor{red}{TODO:}
+
+\subsection{Proof of Proposition~\ref{prop:holder_testing_rate_grid_low_smoothness_ub}}
+
+\textcolor{red}{TODO:}
+ 
+\section{Proofs of Technical Results}
+
+\subsection{Grid Laplacian Approximation Error}
+
+The following result follows by standard Taylor expansion arguments.
+
+\begin{lemma}
+	\label{lem:grid_laplacian_approximation_error}
+	Let $f \in C^s(\Xset;L)$ for $s \geq 3$. Then, for all grid points $\wb{x} \in \wb{X}_{qh}$, and for either $q = (s - 1)/2$ or $q = (s - 2)/2$,
+	\begin{equation*}
+	\abs{\wb{L}^{q}f(\wb{x}) - h^{2q}\Delta^{q}f(\wb{x})} \leq cLh^s.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We prove by induction on $q$. When $q = 1$ and $\wb{x} \in \wb{X}_{h}$, by taking Taylor expansions of $f(\wb{x} + e_ih)$ and $f(\wb{x} - e_ih)$ around $f(\wb{x})$ for $i = 1,\ldots,d$, we obtain
+	\begin{align}
+	\wb{L}f(\wb{x}) & = \sum_{i = 1}^{d} D_{e_i^2}f(\wb{x}) \nonumber \\
+	& = \sum_{i = 1}^{d} \Biggl[\sum_{\alpha = 1}^{s - 1}\frac{1}{\alpha!}\frac{\partial^{\alpha}}{\partial e_i^{\alpha}} f(\wb{x})\bigl(h^{\alpha} + (-h)^{\alpha}\bigr) + R(\wb{x}) \Biggr] \nonumber \\
+	& = \sum_{i = 1}^{d} \Biggl[\sum_{\beta = 1}^{\floor{(s - 1)/2}}\frac{2}{(2\beta)!}\frac{\partial^{2\beta}}{\partial e_i^{2\beta}} f(\wb{x}) h^{2\beta} + R(\wb{x})\Biggr] \label{eqn:grid_laplacian_approximation_error_pf1}
+	\end{align} 
+	where the remainder term is upper bounded
+	\begin{equation*}
+	\abs{R(\wb{x})} = \abs{\frac{1}{s!}\sum_{i = 1}^d \int_{-h}^{h} \frac{\partial^s}{\partial e_i^s} f(\wb{x} + e_it) t^{s - 1} \,dt} \leq \frac{d}{(s + 1)!} L h^s 
+	\end{equation*}
+	When $s = 3$ or $s = 4$, the first sum includes only second-order derivatives,
+	\begin{equation*}
+	\sum_{i = 1}^{d} \sum_{\beta = 1}^{\floor{(s - 1)/2}}\frac{2}{(2\beta)!}\frac{\partial^{2\beta}}{\partial e_i^{2\beta}} f(\wb{x}) h^{2\beta} = h^2 \sum_{i = 1}^d \frac{\partial^{2\beta}}{\partial e_i^{2\beta}} f(\wb{x}) = h^2 \Delta f(\wb{x}),
+	\end{equation*}
+	and the claim is shown.
+	
+	When $q \geq 2$, we use the prior analysis to rewrite the $q$th-order iterated Laplacian
+	\begin{align}
+	\wb{L}^qf(\wb{x}) & = \wb{L}^{q - 1} \Biggl(\sum_{i = 1}^d \sum_{\beta = 1}^{\floor{(s - 1)/2}} \frac{2}{(2\beta)!} \frac{\partial^{2\beta}}{\partial e_i^{2\beta}} f h^{2 \beta} + R\Biggr)(\wb{x}) \nonumber \\
+	& = \sum_{\beta = 1}^{\floor{(s - 1)/2}} \frac{2h^{2\beta}}{(2\beta)!} \wb{L}^{q - 1} \biggl(\sum_{i = 1}^d\frac{\partial^{2\beta}}{\partial e_i^{2\beta}} f \biggr)(\wb{x}) + \wb{L}^{q - 1}R(\wb{x}) \label{eqn:grid_laplacian_approximation_error_pf5}
+	\end{align}
+	We deal with the remainder term first. Noting that $Q_{2(q - 1)h}(\wb{x}) \subset \Xset_{h}$, we have
+	\begin{align}
+	\abs{\wb{L}^{q - 1}R(\wb{x})} & \leq \bigl(2(q - 1)d\bigr)^{q - 1} \cdot \max_{\wb{z} \in Q_{2(q - 1)h}(\wb{x})} \bigl\{\abs{R(\wb{z})}\bigr\} \nonumber \\
+	& \leq \frac{\bigl(2(q - 1)d\bigr)^{q - 1}d}{(s + 1)!} L h^s \label{eqn:grid_laplacian_approximation_error_pf2}
+	\end{align}
+	Next we deal with the higher-order terms in the first sum, meaning the terms where $\beta \geq 2$. For convenience, denote $f_\beta := \sum_{i = 1}^d\frac{\partial^{2\beta}}{\partial e_i^{2\beta}} f$, and note that $f_{\beta} \in C^{s - 2\beta}(\Xset;L)$. 
+	
+	We will show that for any $\wb{x} \in \wb{X}_{qh}$,
+	\begin{equation}
+	\label{eqn:grid_laplacian_approximation_error_pf3}
+	\abs{\wb{L}^{q - 1}f_{\beta}(\wb{x})} \leq c L h^{2 - \beta}.
+	\end{equation}
+	Let us assume $s - 2\beta$ is odd. Set $s' = (s - 2\beta - 1)/2$, and $s'' = q - 1 - (s' + 1)$, and note that $s''$ is a non-negative integer. By hypothesis, for any $\wb{z} \in \wb{X}_{hs'}$
+	\begin{equation*}
+	\abs{\wb{L}^{s'}f_{\beta}(\wb{z}) - h^{2s'}\Delta^{s'}f_{\beta}(\wb{z})} \leq cLh^{s - 2\beta}
+	\end{equation*}
+	and consequently,
+	\begin{align*}
+	\abs{\wb{L}^{q - 1}f_{\beta}(\wb{x})} & \leq (2s''d)^{s''} \cdot \max_{\wb{z} \in Q_{2s''h}(\wb{x})} \Bigl\{\abs{\wb{L}^{s' + 1}f(\wb{z})}\Bigr\} \\
+	& \leq (2s''d)^{s''} \cdot \max_{\wb{z} \in \wb{X}_{(s' + 1)h}} \Bigl\{\abs{\wb{L}^{s' + 1}f(\wb{z})}\Bigr\}  \\
+	& \leq (2s''d)^{s''} \Bigl( h^{2s} \cdot \max_{\wb{z} \in \wb{X}_{(s' + 1)h}} \Bigl\{ \abs{\wb{L} \Delta^{s'} f_{\beta}(\wb{z})} \Bigr\} + cLh^{s - 2\beta}\Bigr) \\
+	& \leq (2s''d)^{s''} \Bigl( 2dL h^{2s' + 1}  + cLh^{s - 2\beta}\Bigr)
+	\end{align*}
+	where the last line follows since $\Delta^{s'}{f_{\beta}} \in C^1(\ol{X};L)$. Since $2s' + 1 = s - 2\beta$, we have shown the desired result~\eqref{eqn:grid_laplacian_approximation_error_pf3} when $s - 2\beta$ is odd, and similar manipulations prove the result when $s - 2\beta$ is even. 
+	
+	Finally, we consider the second order term, where $\beta = 2$ and $f_\beta = \Delta f \in C^{s - 2}(\Xset;L)$. Then, since either $q - 1 = (s - 3)/2$ or $q - 1 = (s - 4)/2$, by hypothesis for any $\wb{x} \in \wb{X}_{qh} \subset \wb{X}_{(q - 1)h} $,
+	\begin{equation}
+	\label{eqn:grid_laplacian_approximation_error_pf4}
+	h^{2}\abs{ \wb{L}^{q - 1} \Delta f(\wb{x}) - h^{2(q - 1)} \Delta^{q} f(\wb{x})  } \leq cL h^{2}h^{s - 2} = cLh^s
+	\end{equation}
+The claimed result follows upon plugging~\eqref{eqn:grid_laplacian_approximation_error_pf2},\eqref{eqn:grid_laplacian_approximation_error_pf3}, and \eqref{eqn:grid_laplacian_approximation_error_pf4} back into~\eqref{eqn:grid_laplacian_approximation_error_pf5}.
+\end{proof}
+
+\subsection{Discretization Error}
+We prove the following lower bound on the empirical norm of $f$. The proof will be similar in spirit and at times directly follow the proof of Lemma 3 of \textcolor{red}{(Arias-Castro)}, the key difference being that we wish to lower bound the empirical norm of $f$ rather than a Riemann sum.
+\begin{lemma}
+	\label{lem:discretization_error_holder}
+	Let $f \in C^s(\Xset,L)$. Then, there exist a constant $c$ such that
+	\begin{equation*}
+	\norm{f}_{n}^2 \geq c\norm{f}_{\Leb^2([0,1]^d)}^2 - c L n^{-2s/d}
+	\end{equation*}
+	for all $n$ sufficiently large.
+\end{lemma}
+\begin{proof}
+	In the proof of this Lemma, we take $\eta$ to be the tensorization of a univariate $(s - 1)$-order kernel $\nu$. More specifically, we let $\nu: \Reals \to \Reals$ satisfy
+	\begin{equation*}
+	\int_{\Reals} \nu(x) \,dx = 1,~~ \int x^{\ell} \nu(x) \,dx = 0~~\textrm{for $\ell = 1,\ldots,s-1$},~~ \abs{\nu(x)} \leq 1~\textrm{for all $x \in [0,1^d]$}
+	\end{equation*}
+	additionally be compactly supported on $[-1/2,1/2]$ but otherwise arbitrary, and define $\eta:\Reals^d \to \Reals$ to be $\eta(z) = \prod_{i = 1}^{d} \nu(x_i)$ for $z \in \Reals^d$. We denote $\eta_h(x) = \frac{1}{h^d} \eta(x/h)$, and note that for any polynomial $u$ of degree at most $s - 1$, $\bigl(u \ast \eta_h\bigr)(x) = u(x)$. 
+	
+	Fix an odd integer $m \geq 1$ to be chosen large enough, but fixed, later on, and assume without loss of generality that $N/m =: M \in \mathbb{N}$. For $i \in [n]^d$, let $u_{i}$ be the $(s - 1)$-order Taylor expansion of $f$ around $\wb{x}_i$, and further let
+	\begin{align*}
+	u(x) = \sum_{i \in [M]^d} u_{mi - 1}(x) \cdot \1\{x \in Q_{hm}(\wb{x}_{mi - 1})  \},~~ \wt{u}(x) = \sum_{i \in [M]^d} \sum_{\wb{x} \in  Q_{hm}(\wb{x}_{mi - 1})} \bigl(u_{mi - 1} \ast \eta_h\bigr)(\wb{x}) \cdot \1\{x \in Q_{h}(\wb{x})  \}.
+	\end{align*}
+	be piecewise polynomial and piecewise constant functions, respectively.
+	
+	Standard properties of Taylor expansions imply that $\abs{f(x) - u_{mi - 1}(\wb{x})} \leq (L\sqrt{d}mh)^{s}$ for all $x \in Q_{mh}(\wb{x}_{mi - 1})$, and as a result
+	\begin{equation*}
+	\norm{u - f}_{\Leb^2([0,1]^d)}^2,~~\norm{u - f}_{n}^2 \leq ch^{2s}
+	\end{equation*}
+	Since $u_{mi- 1}$ is an $(s - 1)$-order polynomial, we have that $\bigl(u_{mi - 1} \ast \eta_h\bigr)(\wb{x}) = u_{mi - 1}(\wb{x})$ for each $\wb{x} \in \wb{X}$; therefore $\norm{\wt{u}}_n = \norm{u}_n$.
+	Additionally $\wt{u}$ is piecewise constant over the grid cells $Q_h(\wb{x})$, and so we have
+	\begin{equation*}
+	\norm{\wt{u}}_{\Leb^2([0,1]^d)}^2 = \sum_{\wb{x} \in \wb{X}} h^d \cdot  [\wt{u}(\wb{x})]^2 = \norm{\wt{u}}_n^2.
+	\end{equation*}
+	It remains only to show that
+	\begin{equation*}
+	c \norm{u}_{\Leb^2([0,1]^d)} \leq \norm{\wt{u}}_{\Leb^2([0,1]^d)},
+	\end{equation*}
+	for a constant $c$ which does not depend on $\wt{u}$. In Lemma~\ref{lem:riemann_sums_polynomials}, we show that the statement holds true if $u$ is a polynomial on $[0,1]^d$; and the width of the partition used to form $\wt{u}$ is taken to be a sufficiently small constant. By translating and rescaling the cubes $Q_{mi - 1}(\wb{x}_{mi} - 1)$ into $[0,1]^d$ as in \textcolor{red}{(Arias-Castro)}, we have that the same result holds for the piecewise polynomial $u$ when $m$ is taken to be a sufficiently large constant. Putting the pieces together, we have that whenever $n$ is great enough such that $M \in \mathbb{N}$, 
+	\begin{align*}
+	\norm{f}_{\Leb^2([0,1]^d)}^2 & \leq cn^{-2s/d} + 2\norm{u}_{\Leb^2([0,1]^d)}^2 \\ & \leq cn^{-2s/d} + c\norm{\wt{u}}_{\Leb^2([0,1]^d)}^2 \\
+	& = cn^{-2s/d} + c\norm{u}_{n}^2 \\
+	& \leq cn^{-2s/d} + c\norm{f}_n^2.
+	\end{align*}
+	which completes the proof of Lemma~\ref{lem:discretization_error_holder}.
+\end{proof}
+
+To simplify the statement of the following Lemma, for $j \in \mathbb{N}$ let
+\begin{equation*}
+\mathcal{K}_j(u) := \sum_{[j]^d} \bigl(u \ast \eta_h\bigr)(\wb{x}) \cdot \1\{x \in Q_{1/j}(\wb{x})\}.
+\end{equation*}
+where $\eta_h$ is taken as in the proof of Lemma~\ref{lem:discretization_error_holder}. Denote the class of polynomials on $\Reals^d$ of degree at most $m$ by $\mathcal{P}_m^d$.
+
+\begin{lemma}
+	\label{lem:riemann_sums_polynomials}
+	There exists a constant $c$ such that for any $j > 1/c$, 
+	\begin{equation*}
+	\norm{\mathcal{K}_j(u)}_{\Leb^2([0,1]^d)} \geq c \norm{u}_{\Leb^2([0,1]^d)}
+	\end{equation*}
+	for all polynomials $u \in \mathcal{P}_{s - 1}^d$.
+\end{lemma}
+\begin{proof}
+	We proceed by contradiction, following the proof of~\textcolor{red}{(Arias-Castro)} closely and making necessary adjustments. Suppose there exists a sequence $(u_j) \subset \mathcal{P}_{s - 1}^d$ such that $\norm{\mathcal{K}_j(u)}_{\Leb^2([0,1]^d)} \leq 1/j \norm{u_j}_{\Leb^2([0,1]^d)}$ for each $j \in \mathcal{N}$. Assume without loss of generality that $\norm{u_j}_{\Leb^2([0,1]^d)} = 1$; then there exists an accumulation point $u_{\infty}$ of $(u_j)$, and $\norm{u_{\infty}}_{\Leb^2([0,1]^d)} = 1$. However, by Jensen's inequality, and the boundedness and compact support of $\eta$, we have
+	\begin{align*}
+	\Bigl[\bigl(u \ast \eta_h\bigr)(\wb{x})\Bigr]^2 & = \Bigl[\int u(y) \eta_h(y - \wb{x}) \,dy \Bigr]^2 \\
+	& = \biggl[\frac{1}{h^d}\int u(y) \eta\Bigl(\frac{y - \wb{x}}{h}\Bigr) \,dy \biggr]^2 \\
+	& \leq \frac{1}{h^d}  \biggl[u(y) \eta\Bigl(\frac{y - \wb{x}}{h}\Bigr)\biggr]^2 \,dy \\
+	& \leq \frac{1}{h^d} \int_{Q_h(\wb{x})} \bigl[u(y)\bigr]^2 \,dy
+	\end{align*}
+	which in turn gives 
+	\begin{align*}
+	\norm{\mathcal{K}_j(u)}_{\Leb^2([0,1]^d)}^2 & \leq \sum_{\wb{x} \in \wb{X}} h^d\Bigl[\bigl(u \ast \eta_h\bigr)(\wb{x})\Bigr]^2 \\
+	& \leq \sum_{\wb{x} \in \wb{X}}\int_{Q_h(\wb{x})} \bigl[u(y)\bigr]^2 \\
+	& = \norm{u}_{\Leb^2([0,1]^d)}^2.
+	\end{align*}
+	As a result,
+	\begin{align*}
+	\norm{\mathcal{K}_j(u_{\infty})}_{\Leb^2([0,1]^d)} & \leq \norm{\mathcal{K}_j(u_{\infty} - u_j)}_{\Leb^2([0,1]^d)} + \norm{\mathcal{K}_j(u_j)}_{\Leb^2([0,1]^d)} \\
+	& \leq \norm{u_\infty - u_j}_{\Leb^2([0,1]^d)} + 1/j \to 0
+	\end{align*}
+	as $j \to \infty$. On the other hand, $\mathcal{K}_j(u_{\infty}) \to u_{\infty}$ as $j \to \infty$. In light of the boundedness of $\eta$ and the boundedness of $u_{\infty}$ on $[0,1]^d$, we may apply the dominated convergence theorem and obtain that $\norm{\mathcal{K}_j(u_{\infty})}_{\Leb^2([0,1]^d)} \to \norm{u_{\infty}}_{\Leb^2([0,1]^d)}$. This establishes a contradiction, thus proving the claim.
+\end{proof}
+
+\subsection{Grid Sobolev seminorm}
+
+Actually, what I said before was wrong. Let me prove it.  For notational convenience let $h = t^{-1}$. We write $\Delta = -\sum_{i = 1}^{d} \frac{\partial^2}{\partial e_i^2}$ for the continuum Laplace operator on $\Rd$.
+
+\begin{lemma} 
+	\label{lem:grid_sobolev_seminorm}
+	Let $f \in C_c^s(\Xset)$.
+	\begin{enumerate}
+		\item If $s$ is even, let $q = s/2$. We have
+		\begin{equation}
+		\label{eqn:grid_sobolev_seminorm_1}
+		\abs{\wb{L}^qf(\wb{x})} \leq c \norm{f}_{C^s(\Xset)} h^s
+		\end{equation}
+		for every $\wb{x} \in \wb{X}$.
+		\item If $s$ is odd, let $q = (s - 1)/2$. Then
+		\begin{enumerate}
+			\item If $\wb{x} \in \Xset_{q/t}$, then
+			\begin{equation}
+			\label{eqn:grid_sobolev_seminorm_2}
+			\abs{\wb{L}^qf(\wb{x}) - h^{s - 1} \Delta^q f(\wb{x})} \leq c \norm{f}_{C^s(\Xset)} h^s
+			\end{equation}
+			\item Otherwise if $\wb{x} \in \partial_{h}(\Xset)$, then
+			\begin{equation*}
+			\abs{\wb{L}^qf(\wb{x})} \leq c \norm{f}_{C^s(\Xset)} h^s
+			\end{equation*}
+		\end{enumerate} 
+	\end{enumerate}
+\end{lemma}
+\begin{proof}
+	We split our analysis into cases.
+	
+	\paragraph{Proof of 1.}
+	Evaluated at an interior point $\wb{x} \in \Xset_r$, we have that
+	\begin{equation}
+	\label{eqn:grid_sobolev_seminorm_pf1}
+	\wb{L}f(\wb{x}) = \sum_{i = 1}^d \wb{D}_{e_i^2}f(\wb{x})
+	\end{equation}
+	where we use the notation $\wb{D}_{e_i^2}f(\wb{x}) := f(\wb{x} + he_i) + f(\wb{x} - he_i) - 2f(\wb{x})$. The second difference operator $\wb{D}_{e_i^2}$ zeros out the odd terms in a Taylor expansion as follows,
+	\begin{align*}
+	\wb{D}_{e_i^2}f(\wb{x}) & = \sum_{\alpha = 1}^{s - 1} \frac{\partial^{\alpha}}{\partial e_i^{\alpha}}f(\wb{x}) \Bigl[\bigl(he_i\bigr)^{\alpha} + \bigl(-he_i\bigr)^{\alpha}\Bigr] + R(\wb{x},i) \\
+	& = 2\sum_{\beta = 1}^{q - 1} h^{2\beta}\frac{\partial^{2\beta}}{\partial e_i^{2\beta}}f(\wb{x}) + R(\wb{x},i).
+	\end{align*}
+	Here $R(\wb{x},i)$ is the remainder term which satisfies
+	\begin{equation*}
+	\abs{R(\wb{x},i)} = \abs{\int_{-h}^{h}  \frac{\partial^{s}}{\partial e_i^{s}} f(\wb{x} + ye_i) y^{s - 1}\,dy} \leq 2 h^s \norm{f}_{C^s(\Xset)}
+	\end{equation*}
+	by the Holder property of $f$. Plugging back in to~\eqref{eqn:grid_sobolev_seminorm_pf1}, we obtain
+	\begin{equation*}
+	\wb{L}f(\wb{x}) = 2\sum_{i = 1}^{d} \biggl\{\sum_{\beta = 1}^{q - 1} h^{2\beta}\frac{\partial^{2\beta}}{\partial e_i^{2\beta}}f(\wb{x}) + R(\wb{x},i)\biggr\}
+	\end{equation*}
+	Repeatedly applying this estimate along with the triangle inequality gives that for any $\wb{x} \in \Xset_{qr}$,
+	\begin{equation}
+	\label{eqn:grid_sobolev_seminorm_pf2}
+	\abs{\wb{L}^qf(\wb{x}) - 2 \sum_{i \in [d]^q} \sum_{\beta \in [q - 1]^q} h^{2\abs{\beta}} \frac{\partial^{2\abs{\beta}}}{\partial e_{i_1}^{2\beta_1}\ldots \partial e_{i_q}^{2\beta_q} f(\wb{x})} } \leq c h^s\norm{f}_{C^s(\Xset)}
+	\end{equation}
+	where the interior sum over all multi-indices $\beta$ such that $\abs{\beta} \leq s$. Since $\abs{\beta}$ is at least $q$ for all $\beta \in [q]^q$, using the Holder property of $f$ for a second time we have
+	\begin{equation*}
+	h^{2\abs{\beta}} \abs{\frac{\partial^{2\abs{\beta}}}{\partial e_{i_1}^{2\beta_1}\ldots \partial e_{i_q}^{2\beta_q}} f(\wb{x})} \leq h^s \norm{f}_{C^s(\Xset)}
+	\end{equation*}
+	which along with~\eqref{eqn:grid_sobolev_seminorm_pf2} implies~\eqref{eqn:grid_sobolev_seminorm_1} for each $\wb{x} \in \Xset_{qh}$.
+	
+	If instead $\wb{x} \in \partial_{qh}(\Xset)$, there exists some boundary point $x_0 \in \partial(\Xset)$ such that $\mathrm{dist}(\wb{x},x_0) \leq qh$. The order $\alpha$-terms, for $\alpha = 1,\ldots,s-1$, in the Taylor expansion of ${f}(\wb{x})$ about $f(x_0)$ are therefore zero, and
+	\begin{equation*}
+	\abs{f(\wb{x})} \leq (2qh)^s \norm{f}_{C^s(\Xset)}.
+	\end{equation*}
+	Applying similar logic to all $\wb{z} \in Q_{2qh}(\wb{z})$, we have that
+	\begin{equation*}
+	\abs{\wb{L}f(\wb{x})} \leq (2q)^d \cdot \max_{\wb{z} \in Q_{2qh}(\wb{z})} \Bigl\{\abs{f(\wb{z})}\Bigr\} \leq (2q)^{d + s} h^s \norm{f}_{C^s(\Xset)}.
+	\end{equation*}
+	Therefore~\eqref{eqn:grid_sobolev_seminorm_1} holds for all $\wb{x} \in \wb{X}$, regardless of their distance to the boundary.
+	
+	\paragraph{Proof of 2a.}
+	We now deal with the case where $s$ is odd, and take $q = (s - 1)/2$. Similar reasoning to that of the preceding section implies that for any $\wb{x} \in \Xset_r$,
+	\begin{equation*}
+	\wb{L}f(\wb{x}) =  2\sum_{i = 1}^{d} \biggl\{\sum_{\beta = 1}^{q} h^{2\beta}\frac{\partial^{2\beta}}{\partial e_i^{2\beta}}f(\wb{x}) + R(\wb{x},i)\biggr\}
+	\end{equation*}
+	and additionally
+	\begin{equation}
+	\label{eqn:grid_sobolev_seminorm_pf3}
+	\abs{\wb{L}^qf(\wb{x}) - 2 \sum_{i \in [d]^q} \sum_{\beta \in [q]^q} h^{2\abs{\beta}} \frac{\partial^{2\abs{\beta}}}{\partial e_{i_1}^{2\beta_1}\ldots \partial e_{i_q}^{2\beta_q} f(\wb{x})} } \leq c h^s\norm{f}_{C^s(\Xset)}
+	\end{equation}
+	where as before $\abs{\beta} < s$ in the interior sum. Now, for the specific choice of $\beta_{\star} = (1,\ldots,1)$, we have
+	\begin{equation*}
+	\sum_{i \in [d]^q} h^{2\abs{\beta_{\star}}} \frac{\partial^{2q}}{\partial e_{i_1}^{2}\ldots \partial e_{i_q}^{2}}f(\wb{x}) = h^{{s - 1}} \Delta^q f(\wb{x}_i).
+	\end{equation*}
+	For all other $\beta \neq \beta_{\star} \in [q]^q$ satisfying $\abs{\beta} < s$ we have the same estimate as before,
+	\begin{equation*}
+	h^{2\abs{\beta}} \abs{\frac{\partial^{2\abs{\beta}}}{\partial e_{i_1}^{2\beta_1}\ldots \partial e_{i_q}^{2\beta_q}} f(\wb{x})} \leq h^s \norm{f}_{C^s(\Xset)}
+	\end{equation*}
+	and plugging back in to~\eqref{eqn:grid_sobolev_seminorm_pf3} establishes~\eqref{eqn:grid_sobolev_seminorm_2}.
+	
+	\paragraph{Proof of 2b.}
+	The proof of 2b. follows along the same lines as the boundary case when $s$ was even.
+\end{proof}
+
+\section{\textcolor{red}{Old Stuff.}}
+To do so, we rely on Lemma~\ref{lem:grid_sobolev_seminorm}, which estimates on the absolute value of $L^q f$. When $s$ is even, the result follows immediately from~\eqref{eqn:grid_sobolev_norm_higher_order} in that Lemma,
+\begin{equation*}
+f^T \wb{L}^s f = \sum_{\wb{x} \in \wb{X}} \bigl(\wb{L}^q f(\wb{x})\bigr)^2 \leq c n \norm{f}_{C^s(\Xset)}^2 t^{-2s}.
+\end{equation*}
+When $s$ is even, the result follows by distinguishing between points close to the boundary and points sufficiently on the interior,
+\begin{align*}
+f^T \wb{L}^s f  & = \sum_{\wb{x}_i,\wb{x}_j \in \wb{X}} \bigl(\wb{L}^q f(\wb{x}_i) - \wb{L}^q f(\wb{x}_i)\bigr)^2 \1\{\norm{\wb{x}_i - \wb{x}_j}_1 \leq h\} \\
+& \leq c n t^{-2s} \norm{f}_{C^s(\Xset)}^2 + \sum_{\wb{x}_i,\wb{x}_j \in \wb{X} \cap \Xset_{qh}} \bigl(\wb{L}^q f(\wb{x}_i) - \wb{L}^q f(\wb{x}_j)\bigr)^2 \1\{\norm{\wb{x}_i - \wb{x}_j}_1 \leq h\} \\
+& \leq c n t^{-2s} \norm{f}_{C^s(\Xset)}^2 + h^{2(s - 1)}\sum_{\wb{x}_i,\wb{x}_j \in \wb{X} \cap \Xset_{qh}} \bigl(\Delta^q f(\wb{x}_i) - \Delta^q f(\wb{x}_j)\bigr)^2 \1\{\norm{\wb{x}_i - \wb{x}_j}_1 \leq h\} \\
+& \leq c n t^{-2s} \norm{f}_{C^s(\Xset)}^2
+\end{align*}
+where the last inequality follows from applying the Holder condition to $\Delta^q f$.
+
+
 
 \end{document}

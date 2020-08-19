@@ -22,6 +22,7 @@
 \DeclareMathAccent{\wb}{0}{mathx}{"73}
 
 \DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
 
 \newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
 \newcommand{\Graph}{\mathcal{G}}
@@ -126,6 +127,7 @@
 \newcommand{\spec}{\mathrm{spec}}
 \newcommand{\LE}{\mathrm{LE}}
 \newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
 \newcommand{\OS}{\mathrm{OS}}
 \newcommand{\PLS}{\mathrm{PLS}}
 
@@ -181,7 +183,7 @@
 
 \section{Introduction}
 
-In the random design nonparametric regression setup, we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$, where $X_1,\ldots,X_n$ are independent samples from a distribution $P$ supported on a domain $\Xset \subset \Rd$, and 
+In the random design nonparametric regression problem, we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$, where $X_1,\ldots,X_n$ are independent samples from a distribution $P$ with support $\Xset \subset \Rd$, and 
 \begin{equation}
 \label{eqn:random_design_regression}
 Y_i = f_0(X_i) + \varepsilon_i
@@ -198,7 +200,7 @@ and the degree matrix ${\bf D}$ is the $n \times n$ diagonal matrix with entries
 \label{eqn:graph_Laplacian}
 \Lap_{n,r} = \bf{D} - \bf{W}
 \end{equation}
-The two graph-based regression methods we will consider are \emph{Laplacian eigenmaps} and \emph{Laplacian smoothing}. Each use $\Lap_{n,r}$ to construct an estimator $\wh{f}$ of $f_0$. Letting $v_1(G_{n,r}),\ldots,v_n(G_{n,r})$ denote eigenvectors of $\Lap_{n,r}$, the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ \citep{belkin2003} is given by 
+The two graph-based regression methods we will consider are \emph{Laplacian eigenmaps} and \emph{Laplacian smoothing}. Each method uses $\Lap_{n,r}$ in a different manner to construct an estimator of $f_0$. Letting $v_1(G_{n,r}),\ldots,v_n(G_{n,r})$ denote eigenvectors of $\Lap_{n,r}$, the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ \citep{belkin2003} is given by 
 \begin{equation}
 \label{eqn:laplacian_eigenmaps}
 \wh{f}_{\textrm{LE}} = \sum_{k = 1}^{\kappa} \Dotp{Y}{v_k(G_{n,r})}_n v_{k}(G_{n,r})
@@ -219,54 +221,168 @@ T_{\LS} = \Bigl\|\wt{f}_{\LS}\Bigr\|_n^2 \label{eqn:laplacian_smoothing_test}
 can be used to test whether or not $f_0 = 0$.
 
 \begin{itemize}
-	\item \textbf{Motivate graph Laplacians.} There already exist a vast number of methods for both the nonparametric testing and, especially, the nonparametric estimation problems. In fact, as we will see in Section~\ref{sec:problem_setup_and_background} some of these methods are actually quite analogous to the graph Laplacian estimation and testing methods we have just introduced. Nevertheless, methods such as~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} deserve a place in the nonparametric regression toolbox. Their advantages include:
+	\item \textbf{Motivate graph Laplacians.} There already exist a vast number of methods for both the nonparametric testing and, especially, the nonparametric estimation problems. In fact, as we will see in Section~\ref{sec:problem_setup_and_background} some of these methods are actually quite analogous to the graph Laplacian estimation and testing methods we have just introduced. Nevertheless, methods such as~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} have a deserved place in the nonparametric regression toolbox. Their advantages include:
 	\begin{itemize}
 		\item Simplicity.
-		\item Computational efficiency.
-		\item Domain and density adaptivity.
+		\item Computational efficiency and stability.
+		\item Domain and density adaptivity. Easily generalizable. 
 		\item Practical success.
 	\end{itemize}
-	\item \textbf{Our contributions, short version.} For these reasons, there is a  substantial body of work assessing the statistical properties of graph Laplacian based methods. \textcolor{red}{(TODO): Include citations.} In this paper, we adopt a different perspective, and analyze~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} through the minimax lens. We show that for a variety of function classes $\mc{F}$, distributions $P$, and choices of domain $\mc{X}$ for which minimax rates are known, both~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing} are minimax optimal estimators (with loss measured in a suitable norm) and both~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} are minimax optimal test statistics. This lends additional theoretical support to the case for using graph Laplacian methods.
-	\item \textbf{Summary}
+	\item \textbf{Our contributions, short version.} For these reasons, there is a  substantial body of work assessing the statistical properties of graph Laplacian based methods. \textcolor{red}{(TODO): Include citations.} In this paper, we adopt a different perspective, and analyze~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} through the minimax lens. We show that when the regression function $f_0$ is suitably smooth (by which we mean that it belongs to a first-order Sobolev ball; roughly speaking, that it possesses weak derivative $Df$ bounded in $L^2(\Xset)$ norm) both~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing} are minimax optimal estimators, and both~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} are minimax optimal test statistics. We also show that under appropriate conditions, these estimators and test statistics can leverage additional assumed structure, either on the regression function $f_0$ or distribution $P$.
+	\item \textbf{Organization.}
+\end{itemize}
+
+\paragraph{Notation.}
+\begin{itemize}
+	\item We write $\mathbb{Z}^d$ for $\mathbb{Z} \otimes \cdots \mathbb{Z}$, where the tensor product is taken a total of $d$ times.
+	\item We denote by $\Leb^2(\Xset)$ be the set of square integrable functions $f:\Xset \to \Reals$.
+	\item For functions $f,g$ which map from $\Xset$ to $\Reals$, we write $\dotp{f}{g}_n := \frac{1}{n}\sum_{i = 1}^{n} f(X_i) g(X_i)$, which we refer to as the \emph{empirical inner product}, and $\norm{f}_n^2 = \dotp{f}{f}_n$, which we refer to as the (squared) \emph{empirical norm}.
 \end{itemize}
 
 \section{Problem Setup and Background}
 \label{sec:problem_setup_and_background}
 
-Before we get to our main results, we will review some of the relevant literature on nonparametric estimation and regression, and recall some relevant minimax analysis.  We will also briefly recall some (of the many) estimators and tests which achieve these rates. In particular, we will focus on the \emph{truncated series} and \emph{smoothing spline} methods. As we will see, Laplacian eigenmaps and Laplacian smoothing can be seen as graph-based analogues to these ``continuuum'' methods.
+Before we get to our main results, we will review some of the relevant literature on minimax optimal nonparametric estimation and testing of Sobolev functions. We will also briefly recall some (of the many) estimators and tests which achieve these rates: in particular the \emph{truncated series} and \emph{smoothing spline} methods. As we will see, Laplacian eigenmaps and Laplacian smoothing can be seen as graph-based, i.e. discrete, analogues to these ``continuuum'' methods.
+
+\subsection{Sobolev spaces}
+\label{subsec:sobolev_spaces}
 
 \begin{itemize}
-	\item \textbf{Minimax estimation.} For given integers $s > 0$ and $p > 0$, the Sobolev space $W^{s,p}(P)$ consists of all functions $f \in \Leb^p(P)$ such that for each multiindex $\alpha = (\alpha_1,\ldots,\alpha_d)$ satisfying $\abs{\alpha} := \sum_{i = 1}^{d} \alpha_i \leq s$, the weak derivative $D^{\alpha}f$ belongs to $\mathcal{L}^p(P)$. The Sobolev $\{s,p\}$ norm is then 
+	\item \textbf{Sobolev spaces.}  Roughly speaking, Sobolev spaces contain functions $f \in \Leb^p(\Xset)$ with derivatives which themselves belong to $\Leb^p(\Xset)$. More formally, for given integers $s, p > 0$, the Sobolev space $W^{s,p}(\Xset)$ consists of all functions $f \in \Leb^p(\Xset)$ such that for each multiindex $\alpha = (\alpha_1,\ldots,\alpha_d) \in \mathbb{N}^d$ satisfying $\abs{\alpha} := \sum_{i = 1}^{d} \alpha_i \leq s$, the weak derivative $D^{\alpha}f$ belongs to $\mathcal{L}^p(\Xset)$. The Sobolev-$\{s,p\}$ seminorm $\seminorm{f}_{W^{s,p}(\Xset)}$ and norm $\norm{f}_{W^{s,p(\Xset)}}$ are then given by 
 	\begin{equation*}
-	\norm{f}_{W^{s,p}(P)}^2 = \sum_{\abs{\alpha} \leq s} \int_{\mathcal{X}} \abs{D^{\alpha}f}^p \,dP
+	\seminorm{f}_{W^{s,p}(\Xset)}^p = \sum_{\abs{\alpha} = s}\int_{\mathcal{X}} \Bigl|\bigl(D^{\alpha}f\bigr)(x)\Bigr|^p \,dx, ~~ \norm{f}_{W^{s,p}(\Xset)}^p = \sum_{k = 0}^{s} \seminorm{f}_{W^{k,p}(\Xset)}^p
 	\end{equation*}
-	and for a given $M > 0$, the corresponding ball is $W^{s,p}(P, M) = \set{f: \norm{f}_{W^{s,p}(P)} \leq M}$. In the special case when $p = 2$, the Sobolev space $W$ is a Hilbert space; we adopt the usual convention of writing $H^s(P) = W^{s,p}(P)$ and $H^s(P,M) = W^{s,2}(P,M)$. We will confine our attention to this special case hereafter. Let us also make the following assumption:
-	\begin{enumerate}[(P1)]
-		\item 
-		\label{asmp:bounded_density}
-		The distribution $P$ is defined on domain $\Xset = [0,1]^d$, and admits a density $p$ with respect to the uniform (Lebesgue) measure on $[0,1]^d$. The density $p$ is bounded away from $0$ and $\infty$,
-		\begin{equation*}
-		0 < p_{\min} < p(x) < p_{\max} < \infty
-		\end{equation*}
-		for all $x \in [0,1]^d$.
-	\end{enumerate}
-	The assumption~\ref{asmp:bounded_density} is a standard but significant assumption; we will return to discuss it further at \textcolor{red}{a later point}. Assuming~\ref{asmp:bounded_density}, the minimax estimation rate over the Sobolev ellipsoids $H^{s}(P,M)$ is
+	and for a given $M > 0$, the corresponding ball is $W^{s,p}(\Xset, M) = \set{f: \norm{f}_{W^{s,p}(\Xset)} \leq M}$. In the special case when $p = 2$, the Sobolev space $W$ is a Hilbert space, and we adopt the usual convention of writing $H^s(\Xset) = W^{s,p}(\Xset)$ and $H^s(\Xset,M) = W^{s,2}(\Xset,M)$. We will confine our attention to this special case hereafter. 
+	\item \textbf{Connections to sequence spaces.} The balls $H^s(\Xset,M)$ are closely connected with the \emph{Sobolev ellipsoids} $\Theta_s(M) \subseteq \ell^2(\mathbb{Z}^d)$, defined as
 	\begin{equation*}
-	\inf_{\wh{f}} \sup_{f \in H^s(P,M)} \Ebb\Bigl[\norm{\wh{f} - f}_{L^2(P)}^2\Bigr] \asymp n^{-2s/(2s + d)}~~\textrm{for all $s$ and $d \geq 0$,}
+	\Theta_s(M) = \Bigl\{\theta \in \ell_2(\mathbb{Z}^d): \sum_{k \in \mathbb{Z}^d} \theta_k^2 \abs{k}^{2s} < M\Bigr\}
 	\end{equation*}
-	where the infimum is over all measurable maps $\wh{f}(X_1,Y_1,\ldots,X_n,Y_n)$
-	\item \textbf{Minimax hypothesis testing.}
-	\item \textbf{Our contributions, long version.}
+	Let us assume that the domain $\Xset = [0,1]^d$. Letting be $\set{\phi_k}_{k \in \mathbb{Z}^d}$ be the tensor product trigonometric polynomial basis of $\Leb^2(\Xset)$, the space
+	\begin{equation*}
+	H_{\textrm{per}}^s(\Xset,M) = \Bigl\{\sum_{k \in \mathbb{Z}^d} \theta_k \phi_k: \theta_k \in \Theta_s(M) \Bigr\}
+	\end{equation*}
+	satisfies $H_{\textrm{per}}^s(\Xset,M) \subseteq H^s(\Xset,M')$ for a sufficiently large value of $M_1 > 0$. On the other hand, any $1$-periodic function $f \in W^{s,p}(\Xset,M)$ also belongs to $H_{\textrm{per}}^s(\Xset,M_0)$ for a sufficiently large value of $M_0 > 0$.
+	\item \textbf{Zero-trace Sobolev spaces.} We will also be interested in the \emph{zero-trace} Sobolev spaces.
+\end{itemize}
+
+\subsection{Orthogonal series and smoothing splines.}
+\label{subsec:continuum_methods}
+When the regression function is assumed to belong to a Sobolev space, two approaches particularly well-suited for nonparametric regression are orthogonal series \textcolor{red}{projection}, and smoothing splines. The orthogonal series estimator $\wh{f}_{\OS}$ is given by
+\begin{equation}
+\label{eqn:orthogonal_series}
+\wh{f}_{\OS} = \sum_{k: \abs{k} \leq \kappa} \dotp{Y}{\phi_k}_n \phi_k .
+\end{equation}
+where $\kappa \geq 0$ is a hyperparameter, and we recall that $\{\phi_k\}_{k \in \mathbb{Z}^d}$ is the tensor product trigonometric polynomial basis of $\Leb^2(\Xset)$. The smoothing spline estimator $\wt{f}_{\SM}$ is a variational estimator, defined as the solution to the following optimization problem,
+\begin{equation}
+\label{eqn:smoothing_spline}
+\wt{f}_{\SM} = \argmin_{f} \sum_{i = 1}^{n} \bigl(Y_i - f(X_i)\bigr)^2 + \seminorm{f}_{H^{s}(\Xset)}^2
+\end{equation}
+where the minimum is taken over all $f \in H^s(\Xset)$.
+
+\begin{itemize}
+	\item \textbf{Connecting orthogonal series and Laplacian eigenmaps estimators.}The orthogonal series estimator $\wh{f}_{\OS}$ is closely connected with the Laplacian eigenmaps estimator $\wh{f}_{\LE}$. At a high-level, one can go from~\eqref{eqn:orthogonal_series} to~\eqref{eqn:laplacian_eigenmaps} simply by substituting $\{v_k\}_{k \in [n]}$ for $\{\phi_k\}_{k \in \mathbb{Z}^d}$. More deeply, just as the vectors $v_k$ are eigenvectors of the graph Laplacian $\Lap_{n,r}$, so too are the functions $\phi_k$ eigenfunctions of a particular differential operator $\Delta: C^2(\Xset) \to \Leb^2(\Xset)$, known as the \emph{Laplace} operator and formally defined as
+	\begin{equation}
+	\label{eqn:laplace_operator}
+	\Delta g := -\mathrm{div}(\nabla g).
+	\end{equation}
+	In fact, it has been shown in \textcolor{red}{(references)} that when the radius $r \to 0$ as $n \to \infty$, the graph Laplacian $\Lap_{n,r}$ converges in an appropriate sense to a weighted version $\Delta_{P}$ of $\Delta$, with
+	\begin{equation}
+	\Delta_{P} g := -\frac{1}{p}\mathrm{div}(p^2 \nabla g).
+	\end{equation}
+	Along similar lines, \textcolor{red}{(references)} have established that for any fixed $k \geq 0$, as $n \to \infty$ the eigenvector $v_k$ will converge, again in an appropriate sense, to an eigenfunction $\phi_k$ of $\Delta_{P}$. The upshot is that when $P$ is the uniform measure, for an appropriate sequence of radii $r(n) \to 0$ and any fixed $\kappa \geq 0$ the estimator $\wh{f}_{OS}$ is in fact the limit of $\wh{f}_{\LE}$, in the sense that
+	\begin{equation}
+	\label{eqn:laplacian_eigenmaps_consistency}
+	\abs{\wh{f}_{\LE}(X_i) - \wh{f}_{\OS}(X_i)} \overset{P}{\to} 0~~\textrm{as $n \to \infty$.}
+	\end{equation} 
+	for each $i \in \mathbb{N}$.
+	\item 
+	\textbf{Connecting smoothing spline and Laplacian smoothing estimators.} In a similar vein, the smoothing spline estimator $\wh{f}_{\SM}$ has deep connections with the Laplacian smoothing estimator $\wh{f}_{\LS}$. Using the definition~\eqref{eqn:laplace_operator}, recursively applying integration by parts, and then invoking the aforementioned convergence properties of $\Lap_{n,r}$, it can be shown that \textcolor{red}{references} that for any $f \in C^{2s}(\Xset)$,
+	\begin{equation}
+	\label{eqn:pointwise_seminorm_convergence}
+	\abs{f}_{H^s(\Xset)} = \int_{\Xset} \bigl(\Delta^sf\bigr)(x) f(x) \,dx = \lim_{n \to \infty} f^T \Lap_{n,r}^s f.
+	\end{equation}
+	By applying appropriation concentration inequalities, one can extend~\eqref{eqn:pointwise_seminorm_convergence} to hold uniformly over all $f \in H^{2s}(\Xset)$. While this does not imply a formal statement about the convergence of $\wh{f}_{\LS}$ to $\wh{f}_{SM}$ as in~\eqref{eqn:laplacian_eigenmaps_consistency}---note the difference between the domain of minimization in~\eqref{eqn:smoothing_spline} and the regularity required for~\eqref{eqn:pointwise_seminorm_convergence}---it nevertheless makes clear that the estimators $\wh{f}_{\LS}$ and $\wh{f}_{\SM}$ are linked.
+	\item \textbf{Domain and density adaptivity.} \textcolor{red}{(TODO)}
+\end{itemize}
+
+\subsection{Minimax rates over Sobolev classes}
+\label{subsec:minimax_rates}
+One reason all of this is intriguing is that, as we mentioned previously, the continuum estimators $\wh{f}_{\OS}$ and $\wh{f}_{\SM}$---and test statistics based on functionals of these estimators--- have strong statistical properties. In particular, these estimators and tests are known to have error rates within a constant factor of (minimax) optimal.
+
+\paragraph{Estimation rates.}
+Under appropriate regularity conditions, the minimax estimation rate over Sobolev balls is 
+\begin{equation}
+\label{eqn:sobolev_space_estimation_minimax_rate}
+\inf_{\wh{f}} \sup_{f_0 \in \mc{H}^s(M)} \Ebb\Bigl[\norm{\wh{f} - f_0}_{L^2(\Xset)}^2\Bigr] \asymp n^{-2s/(2s + d)}~~\textrm{for all $s$ and $d \geq 0$,}
+\end{equation}
+where the infimum is over all measurable maps $\wh{f}(X_1,Y_1,\ldots,X_n,Y_n)$, and the function class $\mc{H}^s(M)$ is one of $H^s(\Xset,M)$, $H_{\mathrm{per}}^s(\Xset,M)$ or $H_0^s(\Xset,M)$. Orthogonal series and smoothing spline estimators are two (of the many) estimators which certify the upper bound in~\eqref{eqn:sobolev_space_estimation_minimax_rate}. Concretely, if we are willing to assume
+\begin{enumerate}[label=(P\arabic*)]
+	\item
+	\label{asmp:uniform_density}
+	the distribution $P$ is the uniform probability measure defined on domain $\Xset = [0,1]^d$.
+\end{enumerate}
+then the orthogonal series estimator is minimax optimal over the Sobolev ellipsoids $H_{\mathrm{per}}^s(M)$, meaning
+\begin{equation*}
+\sup_{f \in H_{\mathrm{per}}^s(\Xset,M)}\Ebb\Bigl[\norm{\wh{f}_{\OS} - f}_{L^2(\Xset)}^2\Bigr]  \lesssim n^{-2s/(2s + d)}~~\textrm{for all $s$ and $d \geq 0$.}
+\end{equation*}
+An advantage of $\wt{f}_{\SM}$ over $\wh{f}_{\OS}$ is that it requires less stringent assumptions on the design density in order to be minimax optimal. Instead of Assumption~\ref{asmp:uniform_density}, we will merely assume that the density is bounded above and below.
+\begin{enumerate}[label=(P\arabic*)]
+	\setcounter{enumi}{1}
+	\item 
+	\label{asmp:bounded_density}
+	The distribution $P$ is defined on domain $\Xset = [0,1]^d$, and admits a density $p$ with respect to the uniform (Lebesgue) measure on $[0,1]^d$. The density $p$ is bounded away from $0$ and $\infty$, that is
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty
+	\end{equation*}
+	for all $x \in [0,1]^d$.
+\end{enumerate}
+The assumption~\ref{asmp:bounded_density} is itself a standard but significant assumption; we will return to discuss it further at \textcolor{red}{a later point}.
+Assuming~\ref{asmp:bounded_density}, the estimator $\wt{f}_{\SM}$ satisfies
+\begin{equation*}
+\sup_{f_0 \in H^s(\Xset,M)}\Ebb\Bigl[\norm{\wh{f}_{\SM} - f_0}_{L^2(\Xset)}^2\Bigr]  \lesssim n^{-2s/(2s + d)}~~\textrm{for all $2s > d$.}
+\end{equation*}
+The restriction $2s > d$ is a severe limitation of smoothing splines relative to  orthogonal series. It is worth emphasizing that this is a fundamental defect of the smoothing spline estimator, as opposed to any flaw in the theory; when $2s \leq d$, the optimization problem~\eqref{eqn:smoothing_spline} is not even well-defined! \textcolor{red}{(TODO):} succinctly explain why.
+
+\paragraph{Goodness-of-fit testing rates.} 
+
+\begin{itemize}
+	\item \textbf{Minimax hypothesis testing.} In the nonparametric regression hypothesis testing problem, we ask for a test function (formally, a Borel measurable map $\phi: \mc{X}^n \times \Reals^n \to \{0,1\}$) which can distinguish between the null and alternative hypotheses
+	\begin{equation}
+	\mathbf{H}_0: f_0 = 0, ~~\textrm{versus}~~ \mathbf{H}_a: f_0 \neq 0.
+	\end{equation}
+	We measure the performance of a test $\phi$ by its Type I error $\Ebb_0(1 - \phi)$, and Type II error $\mathbb{E}_{f_0}(\phi)$. It is well known that no test $\phi$ with controlled Type I error---say, $\Ebb_0(\phi) \leq 1/b$ for some constant $b > 1$---
+	can have controlled Type II error---$\Ebb_{f_0}(\phi) \leq 1/b$--- for every $f_0 \neq 0$. As a result, it is standard to impose two kinds of restrictions on the alternative hypothesis class $\mathbf{H}_a$. The first is a smoothness condition on $f_0$: specifically, we will assume that $f_0$ belongs to a Sobolev ball $\mc{H}^s(M)$. The latter is a separation condition, enforcing a minimum distance between $f_0$ and $0$: specifically, we will insist that $\norm{f_0  - 0}_{\Leb^2(\Xset)} > \epsilon$ for some $\epsilon > 0$.
+	\item\textbf{Minimax testing rates over Sobolev classes.} Once smoothness and separation conditions are established, the following becomes a natural question to ask: what is the smallest value of $\epsilon$ for which there exists a test $\phi$ with both small Type I error, and small Type II error over all functions $f_0$ which are smooth and separated from $0$ by at least $\epsilon$? This smallest separation $\epsilon$ is known as the critical radius, and in the case of the Sobolev classes it is given by
+	\begin{equation*}
+	\epsilon_n^{\star}\bigl(\mc{H}^s(M)\bigr):= \inf\biggl\{\epsilon: \inf_{\phi} \Bigl\{\Ebb_0(\phi) +  \sup_{\substack{f_0 \in \mc{H}^s(M) \\ \norm{f_0}_{\Leb^2(\Xset)} \geq \epsilon}} \Ebb_{f_0}[1 - \phi]\Bigr\} \leq \frac{2}{b} \biggr\} \asymp n^{-2s/(4s + d)}
+	\end{equation*}
+	for any $4s > d$, and $\mc{H}^s(M)$ one of $H^s(\Xset,M)$, $H_{\mathrm{per}}^s(\Xset,M)$ or $H_0^s(\Xset,M)$. On the other hand, when $4s \leq d$ the minimax rate is dimension-free,
+	\begin{equation*}
+	\epsilon_n^{\star}\Bigl(\mc{H}^s(M)\Bigr) \asymp n^{-1/4},
+	\end{equation*}
+	revealing a distinction between the estimation and goodness-of-fit testing problems.
+	\item \textbf{Error rates of orthogonal series and smoothing spline-based tests.} 
+	Just as $\wh{f}_{\OS}$ and $\wh{f}_{\SM}$ achieve minimax optimal estimation rates, tests using the plug-in statistics
+	\begin{equation*}
+	T_{\OS} = \bigl\|\wh{f}_{\OS}\bigr\|_{\Leb^2(\Xset)}^2,~~\textrm{and}~~T_{\SM} = \bigl\|\wt{f}_{\SM}\bigr\|_{n}^2
+	\end{equation*}
+	are minimax optimal for the goodness-of-fit testing problem over Sobolev balls (see \citet{ingster2009} for analysis of the former statistic, and \citet{liu2019} for analysis of the latter).
+\end{itemize}
+
+\subsection{Our contributions}
+\label{subsec:our_contributions}
+
+\begin{itemize}
+	\item \textbf{Departure from what's already known.} At a high level, the connections between the graph-based methods~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} and the continuum methods outlined in Subsection~\ref{subsec:continuum_methods} give reason to believe that the strong statistical properties of the latter are shared by the former. Making this rough statement precise is the content of this paper. In particular, we will prove the following results:
 	\begin{itemize}
 		\item \textbf{Minimax optimal estimation.}
-		We show that with high probability,  $\norm{\wh{f}_{\LE} - f_0}_{n}^2 \lesssim n^{-2s/(2s + d)}$ whenever $f_0 \in C^s(\mc{X})$ for any $s \leq 1$, or $f_0 \in H^s(P)$ for $s = 1$. The same conclusions hold with respect to $\wt{f}_{\LS}$ when $d \leq 4$. 
+		We show that with high probability, $\norm{\wh{f}_{\LE} - f_0}_{n}^2 \lesssim n^{-2s/(2s + d)}$ over all $f_0 \in H^1(\Xset;M)$. The same conclusions hold with respect to $\wt{f}_{\LS}$ when $d \leq 4$. 
 		\item \textbf{Minimax optimal testing.}
-		We show that with high probability, a level-$\alpha$ test constructed using $T_{\LE}$ has non-trivial power whenever $f_0 \in C^s(\mc{X})$ for any $s \leq 1$---or $f_0 \in H^s(P)$ for $s = 1$---additionally satisfies $\norm{f_0}_{\Leb^2(P)} \gtrsim \max\{n^{-4s/(4s + d)},n^{-1/4}\}$. \textcolor{red}{The same conclusions hold with respect to $\wh{f}_{LS}$.}
+		We show that with high probability, a test constructed using $T_{\LE}$ has non-trivial power whenever $f_0 \in H^1(\Xset;M)$ satisfies $\norm{f_0}_{\Leb^2(\Xset)} \gtrsim \max\{n^{-2s/(4s + d)},n^{-1/4}\}$. \textcolor{red}{The same conclusions hold with respect to $\wt{f}_{LS}$.}
+		\item \textbf{Taking advantage of higher-order smoothness conditions.} Under appropriate boundary conditions on the function classes $H^s(\Xset)$ and additional smoothness conditions on the density $p$, when $s > 1$  each of the aforementioned conclusions hold for certain values of $d$.
 		\item \textbf{Manifold adaptivity.}
 		If $\mc{X} \subset \Rd$ is a submanifold of dimension $m < d$, each of the aforementioned rates hold with $d$ replaced by $m$.
-		\item \textbf{Taking advantage of higher-order smoothness conditions.} Under appropriate boundary conditions on the function classes $C^s$ and $H^s$ and additional smoothness conditions on $P$, when $s > 1$  each of the aforementioned conclusions hold for certain values of $d$.
-	\end{itemize}
-	\item \textbf{Notation.}
+	\end{itemize}	
 \end{itemize}
 
 \section{Minimax optimal graph Laplacian methods}
@@ -318,7 +434,7 @@ Theorem~\ref{thm:laplacian_smoothing_estimation1} is analogous to Theorem~\ref{t
 
 \begin{itemize}
 	\item \textbf{Proof techniques}: Because the solution to~\eqref{eqn:laplacian_smoothing} has an analytic form, we can rely on a bias-variance decomposition---as opposed to empirical process theory---to derive~Theorem~\ref{thm:laplacian_smoothing_estimation1}.
-	\item A key difference between Theorems~\ref{thm:laplacian_eigenmaps_estimation1} and~\ref{thm:laplacian_smoothing_estimation1} is that the latter holds only when $d \leq 4$. This restriction is unsurprising, and reflects a fundamental drawback in (penalized) least squares estimators more generally. The underlying phenomenon is similar to that elucidated by the seminal papers~\cite{birge1993} and~\cite{birge1998}: when the dimension $d$ is at least $4$, the parameter space is too large, and (penalized) least squares approaches are no longer minimax optimal. We should also mention that in a related context (estimation over a $d$-dimensional lattice graph), \cite{sadhanala2016} require the same restriction. 
+	\item A key difference between Theorems~\ref{thm:laplacian_eigenmaps_estimation1} and~\ref{thm:laplacian_smoothing_estimation1} is that the latter holds only when $d \leq 4$. This restriction is unsurprising, and reflects a fundamental drawback in (penalized) least squares estimators more generally. The underlying phenomenon is similar to that elucidated by the seminal papers~\cite{birge1993} and~\cite{birge1998}: when the dimension $d$ is large enough, the parameter space is too large, and (penalized) least squares approaches are no longer minimax optimal. It is interesting to note that we see a gap emerge between the graph- (Laplacian smoothing) and continuum (tensor product spline) estimator when $d = 3$: the former continues to be minimax optimal, whereas the latter no longer is. We should also mention that in a related context (estimation over a $d$-dimensional lattice graph), \cite{sadhanala2016} require the same restriction $d \leq 4$. 
 \end{itemize}
 
 \subsection{Minimax optimal hypothesis testing}
@@ -356,7 +472,7 @@ Under appropriate conditions, the Laplacian eigenmaps test statistic $T_{\LE}$ h
 
 \section{Higher-order smoothness classes}
 \label{sec:higher_order_smoothness_classes}
-The estimation and testing rates derived in Section~\ref{sec:minimax_optimal_graph_Laplacian_methods} exhibit a classic curse of dimensionality: as $d$ gets larger, inference becomes (much) harder. As covered in Section~\ref{sec:problem_setup_and_background}, it is well known that by making additional structural assumptions---either on the regression function $f_0$, the distribution $P$, or both---one can derive improved minimax rates. In the following two sections, we show that under such assumptions, the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} can in certain situations obtain the faster (known) minimax rates in the nonparametric estimation and testing problems.
+The estimation and testing rates derived in Section~\ref{sec:minimax_optimal_graph_Laplacian_methods} reflect a bonafide curse of dimensionality: as  the dimension $d$ gets larger, inference quickly becomes (much) harder. As covered in Section~\ref{sec:problem_setup_and_background}, it is well known that by making additional structural assumptions---either on the regression function $f_0$, the distribution $P$, or both---one can derive improved minimax rates. In the following two sections, we show that under such assumptions, the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} can in certain situations obtain the faster (known) minimax rates in the nonparametric estimation and testing problems.
 
 In this section, we will assume that $f_0 \in H^s(P,M)$ for some integer $s > 1$. In other words, we will assume that $f_0$ has at least two smooth derivatives. 
 
@@ -505,7 +621,6 @@ We note that~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test
 
 \subsection{Estimation: Laplacian eigenmaps on a fixed graph}
 
-
 In Lemma~\ref{lem:le_fixed_graph_estimation}, we upper bound the mean squared error of $\wh{f}_{\LE}(G)$. Our bound will be stated as a function of $f_0^T \Lap_G^s f_0$--a measure of the smoothness the signal $f_0$ displays over the graph $G$--as well as the $\kappa$th eigenvalue $\lambda_{\kappa}(G)$.
 
 \begin{lemma}
@@ -551,7 +666,7 @@ The two terms on the right hand side of~\eqref{eqn:le_fixed_graph_estimation} an
 \subsection{Testing: Laplacian eigenmaps on a fixed graph.}
 
 \begin{lemma}
-	\label{lem:fixed_graph_testing}
+	\label{lem:le_fixed_graph_testing}
 	Suppose we observe a graph $G$ and responses $Y$ according to the model~\eqref{eqn:fixed_graph_regression_model}. Then for any $1 \leq \kappa \leq n$, each of the following holds for any $b \geq 1$,
 	\begin{enumerate}
 		\item \textbf{Type I error:} Under the null hypothesis $f_0 = 0$,

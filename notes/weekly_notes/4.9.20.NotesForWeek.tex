@@ -1,0 +1,334 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\makeatletter
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+\newcommand{\Lap}{{\bf L}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\LE}{\mathrm{LE}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 4/3/20 - 4/9/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Suppose we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$ according to the following random design regression model. The design points $X_1,\ldots,X_n \in \Xset$ are independently sampled from a distribution $P$, and the responses
+\begin{equation*} 
+Y_i = f_0(X_i) + \varepsilon_i
+\end{equation*}
+where $f_0: \Xset \to \Reals$ is the unknown regression function and $\varepsilon_i$ are independent $N(0,1)$ noise samples. Our goal is to test
+\begin{equation*}
+\mathbf{H}_0: f_0 = 0,~~ \mathbf{H}_a: f_0 \neq 0.
+\end{equation*}
+Our test statistic $T = \norm{\wh{f}}_n^2$ will be a plug-in estimator of the $\Leb_2$-norm of $f_0$. The estimator $\wh{f}$ of the function $f_0$ will be a truncated-series estimator, using eigenvectors of a graph Laplacian. We now define the graph $\wb{G}_{n,r}$ we will build over the design points ${\bf X} = X_1,\ldots,X_n$, which we term the \emph{histogram lattice}.
+
+\paragraph{Histogram Lattice.}
+
+Let $0 < r < 1$, and let $M = 1/r$. Let
+\begin{equation*}
+Z = \Bigl\{ \frac{1}{M}\bigl(2m_1 - 1,\ldots,2m_d - 1\bigr): m \in [M]^d \Bigr\}
+\end{equation*}
+be a set of evenly spaced grid points. (We will always assume $M$ is an integer, merely to simplify some notational and definitional details.) A natural graph associated with $Z$ is the lattice
+\begin{equation*}
+\wb{G} = (Z,\wb{E}),~~ (z,z') \in \wb{E} ~\textrm{if}~ \norm{z - z'}_2 = r
+\end{equation*}
+Let $\Pi: [0,1]^d \to Z$ map points $x \in [0,1]^d$ to the nearest grid points $z \in Z$,
+\begin{equation*}
+\Pi(x) := \argmin_{z \in Z}~ \norm{z - x}_2 
+\end{equation*}
+The \emph{histogram lattice} $\wb{G}_{n,r} = ({\bf X}, \wb{E}_{n,r})$ is a product graph induced by $\wb{G}$ and the mapping $\Pi$, with edges 
+\begin{equation*}
+(X_i,X_j) \in \wb{E}_{n,r} ~\textrm{if}~ \Bigl(\Pi(X_i),\Pi(X_j)\Bigr) \in \wb{E}.
+\end{equation*}
+
+The matrix $\wb{L}_{n,r}$ is the graph Laplacian of $\wb{G}_{n,r}$ and $(\lambda_1,v_1),\ldots,(\lambda_n,v_n)$ are the eigenvector/eigenvalue pairs of $\wb{L}_{n,r}$, defined by the equation
+\begin{equation*}
+\wb{L}_{n,r} v_k = \lambda_k v_k,~~ \norm{v_k}_n^2 = 1.
+\end{equation*}
+For a positive integer $\kappa$, the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ is defined as 
+\begin{equation*}
+\wh{f}_{\LE} := \sum_{k = 1}^{\kappa} \dotp{Y}{v_k}_n v_k.
+\end{equation*}
+and the resulting test statistic is thus
+\begin{equation*}
+\wh{T}_{\LE} = \sum_{k = 1}^{\kappa} \bigl(\dotp{Y}{v_k}_n\bigr)^2.
+\end{equation*}
+
+\section{Approximation Error}
+
+We make some assumptions on the function $f_0$ and the distribution $P$.
+
+\begin{enumerate}[label=(A\arabic*)]
+	\item 
+	\label{asmp:smooth_function}
+	$f_0 \in C^{s}(\Xset;B)$ for some $s > 0$. If $s > 1$, then $f$ is also compactly supported on a strict subset of $\Xset$.
+	
+	\item 
+	\label{asmp:smooth_density}
+	$P$ admits a density $p$ with respect to the Lebesgue measure on $\Reals^d$. The density $p \in C^{}(\Xset;p_{\max})$, for some $k > 0$.
+\end{enumerate}
+
+\begin{theorem}
+	\label{thm:approximation_error}
+	Suppose assumptions~\ref{asmp:smooth_function} and~\ref{asmp:smooth_density} are satisfied for some $s \geq 1$, and $k = s - 1$. Then, there exists a constant $c$ such that 
+	\begin{equation*}
+	\sum_{k = 1}^{\kappa} \bigl(\dotp{v_k}{f_0}_n\bigr)^2 \geq c \cdot \norm{f_0}_2^2 - \kappa^{-2/d}
+	\end{equation*}
+\end{theorem}
+
+\section{Proof of Theorem~\ref{thm:approximation_error}}
+
+Let $\wb{f}_0: {\bf X} \to \Reals$ be the histogram estimate of $f_0$, defined as
+\begin{equation*}
+\wb{f}_0(X) = \frac{1}{\abs{Q(\Pi(X))}} \sum_{i = 1}^{n} f_0(X_i) \cdot \1\Bigl\{\pi(X_i) = \pi(X)\Bigr\}
+\end{equation*}
+We shall proceed according to the following steps.
+\begin{enumerate}
+	\item Under the assumption~\ref{asmp:smooth_density}, for any $(\log(n)/n)^{1/d} \leq r$, there exist constants $c$ and $C$ such that
+	\begin{equation}
+	\label{eqn:approximation_error_pf1}
+	c \cdot \min\Bigl\{nr^{d+2}\kappa^{2/d}, \deg_{\min}(\wb{G}_{n,r})\Bigr\} \leq \lambda_{\kappa}(\wb{G}_{n,r}) \leq C \cdot nr^{d + 2}\kappa^{2/d}
+	\end{equation}
+	and
+	\begin{equation}
+	\label{eqn:approximation_error_pf2}
+	c\cdot nr^{d} \leq \deg_{\min}(\wb{G}_{n,r}) \leq C \cdot nr^d
+	\end{equation}
+	with probability at least $1 - \textcolor{red}{(???)}$.  Supposing~\eqref{eqn:approximation_error_pf1} and~\eqref{eqn:approximation_error_pf2} hold, and additionally $r < \kappa^{-1/d}$, then some straightforward algebra implies
+	\begin{equation*}
+	c n r^{d+2} \kappa^{2/d}  \leq \lambda_{\kappa}(\wb{G}_{n,r}) \leq \deg_{\min}(\wb{G}_{n,r}).
+	\end{equation*}
+	\item \textbf{Deterministic bounds:} 
+	Specifically as a consequence of the upper bound  $\lambda_k(\wb{G}_{n,r}) \geq \deg_{\min}(\wb{G}_{n,r})$, we have that
+	\begin{equation}
+	\label{eqn:approximation_error_pf3}
+	\sum_{k = 1}^{\kappa} \bigl(\dotp{v_k}{f_0}_n\bigr)^2 = \sum_{k = 1}^{\kappa} \bigl(\dotp{v_k}{\wb{f}_0}_n\bigr)^2
+	\end{equation}
+	For any $f \in \Reals^n$, we have
+	\begin{equation}
+	\norm{f}_n^2 - \frac{f^T \wb{L}_{n,r}^s f}{n \lambda_{\kappa}(\wb{G}_{n,r})}
+	\end{equation}
+	
+	Neither the equality nor the inequality follow from probabilistic reasoning (except through the reasoning used to establish $\lambda_k(\wb{G}_{n,r}) \geq \deg_{\min}(\wb{G}_{n,r})$). The equality follows from the product graph structure of $\wb{G}_{n,r}$. The inequality is a standard inequality used in the analysis of truncated-series estimators, and would hold for any graph $G$ on the vertices ${\bf X}$. 
+	
+	\item Under the assumptions~\ref{asmp:smooth_function} and~\ref{asmp:smooth_density}, the graph Sobolev seminorm is upper bounded
+	\begin{equation*}
+	\wb{f}_0^T \wb{L}_{n,r}^s \wb{f}_0 \leq n^{s + 1}r^{s(d + 2)} B^2
+	\end{equation*}
+	with probability at least $1 - C_1 r^{-d} \exp\{-c_2 nr^d\}$.
+	\item The empirical norm of the histogram estimate $\wb{f}_0$ is lower bounded
+	\begin{equation*}
+	\norm{\wb{f}_0}_n^2 \geq c \norm{f_0}_{\Leb_2}^2
+	\end{equation*}
+	with probability at least $1 - \textcolor{red}{???}$.
+\end{enumerate}
+
+\subsection{Step 1: Bounds on graph eigenvalues}
+
+\subsection{Step 2: Deterministic bounds}
+
+\subsubsection{Proof of~\eqref{eqn:approximation_error_pf3}.}
+The graph $\wb{G}_{n,r}$ is a certain type of product graph, which we term the~\textcolor{red}{(Alden product graph)}. We shall show that all product graphs of this type satisfy an equality similar to~\eqref{eqn:approximation_error_pf3}.
+
+\paragraph{\textcolor{red}{(Alden product graph)}.}
+Let $G = ([\mc{M}],E)$ be a graph on $\mc{M} \geq 1$ vertices, and let $n_1, \ldots, n_{\mc{M}}$ each be positive integers; let $N = \sum_{i = 1}^{\mc{M}} n_i$.  The \textcolor{red}{(Alden product)} graph $G^{\boxdot}(G;n_1,\ldots,n_{\mc{M}})$ is defined as
+\begin{equation*}
+G^{\boxdot}(G;n_1,\ldots,n_{\mc{M}}) = \biggl(\bigcup_{m = 1}^{\mc{M}} \bigcup_{i = 1}^{n_m} (m,i),~~ E^{\boxdot}\biggr),~~\textrm{where}~ \Bigl((\ell,i),(m,j)\Bigr) \in E^{\boxdot}~\textrm{if}~ (\ell,m) \in E.
+\end{equation*}
+We will simply write $G^{\boxdot}$ when it is clear from context what $G$ and $n_1,\ldots,n_{\mc{M}}$ are. Lemma~\ref{lem:product_eigenvectors} characterizes some of the eigenvectors of $G^{\boxdot}$.
+\begin{lemma}
+	\label{lem:product_eigenvectors}
+	For any $m \in \mc{M}$, and any $i \neq j \in [n_{m}]$, the vector
+	\begin{equation}
+	\label{eqn:product_eigenvectors}
+	g\bigl[(m',k)\bigr] = \1\Bigl\{(m',k) = (m,i)\Bigr\} - \1\Bigl\{(m',k) = (m,j)\Bigr\}
+	\end{equation}
+	is an eigenvector of $G^{\boxdot}$, with eigenvalue $\deg\Bigl((m,i);G^{\boxdot}\Bigr)$.
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lem:product_eigenvectors}.]
+	content...
+\end{proof}
+We can see from Lemma~\ref{lem:product_eigenvectors} that any eigenvector $g$ of $G^{\boxdot}$ which does not satisfy~\eqref{eqn:product_eigenvectors} must instead be piecewise constant, i.e. $g\bigl[(m,i)\bigr] = g\bigl[(m,j)\bigr]$ for all $m \in [\mc{M}]$ and $i,j \in [n_m]$. For any such eigenvector, and for any $f: \bigcup_{m = 1}^{\mc{M}} \bigcup_{i = 1}^{n_m} (m,i) \to \Reals$, we have that
+\begin{equation*}
+\sum_{m = 1}^{\mc{M}} \sum_{i = 1}^{n_m} f\bigl[(m,i)\bigr] g\bigl[(m,i)\bigr] = \sum_{m = 1}^{\mc{M}} \sum_{i = 1}^{n_m} \wb{f}\bigl[(m,i)\bigr] g\bigl[(m,i)\bigr]
+\end{equation*}
+for $\wb{f}\bigl[(m,i)\bigr] = (n_m)^{-1} \sum_{i = 1}^{n_m} f\bigl[(m,i)\bigr]$. Corollary~\ref{cor:product_eigenvectors} follows immediately from this reasoning.
+\begin{corollary}
+	\label{cor:product_eigenvectors}
+	Let $k$ be an integer such that $\lambda_k(G^{\boxdot}) < \deg\Bigl((m,i);G^{\boxdot}\Bigr)$. Then the eigenvectors $v_1(G^{\boxdot}),\ldots,v_k(G^{\boxdot})$ are all piecewise constant. As a result, for any function $f$,
+	\begin{equation*}
+	\sum_{k = 1}^{\kappa} \biggl(\sum_{m = 1}^{\mc{M}} \sum_{i = 1}^{n_m} f\bigl[(m,i)\bigr] v_k\bigl[(m,i)\bigr]\biggr)^2 = \sum_{k = 1}^{\kappa} \biggl(\sum_{m = 1}^{\mc{M}} \sum_{i = 1}^{n_m} \wb{f}\bigl[(m,i)\bigr] v_k\bigl[(m,i)\bigr]\biggr)^2
+	\end{equation*}
+\end{corollary}
+We obtain the equality~\eqref{eqn:approximation_error_pf3} by applying Corollary~\ref{cor:product_eigenvectors} to the graph $\wb{G}_{n,r}$.
+
+\subsection{Step 3: Upper bound on the graph Sobolev semi-norm}
+
+\subsection{Step 4: Lower bound on the empirical norm of the histogram estimate}
+
+ 
+
+\end{document}

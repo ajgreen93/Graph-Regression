@@ -1,0 +1,481 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\makeatletter
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LS}{\mathrm{LS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 3/19/20 - 3/26/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $G_0 = ([\mc{M}],E_0)$ be a graph on $\mc{M} \geq 1$ vertices. Let $N_1, \ldots, N_{\mc{M}}$ each be positive integers. The \textcolor{red}{(Alden product)} graph $H_0$ on $n = \sum N_m$ nodes is defined as
+\begin{equation*}
+H_0 = \biggl(\bigcup_{m = 1}^{\mc{M}} \bigcup_{i = 1}^{N_m} (m,i),~~ F_0\biggr),~~\textrm{where}~ (\ell,i) \sim (m,j)~~\textrm{in $H_0$ if $\ell \sim m$ in $G_0$.}  
+\end{equation*}
+Let $\lambda_k(H_0)$ denote the $k$th smallest eigenvalue of the Laplacian $L_{H_0}$, and let
+\begin{equation*}
+N_{\min} = \min_{m \in [\mc{M}]} N_m,~~N_{\max} = \min_{m \in [\mc{M}]} N_m
+\end{equation*} We wish to prove the following Lemma
+\begin{lemma}
+	\label{lem:alden_product_eigenvalues}
+	For $k \in [n]$,
+	\begin{equation}
+	\label{eqn:alden_product_eigenvalue}
+	\lambda_k(H_0) \geq \frac{\deg_{\min}(G_0)N_{\min}^3}{\deg_{\max}(G_0)N_{\max}^2}  \cdot
+	\begin{cases}
+	\lambda_k(G_0),& ~~\textrm{if $k \in [\mc{M}]$} \\
+	1,& ~~\textrm{otherwise.}
+	\end{cases}
+	\end{equation}
+\end{lemma}
+
+Our proof will involve a series of matrix and graph comparisons. For a graph $G$ on $M$ vertices, let $N_G$ be the normalized Laplacian matrix, with associated eigenvalues $\lambda_1(N_G) \leq \cdots \leq \lambda_M(N_G)$. Let  $\sigma_1,\ldots,\sigma_{\mc{M}}$ be contractions from $[N_{\max}]$ to $[N_{1}],\ldots,[N_{\mc{M}}]$, respectively, to be defined later. The mappings $\sigma_m$ and the graph $H_0$ jointly induce a weighted graph 
+\begin{equation}
+\label{eqn:alden_product_eigenvalue_0}
+\wb{H}_0 = \biggl([\mc{M}] \times [N_{\max}], W_0\biggr),~~ \textrm{where $W_0[(m,j),(m',j')] = \frac{ \1\bigl\{(m,\sigma_m(j)) \sim (m',\sigma_{m'}(j'))~\textrm{in $H$} \bigr\}}{|\{\ell:\sigma_m(\ell) = \sigma_m(j)\}| \cdot |\{\ell':\sigma_{m'}(\ell') = j' \}|}$}
+\end{equation}
+
+\textcolor{red}{(TODO)}: Define $\wb{G}_0$ here.
+
+We shall proceed according to the following steps:
+\begin{enumerate}
+	\item For each $k \in [n]$, 
+	\begin{equation}
+	\label{eqn:alden_product_eigenvalue_pf1}
+	\lambda_k(H_0) \geq \deg_{\min}(H_0) \cdot \lambda_k(N_{H_0})
+	\end{equation}
+	\item For each $k \in \bigl[n\bigr]$,
+	\begin{equation}
+	\label{eqn:alden_product_eigenvalue_pf2}
+	\lambda_k(N_{H_0}) \geq \lambda_k(N_{\wb{H}_0})
+	\end{equation}
+	\item For each $k \in [\mc{M} N_{\max}]$, 
+	\begin{equation}
+	\label{eqn:alden_product_eigenvalue_pf3}
+	\lambda_k(N_{\wb{H}_0}) \geq \frac{N_{\min}^2}{N_{\max}^2} \cdot \lambda_k(N_{\wb{G}_0})
+	\end{equation}
+	\item For each $k \in [\mc{M}]$,
+	\begin{equation}
+	\label{eqn:alden_product_eigenvalue_pf4}
+	\wt{\lambda}_k(\wb{G}_0) = \wt{\lambda}_k(G_0)
+	\end{equation}
+	Otherwise if $k > \mc{M}$, $\wt{\lambda}_k(\wb{G}_0) = 1$.
+	\item For each $k \in [\mc{M}]$,
+	\begin{equation*}
+	\wt{\lambda}_k(G_0) \geq \frac{\lambda_k(G_0)}{\deg_{\max}(G)}.
+	\end{equation*}
+\end{enumerate}
+
+\textcolor{red}{(TODO): Fill in proof.}
+
+\paragraph{Step 1: Moving to Normalized Laplacian.}
+For simplicity, in this section we will deal with an arbitrary $G = ([n], E)$, and show
+\begin{equation*}
+\lambda_k(G) \geq \deg_{\min}(G) \cdot \lambda_k(N_G)
+\end{equation*}
+for all $k \in [n]$. If $\deg_{\min}(G) = 0$, the statement is trivially obvious, and so we will suppose without loss of generality that $\deg_{\min}(G) > 0$.
+
+Let $L = D - A$, where $A = A(G)$ is the adjacency matrix of $G$, $D := D(G)$ is the degree matrix associated with $G$, and $L$ is therefore the Laplacian of $G$. Let $N = D^{-1/2} L D^{-1/2}$ be the normalized Laplacian of $G$. Using the Courant-Fischer min max theorem, and letting $D^{-1/2} V = \{D^{-1/2} v: v\in V\}$ for any subspace $V \subset \Reals^n$, we have
+\begin{align*}
+\lambda_k(G) & = \min_{V} \Bigl\{ \max_{v \in V} \frac{v^T L v}{v^T v} \Bigr\} \\
+& = \min_{V} \Bigl\{ \max_{u \in D^{-1/2} V} \frac{u^T N u}{u^T D^{-1} u} \Bigr\} \\
+& \geq \deg_{\min}(G) \min_{V} \Bigl\{ \max_{u \in D^{-1/2} V} \frac{u^T N u}{u^T u} \Bigr\}
+\end{align*}
+where the minimum is always over all $k$ dimensional subspaces of $\Reals^n$ and the second line follows upon substituting $u = D^{1/2} v$. Since every vertex has non-zero degree, both $D^{1/2}$ and $D^{-1/2}$ are full rank matrices, and $\dim(D^{-1/2} V) = \dim(V)$ for all subspaces $V$. Hence, we have
+\begin{equation*}
+\min_{V} \Bigl\{ \max_{u \in D^{-1/2} V} \frac{u^T N u}{u^T u} \Bigr\} = \min_{U} \Bigl\{ \max_{u \in U} \frac{u^T N u}{u^T u} \Bigr\} = \lambda_k(N_G).
+\end{equation*} 
+Choosing $G = H_0$, we obtain~\eqref{eqn:alden_product_eigenvalue_pf1}.
+
+\paragraph{Step 2: Moving to a weighted graph.}
+
+By definition, the graph $H_0$ is a contraction of $\wb{H}_0$. Moreover, for any vertices $(m,j)$ and $(m',j')$ which are contracted together, $m = m'$ and $\sigma_m(j) = \sigma_m(j')$, so the two vertices have all the same edge weights in $\wb{H}_0$. The eigenvalue inequality~\eqref{eqn:alden_product_eigenvalue_pf2} then follows from Lemma~\ref{lem:contraction}.
+
+\paragraph{Step 3: Moving to unweighted tensor product graph.}
+We first lower bound $N_{\wb{H}_0}$ by an unweighted tensor product graph $N_{\wb{G}_0}$, where $\wb{G}_0$ is defined as
+\begin{equation*}
+\wb{G}_0 = \bigl([\mc{M}] \times [N_{\max}], E(\wb{G}_0)\bigr),~~\textrm{where}~~ (m,j) \sim (m',j')~ \textrm{in $\wb{G}_0$ if}~ m \sim m'~\textrm{in $G_0$.} 
+\end{equation*}
+The graph $\wb{H}_0$ has the same adjacency structure as $\wb{G}_0$, but edges with weights between $0$ and $1$. To have our lower bound be sufficiently large, we would like to make the minimum of these weights large. We achieve by this ensuring the maps $\sigma_m$ do not map too many vertices in $[\mc{M}] \times [N_{\max}]$ to the same vertex in $V(H_0)$. Formally, we let
+\begin{equation*}
+\sigma_m\bigl(i\bigr) := i \mod N_{m}
+\end{equation*}
+Then, for any $(m,i) \in [\mc{M}] \times [N_{\max}]$, clearly $\abs{\{\ell:\sigma_m(\ell) = \sigma_m(j)\}} \leq N_{\max} / N_{\min}$. Recalling the definition of the weight matrix $W_0$ in~\eqref{eqn:alden_product_eigenvalue_0}, by Lemma~\ref{lem:weighted_graph_comparison}, we have that
+\begin{equation*}
+\lambda_k(N_{\wb{H}_0}) \geq \frac{N_{\min}^2}{N_{\max}^2} \lambda_k(N_{\wb{G}_0}).
+\end{equation*}
+
+\paragraph{Step 4: Completing the proof.}
+We have that $\wb{G}_0 = G_0 \otimes K_{N_{\max}}$, and we may therefore characterize the spectrum $\wt{\Lambda}(\wb{G}_0)$ by $\wt{\Lambda}(G_0)$ and $\wt{\Lambda}(K_{N_{\max}})$ using Lemma~\ref{lem:tensor}. The latter spectrum is simply
+\begin{equation*}
+\lambda_1(N_{K_{N_{\max}}}) = 0, \lambda_2(N_{K_{N_{\max}}}),\ldots,\lambda_N(N_{K_{N_{\max}}}) = 1,
+\end{equation*}
+and therefore by Lemma~\ref{lem:tensor}
+\begin{equation}
+\wt{\lambda}_k(\wb{G}_0) =
+\begin{cases*}
+\wt{\lambda}_k(G_0),& ~~\textrm{for $k = 1,\ldots,\mc{M}$} \\
+1,& ~~ \textrm{for $k = \mc{M} + 1,\ldots, \mc{M} \cdot N_{\max}$.}
+\end{cases*}
+\end{equation}
+
+
+\section{Additional Theory}
+
+\subsection{Contractions}
+
+Let $H = ([n + m], W_H)$ be an arbitrary weighted graph on $n + m$ vertices. Any mapping $\sigma: [n + m] \to [n]$ induces a graph $G = ([n], W_G)$ with weights
+\begin{equation*}
+W_G[k,k'] = \sum_{\ell: \sigma(\ell) = k} \sum_{\ell': \sigma(\ell') = k'} W_H[\ell,\ell']
+\end{equation*}
+which we call the contraction of $H$ induced by $\sigma$.
+
+\begin{lemma}
+	\label{lem:contraction}
+	Suppose that the graph $H$ and contraction $\sigma$ satisfy the following property: for all $\ell, \ell'$ such that $\sigma(\ell) = \sigma(\ell')$, $W_H[\ell,\cdot] = W_H[\ell',\cdot]$. Then, 
+	\begin{equation*}
+	\lambda_k(N_G) \geq \lambda_k(N_{H}),~~\textrm{for all $k \in [n]$.}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	The following two facts are key consequences of the assumption that $W_H[\ell,\cdot] = W_H[\ell',\cdot]$ for all $\sigma(\ell) = \sigma(\ell')$. First, for any $i$ and $i' \in [n + m]$,
+	\begin{align*}
+	W_G[\sigma(i),\sigma(i')] & = \sum_{\ell: \sigma(\ell) = \sigma(i)} \sum_{\ell': \sigma(\ell') = \sigma(i')} W_H[\ell,\ell'] \\
+	& = \sum_{\ell: \sigma(\ell) = \sigma(i)} \sum_{\ell': \sigma(\ell') = \sigma(i')} W_H[i,i'] = W_H[i,i'] \cdot N_{\sigma}(i) N_{\sigma}(i').
+	\end{align*}
+	Second, for any $\ell \in [n + m]$,
+	\begin{align*}
+	\deg_H(\ell) & = \sum_{i = 1}^{n + m} W_H[i,\ell] \\
+	& = \sum_{i = 1}^{n + m} \frac{W_G\bigl[\sigma(i),\sigma(\ell)\bigr]}{N_{\sigma}(i) N_{\sigma(\ell)}} \\
+	& = \sum_{j = 1}^{n} \frac{W_G\bigl[j,\ell\bigr]}{N_{\sigma}(\ell)} \\
+	& = \frac{\deg_G(\sigma(\ell))}{N_{\sigma}(\ell)}.
+	\end{align*}
+	
+	
+	Now, let $v$ be an eigenvector of $N_G$, meaning there exists $\lambda > 0$ such that
+	\begin{equation*}
+	N_G v = \lambda v
+	\end{equation*}
+	Define $u: [n + m] \to \Reals$ to be the vector
+	\begin{equation*}
+	u(\ell) = \frac{v(\sigma(\ell))}{\sqrt{N_{\sigma}(\ell)}},~~\textrm{where $N_{\sigma}(\ell) = \Bigl|\{\ell':\sigma(\ell') = \sigma(\ell)\}\Bigr|$}
+	\end{equation*}
+	The following manipulations show that $u$ is an eigenvector of $N_H$, with eigenvalue $\lambda$. 
+	\begin{align*}
+	\Bigl(N_H u\Bigr)(\ell) & = \sum_{i = 1}^{n + m} \Bigl\{ \frac{u(\ell)}{\deg_H(\ell)} - \frac{u(i)}{\sqrt{\deg_H(\ell) \deg_H(i)}} \Bigr\} W_{H}[\ell,i] \\
+	 & = \sum_{i = 1}^{n + m} \Bigl\{ \frac{v\bigl(\sigma(\ell)\bigr)}{\sqrt{N_{\sigma}(\ell)}\deg_H(\ell)} - \frac{v\bigl(\sigma(i)\bigr)}{\sqrt{N_{\sigma}(i)\deg_H(\ell) \deg_H(i)}} \Bigr\} W_{H}[\ell,i] \\
+	& = \sum_{i = 1}^{n + m} \Bigl\{ \frac{\sqrt{N_{\sigma}(\ell)} v\bigl(\sigma(\ell)\bigr)}{\deg_G\bigl(\sigma(\ell)\bigr)} - \frac{\sqrt{N_{\sigma}(\ell)} v\bigl(\sigma(i)\bigr)}{\sqrt{\deg_G\bigl(\sigma(\ell)\bigr) \deg_G\bigl(\sigma(i)\bigr)}} \Bigr\} W_{H}[\ell,i]  \\
+	& = \sum_{i = 1}^{n + m} \Bigl\{ \frac{\sqrt{N_{\sigma}(\ell)} v\bigl(\sigma(\ell)\bigr)}{\deg_G\bigl(\sigma(\ell)\bigr)} - \frac{\sqrt{N_{\sigma}(\ell)} v\bigl(\sigma(i)\bigr)}{\sqrt{\deg_G\bigl(\sigma(\ell)\bigr) \deg_G\bigl(\sigma(i)\bigr)}} \Bigr\} \frac{W_{G}\Bigl[\sigma(\ell),\sigma(i)\Bigr]}{N_{\sigma}(\ell) N_{\sigma}(i)} \\
+	& = \frac{1}{\sqrt{N_{\sigma}(\ell)}}\sum_{i = 1}^{n + m} \Bigl\{ \frac{ v\bigl(\sigma(\ell)\bigr)}{\deg_G\bigl(\sigma(\ell)\bigr)} - \frac{ v\bigl(\sigma(i)\bigr)}{\sqrt{\deg_G\bigl(\sigma(\ell)\bigr) \deg_G\bigl(\sigma(i)\bigr)}} \Bigr\} \frac{W_{G}\Bigl[\sigma(\ell),\sigma(i)\Bigr]}{N_{\sigma}(i)} \\
+	& \overset{(i)}{=} \frac{1}{\sqrt{N_{\sigma}(\ell)}}\sum_{j = 1}^{n} \Bigl\{ \frac{ v\bigl(\sigma(\ell)\bigr)}{\deg_G\bigl(\sigma(\ell)\bigr)} - \frac{ v\bigl(j\bigr)}{\sqrt{\deg_G\bigl(\sigma(\ell)\bigr) \deg_G\bigl(j\bigr)}} \Bigr\} W_{G}\Bigl[\sigma(\ell),j\Bigr] \\
+	& = \frac{1}{\sqrt{N_{\sigma}(\ell)}} \lambda v\bigl(\sigma(\ell)\bigr) = \lambda u(\ell),
+	\end{align*}
+	where $(i)$ follows from the substitution $j = \sigma(i)$.
+	
+	Therefore every eigenvalue of $G$ is also an eigenvalue of $H$. It follows immediately that the $k$th smallest eigenvalue of $H$ must be no greater than the $k$th smallest eigenvalue of $G$.
+\end{proof}
+
+\subsection{Weighted graphs}
+
+\begin{lemma}
+	\label{lem:weighted_graph_comparison}
+	Let $G = ([n],E)$ be an unweighted and connected graph, and let $A$ be an $n \times n$ symmetric matrix with entries $0 < A_{ij} < 1$. Let $H = ([n],W)$ be a weighted graph with weights
+	\begin{equation*}
+	W_{ij} = A_{ij} \times \1\{(i,j) \in G\}.
+	\end{equation*}
+	Then, 
+	\begin{equation*}
+	\lambda_k(N_H) \geq \min \{A_{ij}\}  \cdot \lambda_k(N_G)
+	\end{equation*}
+	for all $k = 1,\ldots,n$.
+\end{lemma}
+\begin{proof}
+	Note that since $A$ has strictly positive entries and $G$ is connected, the degree of every vertex $i \in [n]$ is positive in both $G$ and $H$; thus $D_H$ and $D_G$ are full rank, and so is $D_G^{1/2}D_H^{-1/2}$. By the Courant-Fischer Theorem,
+	\begin{align*}
+	\lambda_k(N_H) & = \min_V \biggl\{ \max_{v} \Bigl\{\frac{v^T N_H v}{v^T v}: v \in V~\textrm{and}~ v \neq 0\Bigr\} : \dim(V) = k\biggr\} \\
+	& = \min_V \biggl\{ \max_{u} \Bigl\{\frac{u^T L_H u}{u^T D_H u}: u \in D_H^{-1/2} V~\textrm{and}~ u \neq 0\Bigr\} : \dim(V) = k\biggr\} \tag{substituting $u = D_H^{-1/2}v$}\\ 
+	& \geq \min \{A_{ij} \} \cdot \min_{V} \biggl\{ \max_{u} \Bigl\{\frac{u^T L_G u}{u^T D_G u}: u \in D_H^{-1/2} V~\textrm{and}~ u \neq 0\Bigr\} : \dim(V) = k\biggr\} \\
+	& = \min \{A_{ij} \} \cdot \min_{V} \biggl\{ \max_{w} \Bigl\{\frac{w^T N_G w}{w^Tw}: w \in D_G^{1/2} D_H^{-1/2} V~\textrm{and}~ u \neq 0\Bigr\} : \dim(V) = k\biggr\} \tag{substituing $w = D_G^{1/2} u$} \\
+	& = \min \{A_{ij} \} \cdot \lambda_k(N_G),
+	\end{align*}
+	where the last inequality follows from Lemma~\ref{lem:variational}.
+\end{proof}
+
+\subsection{Tensor product graphs}
+For an unweighted graph $G = ([n],E)$, the random walk matrix $P_G$ has entries
+\begin{equation*}
+(P_G)_{ij} = \frac{1}{\deg_G(i)} \1\{(i,j) \in E\}.
+\end{equation*}
+Recall that the spectrum $\Lambda(P_G) = 1 - \Lambda(N_G)$ (see, e.g. \textcolor{red}{(von Luxburg)}).
+
+For graphs $G_1 = ([N],E_1)$ and $G_2 = ([M],E_2)$, the tensor $H = G_1 \otimes G_2$ is defined over the vertex set $[N] \times [M]$, with an edge between $(i,k)$ and $(j,l)$ if and only if $i$ is connected to $j$ in $G_1$ and $k$ is connected to $l$ in $G_2$.
+\begin{lemma}
+	\label{lem:tensor}
+	Let $G_1 = ([N],E_1)$ and $G_2 = ([M],E_2)$ be unweighted graphs, and let $H = G_1 \otimes G_2$. Then, the spectrum
+	\begin{equation*}
+	\Lambda(N_H) = \Bigl\{\lambda_k(N_{G_1}) + \lambda_k(N_{G_2}) - \lambda_k(N_{G_1}) \cdot \lambda_{\ell}(N_{G_1}): (k,\ell) \in [N] \times [M] \Bigr\}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We will abbreviate $P_1 := P_{G_1}$ and $P_2 := P_{G_2}$. Let $v_k$ and $u_{\ell}$ satisfy
+	\begin{equation*}
+	P_1 v_{k} = \lambda_k v_k,~~ P_2 u_{\ell} = \lambda_{\ell} u_{\ell}.
+	\end{equation*}
+	
+	Let $w: \Reals^{N \times M}$ be defined by $w_{ij}  = v_{k,i} u_{\ell,j}$. We will show that $w$ is an eigenvector of $P_H$ satisfying 
+	\begin{equation*}
+	P_H w = \lambda_k \lambda_{\ell} \cdot w.
+	\end{equation*}
+	To see this, note that
+	\begin{align*}
+	\deg_H\bigl((i,j)\bigr) & = \sum_{i' = 1}^{N} \sum_{j' = 1}^{M} \1\Bigl\{(i,j) \sim (i',j') ~\textrm{in}~ H \Bigr\} \\
+	& = \sum_{i' = 1}^{N} \sum_{j' = 1}^{M} \1\Bigl\{i \sim i' ~\textrm{in}~ G_1 \Bigr\} \1\Bigl\{j \sim j' ~\textrm{in}~ G_2 \Bigr\} \\ 
+	& = \deg_{G_1}(i) \deg_{G_2}(j),
+	\end{align*}
+	and therefore
+	\begin{align*}
+	\bigl(P_Hw\Bigr)_{ij} & = \sum_{i' = 1}^{N} \sum_{j' = 1}^{M} \frac{w_{i'j'}}{\deg_H(i',j')} \1\Bigl\{(i,j) \sim (i',j') ~\textrm{in}~ H \Bigr\} \\
+	& = \sum_{i' = 1}^{N} \sum_{j' = 1}^{M} \frac{v_{ki'} u_{\ell j'}}{\deg_{G_1}(i') \deg_{G_2}(j')} \1\Bigl\{i \sim i' ~\textrm{in}~ G_1 \Bigr\} \1\Bigl\{j \sim j' ~\textrm{in}~ G_2 \Bigr\} \\
+	& = \biggl(\sum_{i' = 1}^{N} \sum_{j' = 1}^{M} \frac{v_{ki'}}{\deg_{G_1}(i')} \1\Bigl\{i \sim i' ~\textrm{in}~ G_1 \Bigr\} \biggr) \biggl(\sum_{i' = 1}^{N} \sum_{j' = 1}^{M} \frac{u_{kj'}}{\deg_{G_2}(j')} \1\Bigl\{j \sim j' ~\textrm{in}~ G_1 \Bigr\} \biggr) \\
+	& = \lambda_k \lambda_{\ell} v_{ki} u_{\ell j}.
+	\end{align*}
+	
+	This characterizes the spectrum $\Lambda(P_H)$. The claim of Lemma~\ref{lem:tensor} follows upon recalling that the spectrum $\Lambda(N_G) = 1 - \Lambda(N_G)$ for $G = H$, $G = G_1$ and $G = G_2$, so that
+	\begin{align*}
+	\lambda_{k,\ell}(N_H) & = 1 - \lambda_{k,\ell}(P_H) \\
+	& = 1 - \lambda_{k}(P_{G_1}) \lambda_{\ell}(P_{G_2}) \\
+	& = 1 - \bigl(1 - \lambda_{k}(N_{G_1})\bigr) \bigl(1 - \lambda_{\ell}(N_{G_2})\bigr) \\
+	& = \lambda_{k}(N_{G_1}) + \lambda_{\ell}(N_{G_2}) - \lambda_{k}(N_{G_1}) \lambda_{\ell}(N_{G_2}).
+	\end{align*}
+\end{proof}
+
+
+\subsection{Variational lemmas}
+
+We will use the following fact repeatedly. We state and prove it formally as a sanity check. For a symmetric $n \times n$ matrix $A$, and a non-zero vector $v \in \Reals^n$, the Rayleigh quotient is 
+\begin{equation*}
+R_A(v) = \frac{v^T A v}{v^T v}
+\end{equation*}
+We let $\lambda_1(A) \leq \ldots \leq \lambda_n(A)$ be the eigenvalues of $A$, sorted in ascending order. For a subspace $V \subseteq \Reals^n$ and operator $D:\Reals^n \to \Reals^n$, let $DV := \set{Dv: v \in V}$.
+\begin{lemma}
+	\label{lem:variational}
+	Let $A$ be an $n \times n$ matrix, and let $D: \Reals^n \to \Reals^n$ be a full rank linear operator. Then,
+	\begin{equation*}
+	\lambda_k(A) = \min_{V}\Bigl\{ \max_{v}\bigl\{R_{A}(v): v \in DV~\textrm{and}~v \neq 0\bigr\}: \dim(V) = k \Bigr\}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We know from the Courant-Fischer Theorem that 
+	\begin{equation*}
+	\lambda_k(A) = \min_{V}\Bigl\{ \max_{v}\bigl\{R_{A}(v): v \in V~\textrm{and}~v \neq 0\bigr\}: \dim(V) = k \Bigr\}
+	\end{equation*}
+	Let $(v_k,V_k)$ satisfy
+	\begin{equation*}
+	R_A(v_k) = \lambda_k(A), ~~\textrm{and}~~ v_k = \argmax_{v} \Bigl\{ R_A(v): v \in V_k~\textrm{and}~v \neq 0 \Bigr\}
+	\end{equation*}
+	Now, let $U_{\ast} = D^{-1}V_k$; since $D$ is a full rank operator $U_{\ast}$ is well-defined and $\dim(U_{\ast}) = \dim(V_k) = k$. Clearly $V_k = DU_{\ast}$, and therefore $v_k \in DU_{\ast}$. As a result
+	\begin{align*}
+	\min_{V}\Bigl\{ \max_{v}\bigl\{R_{A}(v): v \in DV~\textrm{and}~v \neq 0\bigr\}: \dim(V) = k \Bigr\} & \leq \max_{v}\bigl\{R_{A}(v): v \in DU_{\ast}~\textrm{and}~v \neq 0\bigr\} \\
+	& = \max_{v}\bigl\{R_{A}(v): v \in V_k~\textrm{and}~v \neq 0\bigr\} \\
+	& = R_A(v_k) \\
+	& = \lambda_k(A).
+	\end{align*}
+	
+	On the other hand, let
+	\begin{equation*}
+	U_k := \argmin_U \Bigl\{\max_{v} \bigl\{R_A(v): v \in DU~\textrm{and}~ v \neq 0\bigr\}: \dim(U) = k\Bigr\}
+	\end{equation*}
+	and let $V_{\ast} = DU_{k}$. Since $D$ is full rank $\dim(V_{\ast}) = \dim(U_{\ast}) = k$, and therefore
+	\begin{align*}
+	\lambda_k(A) & = \min_{V} \Bigl\{\max\bigl\{R_A(v): v \in V~\textrm{and}~ v \neq 0 \bigr\}: \dim(V) = k\Bigr\} \\
+	& \leq \max\bigl\{R_A(v): v \in V_{\ast}~\textrm{and}~v \neq 0 \bigr\} \\
+	& = \max\bigl\{R_A(v): v \in DU_{k}~\textrm{and}~v \neq 0 \bigr\} \\
+	& = \min_U \Bigl\{\max_{v} \bigl\{R_A(v): v \in DU~\textrm{and}~v \neq 0\bigr\}: \dim(U) = k\Bigr\}
+	\end{align*}
+\end{proof}
+
+Among other things, Lemma~\ref{lem:variational} allows us to compare the spectrum of $N_G$ and $L_G$, in terms of the minimum and maximum degree of $G$.
+\begin{lemma}
+	Let $G = ([N],E)$ be an unweighted connected graph. Then,
+	\begin{equation*}
+	\frac{{\lambda}_k(G)}{\deg_{\max}(G)} \leq \wt{\lambda}_k(G)  \leq \frac{{\lambda}_k(G)}{\deg_{\min}(G)}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	The following manipulations establish the lower bound,
+	\begin{align*}
+	\lambda_k(N_G) & = \min_V \biggl\{ \max_{v} \Bigl\{\frac{v^T N_G v}{v^T v}: v \in V~\textrm{and}~ v \neq 0 \Bigr\}: \dim(V) = k \biggr\} \\
+	& = \min_V \biggl\{ \max_{u} \Bigl\{\frac{u^T L_G u}{u^T D_G u}: u \in D^{-1/2} V~\textrm{and}~ u \neq 0 \Bigr\}: \dim(V) = k \biggr\} \\
+	& \geq \frac{1}{\deg_{\max}(G)} \cdot \min_V \biggl\{ \max_{u} \Bigl\{\frac{u^T L_G u}{u^T u}: u \in D^{-1/2} V~\textrm{and}~ u \neq 0 \Bigr\}: \dim(V) = k \biggr\} \\
+	& = \frac{\lambda_k(G)}{\deg_{\max}(G)},
+	\end{align*}
+	where the last inequality follows by Lemma~\ref{lem:variational}. The upper bound follows by similar steps, upon replacing $\deg_{\max}(G)$ by $\deg_{\min}(G)$ in the previous expression and reversing the inequality.
+\end{proof}
+
+
+\end{document}

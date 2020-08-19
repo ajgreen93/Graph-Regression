@@ -9,10 +9,13 @@
 \usepackage{enumerate}
 \usepackage[shortlabels]{enumitem}
 \usepackage{fullpage}
+\usepackage{mathtools}
 
 \usepackage{natbib}
 \renewcommand{\bibname}{REFERENCES}
 \renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
 
 \newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
 \newcommand{\Graph}{\mathcal{G}}
@@ -27,7 +30,6 @@
 \newcommand{\iset}{\mathbf{i}}
 \newcommand{\jset}{\mathbf{j}}
 \newcommand{\myexp}[1]{\exp \{ #1 \}}
-\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
 \newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
 \newcommand{\ext}[1]{\widetilde{#1}}
@@ -523,58 +525,61 @@ Combining terms, we have that
 
 Consider the same setup as in the previous section. We now use a modified test statistic. Let $\eta: \mathcal{D} \times \mathcal{D} \to \Reals$ be a Mercel kernel with the expansion
 \begin{equation*}
-\eta(x,y) := \sum_{k \in \mathcal{Z}^d} c_k \phi_k(x) \phi_k(y)
+\eta(x,y) := \sum_{k \in \mathcal{Z}^d} c_k^2 \phi_k(x) \phi_k(y)
 \end{equation*}
-with associated operator $H$. Let $H_n$ be an $n \times n$ matrix with entries $(H_n)_{ij} = \frac{1}{n} \eta(x_i,x_j)$. (We will interchangeably refer to the operator associated with $H_n$ as $H_n$; in other words, $H_n: L^2(P_n) \to L^2(P_n)$
+with associated operators $T = T_{\eta,q}: L^2(q) \to L^2(q)$ (for $q$ a distribution over $\mathcal{D}$) 
 \begin{equation*}
-H_ng = \int \eta(x,y) g(x) dP_n(x).
+Tf(x):= \int_{\D} \eta(x,y) f(y) dq(y)
 \end{equation*}
-Write $H_n := V\Lambda V^T$ for the spectral decomposition of $H_n$, where $\Lambda$ is a diagonal matrix of eigenvalues with $\lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n$, and $V = (v_1 \ldots v_n)$ is an orthonormal matrix.
-
+Denote $T_n := T_{\eta,P_n}$, and let $\{(\widehat{\phi}_j, \lambda_j)\}_{j = 1}^{n}$ be the eigenvector/eigenvalue pairs of $T_n$, so that
+\begin{equation*}
+T_n \widehat{\phi}_j = \lambda_j \widehat{\phi}_j, \quad \norm{\widehat{\phi}_j}_{L^2(P_n)} = 1.
+\end{equation*}
 Our test statistic will be
 \begin{equation*}
-T(C) = n \sum_{k:\lambda_k \leq C} \widehat{y}_k^2
+T_C = \sum_{j: \sqrt{\lambda_k} \leq C} \widehat{y}_k^2
 \end{equation*}
-where $\widehat{y}_k := \dotp{z}{v_k}_{L^2(P_n)}$. Note the normalization by $n$.
+where $\widehat{y}_k = \dotp{z}{\widehat{\phi}_k}_{L^2(P_n)}$. 
 
 \subsection{Supplemental Theory}
-
-Given a compact linear operator $L$ from a Hilbert space $\mathcal{H}$ into itself, let $P_C(L)$ be the projection operator onto the linear subspace of $\mathcal{H}$ spanned by all eigenvectors of $L$ with eigenvalue no greater than $C$. For example, given $H$ the operator associated with the kernel $\eta$, we have that
-\begin{equation*}
-P_C(H) \phi_k =
-\begin{cases}
-\phi_k,& ~ c_k \leq C \\
-0,& ~ \text{otherwise}
-\end{cases}
-\end{equation*}
-Additionally, let $\widehat{N}(C) = \sharp\set{k: \lambda_k \leq C}$, and write $\widetilde{f} = (f(x_1),\ldots,f(x_n)$ for the evaluations of $f$ at the data $x_1, \ldots, x_n$.  
-
+Let $\widehat{N}(C) = \sharp{j: \sqrt{\lambda_j} \leq C}$, and $\widehat{\theta} \in L^2(P_n)$ be the sequence with elements $\widehat{\theta}_j = \dotp{f}{\widehat{\phi}_j}_{L^2(P_n)}$. 
 \begin{lemma}
-	Under the null hypothesis $\mathbf{H}_0$, $\Ebb(T_C) = \widehat{N}(C)/n$. Under the alternative hypothesis $\mathbf{H}_a$
-	\begin{equation*}
-	\Ebb_a(T_C) = \frac{N(C)}{n} + n \Ebb\left(\norm{P_C(H_n)f}_{L_2(P_n)}^2\right)
-	\end{equation*}
+	\label{lem: expectation_eigenvector}
+	Under $\mathbf{H}_0$, $\Ebb_0(T_C) = \Ebb(\widehat{N}(C))/n$. Under $\mathbf{H}_a$,
+	\begin{align}
+	\Ebb_a(T_C) & = \frac{\Ebb(\widehat{N}(C))}{n} + \Ebb\left(||P_C \widehat{\theta}||_2^2\right) \label{eqn:expectation_eigenvector}\\
+	& \geq \frac{\Ebb(\widehat{N}(C))}{n} + \norm{\theta}_2^2 - \frac{1}{C^2} \left(\frac{n - 1}{n} + \frac{\Ebb(f^2(x) \eta(x,x))}{n}\right) \label{eqn:expectation_eigenvector_2}
+	\end{align}
 \end{lemma}
 \begin{proof}
-	Similar to before, we write
+	By linearity,
 	\begin{equation*}
-	\widehat{y}_k = \frac{1}{n}\sum_{i = 1}^{n} f(x_i) v_{ki} + \frac{1}{n} \sum_{i = 1}^{n} \varepsilon_i v_{ki} =: \widehat{\theta}_k + \widehat{\epsilon}_k.
+	\Ebb(T_C) = \sum_{j:\sqrt{\lambda_j} < C} \Ebb(\widehat{y}_k^2),
 	\end{equation*}
-	We note that
+	so that it is sufficient to compute $\Ebb(\widehat{y}_k^2)$. We have
 	\begin{equation*}
-	\sum_{k:c_k \leq C} \widehat{\theta}_k^2 = \norm{P_C(H_n)\widetilde{f}}_{L^2(P_n)}^2
+	\Ebb(\widehat{y}_j^2) = \Ebb\left(\widehat{\theta}_j^2\right) + \Ebb\left(\dotp{\epsilon}{\widehat{\phi}_j}_{L^2(P_n)}^2\right) + 2 \Ebb\left(\dotp{\epsilon}{\widehat{\phi}_j}_{L^2(P_n)} \widehat{\theta}_j^2\right).
 	\end{equation*}
-	Additionally, we have that
+	By the law of iterated expectation, the third summand is $0$. The second term can be computed as
 	\begin{align*}
-	\Ebb(\widehat{\epsilon}_k^2) & = \frac{1}{n^2}\Ebb\bigl(\sum_{i,j = 1}^{n} \varepsilon_i \varepsilon_j v_{ki} v_{kj}\bigr) \\
-	& \overset{(i)}{=} \frac{1}{n^2} \sum_{i = 1}^{n} v_{ki}^2 \\
-	& = \frac{1}{n^2}.
+	\Ebb\left(\dotp{\epsilon}{\widehat{\phi}_j}_{L^2(P_n)}^2\right) & = \frac{1}{n^2} \sum_{i = 1, j = 1}^{n} \Ebb\bigl(\varepsilon_i \varepsilon_j \widehat{\phi}_j \widehat{\phi}_i\bigr) \\
+	& \geq \frac{1}{n^2} \Ebb\left(\sum_{i = 1}^{n} \widehat{\phi}_j^2 \right) \\
+	& = \frac{1}{n},
 	\end{align*}
-	where $(i)$ follows from the law of iterated expectation, conditioning on $x_1,\ldots, x_n$. In addition, $\Ebb(\widehat{\epsilon}_k\widehat{\theta}_k | x_1,\ldots,x_k) = 0.$ Therefore,
+	and summing over $\set{j: \sqrt{\lambda_j} \leq C}$, we obtain the representation \eqref{eqn:expectation_eigenvector}. We can then expand
 	\begin{align*}
-	\Ebb(T_C) & = \sum_{k:\lambda_k \leq C} \frac{1}{n^2} + \Ebb(\widehat{\theta}_k^2) \\
-	& = \frac{\widehat{N}(C)}{n^2} + \Ebb \left(\sum_{k:\lambda_k \leq C} \widehat{\theta}_k^2\right) \\
-	& = \frac{\widehat{N}(C)}{n^2}  + \Ebb \left(\norm{P_C(H_n)\widetilde{f}}_{L^2(P_n)}^2\right).
+	\Ebb\biggl(\sum_{j: \sqrt{\lambda_j} > C} \widehat{\theta}_j^2 \biggr) & = \Ebb\biggl(\norm[\big]{\widehat{\theta}}_2\biggr) - \Ebb\biggl(\sum_{j: \sqrt{\lambda_j} < C} \widehat{\theta}_j^2 \biggr) \\
+	& =  \norm{\theta}_2 - \Ebb\biggl(\sum_{j: \sqrt{\lambda_j} < C} \widehat{\theta}_j^2 \biggr) \\
+	& \geq \norm{\theta}_2 - \frac{1}{C^2}  \Ebb\biggl(\sum_{j: \sqrt{\lambda_j} < C} \widehat{\theta}_j^2 \lambda_j \biggr) \\
+	& \geq \norm{\theta}_2 - \frac{\Ebb\left(\dotp{T_nf}{f}_{L^2(P_n)}\right)}{C^2}
 	\end{align*}
+	and further examining $\Ebb\left(\dotp{T_nf}{f}_{L^2(P_n)}\right)$, we obtain
+	\begin{align*}
+	\Ebb\left(\dotp{T_nf}{f}_{L^2(P_n)}\right) & = \frac{1}{n}\Ebb(f^2(x)\eta(x,x)) + \frac{(n-1)}{n} \int_{\D} \int_{\D} f(x) f(y) \eta(x,y) dP(x) dP(y) \\
+	& = \frac{1}{n}\Ebb(f^2(x)\eta(x,x)) + \frac{(n-1)}{n} \sum_{k \in \mathbb{Z}^d} c_k^2 \theta_k^2 \\
+	& \leq \frac{1}{n}\Ebb(f^2(x)\eta(x,x)) + \frac{(n-1)}{n},
+	\end{align*}
+	and therefore \eqref{eqn:expectation_eigenvector_2}.
 \end{proof}
+
 \end{document}

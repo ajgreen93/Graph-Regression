@@ -278,12 +278,12 @@ Let $P$ be an absolutely continuous probability measure over $\D$ with density f
 
 \begin{lemma}
 	\label{lem:sobolev_1_bound}
-	For any $f \in W^{1,2}(\mathcal{D};1)$, and any $b \geq 1$, we have that there exists a constant $C > 0$ which depends only on $d$ and $p_{\max}$ such that
+	For any $f \in W^{1,2}(\mathcal{D};L)$, and any $b \geq 1$, we have that there exists a constant $c_2 > 0$ which depends only on $d$ and $p_{\max}$ such that
 	\begin{equation}
 	\label{eqn:sobolev_1_bound}
-	\norm{B\beta}_2^2 \leq b C n^2 r^{d + 2}
+	\norm{B\beta}_2^2 \leq L^2 b^2 c_2 n^2 r^{d + 2}
 	\end{equation}
-	with probability at least $1 - \frac{1}{b}$. 
+	with probability at least $1 - \frac{1}{b^2}$. 
 \end{lemma}
 \begin{proof}
 	Observe that
@@ -291,10 +291,10 @@ Let $P$ be an absolutely continuous probability measure over $\D$ with density f
 	\frac{1}{n^2}\Ebb(\beta^T L \beta) = \Ebb\left(\frac{1}{n^2} \sum_{i,j = 1}^{n} (\beta_i - \beta_j)^2 A_{ij}\right) & = \frac{(n - 1)}{n} \int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dP(y) \,dP(x) \\
 	& \leq p_{\max}^2 \frac{(n - 1)}{n} \int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dy \,dx.
 	\end{align*}
-	We will show that for any $f \in \mathcal{W}^{1,2}(\D;1)$, there exists a constant $C$ which depends only on dimension $d$ such that
+	We will show that for any $f \in \mathcal{W}^{1,2}(\D;L)$, there exists a constant $c_4$ which depends only on dimension $d$ such that
 	\begin{equation}
 	\label{eqn:mean_bound}
-	\int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dy \,dx \leq C r^{d + 2}
+	\int_{\D} \int_{\D} (f(x) - f(y))^2\eta_r(x,y) \,dy \,dx \leq c_4 L^2 r^{d + 2}
 	\end{equation}
 	whence the desired result of \eqref{eqn:sobolev_1_bound} follows by Markov's inequality.
 	
