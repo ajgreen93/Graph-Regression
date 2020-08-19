@@ -1,0 +1,360 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\domain}{\mathcal{X}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\Partial}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 8/7/19 - 8/15/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Suppose we observe samples $X = (x_1, \ldots, x_n) \in \mathcal{X} \subseteq \Rd$. For a given $r > 0$, the $r$-neighborhood graph $G = (V,E)$ over $X$ is defined to be the undirected graph with vertex set $V = [n]$, and edge set $E = \set{(i,j): \norm{i - j}_2 \leq r}$. Let $A = (A_{ij})_{i,j = 1}^{n}$ be the adjacency matrix of $G$, with entries $A_{ij}$ equal to $1$ if $(i,j) \in E$ and $0$ otherwise. Let $D$ be the edge incidence matrix of $G$, with $\ell$th row $D_{\ell} = (0,\ldots,-1,\ldots,1,\ldots)$ with a $-1$ in the $i$th entry, and $1$ in the $j$th entry, and $0$ elsewhere, provided that the $\ell$th edge $e_{\ell} = (i,j)$ and $i < j$. Let $L = D^T D$ be the graph Laplacian matrix of $G$.
+
+Let $\mathbb{Z}_{+}^d$ denote the set of all ordered $d$-tuples of nonnegative integers. For $\alpha \in \mathbb{Z}_{+}^d, \alpha = (\alpha_1,\ldots,\alpha_d)$, denote $\abs{\alpha} = \sum_{i = 1}^{d} \alpha_i$, and by $\mathcal{D}^{\alpha}f$ the partial derivative
+\begin{equation*}
+\Partial^{\alpha}f = \frac{\partial^{\abs{\alpha}}f}{\partial x_1^{\alpha_1}\cdots\partial x_d^{\alpha_d}}.
+\end{equation*}
+The Sobolev space $W^{s,p}(\mathcal{X})$ consists of all functions $f$ such that for each multiindex $\alpha$ with $\abs{\alpha} \leq k$, $D^{\alpha}f$ exists in the weak sense and belongs to $L^p(\mathcal{X})$. For $f \in W^{s,p}(\mathcal{X})$, we define the Sobolev norm of $f$ to be
+\begin{equation}
+\label{eqn:sobolev_norm}
+\norm{f}_{W^{s,p}(\mathcal{X})} = \left(\sum_{\abs{\alpha} \leq s} \int_{\domain} \abs{D^{\alpha}f(x)}^p\right)^{1/p}.
+\end{equation}
+We will focus our attentions on $W^{s,2}(\domain)$.
+
+For a function $f: X \to \Reals$, we can define a notion of smoothness of $f$ over $G$. Letting $\widetilde{f} = (f(x_1),\ldots,f(x_n)) \in \Rd$, introduce the smoothness functional
+\begin{equation}
+\label{eqn:discrete_sobolev_norm}
+S(f) := \wt{f}^T L^{s} \wt{f}
+\end{equation}
+Our objective is to establish a relation between \eqref{eqn:sobolev_norm} and \eqref{eqn:discrete_sobolev_norm}. In particular, suppose the samples $x_i$ are sampled i.i.d from a probability measure $P$ over $\domain$. Our goal is to establish that, for an appropriate scaling $C_n$, with high probability
+\begin{equation}
+\label{eqn:continuous_to_discrete_embedding}
+S(f) \leq C_n \norm{f}_{W^{s,2}(\mathcal{X})}
+\end{equation}
+
+\section{Expectation of $S(f)$.}
+
+For $y \in \domain$, define the partial difference operator $D_y$ by $D_yf(x) = (f(y) - f(x))\eta(x,y)$, where $\eta(x,y) = \mathbf{1}(\norm{x - y} \leq r)$. For $\alpha = (\alpha_1,\ldots,\alpha_q) \in [n]^q$, define the iterated difference operator $D_{\alpha}$ to be
+\begin{equation}
+D_{\alpha}f(x) = D_{x_{\alpha_1}}(D_{x_{\alpha_2}}( \cdots D_{x_{\alpha_q}} f))(x)
+\end{equation}
+
+We begin by re-expressing the smoothness functional $S(f)$ in terms of sums of the iterated difference operator, similarly to \citep{sadhanala2017}.
+
+\begin{lemma}
+	\label{lem:smoothness_functional_difference_operator}
+	For $s$ even, letting $q = s/2$, we have
+	\begin{equation}
+	\label{eqn:smoothness_functional_even}
+	S(f) = \sum_{i = 1}^{n} \left(\sum_{\alpha \in [n]^q} D_{\alpha}f(x_i)\right)^2
+	\end{equation}
+	For $s$ odd, letting $q = (s-1)/2$, we have
+	\begin{equation}
+	\label{eqn:smoothness_functional_odd}
+	S(f) = \frac{1}{2}\sum_{i, j = 1}^{n} \left(\sum_{\alpha \in [n]^q} D_{x_{i}}D_{\alpha}f(x_j))\right)^2
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	Note that for any function $g: V \to \Reals$, $(-Lg)(x_i) = \sum_{j = 1}^{n} D_{x_j}g(x_i)$. To see this, note that $Dg$ is a length $m$ vector with $\ell$th entry $(Dg)_{\ell} = g_i - g_j$ provided that $e_{\ell} = (i,j)$ and $i < j$. Therefore, as $L g = \sum_{\ell = 1}^{m} D_{\ell} (D g)_{\ell}$, we have that $L g = \sum_{j > i} (g_i - g_j) \1((i,j) \in E) - \sum_{j < i} (g_j - g_i) \1((j,i) \in E) = \sum_{j = 1}^{n} (g_i - g_j) \eta_r(x_i,x_j) = \sum_{j = 1}^{n} D_{x_i}g(x_j)$. The statement follows since $-D_{x}f(y) = D_{y}f(x)$. 
+	
+	Therefore, when $s$ is even, letting $q = s/2$, we have
+	\begin{align*}
+	f^T L^s f & = \sum_{i = 1}^{n} ((-L)^q f (x_i))^2 \\
+	& = \sum_{i = 1}^{n} \left( \sum_{j_1 = 1}^{n} D_{x_{j_1}} L^{q-1}f (x_i) \right)^2.
+	\end{align*} 
+	If $q = 1$, this suffices. Otherwise, if $q \geq 2$, as $D_y$ is a linear operator, we obtain
+	\begin{align*}
+	\sum_{i = 1}^{n} \left( \sum_{j_1 = 1}^{n} D_{x_{j_1}} L^{q-1}f (x_i) \right)^2 & = \sum_{i = 1}^{n} \left( \sum_{j_1 = 1}^{n} D_{x_{j_1}}  \sum_{j_2 = 1}^{n} D_{x_{j_2}}L^{q-2}f (x_i) \right)^2 \\
+	& = \sum_{i = 1}^{n} \left( \sum_{j_1j_2 = 1}^{n} D_{x_{j_1}} D_{x_{j_2}}L^{q-2}f(x_i) \right)^2
+	\end{align*}
+	and recursively, we arrive at the desired result.
+	
+	When $s$ is odd, letting $q = (s-1)/2$ we have that
+	\begin{align*}
+	f^T L^s f & = \sum_{i < j}^{n} \bigl((L^q f (x_{i}) - L^q f (x_{j})\bigr)^2 \1\bigl( (x_{i},x_{j}) \in E\bigr) \\
+	& = \frac{1}{2} \sum_{i, j = 1}^{n} \bigl( (-L)^q f (x_{i}) - (-L)^q f (x_{j})\bigr)^2 \eta(x_{i}, x_{j}).
+	\end{align*}
+	By similar reasoning to above, we obtain
+	\begin{equation*}
+	f^T L^s f = \frac{1}{2} \sum_{i,j = 1}^{n} \left(\sum_{\alpha \in [n]^q} D_{\alpha}f(x_i)  - D_{\alpha}f(x_j)\right)^2\eta(x_i,x_j)
+	\end{equation*} 
+	Then, since $\eta = \eta^2$, we can replace $\eta(x_i,x_j)$ with $\eta^2(x_i,x_j)$ in the previous display, and obtain
+	\begin{align*}
+	f^T L^s f & = \frac{1}{2} \sum_{i,j = 1}^{n} \left(\sum_{\alpha \in [n]^q} D_{\alpha}f(x_i)  - D_{\alpha}f(x_j)\right)^2\eta^2(x_i,x_j) \\
+	& = \frac{1}{2} \sum_{i,j = 1}^{n} \left(\sum_{\alpha \in [n]^q} \bigl(D_{\alpha}f(x_i)  - D_{\alpha}f(x_j)\bigr)\eta(x_i,x_j)\right)^2 \\
+	\end{align*}
+	and \eqref{eqn:smoothness_functional_odd} follows.
+\end{proof}
+
+\subsection{Expectation when $s = 2$.}
+
+Let $P$ be absolutely continuous with density function $p$ over $\Rd$.
+
+\begin{lemma}
+	Suppose $f \in W^{2,2}(\mathcal{X})$, $p \in C^1(\domain)$, and $\partial X \in C^2$. Then there exists a constant $c$ which does not depend on $n$ or $f$ such that
+	\begin{equation*}
+	\Ebb(f^T L^2 f) \leq c \left(n^2 r^{d + 2} \sum_{\abs{\alpha} = 1} \norm{\Partial^{\alpha}f}_2^2  +  n^3 r^{2d + 4} \sum_{\abs{\alpha} \leq 2} \norm{\Partial^{\alpha}f}_2^2 \right)
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Using Lemma \ref{lem:smoothness_functional_difference_operator}, we may rewrite
+	\begin{align*}
+	f^T L^2 f & = \sum_{i = 1}^{n} \left(\sum_{j = 1}^{n}D_{x_j}f(x_i)\right)^2 \\
+	& = \sum_{i = 1}^{n} \sum_{j = 1}^{n} \sum_{k = 1}^{n} D_{x_j}f(x_i) D_{x_k}f(x_i) \\
+	& = \sum_{i \neq j}^{n} \bigl(D_{x_j}f(x_i)\bigr)^2 + \sum_{i \neq j \neq k}^{n} D_{x_j}f(x_i) D_{x_k}f(x_i)
+	\end{align*}
+	so that the expectation $\Ebb(f^T L^2 f)$ becomes
+	\begin{equation*}
+	\Ebb(f^T L^2 f) = n(n-1) \Ebb\left(D_{X_1}f(X_2)\right)^2 + n(n-1)(n-2) \Ebb\left(D_{X_2}f(X_1) D_{X_3}f(X_2)\right).
+	\end{equation*}
+	
+	The statement then follows from Lemmas \ref{lem:W22_penalty_operator_2} and \ref{lem:W22_penalty_operator_1}.
+\end{proof}
+
+\section{Additional Theory}
+
+\begin{lemma}
+	\label{lem:W22_penalty_operator_2}
+	For any function f $\in W^{2,2}(\mathcal{X})$, if $\partial X \in C^2$ and $p \in C^1(\domain,L)$ then there exists a constant $c$ which does not depend on $f$ such that
+	\begin{equation}
+	\label{eqn:W22_penalty_operator_2}
+	\Ebb(D(X_2)f(X_1)D_{X_3}f(X_1)) \leq c r^{2d + 4} \sum_{\abs{\alpha} \leq 2} \norm{\Partial^{\alpha}f}_{L^2}^2
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	We rewrite the expectation on the right hand side of \eqref{eqn:W22_penalty_operator_2} as an integral:
+	\begin{align*}
+	\Ebb(D(X_2)f(X_1)D_{X_3}f(X_1)) & = \int_{\domain} \int_{\domain} \int_{\domain} D_yf(x) D_zf(x) \,dP(z) \,dP(y) \,dP(x) \\
+	& = \int_{\domain} \left\{\int_{\domain} D_yf(x) \,dP(y)\right\}^2 \,dP(x) \\
+	& \leq 2 \int_{\domain} \left\{\int_{\domain} D_yf(x) p(x) \,dy \right\}^2 +  \left\{\int_{\domain} D_yf(x) (p(y) - p(x)) \,dy \right\}^2 \,dP(x) \\
+	& \leq 2 \int_{\Rd} \left\{\int_{\domain} D_yg(x) p(x) \,dy \right\}^2 +  \left\{\int_{\Rd} D_yg(x) (p(y) - p(x)) \,dy \right\}^2 \,dP(x)
+	\end{align*}
+	where $g$ is an extension of $f$ which is equal to $f$ almost everywhere on $\domain$, and satisfies $\norm{g}_{W^{2,2}(\Rd)} \leq c \norm{f}_{W^{2,2}(\Rd)}$ for some $c$ which does not depend on $f$. We will handle each term inside the integral separately. Assume without loss of generality that $g \in C^2$; otherwise, we can take $g_m \in C^2$ such that $\norm{g_m - g}_{W^{2,2}(\Rd)} \to 0$. For the first term, we use Lemma \ref{lem:local_average} to obtain
+	\begin{equation*}
+	\left\{\int_{\domain} D_yg(x) p(x) \,dy \right\}^2 \,dP(x) \leq \lambda_{\max}^3 \frac{d^2 r^{4 + 2d}}{\nu_d} \sum_{\abs{\alpha} = 2}\int_{B(0,1)} \int_{0}^{1} (1 - t)^2 \left(\Partial^{\alpha}g(x + trz)\right)^2 \,dt  \,dz,
+	\end{equation*}
+	and therefore,
+	\begin{align*}
+	\int_{\Rd} \left\{\int_{\domain} D_yg(x) p(x) \,dy \right\}^2 & \leq \lambda_{\max}^3 \frac{d^2 r^{4 + 2d}}{\nu_d} \sum_{\abs{\alpha} = 2}\int_{\Rd} \int_{B(0,1)} \int_{0}^{1} (1 - t)^2 \left(\Partial^{\alpha}g(x + trz)\right)^2 \,dt  \,dz \,dx \\
+	& = \lambda_{\max}^3 \frac{d^2 r^{4 + 2d}}{\nu_d} \sum_{\abs{\alpha} = 2} \int_{B(0,1)}  \int_{0}^{1} (1 - t)^2 \int_{\Rd} \left(\Partial^{\alpha}g(x + trz)\right)^2 \,dx \,dt \,dz \\
+	& = \frac{\lambda_{\max}^3 d^2 r^{4 + 2d}}{3} \sum_{\abs{\alpha} = 2} \norm{\Partial^{\alpha}g}_{L^2}^2.
+	\end{align*}
+	
+	For the second summand, since $p(x) \in C^2(\domain; L)$, using reasoning similar to the proof of Lemma we have
+	\begin{align*}
+	\int_{\Rd} \left\{\int_{\Rd} D_yg(x) (p(y) - p(x)) \,dy \right\}^2 \,dP(x) & \leq \lambda_{\max} \int_{\Rd} \left(\int_{\Rd}( D_yg(x))^2 \,dy \right) \left(\int_{B(x,r)} (p(y) - p(x))^2 \,dy\right) \,dx \\
+	& \leq \lambda_{\max} \int_{\Rd} \left(\int_{\Rd}( D_yg(x))^2 \,dy \right) \left(\int_{B(x,r)} L^2 \norm{x - y}^2 \,dy\right) \,dx \\
+	& \leq \lambda_{\max} \nu_d r^{d + 2}\int_{\Rd} \int_{\Rd}( D_yg(x))^2 \,dy \,dx \\
+	& \leq c \nu_d  \lambda_{\max} \nu_d r^{2d + 4} \sum_{\abs{\alpha} = 1} \norm{\Partial^{\alpha}f}_2^2.
+	\end{align*}
+\end{proof}
+
+\begin{lemma}
+	\label{lem:W22_penalty_operator_1}
+	For any function $f \in W^{1,2}(\mathcal{X})$, if $\partial \domain \in C^1$, then there exists a constant $c$ which does not depend on $f$ such that
+	\begin{equation*}
+	\Ebb\left(D_{X_1}f(X_2)\right)^2 \leq c r^{d + 2} \sum_{\abs{\alpha} = 1} \norm{\Partial^{\alpha}f}_2^2
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We write $\Ebb\left(D_{X_1}f(X_2)\right)^2$ as an integral,
+	\begin{equation*}
+	\Ebb\left(D_{X_1}f(X_2)\right)^2 = \int_{\domain} \int_{\domain} (f(x) - f(y))^2 \eta(y,x) \,dP(y) \,dP(x) \leq \lambda_{\max}^2 \int_{\domain} \int_{\domain} (f(x) - f(y))^2 \eta(y,x) \,dy \,dx
+	\end{equation*}
+	Now, as $\partial \domain \in C^{1}$, there exists a function $g:\Rd \to \Reals$ such that $g(x) = f(x)$, almost everywhere in $\domain$, and $\norm{g}_{W^{1,2}(\Rd)} \leq c \norm{f}_{W^{1,2}(\domain)}$.  Since $g = f$ almost everywhere in $\domain$, we have
+	\begin{equation}
+	\label{eqn:W12_integral_penalty_1}
+	\int_{\domain} \int_{\domain} (f(x) - f(y))^2 \,dy \,dx \leq \int_{\Rd} \int_{\Rd} (g(x) - g(y))^2 \eta(y,x) \,dy \,dx.
+	\end{equation}
+	We may assume without loss of generality that $g \in C^{\infty}$ (otherwise take approximations $g_m \in C^{\infty}(\Rd)$, $g_m  \to g \in W^{s,2}(\Rd)$.) We expand
+	\begin{align*}
+	\int_{\Rd} (g(x) - g(y))^2 \,dy & = \int_{\Rd} \left( \int_{0}^{1} \frac{d}{dt} g(x + t(y - x)) \,dt \right)^2 \,dy \\
+	& = \int_{\Rd} \left( \int_{0}^{1} \nabla g(x + t(y - x)) \cdot (y - x) \,dt \right)^2 \,dy \\
+	& \leq \int_{\Rd} \int_{0}^{1} \norm{\nabla g(x + t(y - x))}^2 \norm{y - x}^2 \,dt \,dy
+	\end{align*}
+	Therefore,
+	\begin{align*}
+	\int_{\Rd} (g(x) - g(y))^2 \eta(y,x) \,dy \,dx & \leq \int_{\Rd} \int_{\Rd} \int_{0}^{1} \norm{\nabla g(x + t(y - x))}^2 \norm{y - x}^2 \,dt \eta(y,x) \,dy \,dx \\
+	& \leq r^2 \int_{\Rd} \int_{\Rd} \int_{0}^{1} \norm{\nabla g(x + t(y - x))}^2 \,dt \eta(y,x) \,dy \,dx \\
+	& = r^{2 + d} \int_{\Rd} \int_{B(0,1)} \int_{0}^{1} \norm{\nabla g(x + trz)}^2 \,dt \,dz \,dx  \tag{$z = (y - x)/r$}\\
+	& =  r^{2 + d} \int_{B(0,1)} \int_{0}^{1} \int_{\Rd}  \norm{\nabla g(x + trz)}^2 \,dx \,dt \,dz \\
+	& = \nu_d r^{2 + d} \sum_{\abs{\alpha} = 1} \norm{\Partial^{\alpha} g}_{L^2}^2 
+	\end{align*}
+\end{proof}
+
+\begin{lemma}
+	\label{lem:local_average}
+	For any function $g \in C^2(\Rd)$, and any $x \in \Rd$
+	\begin{equation*}
+	\left(\int_{B(x,r)} g(y) - g(x) \dy \right)^2 \leq \frac{d^2 r^{4 + 2d}}{\nu_d} \sum_{\abs{\alpha} = 2}\int_{B(0,1)} \int_{0}^{1} (1 - t)^2 \left(\Partial^{\alpha}f(x + trz)\right)^2 \,dt  \,dz.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	As $g \in C^2(\Rd)$, taking a Taylor expansion of $g$ around $x$, we obtain
+	\begin{equation*}
+	g(y) = g(x) + \sum_{\abs{\alpha} = 1 } \Partial^{\alpha}g(x) (y - x)^{\alpha} + \sum_{\abs{\alpha} = 2} (y - x)^{\alpha} \int_{0}^{1} (1 - t) \Partial^{\alpha} g(x + t(y - x)) \,dt.
+	\end{equation*}
+	We note that, by standard facts of the uniform distribution
+	\begin{equation*}
+	\int_{B(x,r)}(x-y)^{\alpha} = 0, \quad \textrm{for all $\abs{\alpha} = 1$}
+	\end{equation*}	
+	and we therefore have
+	\begin{align*}
+	\left(\int_{B(x,r)} g(y) - g(x) \dy \right)^2 & = \left(\int_{B(x,r)} \sum_{\abs{\alpha} = 2} (y - x)^{\alpha} \int_{0}^{1} (1 - t) \Partial^{\alpha} g(x + t(y - x)) \,dt\right)^2 \\
+	& \leq \left(\int_{B(x,r)} \left(\sum_{\abs{\alpha} = 2} (y - x)^{2\alpha}\right)^{1/2} \left(\sum_{\abs{\alpha} = 2} \left\{\int_{0}^{1} (1 - t) \Partial^{\alpha} g(x + t(y - x)) \,dt\right\}^2 \right)^{1/2} \,dy \right)^2 \\
+	& \leq d^2 r^{4} \left(\int_{B(x,r)} \left(\sum_{\abs{\alpha} = 2} \int_{0}^{1} (1 - t)^2 \left[\Partial^{\alpha} g(x + t(y - x))\right]^2 \,dt \right)^{1/2} \,dy \right)^2 \\
+	& = d^2 r^{4 + 2d} \left(\int_{B(0,1)} \left(\sum_{\abs{\alpha} = 2} \int_{0}^{1} (1 - t)^2 \left[\Partial^{\alpha} g(x + trz)\right]^2 \,dt \right)^{1/2} \,dz \right)^2 \\
+	& \leq \frac{d^2 r^{4 + 2d}}{\nu_d} \int_{B(0,1)} \sum_{\abs{\alpha} = 2} \int_{0}^{1} (1 - t)^2 \left[\Partial^{\alpha} g(x + trz)\right]^2 \,dt \,dz
+	\end{align*}
+\end{proof}
+
+\bibliographystyle{plainnat}
+\bibliography{../../graph_testing_bibliography}
+
+\end{document}

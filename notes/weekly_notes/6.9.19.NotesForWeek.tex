@@ -96,6 +96,7 @@
 \newcommand{\dx}{\,dx}
 \newcommand{\dy}{\,dy}
 \newcommand{\dr}{\,dr}
+\newcommand{\wt}[1]{\widetilde{#1}}
 
 %%% Order of magnitude
 \newcommand{\soom}{\sim}
@@ -185,7 +186,7 @@ For a radius $r > 0$ to be determined later, the $r$-neighborhood graph $G = (V,
 \begin{equation}
 \label{eqn: laplacian_eigenmaps_statistic}
 T_{LE}^{(k)} := \sup_{\substack{\theta \in \mathrm{col}(V_k), \\ \norm{\theta} = 1} } \dotp{\theta}{\ell}^2 = \ell^T V_k V_k^T \ell.
-\end{equation}
+\end{equation} 
 
 \subsection{Assumptions}
 The following are statements I wish to hold in order for the later theory to follow, but I cannot yet prove:
@@ -219,6 +220,24 @@ The following theorem holds.
 \begin{proof}
 	
 \end{proof}
+
+\subsection{Relating the eigenvectors to a grid.}
+
+For $\kappa = n^{1/d}$, let $\widetilde{X} = \set{\wt{x} \in [\kappa]^d/\kappa}$ be a grid over the unit cube. Consider the lattice graph $\mathrm{Grid} = (\widetilde{V}, \widetilde{E})$, with vertices $\widetilde{V} = \set{v: v \in [\kappa]^d}$, and edges $\widetilde{E} = \set{(u,v):\widetilde{u}, \wt{v} \in \wt{V}, \norm{\wt{u} - \wt{v}}_1 = 1}$, and write $\widetilde{L} = \widetilde{V} \Lambda \wt{V}^T$ for the eigendecomposition of the associated Laplacian matrix.
+
+We wish to exhibit a mapping $P: \Reals^V \to \Reals^{\wt{V}}$ such that the difference between the statistics $T_{LE}^{(k)} = \ell^T V_k V_k^T \ell$ and $\wt{T}_{LE}^{(k)} = (P \ell)^T \wt{V}_k \wt{V}_k^T (P \ell)$ is small, which we accomplish through the use of optimal transport theory.
+
+\begin{lemma}
+	Fix $0 < \delta < 1$. For some number $c_1 > 0$, dependent on $f + g$, $d$, and $\delta$, but not $n$, with probability at least $1 - \delta$ there exists a mapping $T: X \to \wt{X}$ such that
+	\begin{equation}
+	\label{eqn: optimal_transport_to_grid}
+	\norm{X - TX}_{\infty} \leq c_1 \left(\frac{\log(n)}{n}\right)^{1/d}
+	\end{equation}
+	If $r = c_1 (\log n / n)^{1/d}$ and \ref{eqn: optimal_transport_to_grid} holds, then letting $P(v)$ be the index of $T(x_v)$ on the grid graph, we have for every $\theta \in \Reals^V$,
+	\begin{equation}
+	(P\theta)^T \wt{L} P \theta \leq \theta^T L \theta \leq (\log n)^{2 + 1/d} (P\theta)^T \wt{L} P \theta.
+	\end{equation}
+\end{lemma}
 
 \subsection{Type I error}
 

@@ -198,9 +198,110 @@ T_{\eta} := \ell^T A \ell.
 
 \section{Theory}
 
+We show that a simple test based on the statistic $T_{\eta}$, with proper choice of the bandwidth parameter $r$, achieves minimax optimality over the class of Lipschitz functions $\mathcal{H}_{1}^{d}(L)$.
+
 \begin{theorem}
-	
+	\label{thm: mmd_minimax_optimal}
+	Fix $r = n^{-2/(4+d)}$, and consider the test 
+	\begin{equation*}
+	\phi_{\eta,\tau} = \1\left\{ T_{\eta} \geq \tau \right\}, \quad \tau = a n^{-d/(4+d)}
+	\end{equation*}
+	with $a \geq 1$. There are constants $c_1$ depending only on $p_{\max}$, and $c_2$ depending only on $(L,p_{\max},p_{\min})$, such that
+	\begin{equation*}
+	R_{\epsilon}^{n}(\phi_{\eta,\tau}; \mathcal{H}_{1}^{d}(L)) \leq c_1/a^2, \quad \text{if}~ \epsilon \geq c_2 a n^{-2/(4 + d)}
+	\end{equation*}
 \end{theorem}
+\begin{proof}
+	Our first objective is to show that, for an appropriate choice of $c_1$, $\Ebb_{f,f}^{n}(\phi_{\eta,\tau}) \leq \frac{c_1}{2a^2}$ for all $f \in \mathcal{H}_{1}^{d}(L)$. This is equivalent to proving that
+	\begin{equation}
+	\label{eqn: mmd_minimax_optimal_2}
+	\Pbb \left(T_{\eta} \geq \tau \right) \leq c_1/2a^2
+	\end{equation}
+	which we now proceed to show.
+	
+	From Lemma \ref{lem: mmd_expectation}, we have that $\Ebb_{f,f}(T_{\eta}) = 0$. Therefore, by Chebyshev's inequality, 
+	\begin{equation}
+	\label{eqn: mmd_minimax_optimal_1}
+	\Pbb \left(T_{\eta} \geq \tau \right) \leq \Var(T_{\eta})/\tau^2
+	\end{equation}
+	In Lemma \ref{lem: var_mmd}, we have upper bounded $\Var(T_{\eta})$ as function of $r$ and $\delta^2(f,g)$. Under the null hypothesis $f = g$, $\delta^2(f,g) = 0$, and along with our choice of $r = n^{-2/(d + 4)}$, the upper bound on $\Var(T_{\eta})$ reduces to
+	\begin{equation*}
+	\Var(T_{\eta}) \leq \frac{p_{\max}^2}{2} n^{-2d/(d + 4)}
+	\end{equation*}
+	By our choice of $\tau = a n^{-d/(4 + d)}$, we therefore have
+	\begin{equation*}
+	\Var(T_{\eta})/\tau^2 \leq \frac{p_{\max}^2}{2a^2}
+	\end{equation*}
+	and therefore \eqref{eqn: mmd_minimax_optimal_2} holds with $c_1 := p_{\max}^2$.
+	
+	We turn now to bound the type II error, $\Ebb_{f,g}^{(n)}(\phi_{\eta,\tau})$, for all $f,g \in \mathcal{H}_{1}^{d}(L)$ such that $\delta^2(f,g) \geq \epsilon = c_2 n^{-2/(4+d)}$. Our goal now will be to show
+	\begin{equation*}
+	\Pbb \left(T_{\eta} \leq \tau \right) \leq c_1/2a^2.
+	\end{equation*}
+	By Chebyshev's inequality we obtain
+	\begin{equation}
+	\label{eqn: mmd_minimax_optimal_4}
+	\Pbb(T_{\eta} \leq \tau) \leq \frac{\Var(T_{\eta})}{(\Ebb_{f,g}(T_{\eta}) - \tau)^2}
+	\end{equation}
+	We obtain the following lower bound on $\Var(T_{\eta})$ in Lemma \ref{lem: var_mmd} in terms of $r$ and $\delta(f,g)$:
+	\begin{equation*}
+	\Var(T_{\eta}) \leq 2n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right) + \frac{p_{\max}^2}{2}r^d
+	\end{equation*}
+	We will split our analysis into cases, based on which term on the right hand side of the preceding equation dominates. \textcolor{red}{TODO: Complete this proof.}
+	
+	\paragraph{Case 1, 1st term dominates:}
+	We assume
+	\begin{equation*}
+	2n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right) > \frac{p_{\max}^2}{2}r^d,
+	\end{equation*}
+	so that the variance is upper bounded
+	\begin{equation*}
+	\Var(T_{\eta}) \leq 4 n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right).
+	\end{equation*}
+	Additionally, in the following case, we will show that for a sufficiently large choice of $c_2$, depending on $p_{\max}, p_{\min}, L$ and $d$, we obtain
+	\begin{equation*}
+	\Ebb_{f,g} T_{\eta} \geq 2 \tau
+	\end{equation*}
+	so that 
+	\begin{equation*}
+	(\Ebb_{f,g} T_{\eta} - \tau)^2 \geq \left(\Ebb_{f,g} T_{\eta}\right)^2/4.
+	\end{equation*}
+	In Lemma \ref{lem: mmd_expectation}, moreover, we prove the following lower bound on $\Ebb_{f,g} T_{\eta}$ as a function of $r$ and $\delta(f,g)$:
+	\begin{equation*}
+	\Ebb_{f,g} T_{\eta} \geq \frac{(n - 1)p_{\min}^2}{ p_{\max}^2} \left(\delta^2(f,g)\frac{r^d}{2^d} - L\delta(f,g)r^{d + 1}\right).
+	\end{equation*}
+	We can therefore upper bound $\Var(T_{\eta})/(\Ebb_{f,g}T_{\eta} - \tau)^2$,
+	\begin{align*}
+	\Var(T_{\eta})/(\Ebb_{f,g}T_{\eta} - \tau)^2 \leq \frac{p_{\max}^6}{p_{\min}^6}  \frac{16 n r^{2d} \delta(f,g) \left(\delta(f,g) + Lr\right)}{(n-1)^2 r^{2d} \delta^2(f,g) \left(\delta(f,g){2^{-d}} - Lr\right)^2}
+	\end{align*}
+	
+	\paragraph{Case 2, 2nd term dominates:}
+	We first lower bound the denominator, and then upper bound the numerator. In Lemma \ref{lem: mmd_expectation}, we prove the following lower bound on $\Ebb T_{\eta}$ when $f,g \in \mathcal{H}_1^{d}(L)$, stated as a function of $r$ and $\delta^2(f,g)$:
+	\begin{equation}
+	\label{eqn: mmd_minimax_optimal_3}
+	\Ebb_{f,g} T_{\eta} \geq \frac{(n - 1)p_{\min}^2}{ p_{\max}^2} \left(\delta^2(f,g)\frac{r^d}{2^d} - L\delta(f,g)r^{d + 1}\right).
+	\end{equation}
+	Given the choice of bandwidth parameter $r = n^{-2/(4+d)}$ and the lower bound $\delta(f,g) \geq c_2 a n^{-2/(d + 4)}$, we may further simplify the expression on the right hand side of \eqref{eqn: mmd_minimax_optimal_3},
+	\begin{align*}
+	\frac{(n - 1)p_{\min}^2}{ p_{\max}^2} \left(\delta^2(f,g)\frac{r^d}{2^d} - L\delta(f,g)r^{d + 1}\right) & = \frac{(n - 1)p_{\min}^2}{ p_{\max}^2} n^{-2d/(d+4)} \delta(f,g) \left(\frac{\delta(f,g)}{2^d} - Ln^{-2/(d + 4)} \right) \\
+	& \geq \frac{(n - 1)p_{\min}^2}{ p_{\max}^2} c_2 a n^{-(2d + 2)/(d+4)} \left(\frac{c_2 a n^{-2/(d + 4)}}{2^d} - Ln^{-2/(d + 4)} \right) \\
+	& \geq 2 a^2 n^{1 - (2d + 2)/(d + 4) - 2/(d + 4)} = 2 a^2 n^{-d/(d + 4)}.
+	\end{align*}
+	where the last inequality follows when $c_2$ is chosen to be sufficiently large relative to $p_{\min}, p_{\max}, L$ and $d$. Given our choice $\tau = a n^{-d/(d + 4)}$, the denominator of \eqref{eqn: mmd_minimax_optimal_4} can therefore be lower bounded
+	\begin{equation*}
+	(\Ebb_{f,g}(T_{\eta}) - \tau)^2 \geq (2a^2 - a)^2 n^{-2d/d(+4)} \geq a^4 n^{-2d/d(+4)} 
+	\end{equation*}
+	where the last inequality follows from the fact $2a^2 - a \geq a^2$ for all $a \geq 1$. 
+	
+	We turn now to upper bounding the numerator of \eqref{eqn: mmd_minimax_optimal_4}. In Lemma \ref{lem: var_mmd} we give the following upper bound on $\Var_{f,g} T_\eta$ as a function of $r$ and $\delta(f,g)$, 
+	\begin{equation*}
+	\Var_{f,g} T_\eta \leq 2n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right) + \frac{p_{\max}^2}{2}r^d 
+	\end{equation*}
+	Similar to before, we apply our choice of $r$ and lower bound on $\delta(f,g)$ and obtain
+	\begin{equation*}
+	2n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right) + \frac{p_{\max}^2}{2}r^d \leq 
+	\end{equation*}
+\end{proof}
 
 \section{Supporting Theory}
 
@@ -273,7 +374,7 @@ In order to employ Lemma \ref{lem: chebyshev}, we must bound the expectation and
 	\label{lem: var_mmd}
 	For any $h,g \in \mathcal{H}_1^{d}(L)$,
 	\begin{equation*}
-	\Var(T_{\eta}) \leq 2n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right) + 2r^d
+	\Var(T_{\eta}) \leq 2n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right) + \frac{p_{\max}^2}{2}r^d
 	\end{equation*}
 \end{lemma}
 \begin{proof}
@@ -318,7 +419,7 @@ In order to employ Lemma \ref{lem: chebyshev}, we must bound the expectation and
 	The following upper bound on the third term is a straightforward consequence of the fact $\eta_r^2 = \eta_r$, and therefore
 	\begin{equation}
 	\label{eqn: var_mmd_3}
-	\Ebb(\eta_r(X,Y)^2) = \Ebb(\eta_r(X,Y)) = r^d. 
+	\Ebb(\eta_r(X,Y)^2) = \Ebb(\eta_r(X,Y)) \leq \frac{p_{\max}^2}{4} r^d. 
 	\end{equation}
 	
 	Finally, we have that
@@ -329,7 +430,7 @@ In order to employ Lemma \ref{lem: chebyshev}, we must bound the expectation and
 	
 	Combining \eqref{eqn: var_mmd_1}-\eqref{eqn: var_mmd_4}, we obtain
 	\begin{equation*}
-	\Var(T_\eta) \leq 2n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right) + 2r^d.
+	\Var(T_\eta) \leq 2n \frac{p_{\max}^2}{p_{\min}^2} r^d \left(r^d \delta^2(f,g) + Lr^{d+1}\delta(f,g)\right) + \frac{p_{\max}^2}{2}r^d.
 	\end{equation*}
 \end{proof}
 

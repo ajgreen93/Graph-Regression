@@ -1,0 +1,254 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\makeatletter
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+\newcommand{\Lap}{{\bf L}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\LE}{\mathrm{LE}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Meeting Notes for Week 4/3/20 - 4/9/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $v_1,\ldots,v_n$ be eigenvectors of a graph $G$ (normalized so that $\norm{v_k}_n^2 = 1$), and $Y_1,\ldots,Y_n$ be observations on the vertices of $G$, with expectation $\Ebb[Y_i] = f_{0,i}$. The Laplacian eigenmaps estimator is $\wh{f}_{\LE} = \sum_{k = 1}^{\kappa} \dotp{Y}{v_k}_n v_k$. The bias of this estimator is 
+\begin{equation*}
+\Bigl\|\Ebb[\wh{f}_{\LE}] - f_0\Bigr\|_n^2 = \Bigl\|\sum_{k = 1}^{\kappa} \bigl(\dotp{f_0}{v_k}_n\bigr)^2 - f_0\Bigr\|_n^2 = \sum_{k = \kappa + 1}^{n} \bigl(\dotp{f_0}{v_k}_n\bigr)^2
+\end{equation*}
+Let $T_{\LE} = \norm{\wh{f}_{\LE}}_n^2$. The expectation of this statistic is
+\begin{equation*}
+\Ebb\bigl[T_{\LE}\bigr] = \frac{\kappa}{n} + \sum_{k = 1}^{\kappa} (\dotp{v_k}{f_0}_n)^2 = \frac{\kappa}{n} + \norm{f_0}_n^2 - \sum_{k = \kappa + 1}^{n} (\dotp{v_k}{f_0}_n)^2
+\end{equation*}
+Therefore in either the testing or estimation problems, we arrive at the same question: how to upper bound the tail sum $\sum_{k = \kappa + 1}^{n} (\dotp{v_k}{f_0}_n)^2$? 
+
+In our current analysis, we use the following upper bound, which is reminiscent of standard calculations involving the truncated series estimator:
+\begin{align}
+\sum_{k = \kappa + 1}^{n} (\dotp{v_k}{f_0}_n)^2 & \leq \frac{1}{\lambda_{\kappa + 1}^s} \sum_{k = \kappa + 1}^{n} \lambda_k^s (\dotp{v_k}{f_0}_n)^2 \nonumber \\
+& \leq \frac{1}{\lambda_{\kappa + 1}^s} \sum_{k = 1}^{n} \lambda_k^s (\dotp{v_k}{f_0}_n)^2 \nonumber \\
+& = \frac{f_0^T L^s f_0}{\lambda_{\kappa + 1}^s n} \label{eqn:approximation_error_bound}
+\end{align} 
+When the inner product $\dotp{v_k}{f_0}$ is taken with respect to a basis $v_k$ fixed a priori, the above calculation is tight: we can verify this by setting $f_0 \propto v_{\kappa + 1}$. However when the basis $v_{k}$ is random, setting $f_0 \propto v_{\kappa + 1}$ is no longer permissible, and we do not know whether or not the above calculation is tight. We investigate the matter empirically. 
+
+\section{Simulations}
+In all of our simulations, $d = 1$. Each of the figures below examines the approximation error as function of $n$, for different values of the neighborhood graph radius $r$, and the smoothness of the function $f_0$. The regression function $f_0 = \sum_{k = 1}^{100} \theta_k \phi_k$ is constructed out of a basis $\phi_k$ of $H^s([0,1]^d)$, with $\theta_k$ chosen so that $|f_0|_{H^s} = 1$, and $|f_0|_{H^{q}} \gg 1$ for all $q > s$.
+
+We plot four different quantities in each figure. The red line plots the actual approximation error $\sum_{k = \kappa + 1}^{n} (\dotp{v_k}{f_0}_n)^2$. The blue line plots our bound on approximation error, $(f_0^T L^s f_0)(\lambda_{\kappa + 1}^s n)$  The orange line plots the best approximation error we could hope for, $\sum_{k = \kappa}^{100} \theta_k^2$. The green line plots ${\kappa}^{-2s}$, the order of magnitude of the best approximation error (so the green and orange lines should track closely.) We usually choose $\kappa$ based on balancing bias and variance in the estimation context, but when things get interesting below we will see that the story is the largely the same for different values of $\kappa$. 
+
+\subsection{s = 1}
+
+When $s = 1$ and $d = 1$, we have shown that 
+\begin{equation*}
+\frac{f_0^T L f_0}{\lambda_{\kappa + 1} n} \lesssim \kappa^{-2}
+\end{equation*}
+whenever $(\log(n)/n) \lesssim r \lesssim \kappa^{-1}$. Pictorially, this means that the blue line should be decreasing at least as fast as the orange and green lines. In Figures 1 we plot these lines as function of sample size $n$ on the log-log scale, making two different choices of $r \equiv (\log(n)/n)$ and $r \equiv n^{-1/3}$ (the left and right hand plots, respectively). Some algebra can verify that the latter choice satisfies $r \lesssim \kappa^{-1}$. We see that in both instances, all four lines track fairly closely together.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width = .48 \textwidth]{../../code/data/plots/approximation_plots/s1r1.pdf}
+	\includegraphics[width = .48 \textwidth]{../../code/data/plots/approximation_plots/s1r2.pdf}
+\end{figure}
+
+\subsection{s = 2}
+
+When $s = 2$ and $d = 1$, we have show that
+\begin{equation*}
+\frac{f_0^T L^2 f_0}{\lambda_{\kappa + 1}^2 n} \lesssim \kappa^{-4}
+\end{equation*}
+when $n^{-1/3} \lesssim r \lesssim \kappa^{-1}$. The choice $r \equiv n^{-1/3}$ still satisfies both of these conditions for our choice of $\kappa$, however clearly $r \equiv (\log(n)/n)$ violates the lower bound. Pictorially, this means we no longer have theoretical reason to believe that the blue line--and hence, the red line-- should decrease at least as fast as the orange and green lines. In Figures 2, we plot each of the four aforementioned lines as a function of sample size on the log-log scale. (The difference between the two rows is that in the second row, we take a larger value of $\kappa$; precisely, we multiply the previous value of $\kappa$ by a constant). In both Figures the conclusion is the same. When $r \equiv n^{-1/3}$ (right hand plot) all four lines still track reasonably close together. However, when $r \equiv (\log(n)/n)$ (left hand plot) the blue line no longer tracks the orange and green lines---in fact, it doesn't even decrease---but the red line still does. 
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width = .48 \textwidth]{../../code/data/plots/approximation_plots/s2r1.pdf}
+	\includegraphics[width = .48 \textwidth]{../../code/data/plots/approximation_plots/s2r2.pdf}
+	\includegraphics[width = .48 \textwidth]{../../code/data/plots/approximation_plots/s22r1.pdf}
+	\includegraphics[width = .48 \textwidth]{../../code/data/plots/approximation_plots/s22r2.pdf}
+\end{figure}
+
+My conclusions are twofold: first, that our bound on $f_0^T L^s f_0/\lambda_{\kappa + 1}^s n$ appears tight, at least in these experiments, and second that the upper bound $f_0^T L^s f_0/\lambda_{\kappa + 1}^s n \geq \sum_{k = \kappa + 1}^{n} (\dotp{v_k}{f_0}_n)^2$ is not always tight. 
+
+\section{Simple example showing looseness of our bound.}
+
+I will show that for a graph $\wb{G}_{n,r}$ which bears some resemblance to a neighborhood graph, $f_0$ have non-trivial loading onto many of the ``top'' eigenvectors, that is, eigenvectors which correspond to the largest eigenvalues in the graph Laplacian.
+
+Let $X_1,\ldots,X_n$ be random samples which belong to $[0,1]^d$. Let $Z$ be the grid points spaced at interval width $r$; for $M = 1/r$,
+\begin{equation*}
+Z = \Bigl\{\frac{1}{M}(2m_1 - 1,\ldots,2m_d - 1): m \in [M]^d \Bigr\}.
+\end{equation*}
+and let $\wb{G}$ be the $d$-dimensional lattice graph over the grid points $X$. 
+
+Let $\Pi: \{X_1,\ldots,X_n\} \to Z$ assign each sample $X_i$ to its nearest neighbor $z \in Z$. Then $\wb{G}_{n,r} = ([n],E)$ will be the graph with edge set $E \subseteq [n] \times [n]$, with $(i,j)$ connected in $\wb{G}_{n,r}$ only if $(\Pi(X_i),\Pi(X_n))$ belongs to the edge set of $\wb{G}$.
+
+It is an interesting fact---and not hard to show---that the eigenvectors of $\wb{G}_{n,r}$ can be divided into two categories. The first category consists of eigenvectors $v_k$ which are piecewise constant over cubes; that is, if $\Pi(X_i) = \Pi(X_j)$ then $v_{k,i} = v_{k,j}$. The second category consists of delta functions at points in the same cube: precisely, for each $i$ and $j$ such that $\Pi(X_i) = \Pi(X_j)$, the vector $u_k = e_i - e_j$ is an eigenvector of $\wb{G}_{n,r}$. Even if $f_0$ is smooth, for instance $f_0 \in C^s([0,1]^d)$ or $f \equiv \phi_{\kappa + 1}$, the loadings of $f$ onto the latter category of eigenvectors satisfy
+\begin{equation*}
+\dotp{f_0}{u_k}_n^2 = (f_{0,i} - f_{0,j})^2 \approx (\nabla f_0 (X_j))^2 \cdot r^2
+\end{equation*}
+which, while small, is not zero \emph{unless} $f_0$ itself happens to piecewise constant over cubes. 
+
+I don't really know how to use this information. If we were in fact interested in the graph $\wb{G}_{n,r}$, we might try to approximate $f_0$ by a piecewise constant function $\wb{f}_0$, then proceed to analyze the approximation error of $\wb{f}_0$ using~\eqref{eqn:approximation_error_bound}. But we aren't interested in $\wb{G}_{n,r}$. Nevertheless, I think the above example does give some useful insight into the empirical results we see in the previous section.
+
+
+\end{document}

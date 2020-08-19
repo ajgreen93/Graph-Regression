@@ -1,0 +1,891 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\makeatletter
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LS}{\mathrm{LS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 3/12/20 - 3/19/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+Suppose we observe data according to the following random design regression sampling model: we observe independent samples $x_1,\ldots,x_n \sim P$ and responses
+\begin{equation}
+\label{eqn:regression_random_design_known_variance}
+y_i = f(x_i) + \varepsilon_i,~~\varepsilon_i \sim N(0,1)
+\end{equation}
+where $f \in L^2(P)$ is a regression function and $\varepsilon$ is independent standard Gaussian noise. We wish to test
+\begin{equation*}
+\mathbf{H}_0: f = 0,~~ \mathbf{H}_a: f \neq 0.
+\end{equation*}
+Our strategy will be to estimate $\norm{f}_{\Leb^2(P)}$ using a test statistic $T$ to be specified momentarily, and reject the null hypothesis (which we can equivalently state as $\norm{f}_{\Leb^2} = 0$) if $T$ is sufficiently large. 
+
+The truncated series estimator of $f$,
+\begin{equation*}
+\Pi_{\kappa,G}(y) = \sum_{k = 1}^{\kappa} \biggl(\sum_{i = 1}^{n} v_{k,i}(G) y_i\biggr) v_k(G), 
+\end{equation*}
+leads to the somewhat natural choice of test statistic $T = \norm{\Pi_{\kappa,G}(y)}_n^2$. (Here, $G$ is a neighborhood graph built on the data $X$.)
+A set of standard calculations lead to the following upper bound on approximation error:
+\begin{equation*}
+\abs{\norm{f}_{n}^2 - \norm{\Pi_{\kappa,G}(y)}_n^2} \leq \frac{f^T L^s f}{n \lambda_{\kappa}(G)^s}
+\end{equation*}
+When the graph $G$ is formed appropriately, the Laplacian matrix $L$ can be viewed as an estimate of a density-weighted Laplace-Beltrami operator $\Delta_P$. Then $\lambda_{\kappa}(G)$ can be viewed as an estimate of the $(\kappa)$th eigenvalue of $\Delta_P$, and $f^T L^s f$ as an estimate of a Sobolev semi-norm built via the operator $\Delta_P$. When the density $p$ satisfies appropriate regularity conditions, the population level quantities these estimates approximate are roughly
+\begin{equation*}
+\langle \Delta_P^s f, f \rangle_{\Leb^2(P)} \sim |f|_{H^{s}(\mathcal{X})}, ~~ \lambda_{\kappa}(G)^2 \sim \kappa^{-2s/d}
+\end{equation*}
+and the resulting approximation error incurred by projecting $f$ onto $\kappa$ eigenvectors in $\Leb^2(P_n)$ is comparable to that incurred by projecting $f$ onto $\kappa$ elements of the Fourier basis in $\Leb^2$.
+
+Of course, this not a formal proof, and indeed when $s > 1$ we will see that problems arise. Let us assume for the moment that $f \in C^2(\mathcal{X};R)$.
+In this case the second-order graph Sobolev seminorm $f^T L_{n,r}^2f$ is a biased estimator of the second-order Sobolev seminorm $\int (f^{(2)}(x))^2 \,dP(x)$. This bias will be non-trivial when $r$ is sufficiently small. On the other hand $\lambda_{\kappa}(G)$ is also a biased estimator of $\lambda_{\kappa}(\Delta_P)$, and this bias will be non-trivial when $r$ and $\kappa$ are sufficiently large. In particular, when $d > 4$, taking $\kappa = n^{2d/(8 + d)}$ as dictated by the usual bias-variance tradeoff in nonparametric testing problems, there exists no choice of $r$ for which the biases of both the seminorm $f^T L_{n,r}^2f$ and the eigenvalue $\lambda_{\kappa}(G)$ are trivial. A test formed using the statistic $\norm{\Pi_{\kappa,G}(y)}_n^2$ is therefore, at best, only minimax optimal when $d \leq 4$. 
+
+For this reason we introduce a bias correction of our statistic.
+
+\subsection{Bias-Corrected Test Statistic}
+
+Formally, define the (unweighted) neighborhood graph $G_{n,r} = (X,E)$, where $X = \set{x_1,\ldots,x_n}$, and $(x_i,x_j) \in E \subset X \times X$ if and only if $\norm{x_i - x_j}_2 \leq r$. Let $L_{n,r} := L_{G_{n,r}}$ be the Laplacian matrix associated with $G_{n,r}$. Our test statistic will be defined as a simple function of the norm of the projection of $Y$ onto the eigenvectors of $L_{n,r}$,
+\begin{equation*}
+T_{\spec}(G_{n,r}) := \norm{\Pi_{\kappa,G_{n,r}}(Y)}_n^2 + \frac{y^T L_{n,r} y}{2 n\bigl(\lambda_{\kappa}(G_{n,r})\bigr)^2}
+\end{equation*}
+The second term on the right hand side is the bias-correction term. Our test is then
+\begin{equation*}
+\phi_{\spec}(G_{n,r}) := \1\{T_{\spec}(G_{n,r}) \geq \tau(b) \}
+\end{equation*}
+where $b$ is a user-specified model encoding tolerance for error, and $\tau$ is a function of $b$ to be specified later.
+
+The bias corrected graph spectral projection test is minimax optimal over the compactly supported Holder ball $C_0^2(\Xset;L)$ whenever $d < 8$. 
+\begin{theorem}
+	\label{thm:holder_testing_rate_2}
+	Suppose we observe samples $(x_i,y_i)_{i = 1}^{n}$ according to the model~\eqref{eqn:regression_random_design_known_variance}. Let $L > 0$ and $b \geq 1$ be fixed constants, and $d < 8$. Suppose that $P$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]^d$ with density function $p(x) \in C^1(\Xset;p_{\max})$ bounded away from zero and infinity, 
+	\begin{equation*}
+	0 < p_{\min} < p(x) < p_{\max} < \infty,~~ \textrm{for all $x \in \mathcal{X}$.}
+	\end{equation*}
+	and the test $\phi_{\spec}(G_{n,r})$ is performed with parameter choices
+	\begin{equation*}
+	r(n) = n^{-2/(8 + d)}, ~\kappa = n^{2d/(4 + d)}, ~\tau(b) = \frac{\kappa}{n} + \frac{1}{2n\lambda_{\kappa}^2}\sum_{k = 1}^{n}\lambda_k + \sqrt{6}b\sqrt{\frac{2\kappa}{n^2}}
+	\end{equation*}
+	Then the following statements holds for every $n$ sufficiently large: there exists constants $c_1,c_2$ which do not depend on $n,b$ or $R$ such that for every $\epsilon \geq 0$ satisfying
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate_order1}
+	\epsilon^2 \geq c_1^2 \cdot b^2 \cdot L^2 \cdot n^{-8/(8 + d)}
+	\end{equation}
+	the worst-case risk is upper bounded
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate_order1_1}
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}(G_{n,r}); C_0^2(\mathcal{X};R)) \leq \frac{c_2}{b}.
+	\end{equation}
+\end{theorem}
+
+\section{Analysis}
+
+\subsection{Fixed graph testing error}
+
+To prove Theorem~\ref{thm:holder_testing_rate_2}, we show that there exists a high-probability set $E \subseteq \Xset^n$ such that conditional on $X \in E$, the test $\phi_{\spec}(G_{n,r})$ has small risk. Since $G_{n,r}$ is a function only of $X$ and not of $Y$, this amounts to reasoning about the behavior of the test $\phi_{\spec}$ over a fixed graph $G = (X,E)$, where we observe
+\begin{equation}
+\label{eqn:fixed_graph_regression_model}
+y_i = \beta_i + \varepsilon_i,~~\varepsilon_i \sim \mathcal{N}(0,1)
+\end{equation}
+for some fixed $\beta \in \Reals^n$.  
+
+In Lemma~\ref{lem:fixed_graph_testing}, we upper bound the Type I and Type II error of the test $\phi_{\spec}(G)$. Our bound on the Type II error will be stated as a function of $\beta^T L^2 \beta$--a measure of the smoothness the signal $\beta$ displays over the graph $G$--as well as the $\kappa$th eigenvalue $\lambda_{\kappa}$. (For ease of reading, in the statement and proof of this Lemma, we drop the notational dependence of the Laplacian $L$ and eigenvalues $\lambda$ on the graph $G$.) 
+
+\begin{lemma}
+	\label{lem:fixed_graph_testing}
+	Let $1 \leq \kappa \leq n$ be an integer. Suppose we observe data according to the model~\eqref{eqn:fixed_graph_regression_model}, and we perform the test $\phi_{\spec}(G)$ with
+	\begin{equation*}
+	\tau(b) = \frac{\kappa}{n} + \frac{1}{2n\lambda_{\kappa}^2}\sum_{k = 1}^{n}\lambda_k + 2\sqrt{6}\cdot b\sqrt{\frac{\kappa}{n^2}}.
+	\end{equation*} 
+	Assume that
+	\begin{equation}
+	\label{eqn:graph_spectral_1}
+	\max\Bigl\{\beta^T L^2 \beta, n \lambda_n^2\Bigr\} \leq \kappa \cdot \lambda_{\kappa}^4
+	\end{equation}
+	\begin{enumerate}
+		\item \textbf{Type I error:} Under the null hypothesis $\beta = \beta_0 = 0$, the Type I error of $\phi_{\spec}(G)$ is upper bounded
+		\begin{equation}
+		\label{eqn:graph_spectral_type_I_error}
+		\mathbb{E}_{\beta_0}(\phi_{\spec}) \leq \frac{1}{b^2}.
+		\end{equation}
+		\item \textbf{Type II error:} For any $b \geq 1$ and $\beta$ such that
+		\begin{equation}
+		\label{eqn:fixed_graph_testing_critical_radius_1}
+		\frac{\beta^T L \beta}{2 n \lambda_{\kappa}^2} + \norm{\Pi_{\kappa,G}(\beta)}_n^2 \geq 2 \sqrt{6} \cdot b\sqrt{\frac{\kappa}{n^2}}
+		\end{equation}
+		the Type II error of $\phi_{\spec}(G)$ is upper bounded,
+		\begin{equation}
+		\label{eqn:graph_spectral_type_II_error}
+		\mathbb{E}_{\beta}(1 - \phi_{\spec}) \leq \frac{1}{b^2} + \frac{16}{\sqrt{6} \cdot b\sqrt{\kappa}}.
+		\end{equation}
+	\end{enumerate}
+    In particular if
+    \begin{equation}
+    \label{eqn:fixed_graph_testing_critical_radius}
+    \frac{1}{n} \sum_{i = 1}^{n} \beta_i^2 \geq 2\sqrt{6} \cdot b\sqrt{\frac{\kappa}{n^2}} + \frac{U_2(\beta;G)}{4 n\lambda_{\kappa}^2}
+    \end{equation}
+    where
+    \begin{equation*}
+    U_2(\beta;G) := \sum_{i \in (n)^3} (\beta_{i_1} - \beta_{i_2}) (\beta_{i_1} - \beta_{i_3}) A_{i_1i_2} A_{i_1i_3}
+    \end{equation*}
+    then~\eqref{eqn:fixed_graph_testing_critical_radius_1} and thus~\eqref{eqn:graph_spectral_type_II_error} follow.
+\end{lemma}
+
+\subsection{Variance of bias-correction term}
+
+We pay a price in increased variance for introducing the bias-correction term $y^T L y/\bigl(2 n \lambda_{\kappa}^2\bigr)$; the condition~\eqref{eqn:graph_spectral_1} is sufficient to guarantee this increase in variance is no greater than the variance $\Var(||\Pi_{\kappa,G}(Y)||_n^2)$ of the uncorrected statistic. In this section, we show that under the conditions of Theorem~\ref{thm:holder_testing_rate_2}, the condition~\eqref{eqn:graph_spectral_1} holds with high probability.
+
+\begin{lemma}
+	\label{lem:bias_correction_variance}
+	Fix $b \geq 1$. Suppose $f \in C_0^2(\Xset;L)$, and let $r = n^{-2/(8 + d)}$ and $\kappa = n^{2d/(8 + d)}$. Then there exist constants $c$ and $C$ such that for all $n$ sufficiently large and all $d < 8$,
+	\begin{equation}
+	\label{eqn:bias_correction_variance}
+	\max\Big\{f^T L_{n,r}^2 f,~ n \bigl(\lambda_n(G_{n,r})\bigr)^2 \Bigr\} \leq \kappa \cdot \bigl(\lambda_{\kappa}(G_{n,r})\bigr)^4
+	\end{equation}
+	with probability at least $1 - 1/b - 1/(nr^4) - C(n + r^{-d}) \exp\{-c nr^d\}$.
+\end{lemma}
+
+\subsection{Approximation error}
+
+The following Lemma is the main result of this section.
+\begin{lemma}
+	\label{lem:approximation_error}
+	Set $r = n^{-2/(8 + d)}$ and $\kappa = n^{2d/(8 + d)}$. Then if $f \in C_0^2(\mathcal{X};L)$, $p \in C^1(\mathcal{X};p_{\max})$, and additionally there exists
+	\begin{equation*}
+	0 < p_{\min} \leq p(x)~~\textrm{for all $x \in \Xset$}
+	\end{equation*}
+	then the following statement holds: there exist constants $c$ and $C$ which depend only on $p_{\min},p_{\max}$ and $d$ such that if
+	\begin{equation}
+	\label{eqn:approximation_error}
+	\norm{f}_{\Leb^2}^2 \geq C \cdot b^2 \cdot L^2 \cdot n^{-8/(8 + d)}
+	\end{equation}
+	then
+	\begin{equation*}
+	\norm{f}_n^2 \geq  2 \sqrt{6} b\sqrt{\frac{\kappa}{n^2}} + \frac{U_2(f;G_{n,r})}{4 n [\lambda_{\kappa}(G_{n,r})]^2}
+	\end{equation*}
+	with probability at least $1 - 5/b - 1/(nr^4) - C(n + r^{-d}) \exp\{-c nr^d\}$.
+\end{lemma}
+We note that for $r = n^{-2/(8 + d)}$, each of
+\begin{equation*}
+\frac{1}{nr^4}\to 0,~ C(n + r^{-d}) \exp\{-c nr^d\} \to 0~~\textrm{as}~ n \to \infty
+\end{equation*}
+and these contributions to the overall testing error are therefore asymptotically negligible. Theorem~\ref{thm:holder_testing_rate_2} then follows from combining Lemmas~\ref{lem:bias_correction_variance} and~\ref{lem:approximation_error} with Lemma~\ref{lem:fixed_graph_testing}, 
+
+The following three Lemmas will be used in the proof of Lemma~\ref{lem:approximation_error}. Lemma~\ref{lem:empirical_norm_sobolev} -- copied from the graph testing notes -- implies a sufficient lower bound on  $\norm{f}_n^2$ when $s = 2$. It is stronger than we need, in the sense that it applies to all functions bounded in the second-order Sobolev norm rather than merely the second-order Holder norm; in our case we could obtain tighter bounds on the probability, but since we eventually hope to apply our argument to Sobolev functions anyway, we won't bother with this.
+
+\begin{lemma}
+	\label{lem:empirical_norm_sobolev}
+	Let $\Xset$ be a Lipschitz domain over which the density is upper and lower bounded 
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty ~~\textrm{for all $x \in \Xset$,}
+	\end{equation*}
+	and let $f \in H^s(\Xset)$.Then for any $b \geq 1$, there exists $c_1$ such that if 
+	\begin{equation}
+	\norm{f}_{\Leb^2(\Xset)} \geq 
+	\begin{cases*}
+	c_1 \cdot b \cdot \norm{f}_{H^s(\Xset)} \cdot \max\{n^{-1/2},n^{-s/d}\},~~\textrm{if}~2s \neq d \\
+	c_1 \cdot b \cdot \norm{f}_{H^s(\Xset)} \cdot n^{-a/2},~~\textrm{if}~ 2s = d ~\textrm{for any}~ 0 < a < 1
+	\end{cases*}
+	\end{equation}
+	then,
+	\begin{equation}
+	\label{eqn:l2_to_empirical_norm_sobolev}
+	\mathbb{P}\left[\norm{f}_n^2 \geq \frac{1}{b} \Ebb\bigl[\norm{f}_n^2\bigr]\right] \geq 1 - \frac{5}{b}
+	\end{equation}
+	where $c_1$ and $c_2$ are constants which may depend only on $s$, $\Xset$, $d$, $p_{\min}$ and $p_{\max}$.
+\end{lemma}
+
+Lemma~\ref{lem:neighborhood_eigenvalue} establishes that the eigenvalues $\lambda_{\kappa}(G_{n,r})$ scale at sufficiently fast rate as $\kappa$ increases.
+\begin{lemma}
+	\label{lem:neighborhood_eigenvalue}
+	Suppose $p$ is bounded away from $0$ and $\infty$ everywhere on its support, i.e.
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty,~~ \textrm{for all $x \in [0,1]^d$.}
+	\end{equation*}
+	Then there exists constants $c$ and $C$ which depend only on $p_{\min}, p_{\max}$ and $d$, such that for all $1 \leq k \leq n$,
+	\begin{equation}
+	\label{eqn:neighborhood_eigenvalue}
+	\lambda_k(G_{n,r}) \geq c \cdot \min\Bigl\{r^{d + 2}nk^{2/d}, nr^d\Bigr\} 
+	\end{equation}
+	with probability at least $1 - C (n + r^{-d}) \exp\bigl\{- c n r^d\bigr\}$. 
+\end{lemma}
+
+The first term on the right hand side of~\eqref{eqn:neighborhood_eigenvalue} is the scaling of the eigenvalues we desire. The second term is an artificial truncation on this spectrum. For the choices of $r$ and $\kappa$ in Lemma~\ref{lem:approximation_error}, these terms are exactly equal, and the truncation therefore does not come into play.
+
+In Lemma~\ref{lem:graph_sobolev_seminorm}, we establish that $U$-statistic $U_2(f;G_{n,r})$ scales appropriately with the Holder norm of $f$.
+
+\begin{lemma}
+	\label{lem:graph_sobolev_seminorm}
+	If $f \in C_0^2(\mathcal{X};L)$, $p \in C^1(\mathcal{X};L)$, and $n^{-1/d} \leq r \leq 1$, then there exists a constant $c$ such that
+	\begin{equation*}
+	\Bigl|U_2(f;G_{n,r})\Bigr| \leq c n^3 r^{2(d + 2)} L^2 p_{\max}^2
+	\end{equation*}
+	with probability at least $1 - 1/(nr^4)$.
+\end{lemma}
+
+\section{Proofs}
+
+\subsection{Proof of Lemma~\ref{lem:fixed_graph_testing}}
+
+In this proof, we will drop all notational dependence on the graph $G$ for ease of reading. 
+
+To prove Lemma~\ref{lem:fixed_graph_testing} we will first compute (bounds on) the expectation and variance of the test statistic $T_{\mathrm{spec}}$, and then use Chebyshev's inequality to show \eqref{eqn:graph_spectral_type_I_error} and \eqref{eqn:graph_spectral_type_II_error}.
+
+\paragraph{Expectation of $T_{\mathrm{spec}}$:} Using the notation $\dotp{v}{w} = \sum_{i = 1}^{n} v_iw_i$, we have
+\begin{align*}
+\Ebb\bigl[T_{\spec}\bigr] & = \frac{1}{n}\sum_{k = 1}^{\kappa}\left( \dotp{\beta}{v_k}^2 + \Ebb\Bigl[ \dotp{\varepsilon}{v_k}^2 + 2 \dotp{\varepsilon}{v_k} \dotp{\beta}{v_k}\Bigr]\right) + \frac{1}{2 n\lambda_{\kappa}^2} \Ebb \Bigl[(\beta + \varepsilon)^T L (\beta + \varepsilon)\Bigr] \\
+& = \frac{\kappa}{n} + \norm{\Pi_{\kappa,G}(\beta)}_n^2 + \frac{1}{2 n\lambda_{\kappa}^2}\biggl(\beta^T L \beta + \sum_{k = 1}^{n}\lambda_k\biggr)
+\end{align*}
+
+\paragraph{Variance of $T_{\mathrm{spec}}$:}
+Note that $T_{\mathrm{spec}} = n^{-1} y^T V_{\kappa} V_{\kappa}^T y$ where $V_{\kappa}$ is the $n \times \kappa$ matrix with eigenvector $v_k$ as its $k$th column. Therefore, applying Cauchy-Schwarz,
+\begin{align*}
+\Var(T_{\spec}) & \leq \frac{2}{n^2} \biggl( \Var\Bigl(y^T V_{\kappa} V_{\kappa}^T y\Bigr) + \frac{1}{8 \lambda_{\kappa}^4}\Var\Bigl(y^T L y\Bigr) \biggr) \\
+& = \frac{2}{n^2} \biggl( \Var\Bigl((\beta + \varepsilon)^T V_{\kappa} V_{\kappa}^T (\beta + \varepsilon)\Bigr) + \frac{1}{8 \lambda_{\kappa}^4}\Var\Bigl((\beta + \varepsilon)^T L (\beta + \varepsilon)\Bigr) \biggr) \\
+& = \frac{2}{n^2}\biggl(4 n \norm{\Pi_{\kappa,G}(\beta)}_n^2 + 2 \kappa + \frac{1}{4\lambda_{\kappa}^4} \Bigl(2\beta^T L^2 \beta + \sum_{k = 1}^{n} \lambda_k^2 \Bigr)\biggr) \\
+& \leq  \frac{2}{n^2}\biggl(4 n \norm{\Pi_{\kappa,G}(\beta)}_n^2 + 2 \kappa + \frac{1}{4\lambda_{\kappa}^4} \Bigl(2\beta^T L^2 \beta + n \lambda_n^2 \Bigr)\biggr) \\
+& \leq \frac{2}{n^2}\biggl(4 n \norm{\Pi_{\kappa,G}(\beta)}_n^2 + 3 \kappa \biggr)
+\end{align*}
+where the last equality follows from standard properties of the Gaussian distribution, and the last inequality follows from~\eqref{eqn:graph_spectral_1}. We now move on to showing the desired inequalities \eqref{eqn:graph_spectral_type_I_error} and \eqref{eqn:graph_spectral_type_II_error}. Let $t(b) := b\sqrt{\frac{\kappa}{n^2}}$.
+
+\paragraph{Proof of~\eqref{eqn:graph_spectral_type_I_error}:} By Chebyshev's inequality,
+\begin{align*}
+\Pbb_{\beta = 0}\biggl(T_{\spec} \geq \frac{\kappa}{n} + \frac{1}{2 n\lambda_{\kappa}^2}\sum_{k = 1}^{n} \lambda_k + 4t(b)\biggr)
+& \leq \Pbb_{\beta = 0}\biggl(T_{\spec} - \Ebb\bigl[T_{\spec}\bigr] \geq \sqrt{6} t(b)\biggr) \\
+& \leq \frac{\Var(T_{\spec})}{\bigl(\sqrt{6}t(b)\bigr)^2} = \frac{1}{b^2}.
+\end{align*}
+
+\paragraph{Proof of~\eqref{eqn:graph_spectral_type_II_error}:} For simplicity, we introduce the notation
+\begin{equation*}
+\Delta = \norm{\Pi_{\kappa,G}(\beta)}_n^2 + \frac{1}{2 n \lambda_{\kappa}^2} \beta^T L \beta
+\end{equation*}
+Assumption~\eqref{eqn:fixed_graph_testing_critical_radius_1} implies $\Delta \geq 2 \sqrt{6} \cdot t(b)$, and we have already shown that $\Ebb_{\beta}(T_{\spec}) = \Delta + \kappa/n + \bigl(\sum_{k = 1}^{n} \lambda_k\bigr)/(n\lambda_{\kappa}^2)$. Then another application of Chebyshev's inequality gives us
+\begin{align*}
+\Pbb_{\beta}\biggl(T_{\spec} \leq \frac{\kappa}{n} + \frac{1}{n\lambda_{\kappa}^2}\sum_{k = 1}^{n} \lambda_k^2 + \sqrt{6} \cdot t(b)\biggr) & = \Pbb_{\beta}\biggl(T_{\spec} - \Ebb_{\beta}(T_{\spec}) \leq \sqrt{6} \cdot t(b) - \Delta \biggr) \\
+& \leq \Pbb_{\beta}\biggl(\abs{T_{\spec} - \Ebb_{\beta}(T_{\spec})} \leq \Delta/2 \biggr) \tag{since $\Delta \geq 2 \sqrt{6} \cdot t(b)$}	\\
+& \leq \frac{4\Var_{\beta}(T_{\spec})}{\Delta^2} \\
+& \leq \frac{24\kappa/n^2 + 32\Delta/n}{\Delta^2}.
+\end{align*}
+We handle each summand in the numerator separately. For the first term, since $\Delta \geq 2 \sqrt{6} \cdot t(b)$, we have
+\begin{equation}
+\label{eqn:spectral_type_II_error_pf1}
+\frac{24\kappa}{n^2\Delta^2} \leq \frac{1}{b^2}.
+\end{equation}
+
+For the second term we have
+\begin{equation}
+\label{eqn:spectral_type_II_error_pf2}
+\frac{32}{n\Delta} \leq \frac{16}{\sqrt{6} \cdot nt(b)} = \frac{16}{\sqrt{6} \cdot b\sqrt{\kappa}}, 
+\end{equation}
+and combining~\eqref{eqn:spectral_type_II_error_pf1} and~\eqref{eqn:spectral_type_II_error_pf2} yields~\eqref{eqn:graph_spectral_type_II_error}.
+
+\paragraph{\eqref{eqn:fixed_graph_testing_critical_radius} implies~\eqref{eqn:fixed_graph_testing_critical_radius_1}.}
+
+Since the eigenvalues $\lambda_k$ are ordered from smallest to largest, 
+\begin{align*}
+\norm{\Pi_{\kappa,G}(\beta)}_n^2 & = \norm{\beta}_n^2 - \frac{1}{n}\sum_{k = \kappa + 1}^{n} \dotp{\beta}{v_k}^2 \\
+& \geq \norm{\beta}_n^2 - \frac{1}{n \lambda_{\kappa}^2}\sum_{k = \kappa + 1}^{n} \dotp{\beta}{v_k}^2 \lambda_k^2 \\
+& \geq \norm{\beta}_n^2 - \frac{\beta^T L^2 \beta}{n\lambda_{\kappa}^2},
+\end{align*}
+Therefore since we may rewrite the second-order graph Sobolev seminorm as,
+\begin{align*}
+\frac{\beta^T L^2 \beta}{n \lambda_{\kappa}^2} & = \frac{1}{n \lambda_{\kappa}^2} \sum_{i = 1}^{n} (L\beta)_i^2 \\
+& = \frac{1}{4 n \lambda_{\kappa}^2} \sum_{i \in [n]^3} \Bigl(\beta_{i_1} - \beta_{i_2}\Bigr) \Bigl(\beta_{i_1} - \beta_{i_3}\Bigr) A_{i_1,i_2} A_{i_1,i_3} \\
+& = \frac{1}{2 n \lambda_{\kappa}^2} \biggl(\beta^T L \beta + \frac{1}{2} \sum_{i \in (n)^3} \Bigl(\beta_{i_1} - \beta_{i_2}\Bigr) \Bigl(\beta_{i_1} - \beta_{i_3}\Bigr) A_{i_1,i_2} A_{i_1,i_3} \biggr) \\
+& = \frac{1}{2 n \lambda_{\kappa}^2} \biggl(\beta^T L \beta + \frac{1}{2}U_2(\beta;G) \biggr)
+\end{align*}
+we have
+\begin{equation*}
+\norm{\Pi_{\kappa,G}(\beta)}_n^2 + \frac{\beta^T L \beta}{2 n \lambda_{\kappa}^2} \geq \norm{\beta}_n^2 - \frac{1}{4 n \lambda_{\kappa}^2}U_2(\beta;G)
+\end{equation*}
+whence we see that \eqref{eqn:fixed_graph_testing_critical_radius} implies~\eqref{eqn:fixed_graph_testing_critical_radius_1}.
+
+\subsection{Proof of Lemma~\ref{lem:bias_correction_variance}}
+
+By Lemma~\ref{lem:neighborhood_eigenvalue} there exist constants $c$ and $C$ such that 
+\begin{equation}
+\label{eqn:bias_correction_variance_pf2}
+\lambda_{\kappa}(G_{n,r}) \geq c \cdot \min\Bigl\{n r^{d + 2} \kappa^{2/d}, n r^d\Bigr\}
+\end{equation}
+with probability at least $1 - C(n + r^{-d}) \exp\{-c nr^d\}$. Note that when $r = n^{-2/(8 + d)}$, and $\kappa = n^{2d/(8 + d)}$ as specified in the statement of Lemma~\ref{lem:bias_correction_variance}, the two terms inside the minimum are equal. We will now supply upper bounds on both $f^T L_{n,r}^2 f$ and $n \bigl(\lambda_n(G_{n,r})\bigr)^2$, which combined with~\eqref{eqn:bias_correction_variance_pf2} are sufficient to prove the claim of Lemma~\ref{lem:bias_correction_variance}.
+
+\paragraph{Upper bound on $f^T L_{n,r}^2 f$.}
+We begin by rewriting the quadratic form $f^T L_{n,r}^2 f$ as
+\begin{equation*}
+f^T L_{n,r}^2 f = 2 f^T L_{n,r} f + U_2(f;G_{n,r})
+\end{equation*}
+To upper bound the first term on the right hand side, we compute its expectation
+\begin{align*}
+\Ebb \Bigl[f^T L_{n,r} f\Bigr] & = n(n - 1) \Ebb\Bigl[\bigl(f(x_i) - f(x_j)\bigr)^2 K_r(x_i,x_j)\Bigr] \\
+& \leq n(n - 1) L^2 r^{2} \Ebb\Bigl[K_r(x_i,x_j)\Bigr] \\
+& \leq n(n - 1) L^2 r^{2 + d} p_{\max}.
+\end{align*}
+Since $f^T L_{n,r} f$ is always non-negative, by Markov's inequality
+\begin{equation*}
+f^T L_{n,r} f \leq b n(n - 1) L^2 r^{2 + d} p_{\max} 
+\end{equation*}
+with probability at least $1 - 1/b$. 
+
+In combination with the upper bound on $\abs{U_2(f;G_{n,r})}$ given by  Lemma~\ref{lem:graph_sobolev_seminorm}, choosing $c$ as in that Lemma we have
+\begin{equation}
+\label{eqn:bias_correction_variance_pf1}
+f^T L_{n,r}^2 f \leq 2 b n^2 L^2 r^{2 + d} p_{\max} + c n^3 r^{2(d + 2)} L^2 p_{\max}^2
+\end{equation}
+with probability at least $1 - 1/b - 1/(nr^4)$. 
+
+Assuming the high probability bounds~\eqref{eqn:bias_correction_variance_pf2} and~\eqref{eqn:bias_correction_variance_pf1} hold, the routine calculations
+\begin{equation*}
+\frac{\Bigl(\lambda_{\kappa}(G_{n,r})\Bigr)^4 \kappa}{n^3 r^{2(d + 2)}} \geq n^3 r^{2(d + 2)} \geq n^{3} n^{-4(d + 2)/(d + 8)} = n^{(16 - d)/(8 + d)} \geq n^{1/2}
+\end{equation*}
+and
+\begin{equation*}
+\frac{\Bigl(\lambda_{\kappa}(G_{n,r})\Bigr)^4\kappa}{n^2 r^{(d + 2)}} \geq n^4 r^{3(d + 2)} \geq n^{4} n^{-6(d + 2)/(d + 8)} = n^{(20 - 2d)/(8 + d)} \geq n^{1/4} 
+\end{equation*}
+imply $f^T L_{n,r}^2 f \leq \kappa\Bigl(\lambda_{\kappa}(G_{n,r})\Bigr)^4$ for all $n$ sufficiently large. 
+
+\paragraph{Upper bound on $n \lambda_n^2$}
+It is well known that for any graph $G$, it's largest eigenvalue $\lambda_n(G) \leq 2 \deg_{\max}(G)$. For the particular case of $G = G_{n,r}$, by Lemma~\ref{lem:max_degree}
+\begin{equation*}
+\deg_{\max}(G_{n,r}) \leq 2 p_{\max} \nu_d n r^d
+\end{equation*}
+with probability at least $1 -  n \exp\bigl\{- p_{\min} \nu_d n r^d \bigr\}$. Along with~\eqref{eqn:bias_correction_variance_pf2} this implies that for an appropriate choice of constant $c$
+\begin{equation*}
+\frac{\kappa \Bigl(\lambda_{\kappa}(G_{n,r})\Bigr)^4}{n \Bigl(\lambda_{n}(G_{n,r})\Bigr)^2} \geq c n r^{2d} \kappa = c n^{(8 - d)/(8 + d)}
+\end{equation*}
+whence the claim~\eqref{eqn:bias_correction_variance} follows since $d < 8$.
+
+\subsection{Proof of Lemma~\ref{lem:approximation_error}}
+Let us take the high probability conclusions of Lemmas~\ref{lem:empirical_norm_sobolev}, \ref{lem:neighborhood_eigenvalue}, and \ref{lem:graph_sobolev_seminorm} as given, namely that for $\kappa = n^{2d/(8 + d)}$ and $r = n^{-2/(8 + d)}$,
+\begin{enumerate}
+	\item $\norm{f}_n^2 \geq \frac{1}{b} \norm{f}_{\Leb^2}^2$,
+	\item for some constant $c_1$, $\bigl[\lambda_{\kappa}(G_{n,r})\bigr]^2 \geq c_1 n r^{d + 2} \kappa^{2/d}$, and
+	\item for some constant $c_2$, $\abs{U_2(f;G_{n,r})} \leq c_2 n^3 r^{2(d + 2)} \norm{f}_{C^2(\Xset)}^2$.
+\end{enumerate}
+Then, for a sufficiently large choice of constant $C$ in~\eqref{eqn:approximation_error},
+\begin{align*}
+2 \sqrt{6} b\sqrt{\frac{\kappa}{n^2}} + \frac{U_2(f;G_{n,r})}{4 n [\lambda_{\kappa}(G_{n,r})]^2} & \leq \Bigl(2 \sqrt{6} b + \frac{c_2}{c_1}\Bigr) n^{-8/(8 + d)} \\
+& \leq \frac{1}{b}\norm{f}_{\Leb^2}^2 \\
+& \leq \norm{f}_n^2.
+\end{align*}
+The probability with which this holds then comes from accumulating probabilities with which the conclusions of Lemmas~\ref{lem:empirical_norm_sobolev}, \ref{lem:neighborhood_eigenvalue}, and \ref{lem:graph_sobolev_seminorm} hold.
+
+\subsection{Proof of Lemma~\ref{lem:neighborhood_eigenvalue}}
+In the following proof, for graphs $G$ and $H$ defined on a common vertex set $V$, we write $G \preceq H$ if $f^T L_G f \leq f^T L_H f$ for every $f \in L^2(V)$.
+
+We will prove Lemma~\ref{lem:neighborhood_eigenvalue} by comparing the graph $G_{n,r}$ to a graph $\wt{G}_{n,r}$ which we now define. Let $\wt{r} = r/(1 + \sqrt{d})$, and $M = 1/\wt{r}$; without loss of generality we will assume $M$ is an integer. The grid points
+\begin{equation*}
+\wb{Z} := \Bigl\{ \frac{1}{2M}(2m_1 - 1,\ldots,2m_d - 1): m \in [M]^d \Bigr\}
+\end{equation*}
+induces a tesselation $\mathcal{Q}\bigl(\wb{Z}\bigr)$ of $[0,1]^d$, defined as 
+\begin{equation*}
+Q(x) = \Bigl[x_1 - \frac{1}{2M}, x_1 + \frac{1}{2M}\Bigr] \times  \ldots \times \Bigl[x_d - \frac{1}{2M}, x_d + \frac{1}{2M}\Bigr],~~ \mathcal{Q}\bigl(\wb{Z}\bigr) := \set{Q(\wb{z}): \wb{z} \in \wb{Z}}
+\end{equation*}
+In the graph $\wt{G}_{n,r} = (X,\wt{E})$, there is an edge between $x_i$ and $x_J$ if they are in the same or adjoining cubes in $\mathcal{Q}(\wb{Z})$; formally speaking $(x_i,x_j) \in \wt{E}$ if either (a) there exists $\wb{z} \in \wb{Z}$ such that $x_i \in \mathcal{Q}(\wb{Z})$ and $x_j \in \mathcal{Q}(\wb{z})$ or (b) there exist $\wb{z}, \wb{z}' \in \mathcal{Q}(\wb{z}')$ such that $x_i \in \mathcal{Q}(\wb{z})$, $x_j \in \mathcal{Q}(\wb{z}')$, and $\norm{\wb{z} - \wb{z}} = 1/M$. 
+
+
+Let 
+\begin{equation*}
+Q_{\min} = \min_{\wb{z} \in \wb{Z}}~ \Bigl|Q(\wb{z}) \cap X\Bigr|,~~ Q_{\max} = \max_{\wb{z} \in \wb{Z}}~ \Bigl|Q(\wb{z}) \cap X\Bigr|
+\end{equation*}
+
+We will prove the following three claims. The first two are deterministic statements regarding graph comparisons, while the third involves the concentration of the functionals $Q_{\min}$ and $Q_{\max}$.  
+\begin{enumerate}
+	\item The graphs $G_{n,r}$ and $\wt{G}_{n,r}$ satisfy the partial ordering
+	\begin{equation*}
+	\wt{G}_{n,r}\preceq G_{n,r} 
+	\end{equation*}
+	\item For each $k = 1,\ldots,n$, the eigenvalues $\lambda_k(\wt{G}_{n,r})$ satisfy
+	\begin{equation*}
+	\lambda_k(\wt{G}_{n,r}) \geq \frac{Q_{\min}^2}{2 Q_{\max}}\min\Bigl\{\frac{k^{2/d}}{M^2}, d\Bigr\}
+	\end{equation*}
+	\item When $n$ is sufficiently large, there exist constants $c_1$ and $c_2$ such that
+	\begin{equation*}
+	c_1 p_{\min} n r^d \leq Q_{\min} \leq Q_{\max} \leq c_2 p_{\max} n r^d
+	\end{equation*}
+	with probability at least $1 - c_2 r^{-d} \exp \{-c_1 p_{\min} n r^d\}$. 
+\end{enumerate}
+The conclusion of Lemma~\ref{lem:neighborhood_eigenvalue} follows straightforwardly once these statements are proved.
+
+\paragraph{Claim 1: Partial Ordering.}
+By definition if $x_i \sim x_j$ in $\wt{G}_{n,r}$, then there exists $\wb{z}_{\ell}$ and $\wb{z}_{m}$ in $\wb{Z}$ such that
+\begin{equation*}
+\norm{x_i - \wb{z}_{\ell}}_2 \leq \frac{\sqrt{d}}{2M}, \norm{x_j - \wb{z}_{m}}_2 \leq \frac{\sqrt{d}}{2M}, \norm{\wb{z}_{\ell} - \wb{z}_m}_2 \leq \frac{1}{M}
+\end{equation*}
+Therefore by the triangle inequality,
+\begin{equation*}
+\norm{x_i - x_j}_2 \leq \frac{1 + \sqrt{d}}{M} = r
+\end{equation*}
+and so $x_i \sim x_j$ in $G_{n,r}$. 
+
+\paragraph{Claim 2: Eigenvalues of $\wt{G}_{n,r}$.}
+Let $\wb{G}_d^{M}$ be the lattice graph formed over the grid points $\wb{Z}$, let $V_m = X \cap Q(\wb{z}_m)$ for each $m \in [M]^d$, and let $\wt{H} = (V_{\wt{H}}, E_{\wt{H}})$ where
+\begin{equation*}
+V_{\wt{H}} = \bigcup_{m \in [M]^d} \bigcup_{x_i \in V_m} (\wb{z}_m,x_i),~~ \textrm{and}~ \Bigl((\wb{z}_m,x_i),(\wb{z}_o,x_{j})\Bigr) \in E_{\wt{H}}~\textrm{if either $m = o$ or $z_m \sim z_o$ in $\wb{G}_d^{M}$} 
+\end{equation*}
+Lemma~\ref{lem:alden_product_graph} implies the following lower bound on the eigenvalues of $H$
+\begin{align*}
+\lambda_k(\wt{H}) & \geq \frac{1}{2} \frac{Q_{\min}^2}{Q_{\max}}\min\Bigl\{\lambda_k\bigl(\wb{G}_d^{M}\bigr),\deg_{\min}\bigl(\wb{G}_d^{M}\bigr)\Bigr\} \\
+& \geq \frac{1}{2} \frac{Q_{\min}^2}{Q_{\max}}\min\Bigl\{\frac{k^{2/d}}{M},d\Bigr\}
+\end{align*}
+where the latter inequality follows from known facts about the eigenvalues and degrees of the $d$-dimensional lattice. Since $\wt{G}_{n,r}$ is isomorphic to $\wt{H}$, the same lower bound follows for the eigenvalues $\lambda_k(\wt{G}_{n,r})$. 
+
+\paragraph{Claim 3: Bounding $Q_{\min}$ and $Q_{\max}$.}
+This follows from Hoeffding's inequality, as laid out in Lemma~\ref{lem:hoeffding_box}.
+
+
+\subsection{Proof of Lemma~\ref{lem:graph_sobolev_seminorm}}
+We will bound the expectation and variance of $U_2(f;G_{n,r})$; then prove the bound on the latter is sufficient to show concentration around the former at a sufficient rate.
+
+For convenience, we introduce the notation 
+\begin{equation*}
+D_if(x) := (f(x_i) - f(x)) K_r(x_i,x),~~ K_r(x,z) := \1\Bigl\{\norm{x - z}_2 \leq r \Bigr\}
+\end{equation*}
+
+\paragraph{Expectation of $U_2(f;G_{n,r})$.}
+By the linearity of expectation, and the law of iterated expectation
+\begin{align*}
+\Ebb\Bigl[U_2(f;G_{n,r})\Bigr] & = n (n - 1) (n - 2) \cdot \Ebb\Bigl[D_1f(x_2) D_1f(x_3)\Bigr] \\
+& \leq n^3 \cdot \Ebb\biggl[ \Ebb\Bigl[D_1f(x_2)\bigm|x_1\Bigr]^2 \biggr].
+\end{align*}
+It therefore suffices to show 
+\begin{equation}
+\label{eqn:graph_sobolev_seminorm_pf1}
+\biggl(\Ebb\Bigl[D_1f(x_2)\bigm|x_1\Bigr]\biggr)^2 \leq 2 p_{\max}^2 L^2 r^{2(2 + d)}
+\end{equation}
+we will do using Taylor expansions of $f$ and $p$. Writing the expectation as an integral, we have
+\begin{equation*}
+-\Ebb\Bigl[D_1f(x_2)\bigm|x_1 = x\Bigr] = \int \Bigl(f(y) - f(x)\Bigr)K_r(y,x)~ p(y) \,dy
+\end{equation*}
+Then, since $f \in C^2(\Xset;L)$, we have
+\begin{equation*}
+\abs{f(y) - f(x) - \bigl(\nabla f(x)\bigr)^T (y - x)} \leq L \norm{y - x}_2
+\end{equation*}
+for almost every $x \in \Xset$, and as a result
+\begin{equation*}
+\abs{\int \Bigl(f(y) - f(x)\Bigr)K_r(y,x)~ p(y) \,dy - \int \Bigl(\bigl(\nabla f(x)\bigr)^T (y - x)\Bigr)K_r(y,x)~ p(y) \,dy} \leq L p_{\max} r^{d + 2}
+\end{equation*}
+If $\mathrm{dist}(x,\partial \Xset) \leq r$, then since $f$ has first derivative zero at the boundary of $\Xset$, $\norm{\nabla f(x)}_2 \leq r$, which in turn gives
+\begin{equation*}
+\abs{\int \Bigl(\bigl(\nabla f(x)\bigr)^T (y - x)\Bigr)K_r(y,x)~ p(y) \,dy} \leq L p_{\max} r^{d + 2}
+\end{equation*}
+proving~\eqref{eqn:graph_sobolev_seminorm_pf1} when $\mathrm{dist}(x_1,\partial X) \leq r$.
+
+Otherwise $\mathrm{dist}(x_1,\partial X) > r$. Since $p \in C^1(\Xset;p_{\max})$, we have
+\begin{equation*}
+\abs{p(y) - p(x)}  \leq p_{\max} r
+\end{equation*}
+and therefore
+\begin{equation*}
+\abs{\int \Bigl(\bigl(\nabla f(x)\bigr)^T (y - x)\Bigr)K_r(y,x)~ p(y) \,dy - p(x) \int \Bigl(\bigl(\nabla f(x)\bigr)^T (y - x)\Bigr)K_r(y,x) \,dy} \leq L p_{\max} r^{d + 2}.
+\end{equation*}
+However, since $K_r(y,x)$ is a radial kernel,
+\begin{equation*}
+\int \bigl(\nabla f(x)\bigr)^T (y - x) K_r(y,x)\,dy = 0
+\end{equation*} 
+and~\eqref{eqn:graph_sobolev_seminorm_pf1} follows by the triangle inequality.
+
+\paragraph{Variance of $U_2(f;G_{n,r})$.}
+We have
+\begin{equation*}
+\Var\Bigl(U_2(f;G_{n,r})\Bigr) = \sum_{i \in (n)^3} \sum_{j \in (n)^3} \Cov\Bigl(D_{i_1}f(x_{i_2}) \cdot D_{i_1}f(x_{i_3}),D_{i_4}f(x_{i_5})\cdot D_{i_4}f(x_{i_5})\Bigr)
+\end{equation*}
+Let $I = i \cup j$ be the joint index set over $i$ and $j$. Our bound on the covariance term in the preceding display will be a function of the cardinality $\abs{I}$. For example, when $\abs{I} = 6$, by the independence properties of $X$ the covariance is equal to 0. Otherwise if $\abs{I} = 3,4$ or $5$, we have
+\begin{align*}
+\biggl|\Cov\Bigl(& D_{i_1}f(x_{i_2}) \cdot D_{i_1}f(x_{i_3}),D_{i_4}f(x_{i_5})\cdot D_{i_4}f(x_{i_5})\Bigr)\biggr| \\
+& \leq \biggl|\Ebb\Bigl[D_{i_1}f(x_{i_2}) \cdot D_{i_1}f(x_{i_3}) \cdot D_{i_4}f(x_{i_5})\cdot D_{i_4}f(x_{i_5})\Big]\biggr| + \biggl(\Ebb\Bigl[D_{i_1}f(x_{i_2}) \cdot D_{i_1}f(x_{i_3})\Bigr] \biggr)^2 \\
+& \leq \biggl|\Ebb\Bigl[D_{i_1}f(x_{i_2}) \cdot D_{i_1}f(x_{i_3}) \cdot D_{i_4}f(x_{i_5})\cdot D_{i_4}f(x_{i_5})\Big]\biggr| + p_{\max}^4 L^4 r^{4(d + 2)} \\
+& \leq L^4 r^4 ~ \Pbb \biggl(G[X_I]~\textrm{is connected}\biggr) + 4 p_{\max}^4 L^4 r^{4(d + 2)} \\
+& \leq L^4 r^4 p_{\max}^{(\abs{I} - 1)} (\nu_d r)^{d(\abs{I} - 1)} (\abs{I} - 1)! + 4 p_{\max}^4 L^4 r^{4(d + 2)} \\
+& \leq L^4 p_{\max}^4 \Bigl(r^{d(\abs{I} - 1)} + r^{4(d + 2)}\Bigr)
+\end{align*}
+where $c_1 := 24 \nu_d^{4d} + 4$.
+
+Our bound depends on the indices $I$ only through $\abs{I}$, and we reiterate that the covariance is non-zero only when $\abs{I} = 3,4$ or $5$. Using our previous expression on the variance of the U-statistic, we see
+\begin{align*}
+\Var\Bigl(U_2(f;G_{n,r})\Bigr) & \leq c_1 L^4 p_{\max}^4 \sum_{\abs{I} = 3}^{5} n^{\abs{I}} \Bigl( r^{4 + d(\abs{I} - 1)} + r^{4(d + 2)} \Bigr) \\
+& \leq 3 c_1 L^4 p_{\max}^4 n^{5} r^{4 + 4d}
+\end{align*}
+where the latter inequality follows since $n^{-1/d} \leq r \leq 1$.
+
+\paragraph{Concentration.}
+Now we simply apply Chebyshev's inequality to deduce
+\begin{equation*}
+\Pbb \Bigl(\abs{U_2(f;G_{n,r}) - \Ebb(U_2(f;G_{n,r}))} \geq \sqrt{3c_1} L^2 p_{\max}^2 n^3 r^{2(2+d)}\Bigr) \leq \frac{1}{nr^4}.
+\end{equation*}
+Therefore by the triangle inequality,
+\begin{equation*}
+\abs{U_2(f;G_{n,r})} \leq (\sqrt{3c_1} + 2) p_{\max}^2 L^2 n^3 r^{2(2+d)}
+\end{equation*}
+with probability at least $1 - (nr^4)^{-1}$. This completes the proof of Lemma~\ref{lem:graph_sobolev_seminorm}, upon proper choice of the constant $c = \sqrt{3c_1} + 2$.
+
+
+\section{Additional Theory}
+
+\subsection{Concentration}
+
+The maximum eigenvalue of a neighborhood graph is no greater than two times its degree, which can be upper bounded with high probability using, for example, Hoeffding's Inequality.
+\begin{lemma}
+	\label{lem:max_degree}
+	Suppose the density $p$ is bounded away from zero and infinity over its support
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty,~~\textrm{for all $x \in [0,1]^d$.}
+	\end{equation*}
+	Then the maximum degree of $G_{n,r}$ can be upper bounded
+	\begin{equation*}
+	\deg_{\max}(G_{n,r}) \leq 2 p_{\max} \nu_d n r^d
+	\end{equation*} 
+	with probability at least $1 - n \exp\Bigl\{- p_{\min} \nu_d n r^d \Bigr\}$. 
+\end{lemma}
+
+Similarly, Hoeffding's inequality can be used to upper (and lower) bound the maximum (and minimum) number of points in any cube $Q(\wb{z})$. 
+\begin{lemma}
+	\label{lem:hoeffding_box}
+	Suppose the density $p$ is bounded away from zero and infinity over its support
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty,~~\textrm{for all $x \in [0,1]^d$.}
+	\end{equation*}
+	Then the maximum and minimum number of samples in any grid cell can be bounded,
+	\begin{equation*}
+	Q_{\min} \geq \frac{p_{\min}}{2 (1 + \sqrt{d})^d} n r^d
+	\end{equation*}
+	and
+	\begin{equation*}
+	Q_{\max} \leq \frac{2 p_{\max}}{(1 + \sqrt{d})^d} n r^d
+	\end{equation*} 
+	with probability at least $1 - \frac{2(1 + \sqrt{d})^d}{r^d} \exp\Bigl\{-\bigl(p_{\min} (1 + \sqrt{d})^d/8 \bigr)nr^d \Bigr\}$. 
+\end{lemma}
+
+\subsection{Graph Comparison}
+
+For an integer $\mc{M} \geq 1$, we introduce the \textcolor{red}{(Alden product)} graph. Let $G = (Z,E)$ with $\abs{Z} = \{z_1,\ldots,z_{\mc{M}}\}$, and let $V_1,\ldots,V_{\mc{M}}$ be sets of size $N_1,\ldots,N_{\mc{M}}$. The \textcolor{red}{(Alden product)} graph $H$ is defined as
+\begin{equation*}
+H = \Bigl(V_H, E_H\Bigr)
+\end{equation*}
+where $V_H = \bigcup_{m = 1}^{\mc{M}} \bigcup_{j = 1}^{N_m} (z_m,x_{m,j})$ and  $(z_{\ell},x_{\ell,j}) \sim (z_m,x_{m,j})$ in $H$ if (a) $z_{\ell} = z_m$ or (b) $z_{\ell} \sim z_m$ in $G$. Let
+\begin{equation*}
+N_{\min} := \min_{m \in [\mc{M}]} N_m,~~ N_{\max} := \max_{m \in [\mc{M}]} N_m
+\end{equation*} 
+and
+\begin{equation*}
+\deg_{\min}(G) := \min_{m \in [\mc{M}]} \deg(z_m;G),~~ \deg_{\max}(G) := \max_{m \in [\mc{M}]} \deg(z_m;G)
+\end{equation*}
+\begin{lemma}
+	\label{lem:alden_product_graph}
+	Assume that $G$ is a non-empty graph, and that for each $m \in [\mc{M}]$ the set $V_m$ is non-empty set. 
+	\begin{enumerate}
+		\item If $k \in [\mc{M}]$, 
+		\begin{equation*}
+		\frac{1}{2}\frac{N_{\min}^2}{N_{\max}} \lambda_k(G) \leq \lambda_k(H) \leq \frac{N_{\max}^2}{N_{\min}} \lambda_k(G)
+		\end{equation*}
+		\item Otherwise if $k = \mc{M} + 1,\ldots,\sum_{m = 1}^{\mc{M}}N_m$,
+		\begin{equation*}
+		\frac{N_{\min}^2}{N_{\max}} \deg_{\min}(G) \leq \lambda_k(H) \leq 2 \frac{N_{\max}^2}{N_{\min}} \deg_{\max}(G)
+		\end{equation*}
+	\end{enumerate}
+\end{lemma}
+\begin{proof}
+	To prove Lemma~\ref{lem:alden_product_graph}, we will 
+	\begin{enumerate}
+		\item Exhibit an orthonormal basis of $L^2(V_H)$, then
+		\item Compute upper and lower bounds on the Rayleigh quotient, then
+		\item Apply the Courant-Fischer Theorem, and then
+		\item Put together the pieces.
+	\end{enumerate}
+
+\paragraph{Step 1: Orthonormal basis of $L^2(V_H)$.}
+Let $v_1,\ldots,v_{\mc{M}}$ be eigenvectors of $L_G$, with corresponding eigenvalues $\lambda_1(G) \leq \cdots \leq \lambda_{\mc{M}}(G)$, Then for $k = 1,\ldots,\mc{M}$, let
+\begin{equation*}
+v_k^{(H)}\bigl((z_m,x_{m,j})\bigr) = \frac{1}{\sqrt{N_m}} v_k(z_m) 
+\end{equation*}
+Now, for each $m = 1,\ldots,\mc{M}$, there is an $(N_m - 1)$-dimensional subspace of $L^2(V_m)$ orthogonal to the constant function. Let $u_{1,m}, \ldots, u_{N_m - 1,m}$ be an orthonormal sequence spanning this subspace, and further let
+\begin{equation*}
+u_{\ell,m}^{(H)}\bigl((z_{m'},x_{m',j})\bigr) = 
+\begin{cases*}
+u_{\ell,m}(x_{m,j}),&~~\textrm{if $m = m'$}\\
+0,&~~\textrm{otherwise.}
+\end{cases*}
+\end{equation*}
+for $m \in [\mc{M}]$ and $\ell \in [N_m - 1]$. 
+
+We now verify that $\{v_k^{(H)}: k \in [\mc{M}]\} \cup \{u_{\ell,m}^{(H)}: m \in [\mc{M}], \ell \in [N_m - 1] \}$ is an orthonormal basis of $L^2(V_H)$. First,
+\begin{align*}
+\dotp{v_k^{(H)}}{v_{\ell}^{(H)}}_{L^2(V_H)} & = \sum_{m = 1}^{\mc{M}} \sum_{j = 1}^{N_m} v_k^{(H)}\bigl((z_m,x_{m,j})\bigr) v_{\ell}^{(H)}\bigl((z_m,x_{m,j})\bigr) \\
+& = \sum_{m = 1}^{\mc{M}} \sum_{j = 1}^{N_m} \frac{v_k(z_m) v_{\ell}(z_m)}{N_m} \\
+& = \sum_{m = 1}^{\mc{M}} v_k(z_m) v_{\ell}(z_m) \\
+& = \1\{k = \ell\}
+\end{align*} 
+Next,
+\begin{align*}
+\dotp{u_{\ell,m}^{(H)}}{u_{\ell',m'}^{(H)}}_{L^2(V_H)} & = \sum_{o = 1}^{\mc{M}} \sum_{j = 1}^{N_o} u_{\ell,m}(x_{o,j}) u_{\ell',m'}(x_{o,j}) \1\{m = o\} \1\{m' = o\} \\
+& = \sum_{j = 1}^{N_m} u_{\ell,m}(x_{m,j}) u_{\ell',m}(x_{m,j}) \1\{m = m'\} \\
+& = \1\{m = m'\} \1\{\ell = \ell'\}
+\end{align*}
+Finally,
+\begin{align*}
+\dotp{v_k^{(H)}}{u_{\ell,m}^{(H)}}_{L^2(V_H)} & = \sum_{o = 1}^{\mc{M}} \sum_{j = 1}^{N_o} \frac{v_k(z_o)}{\sqrt{N_o}} u_{\ell,m}(x_{o,j}) \1\{m = o\} \\
+& = \frac{v_k(z_m)}{\sqrt{N_m}} \sum_{j = 1}^{N_o} u_{\ell,m}(x_{m,j}) \\
+& = 0,
+\end{align*}
+where the last equality follows since $u_{\ell,m}$ is orthogonal to the constant function in $L^2(V_m)$. Since $\dim L^2(V_H) = \sum_{m = 1}^{\mc{M}} N_m$ and we have exhibited a total of $\sum_{m = 1}^{\mc{M}} N_m$ orthonormal functions in $L^2(V_H)$, they form a basis.
+
+\paragraph{Step 2: Bounding the Rayleigh quotient.}
+
+Let $N: L^2(V_H) \to L^2(V_H)$ be the following diagonal operator,
+\begin{equation*}
+\Bigl(N v\Bigr) \Bigl((z_m,x_{m,j})\Bigr) = N_m v\bigl((z_m,x_{m,j})\bigr)
+\end{equation*}
+and let $\wt{L}_H = N^{1/2} L_H N^{1/2}$. We will analyze the Rayleigh quotient of the operator $\wt{L}_H$ with respect to the basis $\bigl\{v_k^{(H)}, u_{\ell,m}^{(H)}\bigr\}$. 
+
+We begin by establishing the following upper and lower bounds,
+\begin{equation}
+\label{eqn:alden_product_graph_pf1}
+N_{\min}^2 \lambda_k(G) \leq \dotp{\wt{L}_H v_k^{(H)}}{v_k^{(H)}}_{L^2(V_H)} \leq N_{\max}^2 \lambda_k(G). 
+\end{equation}
+Seeing as $N^{1/2}$ is self-adjoint, 
+\begin{align*}
+\Bigl \langle\wt{L}_H v_k^{(H)}, v_k^{(H)} \Bigr \rangle_{L^2(V_H)} & = \Bigl \langle L_H N^{1/2} v_k^{(H)},N^{1/2}v_k^{(H)} \Bigr \rangle_{L^2(V_H)} \\ 
+& = \frac{1}{2}\sum_{m = 1}^{\mc{M}} \sum_{o = 1}^{\mc{M}} \sum_{i = 1}^{N_m} \sum_{j = 1}^{N_o} \Bigl(v_k(z_m) - v_k(z_o)\Bigr)^2 \1\{z_m \sim z_o~\textrm{in $G$}\} \\
+& = \frac{1}{2}\sum_{m = 1}^{\mc{M}} \sum_{o = 1}^{\mc{M}} N_m N_o \Bigl(v_k(z_m) - v_k(z_o)\Bigr)^2 \1\{z_m \sim z_o~\textrm{in $G$}\} \\
+& \leq N_{\max}^2 \lambda_k(G),
+\end{align*}
+and by reversing the last inequality we have
+\begin{equation*}
+\dotp{\wt{L}_H v_k^{(H)}}{v_k^{(H)}}_{L^2(V_H)} \geq N_{\min}^2 \lambda_k(G).
+\end{equation*}
+
+Next we show that for all $m \in [\mc{M}], \ell \in [N_m - 1]$,
+\begin{equation}
+\label{eqn:alden_product_graph_pf2}
+N_{\min}^2\Bigl(\deg_{\min}(G) + 1\Bigr) \leq \dotp{\wt{L}_H u_{\ell,m}^{(H)}}{u_{\ell,m}^{(H)}}_{L^2(V_H)} \leq N_{\max}^2 \Bigl(\deg_{\max}(G) + 1\Bigr) 
+\end{equation}
+Expanding the inner product as double sum, we have
+\begin{align}
+\Bigl \langle & \wt{L}_H u_{\ell,m}^{(H)}, u_{\ell,m}^{(H)} \Bigr \rangle_{L^2(V_H)} \\
+& = \frac{1}{2} \sum_{m' = 1}^{\mc{M}} \sum_{o = 1}^{\mc{M}} \sum_{i = 1}^{N_{m'}} \sum_{j = 1}^{N_o} \Bigl( \sqrt{N_{m'}} u_{\ell,m}(x_{m,i}) \1\{m' = m\} - \sqrt{N_o} u_{\ell,m}(x_{m,i}) \1\{o = m\}\Bigr)^2 \1\{m' = o~\textrm{or}~z_{m'} \sim z_o~\textrm{in $G$}\} \nonumber \\
+& =  \frac{N_m}{2}\biggl(\underbrace{\sum_{i,j = 1}^{N_m} \Bigl( u_{\ell,m}(x_{m,i}) -  u_{\ell,m}(x_{m,j})\Bigr)^2}_{:=S_1} + 2 \underbrace{\sum_{o = 1}^{\mc{M}} \sum_{i = 1}^{N_{m}} \sum_{j = 1}^{N_o}  \Bigl( u_{\ell,m}(x_{m,i})\Bigr)^2 \1\{z_m \sim z_o~\textrm{in $G$}\}}_{:=S_2} \biggr) \label{eqn:alden_product_graph_pf3}
+\end{align}
+$S_1$ is the sum over all term where $m' = m = o$, and $S_2$ is the sum over all terms where either $m' = m \neq o$ or $m' \neq m = o$. Then, since by definition $u_{\ell,m}$ is orthonormal to the constant function and has unit norm in $L^2(V_m)$, we have
+\begin{equation*}
+2N_{\min} \leq S_1 = \sum_{i,j = 1}^{N_m} \Bigl( \bigl(u_{\ell,m}(x_{m,i})\bigr)^2 + \bigl(u_{\ell,m}(x_{m,j})\bigr)^2 - u_{\ell,m}(x_{m,i}) u_{\ell,m}(x_{m,j})\Bigr) = 2N_m \leq 2N_{\max}
+\end{equation*}
+and
+\begin{equation*}
+N_{\min} \deg_{\min}(G) \leq S_2 = \biggl(\sum_{i = 1}^{N_{m}} \Bigl(u_{\ell,m}(x_{m,i})\Bigr)^2 \biggr) \biggl(\sum_{o = 1}^{\mc{M}} N_o\biggr) \leq N_{\max} \deg_{\max}(G)
+\end{equation*}
+These bounds along with~\eqref{eqn:alden_product_graph_pf3} imply~\eqref{eqn:alden_product_graph_pf2},
+
+\paragraph{Step 3: Courant-Fischer Theorem.}
+
+Now we translate the upper and lower bounds we established in Step 2 into upper and lower bounds on $\wt{\lambda}_k(H) = \lambda_k(\wt{L}_H)$. Naturally, we do this by means of the Courant-Fischer Theorem, which implies
+\begin{align*}
+\wt{\lambda}_k(H) & = \min_{V}~ \Bigl\{\max_{v \in V} ~\bigl \langle \wt{L}_Hv , v \bigr \rangle \Bigr\} \\
+\wt{\lambda}_k(H) & = \max_{V}~ \Bigl\{\min_{v \in V^{\perp}}~ \bigl \langle \wt{L}_Hv , v \bigr \rangle \Bigr\}
+\end{align*}
+where the outer minimum (maximum) are taken over all subspaces $V$ of dimension $k$. We now construct subspaces $V_k$ for $k = 1,\ldots, \sum_{m = 1}^{\mc{M}} N_m$. If $k \in [\mc{M}]$, let $V_k = \mathrm{span}\{v_1^{(H)}, \ldots, v_k^{(H)}\}$; otherwise if $k > \mc{M}$, let $V_k = V_{\mc{M}} \cup U_{k - \mc{M}}$, where $U_{k - \mc{M}}$ is the span of $(k - \mc{M})$-functions $u_{\ell,m}$ chosen arbitrarily. The following facts are immediate consequences of Courant-Fischer and our derivations in Step 2:
+\begin{enumerate}[(a)]
+	\item For each $k \in [\mc{M}]$,
+	\begin{equation*}
+	\wt{\lambda}_k(H) \leq \max_{v \in V_k} ~\bigl \langle \wt{L}_Hv , v \bigr \rangle \leq \lambda_k(G) N_{\max}^2 
+	\end{equation*}
+	\item For each $k > \mc{M}$,
+	\begin{equation*}
+	\wt{\lambda}_k(H) \leq \max_{v \in V_k} ~\bigl \langle \wt{L}_Hv , v \bigr \rangle \leq \max \biggl\{ \lambda_{\mc{M}}(G) N_{\max}^2, N_{\max}^2 \Bigl(\deg_{\max}(G) + 1\Bigr)  \biggr\} \leq 2 \deg_{\max}(G) N_{\max}^2
+	\end{equation*}
+	\item For each $k \in [\mc{M}]$,
+	\begin{equation*}
+	\wt{\lambda}_k(H) \geq \min_{v \in V_k^{\perp}} ~\bigl \langle \wt{L}_Hv , v \bigr \rangle \geq \min\biggl\{\lambda_k(G) N_{\min}^2 , N_{\min}^2 \cdot \Bigl(\deg_{\min}(G) + 1\Bigr) \biggr\} \geq \frac{1}{2}\lambda_k(G) N_{\min}^2
+	\end{equation*}
+	\item For each $k > \mc{M}$,
+	\begin{equation*}
+	\wt{\lambda}_k(H) \geq \min_{v \in V_k^{\perp}} ~\bigl \langle \wt{L}_Hv , v \bigr \rangle \geq N_{\min}^2 \Bigl(\deg_{\min}(G) + 1\Bigr)
+	\end{equation*}
+\end{enumerate}
+	
+\paragraph{Step 4: Completing the Proof.}
+Let $v$ be an eigenvector of $\wt{L}_H$, so that
+\begin{equation*}
+\wt{L}_H v = \lambda v.
+\end{equation*}
+Then, 
+\begin{equation*}
+w = \frac{N^{1/2}v}{\norm{N^{1/2}v}_{L^2(V_H)}}
+\end{equation*}
+is a solution to the generalized eigenvalue equation
+\begin{equation*}
+L_H w = \lambda N^{-1} w.
+\end{equation*}
+(To see this, simply left multiple both sides of the generalized eigenvalue equation by $N^{1/2}$. Also note that $N^{-1}$ is positive semi-definite since by assumption $N_m > 0$ for all $m$, and thus invertible.)  Therefore,
+\begin{equation*}
+\frac{\lambda}{N_{\max}} \leq \dotp{L_H w}{w}_{L^2(V_H)} \leq \frac{\lambda}{N_{\min}}
+\end{equation*}
+and using Courant-Fischer as in Step 3, we have that for each $k = 1,\ldots,\sum_{m = 1}^{\mc{M}} N_m$,
+\begin{equation*}
+\frac{\wt{\lambda}_k(H)}{N_{\max}} \leq \lambda_k(H) \leq \frac{\wt{\lambda}_k(H)}{N_{\min}}
+\end{equation*}
+Along with the bounds of Step 3, this establishes the claim of Lemma~\ref{lem:alden_product_graph}.
+
+\end{proof}
+\end{document}

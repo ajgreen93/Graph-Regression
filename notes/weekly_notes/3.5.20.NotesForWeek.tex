@@ -184,7 +184,7 @@ and our goal is to perform the goodness-of-fit testing
 \mathbb{H}_0 : f = f_0 := 0 ~~\textrm{vs.}~~ \mathbb{H}_a: f \neq f_0.
 \end{equation*}
 
-For an arbitrary graph $G$ on $n$ nodes with graph Laplacian $L_G = D_G - A_G$, let $\Lambda(G)$ consist of the eigenvalues $0 = \lambda_1(G) \leq \lambda_2(G) \leq \cdots \leq \lambda_n(G)$ of $L_G$, with $v_k(G) = (v_{k,1}(G),\ldots,v_{k,n}(G)) \in \Reals^n$ denoting the eigenvector corresponding to the $i$th eigenvalues $\lambda_k(G)$. The graph Laplacian eigenvector projection test is a linear projection test; letting $\kappa$ be some integer between $1$ and $n$, we define $\Pi_{k,G}(\theta) := \frac{1}{\sqrt{n}}\sum_{k = 1}^{\kappa} \dotp{v_k}{\theta}$ to be a suitable rescaling of the projection of $\theta$ onto the span of $v_1(G),\ldots,v_k(G)$. 
+For an arbitrary graph $G$ on $n$ nodes with graph Laplacian $L_G = D_G - A_G$, let $\Lambda(G)$ consist of the eigenvalues $0 = \lambda_1(G) \leq \lambda_2(G) \leq \cdots \leq \lambda_n(G)$ of $L_G$, with $v_k(G) = (v_{k,1}(G),\ldots,v_{k,n}(G)) \in \Reals^n$ denoting the eigenvector corresponding to the $i$th eigenvalues $\lambda_k(G)$. The graph Laplacian eigenvector projection test is a linear projection test; letting $\kappa$ be some integer between $1$ and $n$, we define $\Pi_{k,G}(\theta) := \sum_{k = 1}^{\kappa} \dotp{v_k}{\theta}$ to be the projection of $\theta$ onto the span of $v_1(G),\ldots,v_k(G)$. 
 
 Our test statistic will be
 \begin{equation*}
@@ -297,17 +297,13 @@ We let the space
 \end{equation*}
 where in the one-dimensional case,
 \begin{equation*}
-a_{k - 1} =
-\begin{cases*}
-(k - 1)^s,~~ \textrm{if $k - 1$ is even} \\
-(k - 2)^s,~~ \textrm{if $k - 1$ is odd}
-\end{cases*}
+a_{k} = (k - 1)^s
 \end{equation*}
-and for general $d$, $a_k = \sqrt{\sum_{j = 1}^{d} a_{k_j}^2}$. It is not hard to show that $\wt{H}^s([0,1]^d)$ consists of those functions in $H^s([0,1]^d)$ which satisfy some boundary conditions
+and for general $d$, $a_k = \sqrt{\sum_{j = 1}^{d} a_{k_j}^2}$. It is not hard to show that, when $s$ is an integer, $\wt{H}^s([0,1]^d)$ consists of those functions in $H^s([0,1]^d)$ which satisfy some Neumann-type boundary conditions. For example when $d = 1$,
 \begin{equation*}
-\wt{H}^s([0,1]^d;L) = \Bigl\{f \in H^{s}([0,1]^d;L'): \forall x_0 \in \partial [0,1]^d, \frac{\partial^{\ell} f}{\partial \mathbf{n}^{\ell}}(x_0) = 0,~~\textrm{for $\ell = 1,\ldots,s-1$} \Bigr \} \supseteq H_0^s([0,1]^d;L')
+\wt{H}^s([0,1];L) = \Bigl\{f \in H^{s}([0,1];L \pi^{s}): f^{(\ell)}(0) = f^{(\ell)}(1) = 0,~~\textrm{for all odd integers $0 < \ell < s$} \Bigr \} \supseteq H_0^s([0,1];L'),
 \end{equation*}
-for a constant $L'$ which depends only on $L$ and $s'$; we work through the details for the case $d = 1$ in Section~\ref{subsec:sobolev_class_equivalence}.
+a fact which we prove in Section~\ref{subsec:sobolev_class_equivalence}.
 
 For functions $f \in \wt{H}^{s}([0,1]^d;L)$, the error in approximating the continuum norm $\norm{f}_{\Leb^2}$ by the discrete norm of a projection of $f$ onto the eigenvectors of the grid is not too large. 
 
@@ -334,7 +330,7 @@ We extend the results of Lemma~\ref{lem:grid_sobolev_approximation_error_5} to h
 	Suppose $f = \sum_{k \in \Nbb^d} \theta_k \varphi_k$ satisfies $f \in \wt{H}^s([0,1]^d;L)$ for some $2s > d$. Then, there exists a constant $c$ which depends only on $s$ and $d$ such that
 	\begin{equation}
 	\label{eqn:grid_sobolev_approximation_error_6}
-	\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,\wb{G}_d}(f)}_{n}^2 \leq c L^{1/2} \norm{f}_{\Leb^2} n^{-s/d} + \sum_{k \in \Nbb \setminus [K]^d} \theta_k^2
+	\norm{f}_{\Leb^2}^2 - \norm{\Pi_{\kappa,\wb{G}_d}(f)}_{n}^2 \leq c L^{1/2} \norm{f}_{\Leb^2} n^{-s/d} + \sum_{k \in \Nbb^d \setminus [K]^d} \theta_k^2
 	\end{equation}
 \end{lemma}
 
@@ -676,7 +672,37 @@ For $b \in \{0,1\}^d$, let $I_b(k) = \set{l \in \Nbb^d: l_ib_i = k_ib_i~~\textrm
 \subsection{Equivalence between Sobolev classes}
 \label{subsec:sobolev_class_equivalence}
 
-\textcolor{red}{Work through details.}
+We will show that when $s \geq 1$,
+\begin{equation*}
+\wt{H}^s([0,1];L) = \Bigl\{f \in H^{s}([0,1];L'): f^{(\ell)}(0) = f^{(\ell)}(1) = 0,~~\textrm{for each $\ell < s$ odd.} \Bigr \}
+\end{equation*}
 
+First, we show the $\subseteq$ direction. Let $f = \sum_{k = 1}^{\infty} \theta_k \varphi_k$ satisfy $\sum_{k = 1}^{\infty} \theta_k^2 a_k^2 \leq L^2$. Put
+\begin{equation*}
+f_{\diamond} := \sqrt{2} \sum_{k = 1}^{\infty} \theta_k \phi_k
+\end{equation*}
+where the functions $\phi_k = \cos(\pi[k - 1]x)$ are orthonormal in $\Leb^2([-1,1])$. Since $\sum_{k = 1}^{\infty} (\sqrt{2}\theta_k)^2 a_k^2 \leq 2L^2$, we know $f_{\diamond} \in H_{\mathrm{per}}^s([-1,1];2L)$. Moreover since $f_{\diamond}$ is an even function, we have that
+\begin{equation*}
+\sum_{\ell = 0}^{s}\int_{0}^{1} \bigl(f_{\diamond}^{(\ell)}(x)\bigr)^2 \,dx = \frac{1}{2} \sum_{\ell = 0}^{s}\int_{-1}^{1} \bigl(f_{\diamond}^{(\ell)}(x)\bigr)^2 \,dx \leq \frac{1}{\pi^{2s}}L^2
+\end{equation*}
+where the latter inequality follows from \textcolor{red}{Tsybakov}.
+As $f(x) = f_{\diamond}(x)$ for all $x \in [0,1]$, we have established that $f \in H^s([0,1],L')$ for $L' = L/\pi^s$. As for the boundary cases $x = 0$ and $x = 1$, putting
+\begin{equation*}
+f_N := \sum_{k = 1}^{N} \theta_k \varphi_k
+\end{equation*}
+we observe the following facts: first that $f_N^{(\ell)}(0) = f_N^{(\ell)}(1) = 0$ for all $N \in \Nbb$ and $\ell$ odd, and second that $f_N^{(\ell)}$ converges uniformly for all $0 \leq \ell < s$. Therefore we have $f^{(\ell)}(x) = \lim_{N \to \infty} f_N^{(\ell)}(x)$ for all $x \in [0,1]$ and $0 \leq \ell < s$, and in particular $f^{(\ell)}(0) = f^{(\ell)}(1) = 0$ for all $0 < \ell < s$ odd. 
 
+Now for the $\supseteq$ direction. Let $f \in H^s([0,1];L)$ satisfy $f^{(\ell)}(0)$ for all $\ell = 1,\ldots,s - 1$ odd. Put
+\begin{equation*}
+f_{\diamond} = f(\abs{x})~~\textrm{for $x \in [-1,1]$}
+\end{equation*}
+and note the following facts: first that $f_{\diamond}^{(\ell)}(0)$ is well-defined for each $\ell = 0,\ldots, s - 1$, and second that $f_{\diamond}^{(s - 1)}$ is absolutely continuous on $[-1,1]$. As a result, $f_{\diamond}$ is $s$-times weakly differentiable (and $s - 1$ times classically differentiable), and by construction satisfies
+\begin{equation*}
+\norm{f_{\diamond}}_{H^s([-1,1])} = \sqrt{2} \norm{f}_{H^s([0,1])} \leq 2L
+\end{equation*} 
+Since clearly $f_{\diamond}^{(\ell)}(-1) = f_{\diamond}^{(\ell)}(1)$ for each $\ell = 0,\ldots, s - 1$, we have that $f_{\diamond} \in H_{\mathrm{per}}^s([-1,1];\sqrt{2}L)$. Since $f_{\diamond}$ is even, it may be expressed as $f_{\diamond} = \sum_{k = 1}^{\infty} \theta_k \phi_k$ where $\sum_{k = 1}^{\infty} \theta_k^2 a_k^{2} \leq 2L^2/\pi^{2s}$. Since $f(x) = f_{\diamond}(x)$ for $x \in [0,1]$, this implies
+\begin{equation*}
+f(x) = \sum_{k = 1}^{\infty} \theta_k \phi_k(x) = \sum_{k = 1}^{\infty} \frac{1}{\sqrt{2}}\theta_k \varphi_k(x) 
+\end{equation*}
+and the claim is proved.
 \end{document}

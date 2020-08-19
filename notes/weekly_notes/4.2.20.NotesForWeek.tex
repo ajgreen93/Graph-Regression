@@ -1,0 +1,349 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\makeatletter
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+\newcommand{\Lap}{{\bf L}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LS}{\mathrm{LS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 3/27/20 - 4/2/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+We observe data $X_1,\ldots,X_n \sim P$, where $P$ is defined over a sample space $\Xset \subset \Reals^d$. For a given kernel $K: \Reals^+ \to \Reals^+$, and a radius $r$, define $K_r(z) = K(z/r)$. Construct the neighborhood graph $G_{n,r} = ([n],W)$, where $W_{ij} = K_r(\norm{X_i - X_j}_2)$. The neighborhood graph Laplacian $\Lap_{n,r}$ is then defined to be $D - W$, where $D$ is the diagonal degree matrix of $G_{n,r}$ with entries $D_{ii} = \sum_{j = 1}^{n} W_{ij}$. 
+
+Let $f: \Xset \to \Reals$ possess $s$ derivatives, which we will eventually assume are well-behaved in some sense (e.g. $f$ is an the order-$s$ Holder or Sobolev class). Our goal is to understand the behavior of three statistics: first, the pointwise evaluation $\Lap_{n,r}^sf(x)$ for some $x \in \Xset$ (which we will formally define momentarily); second the pointwise evaluation $\Lap_{n,r}^sf(X_i)$ for some $i = 1,\ldots,n$; and third the seminorm $f^T \Lap_{n,r}^s f$. 
+
+\section{Pointwise Evaluation}
+
+For any $x \in \Xset$, define
+\begin{equation}
+\label{eqn:pointwise_evaluation}
+\Bigl(\Lap_{n,r}f\Bigr)(x) := \sum_{i = 1}^{n} \Bigl( f(x) - f(X_i) \Bigr) K_r(x,X_i).
+\end{equation}
+When $x = X_i$ for $i = 1,\ldots,n$, we have $\Bigl(\Lap_{n,r}f\Bigr)(X_i) = \Bigl(\Lap_{n,r}f\Bigr)_i$, so ~\eqref{eqn:pointwise_evaluation} defines an extension of $\Lap_{n,r}$ from the data $X_1,\ldots,X_n$ to all of $\Xset$. For $s > 1$, recursively define
+\begin{equation*}
+\Bigl(\Lap_{n,r}^s f\Bigr)(x) := \sum_{i = 1}^{n} \Bigl\{\Bigl(\Lap_{n,r}^{s-1}f\Bigr)(x) - \Bigl(\Lap_{n,r}^{s-1}f\Bigr)(X_i)\Bigr\}K_r(x,X_i)
+\end{equation*}
+Our goal is to show (a) compute the expectation of $\bigl(\Lap_{n,r}^s f\bigr)(x)$, and (b) to show that $\bigl(\Lap_{n,r}^s f\bigr)(x)$ concentrates around its expectation. We will begin with the simplest non-trivial case of $s = 2$. 
+
+\subsection{$s = 2$}
+
+The evaluation $\bigl(\Lap_{n,r}^2 f\bigr)(x)$ can be written as
+\begin{equation}
+\label{eqn:squared_Laplacian}
+\bigl(\Lap_{n,r}^2 f\bigr)(x) = \sum_{i = 1}^{n} \sum_{j = 1}^{n} \bigl(f(x) - f(X_j)\bigr)K_r(x,X_j)K_r(x,X_i) - \sum_{i = 1}^{n} \sum_{j = 1}^{n} \bigl(f(X_i) - f(X_j)\bigr)K_r(X_i,X_j)K_r(x,X_i)
+\end{equation}
+\subsubsection{Expectation at a fixed point.}
+From~\eqref{eqn:squared_Laplacian}, we see
+\begin{equation*}
+\Ebb\Bigl[\bigl(\Lap_{n,r}^2 f\bigr)(x)\Bigr] = \sum_{i = 1}^{n} \sum_{j = 1}^{n} \biggl\{\Ebb\Bigl[\bigl(f(x) - f(X_j)\bigr)K_r(x,X_j)K_r(x,X_i)\Bigr] - \Ebb\Bigl[\bigl(f(X_i) - f(X_j)\bigr)K_r(X_i,X_j)K_r(x,X_i)\Bigr]\biggr\}
+\end{equation*}
+The expectation of the summand depends on whether $i = j$. If $i = j$, then 
+\begin{equation*}
+\Ebb\Bigl[\bigl(f(x) - f(X_j)\bigr)K_r(x,X_j)K_r(x,X_i)\Bigr] = \int \bigl(f(x) - f(y)\bigr) \bigl(K_r(\norm{y - x})\bigr)^2 \,dP(y) =: \bigl(I_{1,P}f\bigr)(x)
+\end{equation*}
+and clearly $\Ebb\Bigl[\bigl(f(X_i) - f(X_j)\bigr)K_r(X_i,X_j)K_r(x,X_i)\Bigr] = 0$. Otherwise if $i \neq j$,
+\begin{equation*}
+\Ebb\Bigl[\bigl(f(x) - f(X_j)\bigr)K_r(x,X_j)K_r(x,X_i)\Bigr] = \Ebb \Bigl[\bigl(f(x) - f(X)\bigr)K_r(x,X)\Bigr] \cdot \Ebb\Bigl[K_r(x,X)\Bigr] =: \bigl(L_{P,r}f\bigr)(x) \cdot \Ebb\Bigl[K_r(x,X)\Bigr],
+\end{equation*}
+by the law of conditional expectation
+\begin{equation*}
+\Ebb\Bigl[\bigl(f(X_i) - f(X_j)\bigr)K_r(X_i,X_j)K_r(x,X_i)\Bigr] = \Ebb\Bigl[\bigl(L_{P,r}f\bigr)(X) \cdot K_r(x,X)\Bigr],
+\end{equation*}
+and therefore
+\begin{equation*}
+\Ebb\Bigl[\bigl(f(x) - f(X_j)\bigr)K_r(x,X_j)K_r(x,X_i)\Bigr] -\Ebb\Bigl[\bigl(f(X_i) - f(X_j)\bigr)K_r(X_i,X_j)K_r(x,X_i)\Bigr] = \bigl(L_{P,r}^2f\bigr)(x)
+\end{equation*}
+We conclude that
+\begin{equation*}
+\Ebb\Bigl[\bigl(\Lap_{n,r}^2 f\bigr)(x)\Bigr] = n(n - 1) \bigl(L_{P,r}^2f\bigr)(x) + n \bigl(I_{1,P}f\bigr)(x)
+\end{equation*}
+
+\section{Semi-norm}
+
+\subsection{$s = 3$}
+
+We use the notation $\Ebb_{-i,j}[X] = \Ebb[X|X_i,X_j]$. The third-order graph Sobolev seminorm $f^T L_{n,r}^3 f$ can be written as
+\begin{align*}
+f^T L_{n,r}^3 f & = \sum_{i,j = 1}^{n} \Bigl(\bigl(L_{n,r}f\bigr)(X_i) - \bigl(L_{n,r}f\bigr)(X_j)\Bigr)^2 K_r\Bigl(\norm{X_i - X_j}_2\Bigr) \\
+& \leq 3 \sum_{i,j = 1}^{n} \biggl(\bigl(L_{n,r}f\bigr)(X_i) - \Ebb_{-i,j}\Bigl[\bigl(L_{n,r}f\bigr)(X_i)\Bigr]\biggr)^2 K_r\Bigl(\norm{X_i - X_j}_2\Bigr) ~~ + \\
+& ~~~~3 \sum_{i,j = 1}^{n} \biggl(\bigl(L_{n,r}f\bigr)(X_j) - \Ebb_{-i,j}\Bigl[\bigl(L_{n,r}f\bigr)(X_j)\Bigr]\biggr)^2 K_r\Bigl(\norm{X_i - X_j}_2\Bigr)~~ + \\
+& ~~~~3 \sum_{i,j = 1}^{n} \biggl(\bigl(\Ebb_{-i,j}\Bigl[\bigl(L_{n,r}f\bigr)(X_i) \Bigr] - \Ebb_{-i,j}\Bigl[\bigl(L_{n,r}f\bigr)(X_j)\Bigr]\biggr)^2 K_r\Bigl(\norm{X_i - X_j}_2\Bigr)
+\end{align*}
+We upper bound the expectation of each of the three terms in the summand on the right hand side.
+
+\textit{Term 1.}
+
+By the law of iterated expectation,
+\begin{align*}
+& \Ebb \Biggl[\biggl(\bigl(L_{n,r}f\bigr)(X_i) - \Ebb_{-i,j}\Bigl[\bigl(L_{n,r}f\bigr)(X_i)\Bigr]\biggr)^2 K_r\Bigl(\norm{X_i - X_j}_2\Bigr)\Biggr] = \\
+& ~~~ \Ebb \Biggl[ \Ebb_{-i,j}\biggl[ \biggl(\bigl(L_{n,r}f\bigr)(X_i) - \Ebb_{-i,j}\Bigl[\bigl(L_{n,r}f\bigr)(X_i)\Bigr]\biggr)^2 \biggr]   K_r\Bigl(\norm{X_i - X_j}_2\Bigr)\Biggr] = \\
+& ~~~ \Ebb \Biggl[ \Var_{-i,j}\Bigl[\bigl(L_{n,r}f\bigr)(X_i) \Bigr]   K_r\Bigl(\norm{X_i - X_j}_2\Bigr)\Biggr]
+\end{align*}
+We express the conditional variance as a sum of conditional covariances,
+\begin{align*}
+\Var_{-i,j}\biggl[ \Bigl(\bigl(L_{n,r}f\bigr)(X_i)\Bigr) \biggr] & = \sum_{k = 1}^{n} \sum_{\ell = 1}^{n} \Cov_{-i,j}\biggl[\Bigl(f(X_i) - f(X_k)\Bigr)K_r\Bigl(\norm{X_i - X_k}_2\Bigr), \Bigl(f(X_i) - f(X_{\ell})\Bigr)K_r\Bigl(\norm{X_i - X_{\ell}}_2\Bigr)\biggr] \\
+& = (n - 3) \Var_{-i}\biggl[\Bigl(f(X_i) - f(X)\Bigr)K_r\Bigl(\norm{X_i - X}_2\Bigr)\biggr].
+\end{align*}
+where in the second equality we have used that $X_1,\ldots,X_n$ are i.i.d samples, and so conditional on $X_i$ and $X_j$ the covariance is equal to zero unless $k = \ell$. By Lemma~\ref{lem:expectation_1},
+\begin{align*}
+\Var_{-i}\biggl[\Bigl(f(X_i) - f(X)\Bigr)K_r\Bigl(\norm{X_i - X}_2\Bigr)\biggr] \leq \Ebb_{-i}\Biggl[\biggl(\Bigl(f(X_i) - f(X)\Bigr)K_r\Bigl(\norm{X_i - X}_2\Bigr)\biggr)^2\Biggr] \leq M^2 r^{2+d}K_{\max}^2 p_{\max}
+\end{align*}
+and as a result the expectation of term 1 is upper bounded
+\begin{align*}
+\Ebb \Biggl[\biggl(\bigl(L_{n,r}f\bigr)(X_i) - \Ebb_{-i,j}\Bigl[\bigl(L_{n,r}f\bigr)(X_i)\Bigr]\biggr)^2 K_r\Bigl(\norm{X_i - X_j}_2\Bigr)\Biggr] & \leq M^2K_{\max}^2 p_{\max} \cdot nr^{2 + d} \Ebb\Bigl[K_r\Bigl(\norm{X_i - X_j}_2\Bigr)\Bigr] \\
+& \leq M^2K_{\max}^3 p_{\max}^2 \cdot nr^{2 + 2d}
+\end{align*} 
+
+\textit{Term 2.}
+By symmetry, the same bound holds for term 2.
+
+\textit{Term 3.}
+Expressing $L_{n,r}f(X_i) = \sum_{k = 1}^{n} \bigl(f(X_i) - f(X_k)\bigr)K_r(X_i,X_k)$, by the linearity of expectation
+\begin{align*}
+\Ebb_{-i,j}\Bigl[L_{n,r}f(X_i)] & = (n - 2) L_{P,r}f(X_i) + \bigl(f(X_i) - f(X_j)\bigr)K_r(X_i,X_j) \\
+\Ebb_{-i,j}\Bigl[L_{n,r}f(X_j)] & = (n - 2) L_{P,r}f(X_j) + \bigl(f(X_j) - f(X_i)\bigr)K_r(X_j,X_i)
+\end{align*}
+Upper bounding the square of sums by twice the sum of squares, we have
+\begin{align*}
+& \biggl(\bigl(\Ebb_{-i,j}\Bigl[\bigl(L_{n,r}f\bigr)(X_i) \Bigr] - \Ebb_{-i,j}\Bigl[\bigl(L_{n,r}f\bigr)(X_j)\Bigr]\biggr)^2 K_r\Bigl(\norm{X_i - X_j}_2\Bigr) \leq \\
+&~~~ 2(n-2)^2\Bigl(\bigl(L_{P,r}f\bigr)(X_i) - \bigl(L_{P,r}f\bigr)(X_j)\Bigr)^2K_{r}(X_i,X_j) + 8 \bigl(f(X_j) - f(X_i)\bigr)^2 \bigl(K_r(X_j,X_i)\bigr)^3
+\end{align*}
+\section{Additional Theory}
+
+We make some assumptions on the function $f$, the distribution $P$, and the kernel function $K$.
+
+\begin{enumerate}[label=(A\arabic*)]
+	\item 
+	\label{asmp:smooth_function}
+	$f \in C^{s}(\Xset;M)$ for some $s > 0$. If $s > 1$, then $f$ is also compactly supported on a strict subset of $\Xset$.
+	
+	\item 
+	\label{asmp:smooth_density}
+	$P$ admits a density $p$ with respect to the Lebesgue measure on $\Reals^d$. The density $p \in C^{k}(\Xset;p_{\max})$, for some $k > 0$.
+	\item 
+	\label{asmp:compact_kernel}
+	$K$ is supported on a subset of $[0,1]$, and $K(z) \leq K_{\max} < \infty$ for all $z  \in [0,1]$.  
+\end{enumerate}
+
+Under these assumptions, we can bound various integrals.
+
+\begin{lemma}
+	\label{lem:expectation_1}
+	Let $f$ satisfy~\ref{asmp:smooth_function} with $s = 1$, $P$ satisfy~\ref{asmp:smooth_density} with $k = 0$, and $K$ satisfy~\ref{asmp:compact_kernel}. Then for any $x \in \Xset$,
+	\begin{equation*}
+	\Ebb\Bigl[\bigl(f(x) - f(X)\bigr)^2 \bigl(K_r(\norm{x - X}_2)\bigr)^2\Bigr] \leq M^2 r^{2 + d} K_{\max}^2 p_{\max}
+	\end{equation*}
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:expectation_2}
+	Let $f$ satisfy~\ref{asmp:smooth_function} with $s = 2$, $P$ satisfy~\ref{asmp:smooth_density} with $k = 1$, and $K$ satisfy~\ref{asmp:compact_kernel}. Then for any $x \in \Xset$,
+	\begin{equation*}
+	\biggl|\Ebb\Bigl[\bigl(f(x) - f(X)\bigr) \bigl(K_r(\norm{x - X}_2)\bigr)\Bigr]\biggr| \leq M r^{2 + d} K_{\max} p_{\max}
+	\end{equation*}
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:expectation_3}
+	Let $f$ satisfy~\ref{asmp:smooth_function} with $s = 2$, $P$ satisfy~\ref{asmp:smooth_density} with $k = 1$, and $K$ satisfy~\ref{asmp:compact_kernel}. Then for any $x \in \Xset$,
+	\begin{equation*}
+	\biggl|\Ebb\Bigl[\bigl(f(x) - f(X)\bigr) \bigl(f(x) - f(X')\bigr) \bigl(K_r(\norm{x - X}_2)\bigr) \bigl(K_r(\norm{x - X'}_2)\bigr)\Bigr]\biggr| \leq M^2 r^{4 + 2d} K_{\max}^2 p_{\max}^2
+	\end{equation*}
+\end{lemma}
+
+The following Lemma is more easily stated and proved using multi-index notation. For a function $f:\Reals^d \to \Reals$ which is $k$-times differentiable, and $\alpha \in [\mathbb{N}]^d$ satisfying $\abs{\alpha} := \alpha_1 + \ldots \alpha_d = k$,  we write
+\begin{equation*}
+D^{\alpha}f(x) = \frac{\partial^{k}f }{\partial x_1^{\alpha_1}\cdots\partial x_1^{\alpha_d}},~~ 
+\end{equation*}
+for the $(\alpha)$th-partial derivative of $f$ at $k$. Additionally, let $(x)^{\alpha} = x_1^{\alpha_1} \cdots x_d^{\alpha_d}$ for any $x \in \Reals^d$.
+
+\begin{lemma}
+	\label{lem:LB_approximation_1}
+	Let $f$ satisfy~\ref{asmp:smooth_function} with $s > 2$, $P$ satisfy~\ref{asmp:smooth_density} with $k = 2$, and $K$ satisfy~\ref{asmp:compact_kernel}. Then for any $x \in \Xset$,
+	\begin{equation*}
+	content...
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Let $\gamma = \min\{s - 2,1\}$. Since $f \in C^s(\Xset;M)$ for $s > 2$, we have that $f$ is twice-differentiable for all $x \in \Xset$, and moreover for any $y \in \Xset$,
+	\begin{equation*}
+	\biggl| f(y) - \Bigl(\sum_{\abs{\alpha} = 0}^2 D^{\alpha}f(x)(x)^{\alpha}\Bigr)  \biggr| \leq M \norm{y-x}_2^{\gamma}
+	\end{equation*}
+	Therefore,
+	\begin{align*}
+	-L_{P,r}f(x) & = \int \Bigl(f(y) - f(x)\Bigr)K_r(\norm{y - x}) \,dP(x) \\
+	& = \sum_{\abs{\alpha} = 1}^{2} 
+	\end{align*}
+\end{proof}
+
+
+
+
+
+\end{document}

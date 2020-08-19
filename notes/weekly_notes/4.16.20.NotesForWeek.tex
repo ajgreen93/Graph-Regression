@@ -1,0 +1,583 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\makeatletter
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+\newcommand{\Lap}{{\bf L}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\LE}{\mathrm{LE}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 4/10/20 - 4/16/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $\mc{M}$ be a closed, connected, smooth manifold without boundary of dimension $m$ embedded in $\Rd$. We give to $\mc{M}$ the Riemannian structure induced by the ambient space $\Rd$, and denote the volume form by $\mu$.  Let $P$ be a distribution supported on $\mc{M}$, with density $p$ with respect to the volume form $\mu$. Suppose we observe $n$ samples $X_1, \ldots, X_n$ drawn independently from $P$. In addition, we observe responses
+\begin{equation*}
+Y_i = f_0(X_i) + \varepsilon_i
+\end{equation*}
+where $\varepsilon_i$ are i.i.d $N(0,1)$ noise, and $f_0:\mc{M} \to \Reals$ is an unknown function we wish to estimate.
+
+We construct a neighborhood graph $G_{n,r}$ over the data $X_1,\ldots,X_n$ as follows. For a kernel $K: \Rd \to [0,\infty)$ and radius $r > 0$, we let
+\begin{equation*}
+K_r(X_i,X_j) = K\biggl(\frac{\norm{X_i - X_j}_{\Rd}}{r}\biggr)
+\end{equation*}
+be the weight of the edge connecting $X_i$ and $X_j$. The graph $G_{n,r}$ has an associated Laplacian matrix $L_{n,r}$, which is defined by the action
+\begin{equation*}
+\Lap_{n,r}f(X_i) := \sum_{i = 1}^{n} \Bigl(f(X_i) - f(X_j)\Bigr) K_r(X_i,X_j)
+\end{equation*}
+We write $(\lambda_1(G_{n,r}),v_1(G_{n,r})),\ldots,(\lambda_n(G_{n,r}), v_n(G_{n,r}))$ for the $n$ eigenvalue/eigenvector pairs of $\Lap_{n,r}$, and adopt the usual convention of arranging the eigenvalues in ascending order, meaning $0 = \lambda_1(G_{n,r}) \leq \lambda_1(G_{n,r}) \leq \cdots \leq \lambda_1(G_{n,r})$. The Laplacian eigenmaps estimator is a nonparametric estimator which projects the data onto the span of the first $\kappa$ eigenvectors
+\begin{equation*}
+\wh{f}_{\LE} = \sum_{k = 1}^{\kappa} \dotp{Y}{v_k(G_{n,r})}_n v_k(G_{n,r})
+\end{equation*}
+where $1 \leq \kappa \leq n$ is tuning parameter. We would like to show that $f_0 \in C^1(\mc{M},Q)$ for a value of $Q$ fixed in $n$, then for an appropriate choice of $\kappa$
+\begin{equation*}
+\norm{\wh{f}_{\LE} - f_0}_n^2 \lesssim n^{-2/(2+m)}
+\end{equation*}
+with high probability. 
+
+\section{Theory}
+Recall that the squared bias of $\wh{f}_{\LE}$ is upper bounded
+\begin{equation}
+\label{eqn:squared_bias}
+\biggl\|\Ebb\Bigl[\wh{f}_{\LE} \Big | {\bf X}\Bigr] - f_0\biggr\|_n^2 \leq \frac{f_0^T \Lap_{n,r} f_0}{n \lambda_{\kappa}(G_{n,r})}
+\end{equation}
+(We have already supplied a sufficient bound on the variance which is independent of the dimension of $\mc{M}$). Under certain assumptions, we shall prove upper and lower bounds on the graph Sobolev seminorm $f_0^T \Lap_{n,r} f_0$ and the graph Laplacian eigenvalue $\lambda_{\kappa}(G_{n,r})$, respectively. These assumptions are as follows:
+\begin{enumerate}[label=(A\arabic*)]
+	\item 
+	\label{asmp:max_radius}
+	The radius $r$ satisfies the bounds
+	\begin{equation*}
+	(m + 5)d_{\infty}(P,P_n)\leq r \leq \min\biggl\{1,\frac{i_0}{10},\frac{1}{\sqrt{mK}},\frac{R}{\sqrt{27m}}\biggr\}
+	\end{equation*}
+	Here, $R$ is an upper bound on the reach of $\mc{M}$, $\mc{K}$ is an upper bound on the absolute values of the sectional curvatures of $\mc{M}$, $i_0$ is the injectivity radius of $\mc{M}$. 
+	\item
+	\label{asmp:kernel_shape}
+	The kernel function $K: [0,\infty) \to [0,\infty)$ is supported on $[0,1]$ and is $Q_K$-Lipschitz continuous on its support, and satisfies $K(0) = 1$.
+	\item
+	\label{asmp:density}
+	The density function $p$ is a $Q_p$-Lipschitz continuous function on $\mc{M}$, and is bounded away from $0$ and $\infty$,
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty
+	\end{equation*}
+	for all $x \in \mc{M}$.
+\end{enumerate}
+
+The bounds we prove are as follows.
+\begin{enumerate}[(I)]
+	\item \textbf{Graph Sobolev semi-norm:} Assume~\ref{asmp:max_radius}-\ref{asmp:density}. There exists a constant $C$ such that the following statement holds: for any $f_0 \in C^1(\mc{M},Q)$ and any $r > 0$,
+	\begin{equation}
+	\label{eqn:graph_sobolev_seminorm}
+	f_0^T \Lap_{n,r} f_0 \leq \frac{C}{\delta}  Q^2 n^2 r^{m + 2}
+	\end{equation}
+	with probability at least $1 - \delta$.
+	\item \textbf{Laplacian eigenvalue:}
+	Assume~\ref{asmp:max_radius}-\ref{asmp:density}. There exist constants $c,C,k_{\star}$ and $\beta$ such that the following statement holds: for all $\kappa \in \mathbb{N}$ satisfying $\kappa \geq k_{\star}$, and any $r$ satisfying
+	\begin{equation}
+	\label{eqn:graph_eigenvalue_1}
+	C \frac{\log(n)^{p_d}}{n^{1/d}} < r < c \kappa^{-1/m}
+	\end{equation}
+	the graph Laplacian eigenvalue satisfies the lower bound
+	\begin{equation}
+	\label{eqn:graph_eigenvalue_2}
+	\lambda_{\kappa}(G_{n,r}) \geq c n r^{m + 2} \kappa^{2/m}.
+	\end{equation}
+	with probability at least $1 - C n^{-\beta}$.
+\end{enumerate}
+
+\subsection{(I): Graph Sobolev semi-norm.}
+
+We shall prove the following upper bound on the expectation of the graph Sobolev semi-norm. 
+\begin{lemma}
+	\label{lem:expected_graph_sobolev_seminorm_manifold}
+	Suppose assumptions~\ref{asmp:max_radius}-\ref{asmp:density} are satisfied. Then there exists a constant $C_1 > 0$ such that for any $f \in C^1(\mc{M}, Q)$,
+	\begin{equation}
+	\label{eqn:expected_graph_sobolev_seminorm_manifold}
+	\Ebb\Bigl[f_0^T \Lap_{n,r} f_0 \Bigr] \leq C_1 p_{\max} Q^2  n^2 r^{m + 2} 
+	\end{equation}
+	with probability at least $1 - n\exp(c_0 n r^m p_{\min})$. 
+\end{lemma}
+
+Note that \eqref{eqn:graph_sobolev_seminorm} then follows by Markov's inequality.
+
+\subsection{(II): Graph Laplacian eigenvalue}
+Let $\Delta_{p}$ be defined for smooth functions $f: \mc{M} \to \Reals$ as
+\begin{equation*}
+\Delta_pf = -\frac{1}{p} \mathrm{div}\bigl(\nabla(p^2 f)\bigr)
+\end{equation*}
+$\Delta_p$ has a point spectrum, and we denote its eigenvalues by $\lambda_1(\mc{M}) \leq \lambda_2(\mc{M}) \leq \cdots$. 
+
+In Lemma~\ref{lem:graph_eigenvalue_manifold}, we will prove a lower bound on the graph Laplacian eigenvalues $\lambda_k(G_{n,r})$ by the eigenvalues $\lambda_k(\mc{M})$. The lower bound will be a simple corollary of the developments in \citep{trillos2019}, which we summarize in~\ref{subsec:results_of_others}. 
+
+\begin{lemma}[Lower bound on graph eigenvalue $\lambda_k(G_{n,r})$]
+	\label{lem:graph_eigenvalue_manifold}
+	Assume~\ref{asmp:max_radius}-\ref{asmp:density}. Then there exists some $k_{\star} \in \mathbb{N}$ such that for any $k \geq k_{\star}$, the following statement holds: if
+	\begin{equation*}
+	8 C_3 A \biggl(\frac{\log(n)^{p_d}}{n^{1/d}}\biggr) < r < \min\biggl\{\frac{C_2}{C_5 k^{1/m}}, \frac{1}{8C_3 L(p)}, \frac{1}{8C_3k^{1/m}}, \frac{1}{8c_3\sqrt{\mc{K}}}\biggr\}
+	\end{equation*}
+	then
+	\begin{equation*}
+	\lambda_k(G_{n,r}) \geq \frac{c_1}{2} n r^{m + 2} k^{2/m}
+	\end{equation*}
+	with probability at least $1 - C_4 n^{-\beta}$.
+\end{lemma}
+
+\subsection{(III): Higher order graph Sobolev semi-norms}
+
+We have the following bound on $f^T \Lap_{n,r}^2 f$ for functions $f \in C^2(\mc{M})$.
+\begin{lemma}
+	\label{lem:graph_sobolev_seminorm_2}
+	Assume~\ref{asmp:max_radius}-\ref{asmp:density}. Let $f \in C^2(\mc{M},Q)$. Then there exists constants $C_7$ and $c_2$ which depend only on $m,\mc{K},R$ and $i_0$ such that
+	\begin{equation*}
+	f^T \Lap_{n,r}^2 f \leq 2 C_7^2 Q^2 n^3 r^{2(m + 2)} p_{\max}^2
+	\end{equation*}
+	with probability at least $1 - 2n\exp(-2cnr^{m + 2})$. 
+\end{lemma}
+
+A similar bound holds on $f^T \Lap_{n,r}^3 f$ for functions $f \in C^3(\mc{M})$.
+\begin{lemma}
+	\label{lem:graph_sobolev_seminorm_3}
+	Assume~\ref{asmp:max_radius}-\ref{asmp:density}. Let $f \in C^3(\mc{M},Q)$ and $p \in C^2(\mc{M},Q)$. Then there exist constants $C_8$ and $c_3$ which depend only on $m,\mc{K},R,i_0$ and $Q_K$ such that
+	\begin{equation}
+	\label{eqn:graph_sobolev_seminorm_3}
+	f^T \Lap_{n,r}^3 f \leq \frac{C_8}{\delta} Q^2 n^4 r^{3(m + 2)} p_{\max}^3 (p_{\max} + 1)
+	\end{equation}
+	with probability at least $1 - 2n\exp(-c_2nr^{4 + m}) - n\exp(4 n\nu_mr^mp_{\min}/3) - \delta$. 
+\end{lemma}
+
+When we turn to $f^T \Lap_{n,r}^s f$ for $s \geq 4$, things become difficult, and at present I cannot obtain results analogous to~\ref{lem:graph_sobolev_seminorm_2} and~\ref{lem:graph_sobolev_seminorm_3}. I detail what I find difficult---in the $s = 4$ case---in Subsection~\ref{subsec:order4_is_difficult}.
+
+Finally, we note the following bound on the graph Sobolev seminorm when $f \in H^1(P,Q)$, a direct corollary of Lemma 6 in \citep{trillos2019} (c.f. Lemma 3.3 \citep{burago2014}) plus Markov's inequality.
+
+\begin{lemma}
+	Assume~\ref{asmp:max_radius}-\ref{asmp:density}. Then there exists a universal constant $C > 0$ such that the following statement holds for any $f \in H^1(P)$:
+	\begin{equation*}
+	f^T \Lap_{n,r} f \leq \frac{1}{\delta}\bigl(1 + Q_p r\bigr) \bigl(1 + CmKr^2\bigr) \sigma_K r^{m + 2} |f|_{H^1(P)}
+	\end{equation*}
+	with probability at least $1 - \delta$. 
+\end{lemma}
+
+
+
+
+\section{Proof of Theorems and Major Lemmas}
+We will often make use of the following geometric estimates, which hold under assumption~\ref{asmp:max_radius}. These help us to convert from integrals over $\mc{M}$ to integrals over a Euclidean space. First
+\begin{equation}
+\label{eqn:geodisic_euclidean_distance}
+d_{\mc{M}}(y,x) \leq \norm{x - y}_{\Rd} + \frac{8}{R^2} \norm{x - y}_{\Rd}^3
+\end{equation} 
+and additionally
+\begin{equation}
+\label{eqn:manifold_ball_volume}
+\abs{\mu(B(x,r)) - \nu_m r^m} \leq C_0r^{m + 2}
+\end{equation}
+See ((3.3) and (3.2) of (Calder and Garcia-Trillos 19)).
+
+\subsection{Proof of Lemma~\ref{lem:expected_graph_sobolev_seminorm_manifold}}
+In the following manipulations we invoke first the Holder property of $f$, then the upper bound in~\ref{eqn:geodisic_euclidean_distance}, and finally Lemma~\ref{lem:max_degree} with $\delta = 2$ to get
+\begin{align*}
+f^T \Lap_{n,r}f  & = \sum_{i,j = 1}^{n} \Bigl(f(X_i) - f(X_j)\Bigr)^2 K\biggl(\frac{\norm{X_i - X_j}_{\Rd}}{r}\biggr) \\
+& \leq Q^2 \sum_{i,j = 1}^{n} \Bigl(d_{\mc{M}}(X_i,X_j)\Bigr)^2 K\biggl(\frac{\norm{X_i - X_j}_{\Rd}}{r}\biggr) \\
+& \leq 2 Q^2 \sum_{i,j = 1}^{n} \Bigl(\norm{X_i - X_j}_{\Rd}^2 + \frac{64}{R^4} \norm{X_i - X_j}_{\Rd}^6\Bigr) K\biggl(\frac{\norm{X_i - X_j}_{\Rd}}{r}\biggr) \\ 
+& \leq 2 Q^2 \Bigl(r^2 + \frac{64}{R^4} r^6\Bigr) n \deg_{\max}(G_{n,r}) \\
+& \leq 4 Q^2 p_{\max}\Bigl(r^2 + \frac{64}{R^4} r^6\Bigr) \Bigl(\nu_mr^m + C_0r^{m + 2}\Bigr) n^2  
+\end{align*}
+with the last inequality holding with probability at least $1 - n\exp(-\frac{4}{3}n\nu_mr^mp_{\min})$. Lemma~\ref{lem:expected_graph_sobolev_seminorm_manifold} then follows from appropriate choice of constants $c_0$ and $C_1$.
+\subsection{Proof of Lemma~\ref{lem:graph_eigenvalue_manifold}}
+
+Applying Theorem~\ref{thm:trillos19_2}---which gives an estimate on the $\infty$-optimal transport distance between $P$ and $P_n$---to Theorem~\ref{thm:trillos19_1}---which gives a lower bound on $\lambda_k(G_{n,r})$ in terms of $\lambda_k(\mc{M})$ and $d_{\infty}(P,P_n)$--- we have that if
+\begin{equation*}
+2C_3 A \frac{\log(n)^{p_d}}{n^{1/d}} \leq r < \min\biggl\{\frac{C_2}{\sqrt{\lambda_k(\mc{M})}}, \frac{1}{8C_3 L(p)}, \frac{1}{8C_3\sqrt{\lambda_k(\mc{M})}}, \frac{1}{8C_3\sqrt{\mc{K}}}\biggr\}
+\end{equation*}
+then
+\begin{equation*}
+\lambda_k(G_{n,r}) \geq \frac{1}{2} nr^{m+2}\lambda_k(\mc{M})
+\end{equation*}
+with probability at least $1 - C_4 n^{-\beta}$. Lemma~\ref{lem:graph_eigenvalue_manifold} follows from replacing all instances of $\lambda_k(\mc{M})$ in the above expression with estimates given by Weyl's Law (Theorem~\ref{thm:weyl}).
+
+\subsection{Proof of Lemma~\ref{lem:graph_sobolev_seminorm_2}}
+Note that
+\begin{equation*}
+f^T \Lap_{n,r}^2 f = \sum_{i = 1}^{n} \Bigl(\Lap_{n,r}f(X_i)\Bigr)^2
+\end{equation*}
+Lemma~\ref{lem:graph_sobolev_seminorm_2} follows directly from the pointwise estimate Lemma~\ref{lem:pointwise_laplacian_ub} upon taking a union bound over $x = X_1,\ldots,X_n$.
+
+\subsection{Proof of Lemma~\ref{lem:graph_sobolev_seminorm_3}}
+We will consider $\Lap_{n,r}f(X_i)$ as an estimate of $\sigma_K \Delta_pf(X_i)$ (when appropriately scaled), and show that this deviation is small when $r$ is sufficiently large.  To begin, writing $\Lap_{n,r}f(X_i) = \sigma_{K}\Delta_{p}f(X_i)nr^{m + 2} + \Lap_{n,r}f(X_i) - \sigma_{K}\Delta_{p}f(X_i)nr^{m+2}$ inside the definition of the 3rd-order graph Sobolev seminorm, we obtain
+\begin{align*}
+f^T \Lap_{n,r}^3 f & = \sum_{i,j = 1}^{n} \Bigl(\Lap_{n,r}f(X_i) - \Lap_{n,r}f(X_j)\Bigr)^2 K_r(X_i,X_j) \\
+& \leq 6 \sum_{i,j = 1}^{n} \Bigl(\Lap_{n,r}f(X_i) - \sigma_{K}\Delta_{p}f(X_i)nr^{m+2}\Bigr)^2 K_r(X_i,X_j)~+ \\
+&~~3 \sigma_K^2 n^2 r^{2(m + 2)} \sum_{i,j = 1}^{n} \Bigl(\Delta_pf(X_i) - \Delta_pf(X_j)\Bigr)^2 K_r(X_i,X_j)
+\end{align*}
+Applying Theorem~\ref{thm:calder19_1} with $\delta = r$, and Lemma~\ref{lem:max_degree} with $\delta = 1$, we have
+\begin{align*}
+\sum_{i,j = 1}^{n} \Bigl(\Lap_{n,r}f(X_i) - \sigma_{K}\Delta_{p}f(X_i)nr^{m+2}\Bigr)^2  K_r(X_i,X_j) & \leq  C_6^2 \bigl([f]_{1;\mc{M}} + \norm{f}_{C^3(\mc{M})} + 1\bigr)^2 n^2r^{2m + 6} \sum_{i,j = 1}^{n} K_r(X_i,X_j) \\
+& \leq  C_6^2 \bigl([f]_{1;\mc{M}} + \norm{f}_{C^3(\mc{M})} + \norm{p}_{C^2(\mc{M})}\bigr)^2 n^3r^{2m + 6} \deg_{\max}(G_{n,r}) \\
+& \leq 4 C_6^2 \bigl([f]_{1;\mc{M}} + \norm{f}_{C^3(\mc{M})} + \norm{p}_{C^2(\mc{M})}\bigr)^2 n^4 r^{2m + 6} \Bigl[\nu_mr^m + C_0r^{m + 2}\Bigr] p_{\max} \\
+& \leq C p_{\max}\bigl(Q + p_{\max}\bigr)^2n^4 r^{3m + 6},
+\end{align*}
+with probability at least $1 - 2n\exp(-c_2nr^{4 + m}) - n\exp(4 n\nu_mr^mp_{\min}/3)$. 
+
+It remains to upper bound $(\Delta_pf)^T \Lap_{n,r} (\Delta_pf)$. Rewriting
+\begin{equation*}
+\Delta_pf = -\bigl(\nabla p^T \nabla f + p \Delta_{\mc{M}} f\bigr)
+\end{equation*}
+we observe that since $f \in C^3(\mc{M}, Q)$ and $p \in C^2(\mc{M}, p_{\max})$, $\Delta_pf \in C^1(\mc{M},4Qp_{\max})$. By Lemma~\ref{lem:expected_graph_sobolev_seminorm_manifold} we therefore have
+\begin{equation*}
+(\Delta_pf)^T \Lap_{n,r} (\Delta_pf) \leq \frac{16}{\delta} C_1 n^2 r^{m + 2} Q^2 p_{\max}^4
+\end{equation*}
+with probability at least $1 - \delta$. The claim of Lemma~\ref{lem:graph_sobolev_seminorm_3} then follows after an appropriate choice of constant in~\eqref{eqn:graph_sobolev_seminorm_3}.
+
+
+\section{Additional Theory}
+
+\subsection{Estimates on Graph Eigenvalues}
+\label{subsec:results_of_others}
+
+
+\begin{theorem}[(Part of) Theorem 4 of \citep{trillos2019}]
+	\label{thm:trillos19_1}
+	There exist constants $C_2$ and $C_3$ which depend only on $m, p_{\min}, p_{\max}, L(p)$ and $K$ such that if 
+	\begin{equation*}
+	\sqrt{\lambda_k(\mc{M})} r < C_2,
+	\end{equation*}
+	then,
+	\begin{equation*}
+	\lambda_k(G_{n,r}) \geq n r^{m + 2}\lambda_k(\mc{M}) \Biggl[1 - C_3\biggl(L(p)r + \frac{d_{\infty}(P,P_n)}{r} + \sqrt{\lambda_k(\mc{M})}r + \mc{K}r^2\biggr)\Biggr]
+	\end{equation*}
+\end{theorem}
+
+In order to make use of Theorem~\ref{thm:trillos19_1}, we need an upper bound on $d_{\infty}(P,P_n)$. Theorem~\ref{thm:trillos19_2} provides a probabilistic estimate.
+
+\begin{theorem}[Theorem 2 of \citep{trillos2019}]
+	\label{thm:trillos19_2}
+	Let $P$ satisfy~\ref{asmp:density}. Then for any $\beta > 1$ and every $n \in \mathbb{N}$, there exists a transport map $T_n: \mc{M} \to {\bf X}$ and a constant $A$ such that
+	\begin{equation*}
+	\sup_{x \in \mc{M}} d_{\infty}(x,T_n(x)) \leq A \cdot 
+	\begin{cases*}
+	\frac{(\log(n))^{3/4}}{n^{1/2}},& ~~\textrm{if $m = 2$,} \\
+	\biggl(\frac{\log(n)}{n}\biggr)^{1/m},& ~~\textrm{if $m \geq 3$,}
+	\end{cases*}
+	\end{equation*}
+	with probability at least $1 - C_4 n^{-\beta}$. The constant $A$ depends only on $\mc{K},i_0,m,\mu(\mc{M}), \alpha$ and $\beta$, and the constant $C_4$ depends only on $\mc{K},i_0,m,\mu(\mc{M})$.
+\end{theorem}
+
+\subsection{Weyl's Law}
+
+Although Weyl's Law is traditionally stated with respect to the unweighted Laplace-Beltrami operator, the same asymptotics apply to $\Delta_{p}$ when $p$ is bounded away from $0$ and $\infty$ on $\mc{M}$. Let $N(\lambda)$ count the number of eigenvalues of $\mc{M}$ which are less than $\lambda$.
+\begin{theorem}[Weyl's Law]
+	\label{thm:weyl}
+	Assume~\ref{asmp:density}. If $\mc{M}$ is a compact connected oriented manifold then
+	\begin{equation*}
+	N(\lambda) \sim \lambda^{m/2}
+	\end{equation*}
+	or, equivalently,
+	\begin{equation*}
+	\lambda_k(\mc{M}) \sim k^{2/m}.
+	\end{equation*}
+\end{theorem}
+
+\subsection{Pointwise estimates on graph Laplacians}
+
+We give some pointwise estimates on $\Lap_{n,r}f(x)$, many of which are reproduced from \citep{calder2019}. Define
+\begin{equation*}
+\Lap_{P,r}f(x) := \frac{1}{r^{m + 2}} \int_{B(x,r)} K_r(y,x) \Bigl( f(x) - f(y) \Bigr) p(y) \,d\mu(y)
+\end{equation*}
+to be a nonlocal Laplacian operator, which acts as an intermediary between $\Lap_{n,r}$ and $\Delta_p$.
+
+\begin{theorem}[Theorem 3.3 of \citep{calder2019}]
+	\label{thm:calder19_1}
+	Assume~\ref{asmp:max_radius}-\ref{asmp:density}. Let $f \in C^3(\mc{M})$ and $p \in C^2(\mc{M})$. There exist constants \textcolor{red}{$C_6$} and $c_2$ such that for any $r \leq \delta \leq r^{-1}$, 
+	\begin{equation*}
+	\max_{1 \leq i \leq n} \abs{\Lap_{n,r}f(X_i) - \sigma_{K} \Delta_{p} f(X_i) nr^{m + 2}} \leq C_6 \bigl([f]_{1;\mc{M}} + \norm{f}_{C^3(\mc{M})} + \norm{p}_{C^2(\mc{M})}\bigr) \delta  nr^{m + 2} 
+	\end{equation*}
+	with probability at least $1 - 2n\exp(-c\delta^2 nr^{m+2})$.
+\end{theorem}
+
+
+
+\begin{lemma}[Lemma 3.4 of \citep{calder2019}]
+	\label{lem:calder19}
+	Assume~\ref{asmp:max_radius}-\ref{asmp:density}. Let $f \in C^1(\mc{M})$. Then for $x \in \mc{M}$ and $r \leq \delta \leq r^{-1}$,
+	there exists constants $C_6$ and $c_2$ which depend only on $m,\mc{K},R$ and $i_0$ such that
+	\begin{equation*}
+	\Pbb\biggl[\Bigl|\frac{1}{nr^{m + 2}} \Lap_{n,r}f(x) - \Lap_{P,r}f(x)\Bigr| \geq C_6 [f]_{1,B(x,2r)} \delta \biggr] \leq 2\exp(-c_2\delta^2 n r^{m + 2})
+	\end{equation*}
+\end{lemma}
+
+Most analysis on $\Lap_{n,r}f(x)$ provide pointwise estimates assuming $f \in C^{q + 2}(\mc{M})$ for some $q > 0$. We shall instead assume only $f \in C^2(\mc{M})$, and content ourselves with merely an upper bound on $|\Lap_{n,r}f(x)|$.
+\begin{lemma}
+	\label{lem:pointwise_laplacian_ub}
+	Assume~\ref{asmp:max_radius}-\ref{asmp:density}. Let $f \in C^2(\mc{M})$. Then for $x \in \mc{M}$ and $r \leq \delta \leq r^{-1}$, there exists constants $C_7$ and $c_2$ which depend only on $m,\mc{K},R$ and $i_0$ such that
+	\begin{equation*}
+	\Bigl|\Lap_{n,r}f(x)\Bigr| \leq C_7 nr^{m + 2}\Bigl([f]_{1;B(x,2r)}\delta + p_{\max} \nu_d[f]_{1,B(x,r)} r + \norm{\nabla f(x)} +  \norm{f}_{C^2(B(x,r))}\Bigr)
+	\end{equation*}
+	with probability at least $1 - 2\exp(-c_2\delta^2 n r^{m + 2})$.
+\end{lemma}
+\begin{proof}
+	We shall follow the proof of Theorem 3.3 of~\citep{calder2019}, deviating when necessary to fit our differing assumptions and ultimate goal. Let
+	\begin{equation*}
+	\Lap_{P,r}^{(i)}f(x) = \frac{1}{r^{m + 2}} \int_{B(x,r)} K\biggl(\frac{d_{\mc{M}}(y,x)}{r}\biggr)\bigl(f(x) - f(y)\bigr) p(y) \,d\mu(y)
+	\end{equation*} 
+	be an intrinsic analogue to $\Lap_{P,r}$. It follows from~\eqref{eqn:geodisic_euclidean_distance} and~\ref{asmp:kernel_shape} that 
+	\begin{align}
+	\abs{\Lap_{P,r}^{(i)}f(x) - \Lap_{P,r}f(x)} & \leq \frac{1}{r^{2 + m}} \int_{B(x,r)} \Biggl|K(\frac{d_{\mc{M}}(x,y)}{r}) - K(\frac{d_{\mc{M}}(x,y)}{r})\Biggr| \bigl|f(x) - f(y)\bigr| p(y) \,d\mu(y) \nonumber \\ 
+	& \leq \frac{p_{\max}}{r^{m}} \int_{B(x,r)} \bigl|f(x) - f(y)\bigr| \,d\mu(y)\\
+	& \leq p_{\max} \nu_d[f]_{1,B(x,r)} r \label{eqn:pointwise_laplacian_ub}
+	\end{align}
+	By assumption $r < i_0$, and therefore the exponential map $\exp_x: B(0,r) \subset \mc{T}_{x}(\mc{M}) \to \mc{Mc}$ is a diffeomorphism. For $v \in B(0,r)$ let $w(v) = f(\exp_x(v))$ and $\rho(v) = p(\exp_x(v))$, i.e. express $f$ and $p$ in terms of normal Riemmanian coordinates,  and let $J_x(v)$ be the Jacobian of $\exp_x$ at $v$.  Then
+	\begin{align*}
+	\Lap_{P,r}^{(i)}f(x) & = -\frac{1}{r^{m + 2}} \int_{B(0,r)} K\biggl(\frac{\norm{v}}{r}\biggr)\bigl(w(v) - w(0)\bigr) \rho(v) J_x(v) \,d\mu(v) \\
+	& = -\frac{1}{r^2} \int_{B(0,1)} K(\norm{v})  \bigl(w(rv) - w(0)) \rho(rv) J_x(rv) \,d\mu(v).
+	\end{align*}
+	Now we plug in the Taylor expansions $w(rv) = w(0) + \nabla w(0) \cdot v + O(\norm{w}_{C^2(B(0,r))}r^2)$, $\rho(rv) = \rho(0) + O(r)$ and $J_x(rv) = 1 + O(r^2)$ to obtain
+	\begin{align}
+	\Lap_{P,r}^{(i)}f(x) & = -\frac{1}{r^2} \int_{B(0,1)} K(\norm{v})  \Bigl(r \nabla w(0)^T v + O\bigl(\norm{w}_{C^2(B(0,r))}r^2\bigr)\Bigr) \Bigl(\rho(0) + O(r)\Bigr) \Bigl(1 + O(r^2)\Bigr) \,d\mu(v) \nonumber \\
+	& = O\Bigl(\norm{\nabla w(0)} +  \norm{w}_{C^2(B(0,r))} \Bigr) \label{eqn:pointwise_laplacian_ub_2}
+	\end{align}
+	The claim then follows by combining~\eqref{eqn:pointwise_laplacian_ub},~\eqref{eqn:pointwise_laplacian_ub_2} and Lemma~\ref{lem:calder19}.
+\end{proof}
+
+\subsection{Degree bounds}
+
+Lemma~\ref{lem:max_degree} follows from the multiplicative form of Hoeffding's inequality along with~\eqref{eqn:manifold_ball_volume} and~\ref{asmp:kernel_shape}.
+\begin{lemma}
+	\label{lem:max_degree}
+	Assume~\ref{asmp:max_radius}-\ref{asmp:density}. Then
+	\begin{equation*}
+	\deg_{\max}(G_{n,r}) \leq (1 + \delta)\Bigl[\nu_mr^m + C_0r^{m + 2}\Bigr] p_{\max} n
+	\end{equation*}
+	with probability at least $1 - n\exp(-\delta^2 n \nu_m r^m p_{\min}/3)$.
+\end{lemma}
+
+\subsection{Explaining what is difficult when $s = 4$.}
+\label{subsec:order4_is_difficult}
+Let me start by giving a rough summary of the difficulty, and then go into more detail .We would like to show
+\begin{equation}
+\label{eqn:order4_is_difficult_1}
+f^T \Lap_{n,r}^4 f = \sum_{i = 1}^{n} \Bigl(\Lap_{n,r}^2f(X_i)\Bigr)^2 \lesssim n^{5}r^{8(m + 2)}
+\end{equation}
+for $f \in C^4(\mc{M})$.
+Note that
+\begin{equation*}
+\Lap_{P,r}f(x) = \int_{B(x,r) \cap \mc{M}} \bigl(f(x) - f(y)\bigr) \,dP(y)
+\end{equation*}
+is (up to scaling by a factor of $nr^{m+2}$)the expectation of $\Lap_{n,r}f(x)$ . It is possible to show a sufficiently tight bound on $|\Lap_{n,r}^2f(x) - nr^{2+m}\Lap_{P,r}^2f(x)|$ when $r \gg n^{-1/(6 + m)}$, thus handling the variance. To handle the bias, we can show that
+\begin{equation*}
+\Lap_{P,r}f(x) = nr^{m + 2} \sigma_{K} \Delta_pf(x) + \mc{I}f(x)
+\end{equation*}
+where $\Delta_p$ is the weighted Laplace-Beltrami operator on $\mc{M}$, and $\mc{I}f$ is an error term satisfying $\mc{I}f(x) = O(r^{m + 3})$. This bound on the error term is sufficient for $s = 1$ up to $s = 3$, however, when $s \geq 4$ it is insufficient (check by plugging back in to~\eqref{eqn:order4_is_difficult_1}). In the Euclidean case, we had that $\mc{I}f(x)$ itself belong to $C^1$ and thus could argue $(\Lap_{P,r} \mc{I}f)(x) \ll \mc{I}f(x)$. In the manifold case, I no longer know how to do this.
+
+The longer version: we can make the following progress towards upper bound $f^T \Lap_{n,r}^4 f$:
+\begin{align*}
+f^T \Lap_{n,r}^4 f & \leq n \max_{1 \leq i \leq n} \abs{\Lap_{n,r}^2 f(X_i)}^2 \\
+& \leq n \max_{1 \leq i \leq n} \abs{\Lap_{n,r}(\Lap_{n,r} - nr^{m + 2}\Lap_{P,r})f(X_i)}^2 + n^2 r^{m + 2} \max_{1 \leq i \leq n} \abs{(\Lap_{n,r} - nr^{m + 2}\Lap_{P,r})\Lap_{P,r}f(X_i)}^2 +~\\
+& ~~n^4 r^{4m + 8} \max_{1 \leq i \leq n} \abs{\Lap_{P,r}^2f(X_i)}
+\end{align*}
+We can upper bound the first term as follows:
+\begin{align*}
+\abs{\Lap_{n,r}(\Lap_{n,r} - nr^{m + 2}\Lap_{P,r})f(x)}^2 & \leq \max_{1 \leq j \leq n} \abs{(\Lap_{n,r} - nr^{m + 2}\Lap_{P,r})f(X_j)} \cdot \sum_{j = 1}^{n} K\Bigl(\frac{\norm{x - X_j}_{\Rd}}{r}\Bigr) \\
+& \leq C nr^m \max_{1 \leq j \leq n} \abs{(\Lap_{n,r} - nr^{m + 2}\Lap_{P,r})f(X_j)} \\
+& \leq C n^2r^{2m + 2} \delta 
+\end{align*}
+where the last inequality follows from Bernstein's inequality and holds with probability at least on the order of $1 - \exp(-nr^{2 + m}\delta^2)$. Choosing $\delta \asymp r^2$ gives the desired rate, assuming $n \gg r^{6 + m}$.
+
+We can use a similar argument to upper bound the second term.
+
+The third term---$\Lap_{P,r}^2f(X_i)$---is what poses the challenge. We want to convert the integral on $\mc{M}$ to an integral on a Euclidean space using exponential maps. Letting $\exp_x:T_x(\mc{M}) \to \mc{M}$ be the exponential map, letting $\wt{B}$ satisfy $\exp_x(\wt{B}) = B(x,r) \cap \mc{M}$, associating the tangent plane $T_x(\mc{M})$ with $\Reals^m$, and writing $g_x(v) = \norm{x - \exp_x(v)}_{\Rd} - \norm{v}_{\Reals^m}$ we have
+\begin{align*}
+\Lap_{P,r}f(x) & = \int_{\mc{M}} (f(x) - f(y)) K\Bigl(\frac{\norm{y - x}_{\Rd}}{r}\Bigr) p(y) \,d\mu(y) \\
+& = \int_{\wt{B}} (w(0) - w(v)) K\Bigl(\frac{\norm{x - \exp_x(v)}_{\Rd}}{r}\Bigr) \rho(v) J_v(x) \,dv \\
+& = \int_{\wt{B}} (w(0) - w(v)) K\Bigl(\frac{\norm{v}_{\Reals^m} + g_x(v)}{r}\Bigr) \rho(v) J_v(x) \,dv \\
+& = \int_{B(0,r) \subset \Reals^m} (w(0) - w(v)) K\Bigl(\frac{\norm{v}_{\Reals^m}}{r}\Bigr) \rho(v) J_v(x) \,dv +~~\\
+&~~ \underbrace{\int_{\wt{B}} (w(0) - w(v)) \biggl[K\Bigl(\frac{\norm{v}_{\Reals^m} + g_x(v)}{r}\Bigr) - K\Bigl(\frac{\norm{v}_{\Reals^m}}{r}\Bigr)\biggr] \rho(v) J_v(x) \,dv}_{\mc{I}(x)}
+\end{align*}
+The first of the two integrals is now an integral over a ball in a Euclidean domain, and is not a problem. The second integral is tricky. The only way I know how to analyze $\mc{I}(x)$ is to use the following facts: first, $\abs{w(v) - w(0)} \lesssim r$, second that $g_x(v) \lesssim r^3$ for all $\exp_x(v) \in B(0,r) \cap \mc{M}$, third that $\abs{\mu(B(x,r) \cap {\mc{M}}) - \nu_m r^m} \lesssim r^{m + 2}$, and fourth that $\abs{J_x(v)} \lesssim 1 + r^2$. Together, these give
+\begin{align*}
+\int_{\wt{B}} (w(0) - w(v)) \biggl[K\Bigl(\frac{\norm{v}_{\Reals^m} + g_x(v)}{r}\Bigr) - K\Bigl(\frac{\norm{v}_{\Reals^m}}{r}\Bigr)\biggr] \rho(v) J_v(x) \,dv  & \lesssim r \Bigl(\mu\bigl(B(x,r + r^3) \cap {\mc{M}} \bigr) - \mu\bigl(B(x,r) \cap {\mc{M}}\bigr)\Bigr)  \\
+& \lesssim r^{m + 3}.
+\end{align*}
+But this only gives $\Lap_{P,r}^2f(x) \lesssim r^{2m + 3}$, which is not nearly enough. The problem is that I am not using any smoothness properties of $\mc{I}(x)$ in my upper bound on $\Lap_{P,r}\mc{I}f(x)$. I suspect it may have such properties, related to the smoothness assumptions we place on $\mc{M}$, but proving it seems non-trivial.
+
+
+
+
+\section{Notation}
+
+\begin{itemize}
+	\item For any $x,y \in \mc{M}$ we write $d_{\mc{M}}(x,y)$ for the geodesic distance between $x$ and $y$, that is the length of the shortest path connecting $x$ and $y$. 
+	\item For measures $P$ and $Q$ on $\mc{M}$, we write $d_{\infty}(P,Q)$ for the $\infty$-optimal transport distance between $P$ and $Q$. Formally,
+	\begin{equation*}
+	d_{\infty}(P,Q) = \inf\biggl\{ \mathrm{esssup}_{\gamma}\Bigl\{\abs{x - y}: x,y \in \mc{M} \Bigr\} : \gamma \in \Gamma(P,Q) \biggr\}
+	\end{equation*}
+	where $\Gamma(P,Q)$ is the set of joint distributions on $\mc{M} \times \mc{M}$ with marginals $P$ and $Q$.
+	
+\end{itemize}
+
+\bibliographystyle{plainnat}
+\bibliography{../../graph_testing_bibliography} 
+
+\end{document}

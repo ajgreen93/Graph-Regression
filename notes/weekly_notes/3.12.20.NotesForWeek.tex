@@ -1,0 +1,351 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\makeatletter
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LS}{\mathrm{LS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 3/6/20 - 3/12/20}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Suppose we observe independent design points $X = x_1,\ldots,x_n \sim P$ i.i.d -- where we assume $P$ has density $p$ which is supported on $[0,1]^d$ -- and responses
+\begin{equation}
+\label{eqn:regression_random_design_known_variance}
+y_i = f(x_i) + \varepsilon_i, \varepsilon_i \overset{i.i.d}\sim N(0,1).
+\end{equation} 
+Our goal is to test
+\begin{equation*}
+\mathbf{H}_0: f = 0,~~\textrm{vs.}~~\mathbf{H}_a: f \neq 0.
+\end{equation*}
+We will use as our test statistic the empirical norm of a Laplacian smoothing estimator. Let $G = (X,E)$ be a graph formed over the design points $X$, the Laplacian smoothing estimator $\wh{\theta}_{\LS}(G) \in \Reals^n$ is defined as
+\begin{equation}
+\label{eqn:laplacian_smoothing_estimator}
+\wh{\theta}_{\LS}(G) = \argmin_{\theta \in \Reals^n} \sum_{i = 1}^{n} (y_i - \theta_i)^2 + \rho \theta^T L_G \theta 
+\end{equation}
+i.e. $\wh{\theta}_{\LS}(G) = (I + \rho L_G)^{-1} y$; here $\rho > 0$ is a tuning parameter controlling how much shrinkage the estimator performs. Then our Laplacian smoothing test statistic will simply be
+\begin{equation}
+\label{eqn:laplacian_smoothing_statistic}
+T_{\LS}(G) := \norm{\wh{\theta}_{\LS}(G)}_n^2.
+\end{equation}
+with the corresponding test $\phi_{\LS}(G) := \1\{T_{\LS}(G) \geq \tau(b) \}$, where $b > 1$ is a user specified hyperparameter which controls the level of Type I and Type II error the user is willing to tolerate, and $\tau$ is a function of $b$ (and also, implicitly, of $G$) to be specified later.
+
+Let $G_{n,r}$ be the random geometric graph of radius $r$, i.e $G_{n,r} = (X,E_{n,r})$ where $E_{n,r} \subseteq X \times X$ contains the edge $e(x_i,x_j) \in E_{n,r}$ if and only if $\1(\norm{x_i - x_j}_2 \leq r)$. When $f \in H^1(\mathcal{X};L)$ for $d = 1,2$ or $3$, and the density $p$ satisfies typical regularity conditions, the test $\phi_{\LS}(G_{n,r})$ achieves minimax optimal testing rates.
+\begin{theorem}
+	\label{thm:sobolev_testing_rate_laplacian_smoothing_order1}
+	Suppose we observe samples $(x_i,y_i)_{i = 1}^{n}$ according to the model~\eqref{eqn:regression_random_design_known_variance}. Let $L > 0$ and $b \geq 1$ be fixed constants, and $d = 1,2$ or $3$. Suppose that $P$ is an absolutely continuous probability measure over $\mathcal{X} = [0,1]^d$ with density function $p(x)$ bounded away from zero and infinity, 
+	\begin{equation*}
+	0 < p_{\min} < p(x) < p_{\max} < \infty,~~ \textrm{for all $x \in \mathcal{X}$.}
+	\end{equation*}
+	and the test $\phi_{\LS}(G_{n,r})$ is performed with parameter choices
+	\begin{align*}
+	c \frac{(\log n)^{p_d}}{n^{1/d}} \leq r(n) \leq n^{-4/((4 + d)(2+d))}& ,~~ \rho = \lambda_{\kappa}^{-1},~~ \kappa = n^{2d/(4 + d)}\\
+	\tau(b) = \frac{1}{n} \sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^2 & + \frac{4b}{n}\sqrt{\sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^4}
+	\end{align*}
+	for $c$ a constant that depends only on $\Xset, p_{\min}$ and $p_{\max}$. Then the following statements holds for every $n$ sufficiently large: there exists constants $c_1,c_2$ which do not depend on $n,b$ or $R$ such that for every $\epsilon \geq 0$ satisfying
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate_order1}
+	\epsilon^2 \geq c_1^2 \cdot b^2 \cdot L^2 \cdot n^{-4/(4 + d)}
+	\end{equation}
+	the worst-case risk is upper bounded
+	\begin{equation}
+	\label{eqn:sobolev_testing_rate_order1_1}
+	\mathcal{R}_{\epsilon}(\phi_{\mathrm{spec}}(G_{n,r}); H^1(\mathcal{X};L)) \leq \frac{c_2}{b}.
+	\end{equation}
+\end{theorem}
+
+\section{Fixed Graph Analysis}
+As usual, our analysis will proceed by showing that for any function $f$, there exists a set $E_f$ satisfying $\Pbb(E_f) \geq 1 - \norm{S_{\rho}(\beta)}_n^2$, such that conditional on $X = x$ for any $x \in E_f$ our test has non-trivial power. This latter step amounts to analyzing the behavior of our test in the fixed graph setting. Formally, suppose we observe fixed design points $x_1,\ldots,x_n$, and random responses 
+\begin{equation}
+\label{eqn:fixed_design_model}
+y_i = \beta_i + \epsilon_i,~~ \epsilon_i \overset{\textrm{i.i.d}}{\sim} N(0,1)
+\end{equation}
+In the following Lemma, we bound the Type I and Type II error of $\phi_{\LS}(G)$. For convenience, we denote $S_{\rho} = (I + \rho L)^{-1}$.
+
+\begin{lemma}
+	\label{lem:fixed_graph_laplacian_smoothing_test}
+	Fix $\rho > 0$. Suppose we observe data according to model~\eqref{eqn:fixed_design_model}, and perform the test $\phi_{\LS}(G)$ with threshold
+	\begin{equation*}
+	\tau(b) = \frac{1}{n} \sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^2 + \frac{b}{n}\sqrt{\sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^4}.
+	\end{equation*}
+	\begin{enumerate}
+		\item \textbf{Type I error:} Under the null hypothesis $\beta = \beta_0 = 0$, the Type I error of $\phi_{\LS}(G)$ is upper bounded,
+		\begin{equation*}
+		\Ebb_{\beta_0}\Bigl[\phi_{\LS}(G)\Bigr] \leq \frac{1}{b^2}
+		\end{equation*}
+		\item \textbf{Type II error:} 
+		For any $b \geq 1$ and $\beta$ such that
+		\begin{equation}
+		\label{eqn:fixed_graph_laplacian_smoothing_test}
+		\norm{S_{\rho}(\beta)}_n^2 \geq \frac{2b}{n}\sqrt{\sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^4}
+		\end{equation}
+		the Type II error of $\phi_{\LS}(G)$ is upper bounded,
+		\begin{equation}
+		\label{eqn:fixed_graph_laplacian_smoothing_test2}
+		\Ebb_{\beta}\Bigl[1 - \phi_{\LS}(G)\Bigr] \leq \frac{8}{b\sqrt{n}}\biggl(\sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^4\biggr)^{-1/2} + \frac{2}{b^2}.
+		\end{equation}
+		In particular, there exist universal constants $c_1$ and $c_2$ such that if
+		\begin{equation}
+		\label{eqn:fixed_graph_laplacian_smoothing_radius}
+		\frac{c_1}{n}\sum_{i = 1}^{n} \beta_i^2 \geq c_2\frac{\rho\beta^T L \beta}{n} + \frac{4b}{n}\sqrt{\sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^4},
+		\end{equation}
+		then~\eqref{eqn:fixed_graph_laplacian_smoothing_test} and thus \eqref{eqn:fixed_graph_laplacian_smoothing_test2} follow.
+	\end{enumerate}
+\end{lemma}
+
+\section{Analysis}
+
+\subsection{Fixed Graph Testing}
+Decomposing $y = \beta + \varepsilon$, the Laplacian smoothing test statistic may be written as
+\begin{equation*}
+T_{\LS}(G) = \frac{1}{n}(\beta + \varepsilon)^T S_{\rho}^{2} (\beta + \varepsilon) = \frac{1}{n} \Bigl(\beta^T S_\rho^{2} \beta + 2 \beta^T S_{\rho}^{2} \varepsilon + \varepsilon^T S_{\rho}^{2} \varepsilon \Bigr)
+\end{equation*}
+
+Writing the spectral decomposition of the Laplacian $L = V \Lambda V^T$ -- where $V$ is orthonormal and $\Lambda$ diagonal--and invoking the rotational invariance of the Gaussian distribution, we conclude that
+\begin{equation}
+\label{eqn:fixed_graph_ls_pf3}
+\varepsilon^T S_{\rho}^2 \varepsilon \overset{d}{=} \sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^2 \varepsilon_k^2
+\end{equation}
+This equality (in distribution) will be useful for computing both the mean and variance of $T_{\LS}(G)$.
+
+\paragraph{Mean of $T_{\LS}(G)$.}
+
+Noting that $\varepsilon$ is mean-zero, we have
+\begin{align}
+\Ebb\bigl[T_{\LS}(G)\bigr] & = \frac{1}{n}\Bigl(\beta^T S_\rho^{2} \beta + \Ebb\bigl[\varepsilon^T S_{\rho}^{2} \varepsilon\bigr] \Bigr) \nonumber \\
+& = \norm{S_{\rho}(\beta)}_n^2 + \sum_{k = 1}^{n} \frac{1}{(1 + \rho \lambda_k)^2} \label{eqn:fixed_graph_ls_pf2}
+\end{align}
+
+\paragraph{Variance of $T_{\LS}(G)$.}
+Note that since $\beta^T S_{\rho}^2 \varepsilon$ is symmetric about zero, 
+\begin{equation*}
+\Cov\bigl[\beta^T S_{\rho}^2 \varepsilon, \varepsilon^T S_{\rho}^2 \varepsilon\bigr] = 0,
+\end{equation*}
+and therefore
+\begin{align*}
+\Var\bigl[T_{\LS}(G)\bigr] & = \frac{1}{n^2}\Bigl(4 \Var\bigl[\beta^T S_\rho^2 \varepsilon \bigr] + \Var\bigl[\varepsilon^T S_{\rho}^2 \varepsilon\bigr]\Bigr) \\
+& = \frac{1}{n^2}\Bigl(4 \beta^T S_{\rho}^4 \beta + \Var\bigl[\varepsilon^T S_{\rho}^2 \varepsilon\bigr]\Bigr) \\
+& \leq \frac{1}{n^2}\Bigl(4 \beta^T S_{\rho}^2 \beta + \Var\bigl[\varepsilon^T S_{\rho}^2 \varepsilon\bigr]\Bigr) \\
+& = \frac{1}{n^2}\biggl(4 \beta^T  S_{\rho}^2 \beta + \sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^4 \Var\bigl[\varepsilon_k^2\bigr]\biggr) \\
+& = \frac{1}{n^2}\biggl(4 \beta^T S_{\rho}^2 \beta + 2\sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^4 \biggr).
+\end{align*}
+where the inequality in previous display follows from $\lambda_{\min}(S_{\rho}) \geq 1$.
+
+For convenience, we introduce the notation 
+\begin{equation*}
+t(b) := \frac{b}{n}\sqrt{\sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^4}.
+\end{equation*}
+\paragraph{Type I error.}
+Using Chebyshev's inequality, we obtain
+\begin{align*}
+\Pbb_{\beta = 0}\Bigl(T_{\LS}(G) \geq \tau(b)\Bigr) & = \Pbb_{\beta = 0}\Bigl(T_{\LS}(G) - \Ebb\bigl[T_{\LS}(G)] \geq t(b)\Bigr) \\
+& \leq \Pbb_{\beta = 0}\Bigl(\abs{T_{\LS}(G) - \Ebb\bigl[T_{\LS}(G)]} \geq t(b)\Bigr) \\
+& \leq \frac{\Var_{\beta = 0}\bigl[T_{\LS}(G)\bigr]}{\bigl[t(b)\bigr]^2} \\
+& \leq \frac{2}{b^2}.
+\end{align*}
+
+\paragraph{Type II error.}
+We note that~\eqref{eqn:fixed_graph_ls_pf2} along with assumption~\eqref{eqn:fixed_graph_laplacian_smoothing_test} implies that
+\begin{equation*}
+\mathbb{E}[T_{\LS}(G)] - \tau(b) = \norm{S_{\rho}(\beta)}_n^2 - t(b) \geq t(b).
+\end{equation*}
+Again applying Chebyshev's inequality, we find
+\begin{align*}
+\Pbb_{\beta}\Bigl(T_{\LS}(G) < \tau(b)\Bigr) & = \Pbb_{\beta}\Bigl(T_{\LS}(G) -\Ebb_{\beta}\bigl[T_{\LS}(G)\bigr] < t(b) - \norm{S_{\rho}(\beta)}_n^2 \Bigr) \\
+& \leq \Pbb_{\beta}\Bigl(\abs{T_{\LS}(G) -\Ebb_{\beta}\bigl[T_{\LS}(G)\bigr]} > \frac{1}{2}\norm{S_{\rho}(\beta)}_n^2  \Bigr) \\
+& \leq 4\frac{\Var_{\beta}(T_{\LS}(G))}{\norm{S_{\rho}(\beta)}_n^4} \\
+& \leq \frac{16 \norm{S_{\rho}(\beta)}_n^2/n + 8\sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^4/n^2}{\norm{S_{\rho}(\beta)}_n^4}
+\end{align*}
+Since $\norm{S_{\rho}(\beta)}_n^2 \geq 2t(b)$,
+\begin{equation*}
+\frac{1}{n\norm{S_{\rho}(\beta)}_n^2} \leq \frac{1}{2nt(b)},~~ \frac{1}{n^2\norm{S_{\rho}(\beta)}_n^4}\sum_{k = 1}^{n} \Bigl(\frac{1}{1 + \rho \lambda_k}\Bigr)^4 \leq \frac{1}{4b^2}.
+\end{equation*}
+and~\eqref{eqn:fixed_graph_laplacian_smoothing_test2} follows. 
+
+\paragraph{\eqref{eqn:fixed_graph_laplacian_smoothing_radius} implies \eqref{eqn:fixed_graph_laplacian_smoothing_test}.}
+
+Note that $S_{\rho}$ lets constant signals pass through unfiltered, i.e. decomposing $\beta = a_1 \wt{1} + a_2 \beta_{\perp}$ where $\wt{1} = n^{-1/2}(1,\ldots,1) \in \Reals^n$, we have
+\begin{equation}
+\label{eqn:fixed_graph_ls_pf1}
+\beta^T S_\rho^{2} \beta = a_1^2 + a_2^2 \beta_{\perp}^T S_{\rho}^2 \beta_{\perp}
+\end{equation}
+We use the following crude but sufficient lower bound on the quadratic form,
+\begin{equation*}
+\beta_{\perp}^T S_\rho^{2} \beta_{\perp} = (\beta_{\perp} + (S_{\rho} - I)\beta_{\perp})^T (\beta_{\perp} + (S_{\rho} - I)\beta_{\perp}) \geq \Bigl(1 - \frac{1}{\sqrt{2}}\Bigr)\beta_{\perp}^T \beta_{\perp} - (4\sqrt{2} - 1) \Bigl(\beta^T (S_{\rho} - I)^T (S_{\rho} - I)\beta\Bigr).
+\end{equation*}
+Then the derivations in~\textcolor{red}{(Sadhanala)} show
+\begin{equation*}
+\beta^T (S_{\rho} - I)^T (S_{\rho} - I)\beta \leq \frac{\rho}{4} \beta^T L \beta
+\end{equation*}
+and plugging back in to~\eqref{eqn:fixed_graph_ls_pf1}, we conclude that
+\begin{equation*}
+\beta^T S_{\rho}^2 \beta \geq c_1 \beta^T \beta - c_2 \rho \beta^T L \beta 
+\end{equation*}
+for $c_1 = 1 - 1/\sqrt{2}$ and $c_2 = \sqrt{2} - 1/4$, which suffices to prove the claim.
+
+
+
+\end{document}
