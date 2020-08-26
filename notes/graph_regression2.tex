@@ -77,6 +77,7 @@
 \newcommand{\betap}{\beta^{(p)}}
 \newcommand{\betaq}{\beta^{(q)}}
 \newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
 
 
 %%% Matrices
@@ -89,6 +90,7 @@
 \newcommand{\Lap}{{\bf L}}
 \newcommand{\NLap}{{\bf N}}
 \newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
 
 %%% Sets and classes
 \newcommand{\Xset}{\mathcal{X}}
@@ -236,7 +238,12 @@ can be used to test whether or not $f_0 = 0$.
 \begin{itemize}
 	\item We write $\mathbb{Z}^d$ for $\mathbb{Z} \otimes \cdots \mathbb{Z}$, where the tensor product is taken a total of $d$ times.
 	\item We denote by $\Leb^2(\Xset)$ be the set of square integrable functions $f:\Xset \to \Reals$.
-	\item For functions $f,g$ which map from $\Xset$ to $\Reals$, we write $\dotp{f}{g}_n := \frac{1}{n}\sum_{i = 1}^{n} f(X_i) g(X_i)$, which we refer to as the \emph{empirical inner product}, and $\norm{f}_n^2 = \dotp{f}{f}_n$, which we refer to as the (squared) \emph{empirical norm}.
+	\item For functions $f,g$ which map from $\Xset$ to $\Reals$, we write $\dotp{f}{g}_n := \frac{1}{n}\sum_{i = 1}^{n} f(X_i) g(X_i)$, which we refer to as the \emph{empirical inner product}, and $\norm{f}_n^2 = \dotp{f}{f}_n$, which we refer to as the (squared) \emph{empirical norm}. For vectors $v \in \Reals^n$, we write $\norm{v}_p^p := \sum_{i = 1}^{n} \abs{v_i}^p$.
+	\item For a graph $G$, we use $\Lap_G$ for the Laplacian of $G$. The matrix $\Lap_G$ is a square, symmetric, positive semi-definite matrix, with $n$ eigenvalues $\lambda_k(G)$ and eigenvector $v_k(G)$ pairs, defined according to
+	\begin{equation*}
+	\Lap_G v_k(G) = \lambda_k(G) v_k(G), ~~\frac{1}{n} \norm{v_k(G)}_2^2 = 1 
+	\end{equation*}
+	and ordered so that $0 \leq \lambda_1(G) \leq \ldots \leq \lambda_n(G)$. For convenience, we write $\Lap_{n,r}$ instead of $\Lap_{G_{n,r}}$. 
 \end{itemize}
 
 \section{Problem Setup and Background}
@@ -560,7 +567,7 @@ In one sense this is still a mild condition, in that the neighborhood graph radi
 \section{Discussion}
 
 \begin{itemize}
-	\item \textbf{Relationships between $s$ and $d$}. Comment on the different types of relationships between $s$ and $d$. (1) Those due to fundamental lower bounds on testing; (2) those due to ``defects'' in the proposed methods, i.e. largeness of the parameter space for Laplacian smoothing, and (3) those (potentially) due to ``defects'' in our proof strategy.
+	\item \textbf{Relationships between $s$ and $d$}. Comment on the different types of relationships between $s$ and $d$. (1) Those due to fundamental upper bounds on testing; (2) those due to ``defects'' in the proposed methods, i.e. largeness of the parameter space for Laplacian smoothing, and (3) those (potentially) due to ``defects'' in our proof strategy.
 	\item \textbf{Proof techniques}. On the subject of our proof techniques, the careful reader will note that our proofs do not rely on convergence of the Laplacian eigenvectors $v_k(G_{n,r})$ towards eigenfunctions of a limiting (weighted) Laplace-Beltrami operator.
 	
 	\textcolor{red}{(TODO) Flesh the following out.} This is helpful for at least the following two reasons. First, proving convergence of eigenvectors is harder than proving convergence of eigenvalues, a fact which is reflected in the gap between the best known rates for the two problems. Second, because in order for our methods to be minimax optimal, orthogonal series estimators rely on projecting onto $\kappa$ basis functions, where $\kappa$ is a number growing in $n$. Thus we have an accumulation of error problem.
@@ -587,116 +594,277 @@ In one sense this is still a mild condition, in that the neighborhood graph radi
 
 \appendix
 
-Many of our results follow the same general two-part proof strategy. First, we establish (estimation or testing) error bounds which hold for any graph $G$; these bounds are stated with respect to functionals of the graph $G$. We then analyze the behavior of these functionals with respect to the particular neighborhood graph $G_{n,r}$ and giving high probability (upper or lower )bounds on these functionals. It is in this second step where we invoke our various assumptions on the distribution $P$ and regression function $f_0$.
+Many of our results follow the same general two-part proof strategy. First, we establish (estimation or testing) error bounds which hold for any graph $G$; these bounds are stated with respect to functionals of the graph $G$. We then analyze the behavior of these functionals with respect to the particular neighborhood graph $G_{n,r}$ and give high probability (upper or lower) bounds on these functionals. It is in this second step where we invoke our various assumptions on the distribution $P$ and regression function $f_0$.
 
-\section{Fixed graph error bounds}
+\section{Graph-dependent error bounds}
 \label{sec:fixed_graph_error_bounds}
 
-Suppose we observe a graph $G = ([n],E)$, and responses
+Suppose we observe a fixed graph $G = \bigl([n],E\bigr)$ with Laplacian $\Lap_G$ and responses
 \begin{equation}
 \label{eqn:fixed_graph_regression_model}
 Y_i = f_{0,i} + \varepsilon_i
 \end{equation}
-where $f_0 \in \Reals^n$ and $\varepsilon_i$ are independent $N(0,1)$ noise. The Laplacian eigenmaps estimator of $f_0$ on $G$ is then
+where $f_0 = (f_{0,1},\ldots,f_{0,n}) \in \Reals^n$, and the noise variables $\varepsilon_i$ are independent $N(0,1)$. The Laplacian eigenmaps estimator of $f_0$ on $G$ is then
 \begin{equation}
 \label{eqn:le_G}
 \wh{f}_{\LE}(G) := \sum_{k = 1}^{\kappa} \biggl(\frac{1}{n}\sum_{i = 1}^{n} Y_i v_{k,i}(G) \biggr) v_k(G),
 \end{equation}
-the Laplacian smoothing estimator of $f_0$ on $G$ is
+where $(\lambda_1(G),v_1(G)),\ldots,(\lambda_n(G),v_n(G))$ are the eigenvalue/eigenvector pairs of $\Lap_G$. The Laplacian smoothing estimator of $f_0$ on $G$ is
 \begin{equation}
 \label{eqn:ls_G}
-\wh{f}_{\LS}(G) = \argmin_{f \in \Reals^n} \biggl\{ \sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^T \Lap_G^{s}  f \biggr\} = (\rho \Lap_G^s + I)^{-1}Y
+\wt{f}_{\LS}(G) := \argmin_{f \in \Reals^n} \biggl\{ \sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^T \Lap_G^{s}  f \biggr\} = (\rho \Lap_G^s + \Id)^{-1}Y.
 \end{equation}
-and their associated test statistics are
+
+In this fixed design context, the hypothesis testing problem becomes
+\begin{equation*}
+\mathbf{H}_0: f_{0} = (0,...,0) ~~\textrm{versus}~~ \mathbf{H}_a: f_{0} \neq (0,...,0)
+\end{equation*}
+and two test statistics for this purpose are
 \begin{equation}
 \label{eqn:le_ts_G}
-T_{\LE}(G) := \Bigl\|\wh{f}_{\LE}(G)\Bigr\|_n^2
+T_{\LE}(G) := \frac{1}{n} \Bigl\|\wh{f}_{\LE}(G)\Bigr\|_2^2 
 \end{equation}
 and
 \begin{equation}
 \label{eqn:ls_ts_G}
-T_{\LS}(G) := \Bigl\|\wt{f}_{\LS}(G)\Bigr\|_n^2
+T_{\LS}(G) := \frac{1}{n} \Bigl\|\wt{f}_{\LS}(G)\Bigr\|_2^2 
 \end{equation}
 We note that~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} specialize~\eqref{eqn:le_G}-\eqref{eqn:ls_ts_G} to the case where $G$ = $G_{n,r}$.
 
-\subsection{Estimation: Laplacian eigenmaps on a fixed graph}
+\subsection{Error bounds for linear smoothers}
+Let $S \in \Reals^{n \times n}$ be a square, symmetric matrix, and let $\check{f} = SY$ be a linear estimator of $f_0$. Both~\eqref{eqn:le_G} and~\eqref{eqn:ls_G} can be written in this form, and Lemma~\ref{lem:linear_smoother_fixed_graph_estimation} is therefore useful in analyzing them. Let $\lambdavec(S) = (\lambda_1(S),\ldots,\lambda_n(S)) \in \Reals^n$ denote the eigenvalues of $S$ and let $v_k(S)$ denote the corresponding \emph{unit-norm} eigenvectors, so that $S = \sum_{k = 1}^{n} \lambda_k(S) \cdot v_k(S) v_k(S)^T$. Denote $Z_k = v_k(S)^T \varepsilon$, and observe that $Z = (Z_1,\ldots,Z_n) \sim N(0,\Id)$. 
+
+\begin{lemma}
+	\label{lem:linear_smoother_fixed_graph_estimation}
+	Let $\check{f} = SY$ for a square, symmetric matrix, $S \in \Reals^{n \times n}$ satisfying $\lambda_n(S) \leq 1$. Then
+	\begin{equation*}
+	\Pbb_{f_0}\biggl(\frac{1}{n}\bigl\|\check{f} - f_0\bigr\|_2^2 \geq \frac{10}{n} \bigl\|\lambdavec(S)\bigr\|_2^2 + \frac{2}{n}\bigl\|(S - I)f_0\bigr\|_2^2\biggr) \leq 1 - \exp\Bigl(-\bigl\|\lambdavec(S)\bigr\|_2^2\Bigr)
+	\end{equation*}
+\end{lemma}
+\begin{proof}[\textbf{Proof of Lemma~\ref{lem:linear_smoother_fixed_graph_estimation}}]
+	It holds that
+	\begin{align*}
+	\frac{1}{n}\bigl\|\check{f} - f_0\bigr\|_2^2 & \leq \frac{2}{n}\Bigl(\bigl\|\check{f} - \Ebb_{f_0}[\check{f}]\bigr\|_2^2 + \bigl\|\Ebb_{f_0}[\check{f}] - f_0\bigr\|_2^2\Bigr) \\ 
+	& = \frac{2}{n}\Bigl(\bigl\|S\varepsilon\bigr\|_2^2 + \bigl\|(S - I)f_0\bigr\|_2^2\Bigr)
+	\end{align*}
+	Writing $\norm{S\varepsilon}_2^2 = \sum_{k = 1}^{n} \lambda_k(S)^2 Z_k^2$, the claim follows from the result of \textcolor{red}{Laurent and Massart} on concentration of $\chi^2$-random variables, which for completeness we restate in Lemma~\ref{lem:chi_square_bound}. To be explicit, taking $t = \norm{\lambdavec(S)}_2^2$ in Lemma~\ref{lem:chi_square_bound} completes the proof of Lemma~\ref{lem:le_fixed_graph_estimation}.
+\end{proof}
+
+On the testing side, the statistic $\norm{\check{f}}_2^2 = Y^T S^2 Y$ is a $U$-statistic of order $2$. Both~\eqref{eqn:le_ts_G} and~\eqref{eqn:ls_ts_G} can be written in this form, and Lemma~\ref{lem:linear_smoother_fixed_graph_testing} is therefore useful in analyzing them.
+\begin{lemma}
+	\label{lem:linear_smoother_fixed_graph_testing}
+	Let $T = Y^T S^2 Y$ for a square, symmetric matrix $S \in \Reals^{n \times n}$. Define the threshold $t_b$ to be 
+	\begin{equation}
+	t_{b} := \norm{\lambdavec(S)}_2^2 + 2b \norm{\lambdavec(S)}_4^2
+	\end{equation}
+	Suppose the eigenvalues $0 \leq \lambda_{1}(S) \leq \lambda_{n}(S) \leq 1$. Then,
+	\begin{itemize}
+		\item \textbf{Type I error.}
+		\begin{equation}
+		\label{eqn:linear_smoother_fixed_graph_testing_typeI}
+		\Pbb_0\bigl(T > t_b\bigr) \leq \frac{1}{b^2}
+		\end{equation}
+		\item \textbf{Type II error.} Suppose further that
+		\begin{equation}
+		\label{eqn:linear_smoother_fixed_graph_testing_critical_radius}
+		f_0^T S^2 f_0 \geq 4b \norm{\lambdavec(S)}_4^2.
+		\end{equation}
+		Then
+		\begin{equation}
+		\label{eqn:linear_smoother_fixed_graph_testing_typeII}
+		\Pbb_{f_0}\bigl(T \leq t_b\bigr) \leq \frac{4}{b^2} + \frac{8}{b \norm{\lambdavec(S)}_4^{2}} 
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+\begin{proof}[\textbf{Proof of Lemma~\ref{lem:linear_smoother_fixed_graph_testing}}]
+	We compute the mean and variance of $T$ as a function of $f_0$, then apply Chebyshev's inequality.
+	
+	\textit{Mean.} Writing $Y = f_0 + \varepsilon$, we make use of the eigendecomposition of $S$ to obtain
+	\begin{equation}
+	\label{pf:linear_smoother_fixed_graph_testing1}
+	\begin{aligned}
+	T & = f_0^T S^2 f_0 + 2 f_0^T S^2 \varepsilon + \varepsilon^T S^2 \varepsilon \\
+	& = f_0^T S^2 f_0 + 2 f_0^T S^2 \varepsilon + \sum_{k = 1}^{n}  \bigl(\lambda_k(S)\bigr)^2 (\varepsilon^T v_k(S))^2 \\
+	& = f_0^T S^2 f_0 + 2 f_0^T S^2 \varepsilon + \sum_{k = 1}^{n}  \bigl(\lambda_k(S)\bigr)^2 Z_k^2,
+	\end{aligned}
+	\end{equation}
+	implying
+	\begin{equation}
+	\label{pf:linear_smoother_fixed_graph_testing_mean}
+	\Ebb_{f_0}[T] = f_0^T S^2 f_0 + \sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^2.
+	\end{equation}
+	
+	\textit{Variance.} Starting from~\eqref{pf:linear_smoother_fixed_graph_testing1} and recalling the basic fact $\Var(Z_k^2) = 2$, we derive
+	\begin{equation}
+	\label{pf:linear_smoother_fixed_graph_testing_var}
+	\Var_{f_0}[T] \leq 8 f_0^T S^4 f_0 + 4 \sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^4 \leq 8 f_0^T S^2 f_0 + 4 \sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^2
+	\end{equation}
+	where the second inequality follows since by assumption $\lambda_{n}(S) \leq 1$.
+	
+	\textit{Bounding Type I and Type II error.} The bound~\eqref{eqn:linear_smoother_fixed_graph_testing_typeI} follows directly from Chebyshev's inequality, along with our above calculations on the mean and variance of $T$.
+	
+	The bound~\eqref{eqn:linear_smoother_fixed_graph_testing_typeII} also follows from Chebyshev's inequality, as can be seen by the following manipulations,
+	\begin{equation*}
+	\begin{aligned}
+	\Pbb_{f_0}\bigl(T \leq t_b\bigr) & = \Pbb_{f_0}\bigl(T - \Ebb_{f_0}[T] \leq t_b - \Ebb_{f_0}[T]\bigr) \\
+	& \overset{(i)}{\leq} \Pbb_{f_0}\bigl(\abs{T - \Ebb_{f_0}[T]} \geq \abs{t_b - \Ebb_{f_0}[T]}\bigr) \\ 
+	& \overset{(ii)}{\leq} 4 \frac{\Var_{f_0}[T]}{(f_0^T S^2 f_0)^2} \\
+	& \overset{(iii)}{\leq} \frac{32}{f_0^T S^2 f_0} + \frac{4}{b^2} \\
+	& \overset{(iv)}{\leq} \frac{8}{b} \Biggl(\sum_{k = 1}^{n}\bigl(\lambda_k(S)\bigr)^4\Biggr)^{-1/2} + \frac{4}{b^2}
+	\end{aligned}
+	\end{equation*}
+	In the previous expression, $(i)$ and $(ii)$ follow since assumption~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius} and equation~\eqref{pf:linear_smoother_fixed_graph_testing_mean} together imply $\Ebb_{f_0}(T) - \frac{1}{2}f_0^T S^2f_0 \geq t_b$, $(iii)$ follows from assumption~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius} and the inequality~\eqref{pf:linear_smoother_fixed_graph_testing_var}, and $(iv)$ follows assumption~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius}.
+\end{proof}
+\subsection{Analysis of Laplacian eigenmaps}
 
 In Lemma~\ref{lem:le_fixed_graph_estimation}, we upper bound the mean squared error of $\wh{f}_{\LE}(G)$. Our bound will be stated as a function of $f_0^T \Lap_G^s f_0$--a measure of the smoothness the signal $f_0$ displays over the graph $G$--as well as the $\kappa$th eigenvalue $\lambda_{\kappa}(G)$.
 
 \begin{lemma}
 	\label{lem:le_fixed_graph_estimation}
-	Let $G$ be a fixed (non-random) graph. Suppose we observe $G$ and responses $Y$ according to the model~\eqref{eqn:fixed_graph_regression_model}. Then for any $1 \leq \kappa \leq n$, 
+	For any integer $1 \leq \kappa \leq n$ and any $s > 0$,
 	\begin{equation}
 	\label{eqn:le_fixed_graph_estimation}
-	\Ebb\Bigl[\norm{\wh{f}_{\LE}(G) - f_0}_n^2\Bigr] \leq 2\biggl(\frac{f_0^T \Lap_{G}^s f_0}{n \bigl(\lambda_{\kappa}(G)\bigr)^s} + \frac{\kappa}{n}\biggr).
-	\end{equation}
-	Additionally, 
-	\begin{equation}
-	\label{eqn:le_fixed_graph_estimation_1}
-	\norm{\wh{f}_{\LE}(G) - f_0}_n^2 \leq 2\biggl(\frac{f_0^T \Lap_{G}^s f_0}{n \bigl(\lambda_{\kappa}(G)\bigr)^s} + \frac{4\kappa}{n}\biggr)
+	\frac{1}{n}\bigl\|\wh{f}_{\LE}(G) - f_0\bigr\|_2^2 \leq 2\frac{f_0^T \Lap_{G}^s f_0}{n\lambda_{\kappa}(G)^s} + \frac{10\kappa}{n}
 	\end{equation}
 	with probability at least $1 - \exp(-\kappa)$.
 \end{lemma}
-The two terms on the right hand side of~\eqref{eqn:le_fixed_graph_estimation} and~\eqref{eqn:le_fixed_graph_estimation_1} represent the squared bias and variance of the estimator $\wh{f}_{\LE}(G)$. Note that the squared bias--- and therefore the overall mean squared error---depends on the quadratic form $f_0^T \Lap_{G}^s f_0$ and the eigenvalue $\lambda_{\kappa}(G)$, whereas the variance depends instead on the dimension $\kappa$ of the subspace $V_{\kappa} = \textrm{span}\{v_1,\ldots,v_{\kappa}\}$ to which $\wh{f}_{\LE}(G)$ belongs. In this respect, the error bound on the Laplacian eigenmaps estimator resembles the error bound on the \textcolor{red}{orthogonal series} estimator (see e.g. \textcolor{red}{Tsybakov}).
-
-\paragraph{Proof of Lemma~\ref{lem:le_fixed_graph_estimation}:}
-
-\textcolor{red}{(TODO)}
-
-\subsection{Estimation: Laplacian smoothing on a fixed graph.}
-
-\begin{lemma}
-	\label{lem:ls_fixed_graph_estimation}
-	Suppose we observe a graph $G$ and responses $Y$ according to the model~\eqref{eqn:fixed_graph_regression_model}. Then for any $\rho > 0$ and positive integer $s$,
+\begin{proof}[\textbf{Proof of Lemma~\ref{lem:le_fixed_graph_estimation}}]
+	Note that if $\lambda_{\kappa}(G) = 0$ the claim is trivial, and we therefore only cover the case when $\lambda_{\kappa}(G) > 0$. 
+	
+	Letting $\wh{S} = \frac{1}{n}\sum_{k = 1}^{n} v_k(G) v_k(G)^T$, the estimator $\wh{f}_{\LE}(G) = \wh{S}Y$. The matrix $\wh{S} \in \Reals^{n \times n}$ is symmetric, and satisfies $\lambda_k(\wh{S}) \in \{0,1\}$ for all $k \in [n]$. The claim then follows from Lemma~\ref{lem:le_fixed_graph_estimation} upon noting first that $\norm{\lambdavec(\wh{S})}_2^2 = \kappa$, and second that
 	\begin{equation}
-	\label{eqn:ls_fixed_graph_estimation}
-	\Ebb\Bigl[\norm{\wt{f}_{\LS}(G) - f_0}_n^2\Bigr] \leq 2\biggl(\frac{\rho \cdot f_0^T \Lap_{G}^s f_0}{n} + \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{(\rho \cdot \lambda_{k}(G)^s + 1)^2}\biggr)
-	\end{equation}
-	Additionally,
-	\begin{equation}
-	\label{eqn:ls_fixed_graph_estimation_prob}
-	\Pbb\Biggl[\norm{\wt{f}_{\LS}(G) - f_0}_n^2 \leq 2\biggl(\frac{\rho \cdot f_0^T \Lap_{G}^s f_0}{n} + \frac{4}{n}\sum_{k = 1}^{n} \frac{1}{(\rho \cdot \lambda_{k}(G)^s + 1)^2}\biggr)\Biggr] \geq 1 - \exp\biggl(-\sum_{k = 1}^{n}\frac{1}{(\rho \lambda_k(G)^s + 1)^2}\biggr)
-	\end{equation}
-\end{lemma}
+	\label{pf:le_fixed_graph_estimation_1}
+	\begin{aligned}
+	\bigl\|(\wh{S} - I)f_0\bigr\|_2^2 & = \sum_{k = \kappa + 1}^{n} \bigl(f_0^T v_k(G)\bigr)^2 \\
+	& \leq \frac{1}{\lambda_{\kappa}(G)^s}\sum_{k = \kappa + 1}^{n} \lambda_{k}(G)^s \bigl(f_0^T v_k(G)\bigr)^2 \\
+	& \leq \frac{1}{\lambda_{\kappa}(G)^s}\sum_{k = 1}^{n} \lambda_{k}(G)^s \bigl(f_0^T v_k(G)\bigr)^2 \\
+	& = \frac{f_0^T \Lap_G^s f_0}{\lambda_{\kappa}(G)^s}.
+	\end{aligned}
+	\end{equation} 
+\end{proof}
 
-\paragraph{Proof of Lemma~\ref{lem:ls_fixed_graph_estimation}:} 
-
-\textcolor{red}{(TODO)}
-
-\subsection{Testing: Laplacian eigenmaps on a fixed graph.}
+In Lemma~\ref{lem:le_fixed_graph_testing}, we upper bound the testing error of a test based on $T_{\LE}(G)$.
 
 \begin{lemma}
 	\label{lem:le_fixed_graph_testing}
-	Suppose we observe a graph $G$ and responses $Y$ according to the model~\eqref{eqn:fixed_graph_regression_model}. Then for any $1 \leq \kappa \leq n$, each of the following holds for any $b \geq 1$,
+	Define the threshold $\wh{t}_b$ to be
+	\begin{equation*}
+	\wh{t}_b := \frac{\kappa}{n} + \frac{2b\sqrt{\kappa}}{n}
+	\end{equation*}
+	Then each of the following hold for any $\kappa \in [n]$ and any $b \geq 1$,
 	\begin{enumerate}
 		\item \textbf{Type I error:} Under the null hypothesis $f_0 = 0$,
 		\begin{equation}
 		\label{eqn:graph_spectral_type_I_error}
-		\Pbb\biggl(T_{\LE}(G) \geq \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}\biggr) \leq \frac{2}{b^2}.
+		\Pbb_{f_0}\biggl(T_{\LE}(G) > \wh{t}_b\biggr) \leq \frac{1}{b^2}.
 		\end{equation}
-		\item \textbf{Type II error:} Under the alternative hypothesis $f_0 \neq 0$, suppose that
+		\item \textbf{Type II error:} Suppose that
 		\begin{equation}
-		\label{eqn:fixed_graph_testing_critical_radius_1}
-		\Bigl\|\sum_{k = 1}^{\kappa} \dotp{f_0}{v_k}_n v_k\Bigr\|_n^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}}.
+		\label{eqn:le_fixed_graph_testing_critical_radius}
+		\frac{1}{n} \norm{f_0}_2^2 \geq \frac{f_0^T \Lap_G^s f_0}{n \lambda_{\kappa}(G)^s} + \frac{4b\sqrt{\kappa}}{n}
 		\end{equation}
 		Then,
 		\begin{equation}
 		\label{eqn:graph_spectral_type_II_error}
-		\Pbb\biggl(T_{\LE}(G) \leq \frac{\kappa}{n} + b\sqrt{\frac{2\kappa}{n^2}}\biggr) \leq \frac{2}{b^2} + \frac{8}{b\sqrt{2\kappa}}.
+		\Pbb_{f_0}\biggl(T_{\LE}(G) \leq \wh{t}_b\biggr) \leq \frac{4}{b^2} + \frac{8}{b\sqrt{\kappa}}.
 		\end{equation}
-		In particular if
-		\begin{equation}
-		\label{eqn:fixed_graph_testing_critical_radius}
-		\frac{1}{n} \sum_{i = 1}^{n} (f_{0,i})^2 \geq 2b\sqrt{\frac{2\kappa}{n^2}} + \frac{f_0^T L_G^s f_0}{n\lambda_{\kappa}(G)^s}
-		\end{equation}
-		then~\eqref{eqn:fixed_graph_testing_critical_radius_1} and thus~\eqref{eqn:graph_spectral_type_II_error} follow.
 	\end{enumerate}
 \end{lemma}
+\begin{proof}[\textbf{Proof of Lemma~\ref{lem:le_fixed_graph_testing}}]
+	Letting $\wh{S} = \frac{1}{n}\sum_{k = 1}^{\kappa} v_k(G) v_k(G)^T$, our test statistic $T_{\LE}(G) = \frac{1}{n} Y^T \wh{S}^2 Y$. The matrix $\wh{S}$ is symmetric and positive semidefinite, with eigenvalues $\lambda_k(\wh{S}) \in \{0,1\}$ for all $k \in [n]$, so $\norm{\lambdavec(\wh{S})}_2^2 = \norm{\lambdavec(\wh{S})}_4^4 = \kappa$ and clearly $n \wh{t}_b = \norm{\lambdavec(\wh{S})}_2^2 + 2b \norm{\lambdavec(\wh{S})}_4^2$.  The desired result thus follows from Lemma~\ref{lem:linear_smoother_fixed_graph_testing}. To see that the conditions of this Lemma are met, note first that $\lambda_k(\wh{S}) \in \{0,1\}$ for all $k \in [n]$, and so it remains only to verify \eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius}. Invoking assumption~\eqref{eqn:le_fixed_graph_testing_critical_radius} along with the inequality~\eqref{pf:le_fixed_graph_estimation_1}, we obtain
+	\begin{align*}
+	f_0^T \wh{S}^2 f_0 & = \norm{f_0}_2^2 - \sum_{k = \kappa + 1}^{n} \bigl(f_0^T v_k(G)\bigr)^2 \\
+	& \geq \frac{f_0^T \Lap_G^s f_0}{\lambda_{\kappa}(G)^s} + 4b\sqrt{\kappa} - \sum_{k = \kappa + 1}^{n} \bigl(f_0^T v_k(G)\bigr)^2 \\
+	& \geq 4b\sqrt{\kappa}.
+	\end{align*}
+	Reiterating that $\norm{f_0}_4^2 = \sqrt{\kappa}$, we see that~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius} is met, completing the proof.
+\end{proof}
 
-\subsection{Testing: Laplacian smoothing on a fixed graph.}
+\subsection{Analysis of Laplacian Smoothing}
+In Lemma~\ref{lem:ls_fixed_graph_estimation}, we upper bound the mean squared error of $\wt{f}_{\LS}(G)$.
+\begin{lemma}
+	\label{lem:ls_fixed_graph_estimation}
+	For any $\rho,s > 0$,
+	\begin{equation}
+	\label{eqn:ls_fixed_graph_estimation_prob}
+	\frac{1}{n}\bigl\|\wt{f}_{\LS}(G) - f_0\bigr\|_2^2 \leq \frac{2\rho}{n} \bigl(f_0^T \Lap_{G}^s f_0\bigr) + \frac{10}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_{k}(G)^s + 1\bigr)^2}
+	\end{equation}
+	with probability at least $1 - \exp\Bigl(-\sum_{k = 1}^{n}\bigl(\rho \lambda_k(G)^s + 1\bigr)^{-2}\Bigr)$.
+\end{lemma}
+\begin{proof}[\textbf{Proof of Lemma~\ref{lem:ls_fixed_graph_estimation}}]
+	Letting $\wt{S} = (\Id + \rho \Lap_G^s)^{-1}$, the estimator $\wt{f}_{\LS}(G) = \wt{S}Y$. The matrix $\wt{S} \in \Reals^{n \times n}$ is symmetric, and satisfies $\lambda_k(\wt{S}) \in (0,1)$ for all $k \in [n]$. The claim then follows from Lemma~\ref{lem:linear_smoother_fixed_graph_estimation} upon noting first that
+	\begin{equation*}
+	\bigl\|\lambdavec(\wt{S})\bigr\|_2^2 = \sum_{k = 1}^{n} \frac{1}{\bigl(1 + \rho \lambda_k(G)^s\bigr)^2}
+	\end{equation*} 
+	and second that
+	\begin{equation*}
+	\begin{aligned}
+	\bigl\|(\wt{S} - I)f_0\bigr\|_2^2 & = f_0^T \Lap_G^{s/2} \Lap_G^{-s/2}\bigl(\wt{S} - \Id\bigr) \Lap_G^{-s/2} \Lap_G^{s/2} f_0 \\
+	& \leq f_0^T \Lap_G^s f_0 \cdot \lambda_n\Bigl(\Lap_G^{-s/2}\bigl(\wt{S} - \Id\bigr)\Lap_G^{-s/2}\Bigr) \\
+	& = f_0^T \Lap_G^s f_0 \cdot \max_{k \in [n]} \biggl\{\frac{1}{\lambda_k(G)^s} \Bigl(1 - \frac{1}{\rho\lambda_k(G)^s + 1}\Bigr) \biggr\} \\
+	& = f_0^T \Lap_G^s f_0 \cdot \rho.
+	\end{aligned}
+	\end{equation*} 
+	where we write $\Lap_G^{-1}$ for the pseudoinverse of $\Lap_G$.
+\end{proof}
+
+In Lemma~\ref{lem:ls_fixed_graph_testing}., we upper bound the testing error of a test based on $T_{\LS}(G)$.
+\begin{lemma}
+	\label{lem:ls_fixed_graph_testing}
+	Define the threshold $\wt{t}_b$ to be
+	\begin{equation*}
+	\wt{t}_b := \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k(G)^s + 1\bigr)^2} + \frac{2b}{n}\sqrt{\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k(G)^s + 1\bigr)^4}}
+	\end{equation*}
+	Then each of the following holds for any $\rho,s > 0$ and any $b \geq 1$.
+	\begin{itemize}
+		\item \textbf{Type I error.}
+		\begin{equation}
+		\label{eqn:ls_fixed_graph_testing_typeI}
+		\Pbb_0\Bigl(T_{\LS}(G) > \wt{t}_b\Bigr) \leq \frac{1}{b^2}
+		\end{equation}
+		\item \textbf{Type II error.} If
+		\begin{equation}
+		\label{eqn:ls_fixed_graph_testing_critical_radius}
+		\frac{1}{n}\norm{f_0}_2^2 \geq \frac{2 \rho}{n} \bigl(f_0^T \Lap_G^s f_0\bigr) + \frac{4b}{n} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k(G)^s + 1)^4} \Biggr)^{1/2}
+		\end{equation}
+		then
+		\begin{equation}
+		\label{eqn:ls_fixed_graph_testing_typeII}
+		\Pbb_{f_0}\Bigl(T_{\LS}(G) \leq \wt{t}_b\Bigr) \leq \frac{4}{b^2} + \frac{8}{b} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k(G)^s + 1)^4} \Biggr)^{-1/2}
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+
+\begin{proof}[\textbf{Proof of Lemma~\ref{lem:ls_fixed_graph_testing}}]
+	Let $\wt{S} := (\rho \Lap^s + \Id)^{-1}$. The matrix $\wt{S} \in \Reals^{n \times n}$ is symmetric and positive semidefinite, and our test statistic $T_{\LS}(G) = \frac{1}{n}Y^T \wt{S}^2 Y$. The desired result thus follows from Lemma~\ref{lem:linear_smoother_fixed_graph_testing}. To see that the conditions of this Lemma are satisfied, we first note that since
+	\begin{equation*}
+	\lambda_k(\wt{S}) = \frac{1}{(\rho\lambda_k(G)^s + 1)}
+	\end{equation*}
+	and $\rho, \lambda_k(G) > 0$, it is evident that $\lambda_{n}(\wt{S}) \leq 1$.  Then, by assumption~\eqref{eqn:ls_fixed_graph_testing_critical_radius}
+	\begin{equation*}
+	f_0^{T} \wt{S}^2 f_0 = \norm{f_0}_2^2 - f_0^T(I - \wt{S}^2)f_0 \geq 2 \rho (f_0^T \Lap^s f_0) + f_0^T(I - \wt{S}^2)f_0 + 4b \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k(G)^s + 1)^4} \Biggr)^{-1/2},
+	\end{equation*}
+	and along with the following calculations,
+	\begin{equation*}
+	\begin{aligned}
+	f_0^T \Bigl(\Id - \wt{S}^2\Bigr) f_0  & = f_0^T L^{s/2} L^{-s/2}\Bigl(\Id - \wt{S}^2\Bigr) L^{-s/2} L^{s/2} f_0 \\ 
+	& \leq f_0^T L^{s} f_0 \cdot  \lambda_{\max}\biggl(L^{-s/2}\Bigl(\Id - \wt{S}^2\Bigr) L^{-s/2}\biggr) \\ 
+	& \overset{(i)}{=}  f_0^T L^{s} f_0 \cdot \max_{k} \biggl\{ \frac{1}{\lambda_k(G)^s} \Bigl(1 - \frac{1}{(\rho \lambda_k(G)^s + 1)^2}\Bigr) \biggr\} \\
+	& \overset{(ii)}{\leq} f_0^T L^{s} f_0 \cdot 2\rho,
+	\end{aligned}
+	\end{equation*}
+	we have that
+	\begin{equation*}
+	f_0^{T} \wt{S}^2 f_0 \geq 2b \biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k(G)^s + 1)^4} \biggr)^{-1/2}.
+	\end{equation*} 
+	In other words condition~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius} in Lemma~\ref{lem:linear_smoother_fixed_graph_testing} is met, and applying that Lemma completes the proof.
+	
+	(In the previous derivation: in $(i)$ the maximum is over all indices $k$ such that the eigenvalue $\lambda_k(G)$ is strictly positive; and $(ii)$ follows from the basic algebraic identity $1 - 1/(1 + \rho x)^2 \leq 2 \rho x$ for any $x, \rho > 0$.
+\end{proof}
+
 
 \clearpage
-To prove Theorems~\ref{thm:laplacian_eigenmaps_estimation},\textcolor{red}{...}, we would like to apply Lemmas~\ref{lem:fixed_graph_estimation},\textcolor{red}{...} in the random design context, i.e. to the random geometric graph $G_{n,r}$. To do so, we must establish the following (high probability) bounds: (i) an upper bound on the graph Sobolev seminorm of the regression function $f_0 \Lap_{n,r}^s f_0$, (ii) and lower boud on the Laplacian eigenvalue $\lambda_{\kappa}(G_{n,r})$ as a function of $\kappa$, and (iii) a lower bound on the empirical norm $\norm{f}_{n}$ as a function of $\norm{f}_{L^2(P)}$. 
+To prove Theorems~\ref{thm:laplacian_eigenmaps_estimation},\textcolor{red}{...}, we would like to apply Lemmas~\ref{lem:fixed_graph_estimation},\textcolor{red}{...} in the random design context, i.e. to the random geometric graph $G_{n,r}$. To do so, we must establish the following (high probability) bounds: (i) an upper bound on the graph Sobolev seminorm of the regression function $f_0 \Lap_{n,r}^s f_0$, (ii) a lower bound on the Laplacian eigenvalue $\lambda_{\kappa}(G_{n,r})$ as a function of $\kappa$, and (iii) a lower bound on the empirical norm $\norm{f}_{n}$ as a function of $\norm{f}_{L^2(P)}$. 
 
 \section{Bounds on the graph Sobolev semi-norm}
 \label{sec:graph_sobolev_seminorm}
@@ -764,6 +932,17 @@ and
 Theorem~\ref{thm:laplacian_eigenmaps_estimation} then follows by Corollary~\ref{cor:fixed_graph_estimation_sobolev_rate}.
 
 \section{Concentration Inequalities}
+\begin{lemma}
+	\label{lem:chi_square_bound}
+	Let $\xi_1,\ldots,\xi_N$ be independent $N(0,1)$ random variables, and let $U := \sum_{k = 1}^{N} a_k(\xi_k^2 - 1)$.  Then for any $t > 0$,
+	\begin{equation*}
+	\Pbb\Bigl[U \geq 2 \norm{a}_2 \sqrt{t} + 2 \norm{a}_{\infty}t\Bigr] \leq \exp(-t).
+	\end{equation*}
+	In particular if $a_k = 1$ for each $k = 1,\ldots,N$, then
+	\begin{equation*}
+	\Pbb\Bigl[U - N \geq 2\sqrt{N t} + 2t\Bigr] \leq \exp(-t).
+	\end{equation*}
+\end{lemma}
 
 \bibliographystyle{plainnat}
 \bibliography{../graph_testing_bibliography} 
