@@ -1,0 +1,385 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{tikz}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 8/26/2020 - 9/2/2020}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+In this week's notes, I state and prove all results regarding graph Sobolev semi-norms that we need for our graph regression work. 
+
+\section{Bounds on the graph Sobolev semi-norm}
+In this section we will state and prove three different Lemmas involving the graph Sobolev semi-norm $f_0 \Lap_{n,r}^s f_0$. In each Lemma, we will derive that the asymptotic relation
+\begin{equation*}
+f_0^T \Lap_{n,r}^s f_0 \lesssim n \bigl(nr^{d + 2}\bigr)^s
+\end{equation*}
+holds with high probability, whenever $r \to 0$ sufficiently slowly as $n \to \infty$. The difference between the three Lemmas will be the assumptions we make, and the resulting permissible range for $r$. Throughout, we will make heavy use of Taylor's Theorem, which we briefly recall. For an open set $U \subseteq \Reals^d$ and a function $g \in C^{\infty}(U)$, it holds that for all $x,x' \in U$, and for every $s \geq 1$,
+\begin{equation*}
+g(x') = \sum_{\abs{\alpha} = 0}^{s - 1} g^{(\alpha)}(x) \cdot (x' - x)^{\alpha}  + R_g^{(s)}(x',x)
+\end{equation*}
+where for concision we have written 
+\begin{equation*}
+g^{(\alpha)}(x) = \frac{1}{\abs{\alpha}!} \bigl(D^{\alpha}g\bigr)(x),~~ R_g^{(s)}(x',x) = \frac{1}{s!} \sum_{\abs{\alpha} = s} (x' - x)^{\alpha} \int_{0}^{1} (1 - t)^{\abs{\alpha}}  g^{(\alpha)}\bigl(x + t(x' - x)\bigr) \,dt
+\end{equation*}
+and $x^{\alpha} = \prod_{i = 1}^{d} x_i^{\alpha_i}$ for $x,\alpha \in \Reals^d$. 
+
+\subsection{First-order graph Sobolev semi-norm.}
+We begin by upper bounding $f_0^T \Lap_{n,r} f_0$ under the assumption $f_0 \in H^1(\Xset,M)$. This will be the easiest of the three Lemmas to prove, while still giving some sense of how the proofs develop in the more complicated cases. The upper bound will depend on the kernel $K$; we assume throughout that $K:[0,\infty) \to [0,\infty)$ has support on $[0,1]$ with
+\begin{equation*}
+\int_{\Reals^d} K(\norm{z}) \,dz = 1,
+\end{equation*}
+and we let
+\begin{equation*}
+I_{\alpha} := \int_{B(0,1)} (z)^{\alpha} K\bigl(\norm{z}\bigr) \,dz
+\end{equation*}
+where $B(0,1) \subseteq \Reals^d$ is the unit ball centered at the origin.
+\begin{lemma}
+	\label{lem:first_order_graph_sobolev_seminorm}
+	Suppose $\Xset$ is a Lipschitz domain, and that $p(x) \leq p_{\max}$ for all $x \in \Xset$. Then, for any $f \in H^1(\Xset,M)$, there exists a constant $C > 0$ which may depend only on $\Xset$ and $d$ such that
+	\begin{equation}
+	f^T \Lap_{n,r} f \leq \frac{C}{\delta} n^2 r^{d + 2} M^2
+	\end{equation}
+	with probability at least $1 - \delta$.
+\end{lemma}
+\begin{proof}
+	We will show that
+	\begin{equation*}
+	\Ebb\Bigl[f^T \Lap_{n,r} f\Bigr] \leq C n^2 r^{d + 2} M^2,
+	\end{equation*}
+	whence the claim follows immediately by Markov's inequality (recall that $\Lap_{n,r}$ is positive semi-definite, and therefore $f^T \Lap_{n,r} f$ is a non-negative random variable).
+	
+	Since
+	\begin{equation*}
+	f^T \Lap_{n,r} f = \frac{1}{2}\sum_{i, j = 1}^{n} \bigl(f(X_i) - f(X_j)\bigr)^2 A_{ij},
+	\end{equation*}
+	it follows that
+	\begin{equation}
+	\label{pf:first_order_graph_sobolev_seminorm_1}
+	\Ebb\Bigl[f^T \Lap_{n,r} f\Bigr] = \frac{n(n - 1)}{2} \Ebb\biggl[\Bigl(f(X') - f(X)\Bigr)^2 K_r(X',X)\biggr]
+	\end{equation}
+	where $X$ and $X'$ are random variables independently drawn from $P$. 
+	
+	For the remainder of this proof, we will assume that $f \in C^{\infty}(\Xset)$, which we may do without loss of generality because $C^{\infty}(\Xset)$ is dense in $H^1(\Xset)$. Moreover, since $\Xset$ is a Lipschitz domain there exists an extension $g \in C^{\infty}(\Rd)$ of $f$ satisfying
+	\begin{equation}
+	\label{pf:first_order_graph_sobolev_seminorm_2}
+	|g|_{H^1(\Rd)} \leq C|f|_{H^1(\Xset)} \leq C M,
+	\end{equation}
+	for a constant $C$ which may depend on $\Xset$ and $d$, but does not depend on $M$ or $f$. Since $g(x) = f(x)$ and $p(x) \leq p_{\max}$ for all $x \in \Xset$, 
+	\begin{align}
+	\Ebb\Bigl[\bigl(f(X') - f(X)\bigr)^2K_r(X',X)\Bigr] & = \Ebb\Bigl[\bigl(g(X') - g(X)\bigr)^2K_r(X',X)\Bigr] \nonumber \\
+	& \leq p_{\max}^2 \int_{\Reals^d} \int_{\Reals^d} \bigl(g(x') - g(x)\bigr)^2 K_r(x',x) \,dx' \,dx. \label{pf:first_order_graph_sobolev_seminorm_3}
+	\end{align}
+	It remains only to bound the integral. Taking a first-order Taylor expansion of $g$, we get
+	\begin{align*}
+	\int_{\Reals^d} \int_{\Reals^d} \bigl(g(x') - g(x)\bigr)^2 K_r(x',x) \,dx \,dx' & = \int_{\Rd} \int_{\Rd} \biggl\{\sum_{\abs{\alpha} = 1}G_{\alpha}(x,x') (x' - x)^{\alpha}\biggr\}^2 K_r(x',x) \,dx' \,dx \\ 
+	& \overset{(i)}{\leq}  \int_{\Rd} \int_{\Rd} \biggl\{\sum_{\abs{\alpha} = 1}\Bigl[G_{\alpha}(x,x')\Bigr]^2\biggr\} \norm{x' - x}^2  K_r(x',x) \,dx' \,dx \\
+	& \overset{(ii)}{\leq} \int_{\Rd} \int_{\Rd} \biggl\{\int_{0}^{1} \sum_{\abs{\alpha} = 1} \Bigl[g^{(\alpha)}\bigl(x + t(x' - x)\bigr)\Bigr]^2 \,dt \biggr\} \norm{x' - x}^2 K_r(x',x) \,dx' \,dx \\
+	& \overset{(iii)}{=} r^{2 + d} \int_{\Rd} \int_{B(0,1)} \biggl\{\int_{0}^{1} \sum_{\abs{\alpha} = 1} \Bigl[g^{(\alpha)}\bigl(x + trz\bigr)\Bigr]^2 \,dt\biggr\} \norm{z}^2 K\bigl(\norm{z}\bigr)  \,dz \,dx \\
+	& \overset{(v)}{=} r^{2 + d} \int_{B(0,1)} \int_{0}^{1} \biggl\{\int_{\Rd} \sum_{\abs{\alpha} = 1} \Bigl[g^{(\alpha)}\bigl(x + trz\bigr)\Bigr]^2 \,dx \biggr\} \norm{z}^2 K\bigl(\norm{z}\bigr) \,dt \,dz \\
+	& \leq r^{2 + d} |g|_{H^1(\Rd)}.
+	\end{align*}
+	In the above manipulations, $(i)$ follows by the Cauchy-Schwarz inequality, $(ii)$ follows by Jensen's inequality, $(iii)$ follows from the change of variables $z = (x' - x)/r$, and $(v)$ follows by Fubini's Theorem. Along with~\eqref{pf:first_order_graph_sobolev_seminorm_1}-\eqref{pf:first_order_graph_sobolev_seminorm_3}, this proves Lemma~\ref{lem:first_order_graph_sobolev_seminorm}.
+\end{proof}
+
+A few remarks:
+\begin{itemize}
+	\item \textbf{Bounded norm vs. bounded semi-norm.}
+	\item \textbf{Markov's inequality, as opposed to exponential concentration.}
+	\item \textbf{Simpler proof and stronger concentration under Holder assumption.}
+\end{itemize}
+
+\subsection{General graph Sobolev semi-norm}
+
+When $s > 1$, in order to obtain the desired upper bound on the graph Sobolev semi-norm we must make some additional assumptions regarding the behavior of $f_0$ near the boundary of $\Xset$, as well as on the smoothness of the density function $p$.
+\begin{theorem}
+	\label{thm:graph_sobolev_seminorm}
+	Suppose $\Xset $ is a Lipschitz domain, and that the density $p \in C^{s - 1}(\Xset,p_{\max})$. Then, for any $f \in H_0^s(\Xset,M)$ there exists a constant $C > 0$ which may depend only on $X$ and $d$ such that
+	\begin{equation}
+	\label{eqn:graph_sobolev_seminorm}
+	f^T \Lap_{n,r}^s f \leq \frac{C}{\delta} n^{s + 1} r^{s(d + 2)}M^2
+	\end{equation}
+	with probability at least $1 - \delta$.
+\end{theorem}
+The proof of Lemma~\ref{thm:graph_sobolev_seminorm} will be considerably longer than that of Lemma~\ref{lem:first_order_graph_sobolev_seminorm}. In anticipation of this proof, it will be helpful to introduce some notation. For $j \in [n]$ and a function $f: \Xset \to \Reals$, define the weighted difference operator $D_jf: \Xset \to \Reals$ to be
+\begin{equation*}
+\bigl(D_jf\bigr)(x) = \bigl(f(X_j) - f(x)\bigr) \frac{K_r(X_j,x)}{r^d},
+\end{equation*}
+and for $k \in [n]^q$ for some $q \in \mathbb{N}$, define the iterated difference operator $D_{jk}f: \Xset \to \Reals$ via the recursive formula
+\begin{equation*}
+\bigl(D_{jk}f\bigr)(x) = \bigl(D_j \circ D_kf\bigr)(x)
+\end{equation*}
+The matrix $\Lap_{n,r} \in \Reals^{n \times n}$ can then be extended to an operator over $C^{\infty}(\Xset)$, which in an abuse of notation\footnote{We repeat notation because it results in \eqref{eqn:graph_Laplacian_out_of_sample} agreeing with \textcolor{red}{(2)} in-sample, i.e. $\bigl(\Lap_{n,r}^qf\bigr)(X_i) = (\Lap_{n,r}^qf)_i$ for all $i \in [n]$.} we also denote by $\Lap_{n,r}$,
+\begin{equation*}
+\frac{1}{r^d}\bigl(\Lap_{n,r}f\bigr)(x) := -\sum_{j = 1}^{n} \bigl(D_jf\bigr)(x)
+\end{equation*}
+so that
+\begin{equation}
+\label{eqn:graph_Laplacian_out_of_sample}
+\frac{1}{r^{dq}}\bigl(\Lap_{n,r}^qf\bigr)(x) = (-1)^q \sum_{k \in [n]^q} \bigl(D_kf\bigr)(x).
+\end{equation} 
+Consequently, a few standard computations show that the graph Sobolev semi-norm can be written as 
+\begin{equation*}
+f^T \Lap_{n,r}^s f = 
+\begin{dcases}
+\sum_{i = 1}^{n} \sum_{k \in [n]^q} \sum_{\ell \in [n]^q} \bigl(D_kf\bigr)(X_i) \cdot \bigl(D_\ell f\bigr)(X_i),~~ & \textrm{if $s$ is even, for $q = s/2$} \\
+\sum_{i,j = 1}^{n} \sum_{k \in [n]^q} \sum_{\ell \in [n]^q} \bigl(d_jD_kf\bigr)(X_i) \cdot \bigl(d_jD_{\ell}f\bigr)(X_i) \cdot K_r(X_i,X_j),~~ & \textrm{if $s$ is odd, for $q = (s - 1)/2$}
+\end{dcases}
+\end{equation*}
+where $\bigl(d_jf\bigr)(x) := f(X_j) - f(x)$ is the simple difference operator. 
+
+In order to prove~\eqref{eqn:graph_sobolev_seminorm}, we will proceed as in Lemma~\ref{lem:first_order_graph_sobolev_seminorm} by first upper bounding $\Ebb[f^T \Lap_{n,r}^s f]$ and then applying Markov's inequality. Obtaining the desired upper bound on $\Ebb[f^T \Lap_{n,r}^s f]$ is split into \textcolor{red}{N} Lemmas, Lemmas \textcolor{red}{A - B}. Lemma~\ref{lem:expected_difference_operator} controls the expectation of the ``leading terms'' $\Ebb[D_kf(x)]$, when $k \in (n)^q$ and $x$ is sufficiently in the interior of $\Xset$. 
+\begin{lemma}
+	\label{lem:expected_difference_operator}
+\end{lemma}
+
+\section{Review}
+In this section, I put results that will (probably) not be need for our graph regression paper, but which are still nice to know.
+
+Let $\Delta_r$ be the expected weighted difference operator
+\begin{equation}
+\Delta_rf(x) := \Ebb\Bigl[\bigl(D_if\bigr)(x)\Bigr] = \int_{\Xset} \bigl(f(x') - f(x)\bigr) K_r(x',x) p(x') \,dx
+\end{equation}
+and define $\Delta_r^q = \Delta_r \circ \cdots \circ \Delta_r$, where the operator is composed a total of $q$ times. 
+\begin{lemma}
+	\label{lem:expected_difference_holder}
+	Let $q \geq 1$ and $s \geq 2q + 1$ be integers. The iterated expected weighted difference operator  $\Delta_r^qf(x) = \Ebb[D_kf(x)]$ for any $k \in (n)^q$. If $f \in C^s(\Xset,M)$ and $p \in C^{s-1}(\Xset,M)$, then for any $x \in \Xset$ such that $B(x,qr) \subset \Xset$, it holds that
+	\begin{equation*}
+	\Bigl\|\bigl(\Delta_r^qf\bigr)(x) - r^{2q} \sigma_K^{2q} \bigl(\Delta_{p}^qf\bigr)(x)\Bigr\| \leq C \cdot
+	\begin{dcases}
+	r^{2q + 1},& ~~\textrm{if $s = 2q + 1$} \\
+	r^{2q + 2},& ~~\textrm{if $s = 2q + 2$.}
+	\end{dcases}
+	\end{equation*}
+	Recall that $\Delta_pf = -\frac{1}{2p}\mathrm{div}(p^2 \nabla f)$ is the density weighted Laplace operator.
+\end{lemma}
+\begin{proof}
+	We will actually prove a more general claim. Let $f$ be a function defined on the domain $\Xset$, which additionally satisfies $f \in C^s(\Vset,M)$ for some open set $\Vset \subset \Xset$\footnote{Technically speaking, we mean that the restriction $\restr{f}{\Vset}$ of $f$ to $\Vset$ satisfies $\restr{f}{\Vset} \in C^s(\Vset,M)$, but we dispense with this technicality for notational simplicity.}, and $s \geq 2q + 1$. For any $x \in V$ such that $B(x,qr) \subset V$, we will show
+	\begin{equation}
+	\label{eqn:expected_difference_holder_0}
+	\Delta_r^qf(x) = r^{2q} I_{2e_1}^q \Delta_p^qf(x) + \sum_{t = q + 1}^{\floor{(s - 1)/2}}r^{2t} f_{2t}(x) + O\bigl(M p_{\max}r^s\bigr)
+	\end{equation} 
+	for functions $f_u$ which satisfy $f_u \in C^{s - u}(\Vset_{qr},M)$. To see that this implies the desired claim, simply take $\Vset = \Xset$ and note that when $s = 2q + 1$ or $s = 2q + 2$, the sum on the right hand side of~\eqref{eqn:expected_difference_holder_0} is empty. 
+	
+	We prove~\eqref{eqn:expected_difference_holder_0} by induction on $q$. In this proof, the functions $f_u$ may differ from line to line, but they will always satisfy $f_u \in C^{s - u}(\Vset_{qr},M)$. When $q = 1$, the expected difference operator
+	\begin{equation*}
+	\Delta_r^qf(x) = \Delta_rf(x) = -\frac{1}{r^d}\int_{\Xset} \bigl(f(x') - f(x)\bigr) K_r(x',x) p(x') \,dx' =  -\frac{1}{r^d}\int_{\Vset} \bigl(f(x') - f(x)\bigr) K_r(x',x) p(x') \,dx' 
+	\end{equation*}
+	where we may restrict the integral to $\Vset$ since $B(x,r) \subset \Vset$, and $K$ has support on $[0,1]$. Then, taking Taylor expansions of $f(x')$ and $p(x')$ around $x' = x$ gives
+	\begin{equation}
+	\begin{aligned}
+	\label{eqn:expected_difference_holder_1}
+	\Delta_rf(x) & = -\frac{1}{r^d} \sum_{\abs{\alpha} = 1}^{s - 1} \sum_{\abs{\beta} = 0}^{s - 2}  f^{(\alpha)}(x) p^{(\beta)}(x) \int_{\Vset} (x' - x)^{\alpha + \beta} K_r(x',x) \,dx' + O\bigl(M p_{\max}r^s\bigr) \\
+	& = -\sum_{\abs{\alpha} = 1}^{s - 1} \sum_{\abs{\beta} = 0}^{s - 2}  r^{\abs{\alpha + \beta}} f^{(\alpha)}(x) p^{(\beta)}(x) \int_{B(0,1)} (z)^{\alpha + \beta} K\bigl(\norm{z}\bigr) \,dz + O\bigl(M p_{\max}r^s\bigr) \\
+	& = -\sum_{\abs{\alpha} = 1}^{s - 1} \sum_{\abs{\beta} = 0}^{s - 2}  r^{\abs{\alpha + \beta}} f^{(\alpha)}(x) p^{(\beta)}(x) I_{\alpha + \beta} + O\bigl(M p_{\max}r^s\bigr) \\
+	& =: -\sum_{u = 1}^{s - 1} f_u(x) r^u + O\bigl(M p_{\max}r^s\bigr)
+	\end{aligned}
+	\end{equation}
+	where in the first equality we use the bounds $|R_f^{(s)}(x,x')| \leq M\norm{x - x'}^s$ and $|R_p^{(s - 1)}(x,x')| \leq p_{\max}\norm{x - x'}^{s - 1}$ to control the remainder term, the second equality follows since $B(x,r) \subseteq \Vset$, and the final equality follows by putting
+	\begin{equation}
+	\label{eqn:expected_difference_holder_2}
+	f_u(x) = \sum_{\abs{\alpha} = 1} \sum_{\abs{\beta} = u - \abs{\alpha}} I_{\alpha + \beta} f^{(\alpha)}(x) p^{(\beta)}(x).
+	\end{equation}
+	Whenever $\abs{\alpha + \beta} = u$ is odd, $I_{\alpha + \beta} = 0$; as a result $f_u = 0$ for all $u$ odd, and
+	\begin{equation*}
+	\Delta_rf(x) = \sum_{t = 1}^{\floor{(s - 1)/2}} f_{2t}(x)r^{2t} + O\bigl(Mp_{\max}r^s\bigr).
+	\end{equation*}
+	When $\abs{\alpha + \beta} = 2$, $I_{\alpha + \beta}$ is non-zero if and only if either $\alpha = \beta = e_i$ for some $i \in [d]$, or $\alpha = 2e_i$ and $\beta = 0$; here we write $e_i$ for the $i$th standard basis vector of $\Reals^d$. So the leading term becomes
+	\begin{equation*}
+	f_2(x) = -\sum_{i = 1}^{d} I_{2e_i}\Bigl\{\frac{1}{2}f^{(2e_i)}(x)p(x) + f^{(e_i)}(x)p^{(e_i)}(x)\Bigr\} = I_{2e_1} \cdot \Delta_pf(x).
+	\end{equation*}
+	Finally, if $\abs{\alpha + \beta} = u \geq 4$ and $\abs{\beta} \leq u - 1$, then $f^{(\alpha)} \in C^{s - \abs{\alpha}}(\Xset,M) \subset C^{s- u}(\Vset_r,M)$ and  $p^{(\beta)} \in C^{(s - 1) - \abs{\beta}}(\Xset,M) \subset C^{s - u}(\Vset_r,M)$. Along with~\eqref{eqn:expected_difference_holder_2}, this verifies $f_u \in C^{s - u}(\Vset_r,cM)$ for a constant $c$ which does not depend on $f$ or $M$, and completes the proof of~\eqref{eqn:expected_difference_holder_0} in the base case.
+	
+	Now for the induction step. Suppose $f \in C^s(\Vset,M)$ for $s \geq 2q + 3$, and that $B(x,r) \subset \Vset_{qr}$. Then by the inductive hypothesis
+	\begin{align}
+	\bigl(\Delta_r^{q + 1}f\bigr)(x) & = \bigl(\Delta_r \circ \Delta_r^qf)(x) \nonumber \\
+	& = r^{2q} I_{2e_1}^q \bigl(\Delta_r \circ \Delta_p^q f\bigr)(x) + \sum_{t = q + 1}^{\floor{(s - 1)/2}} r^{2t} \bigl(\Delta_rf_{2t}\bigr)(x) + O\bigl(M p_{\max}r^s\bigr) \label{pf:expected_difference_holder_3}
+	\end{align}
+	where we have used the fact that $\Delta_r$ is a bounded---in the sense that $\norm{\Delta_r f}_{\Leb^{\infty}} \leq 2 \norm{f}_{\Leb^{\infty}}$---linear operator. In the first term on the right hand side of \eqref{pf:expected_difference_holder_3}, the iterated weighted Laplace operator $\Delta_p^qf \in C^{s - 2q}(\Xset,M) \subset C^3(\Xset,M)$, so that we may apply the inductive hypothesis and derive
+	\begin{align}
+	r^{2q} I_{2e_1}^q \bigl(\Delta_r \circ \Delta_p^q f\bigr)(x) & = r^{2(q + 1)} I_{2e_1}^{q + 1} \bigl(\Delta_p \circ \Delta_p^{q}f\bigr)(x) + \sum_{t = 2}^{\floor{(s - 2q - 1)/2}} r^{2(t + q)} I_{2e_1}^q f_{2t + 2q}(x) + r^{2q}O\bigl(Mp_{\max}r^{s - 2q}\bigr) \nonumber \\ 
+	& = r^{2(q + 1)} I_{2e_1}^{q + 1} \bigl(\Delta_p^{q + 1}f\bigr)(x) + \sum_{h = 2(q + 1)}^{\floor{(s - 1)/2}} r^{2h} I_{2e_1}^q f_{2h}(x) + O\bigl(Mp_{\max}r^{s}\bigr) \label{pf:expected_difference_holder_4}
+	\end{align}
+	where the functions $f_u$ change between the first and second lines. For each term inside the sum on the right hand side of~\eqref{pf:expected_difference_holder_3}, since $f_{2t} \in C^{s - 2t}(\Vset_{qr},M)$ and $B(x,r) \subseteq \Vset_{qr}$, the inductive hypothesis implies
+	\begin{align}
+	r^{2t} \bigl(\Delta_rf_{2t}\bigr)(x) & = r^{2t}\biggl\{ r^2 I_{2e_1} \bigl(\Delta_pf_{2t}\bigr)(x) + \sum_{h = 2}^{\floor{(s - 2t - 1)/2}} r^{2h}f_{2h + 2t}(x) + O\bigl(M p_{\max} r^{s - 2t}\bigr) \biggr\} \nonumber \\
+	& = r^{2(t + 1)} I_{2e_1} \bigl(\Delta_pf_{2t}\bigr)(x) + \sum_{h = t + 2}^{\floor{(s - 1)/2}} r^{2h}f_{2h}(x) + O\bigl(M p_{\max} r^{s}\bigr) \nonumber \\
+	& = \sum_{h = t + 1}^{\floor{(s - 1)/2}} r^{2h}f_{2h}(x) + O\bigl(M p_{\max} r^{s}\bigr),\label{pf:expected_difference_holder_5}
+	\end{align}
+	where the last equality follows by setting $f_{2{t + 1}} = I_{2e_1}\Delta_pf_{2t}$. 
+	Combining~\eqref{pf:expected_difference_holder_3}-\eqref{pf:expected_difference_holder_5}, we have that~\eqref{eqn:expected_difference_holder_0} holds for the $(q + 1)$st expected difference operator, completing the inductive step and thus the proof of the Lemma.
+\end{proof}
+
+\end{document}
