@@ -184,6 +184,7 @@
 \maketitle
 
 \section{Introduction}
+\label{sec:introduction}
 
 In the random design nonparametric regression problem, we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$, where $X_1,\ldots,X_n$ are independent samples from a distribution $P$ with support $\Xset \subset \Rd$, and 
 \begin{equation}
@@ -207,12 +208,12 @@ The two graph-based regression methods we will consider are \emph{Laplacian eige
 \label{eqn:laplacian_eigenmaps}
 \wh{f}_{\textrm{LE}} = \sum_{k = 1}^{\kappa} \Dotp{Y}{v_k(G_{n,r})}_n v_{k}(G_{n,r})
 \end{equation}
-where $\kappa \in \{1,...,n\}$ is a tuning parameter. (Here $\dotp{u}{v}_n = \frac{1}{n}\sum_{i = 1}^{n} u_i v_i$ for vectors $u,v \in \Reals^n$.) The Laplacian smoothing estimator $\wt{f}_{\LS}$ \citep{smola2003} is given by
+where $\kappa \in \{1,...,n\}$ is a tuning parameter. (Here $\dotp{u}{v}_n = \frac{1}{n}\sum_{i = 1}^{n} u_i v_i$ for vectors $u,v \in \Reals^n$.) The Laplacian smoothing estimator $\wt{f}_{\LS}$ \citep{smola2003} is a penalized least square estimator, given by
 \begin{equation}
 \label{eqn:laplacian_smoothing}
 \wt{f}_{\LS}= \min_{f \in \Reals^n} \Bigl\{\sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^T \Lap_{n,r}^s f \Bigr\}
 \end{equation}
-where $\rho > 0$ acts a tuning parameter. Then, assuming~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing} are reasonable estimators of $f_0$, the size of the statistics
+where $\rho > 0$ acts a tuning parameter $f^T \Lap_{{n,r}}^s f$. Then, assuming~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing} are reasonable estimators of $f_0$, the squared empirical norms
 \begin{equation}
 T_{\LE} = \Bigl\|\wh{f}_{\LE}\Bigr\|_n^2 \label{eqn:laplacian_eigenmaps_test}
 \end{equation}
@@ -220,14 +221,15 @@ and
 \begin{equation}
 T_{\LS} = \Bigl\|\wt{f}_{\LS}\Bigr\|_n^2 \label{eqn:laplacian_smoothing_test}
 \end{equation}
-can be used to test whether or not $f_0 = 0$.
+are in turn reasonable statistics to test whether or not $f_0 = 0$.
 
 \begin{itemize}
 	\item \textbf{Motivate graph Laplacians.} There already exist a vast number of methods for both the nonparametric testing and, especially, the nonparametric estimation problems. In fact, as we will see in Section~\ref{sec:problem_setup_and_background} some of these methods are actually quite analogous to the graph Laplacian estimation and testing methods we have just introduced. Nevertheless, methods such as~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} have a deserved place in the nonparametric regression toolbox. Their advantages include:
 	\begin{itemize}
 		\item Simplicity.
 		\item Computational efficiency and stability.
-		\item Domain and density adaptivity. Easily generalizable. 
+		\item Domain and density adaptivity.
+		\item Easily generalizable.
 		\item Practical success.
 	\end{itemize}
 	\item \textbf{Our contributions, short version.} For these reasons, there is a  substantial body of work assessing the statistical properties of graph Laplacian based methods. \textcolor{red}{(TODO): Include citations.} In this paper, we adopt a different perspective, and analyze~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} through the minimax lens. We show that when the regression function $f_0$ is suitably smooth (by which we mean that it belongs to a first-order Sobolev ball; roughly speaking, that it possesses weak derivative $Df$ bounded in $L^2(\Xset)$ norm) both~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing} are minimax optimal estimators, and both~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} are minimax optimal test statistics. We also show that under appropriate conditions, these estimators and test statistics can leverage additional assumed structure, either on the regression function $f_0$ or distribution $P$.
@@ -392,10 +394,81 @@ The restriction $2s > d$ is a severe limitation of smoothing splines relative to
 	\end{itemize}	
 \end{itemize}
 
+\section{Graph Sobolev classes}
+\label{sec:graph_sobolev_classes}
+
+\begin{itemize}
+	\item For $s,M > 0$, define the order-$s$ graph Sobolev ball to be
+	\begin{equation}
+	\label{eqn:graph_sobolev_ball}
+	H^s(G_{n,r},M) = \set{f \in \Reals^n: f^T \Lap_{n,r}^s f \leq M}
+	\end{equation}
+	where we recall that the \emph{graph Sobolev seminorm} $f^T \Lap_{{n,r}}^s f$ is precisely the penalty term in~\eqref{eqn:laplacian_smoothing}. 
+	To understand the relevance of the graph Sobolev ball to the analysis of our graph-based procedures, let us reason again by analogy with the continuum world. The statistical analysis of continuum-time methods such as Fourier series projection and smoothing splines rests on two facts about the continuum classes $\mc{H}^s(\Xset)$: first, the \textit{a priori} assumption that the regression function $f_0$ belongs to an appropriate Sobolev ball $\mc{H}(\Xset,M)$, and second that the asymptotic decay of the eigenvalues of the continuum Laplace operator $\Delta$ obey Weyl's law, meaning $\lambda_k(\Delta) \asymp \abs{k}^{2s}$ for $k \in \mathbb{Z}^d$. In this section, we will show that both these statements have appropriate analogues in the graph setting. Roughly speaking, we will show first that for functions $f$ belonging to $\mc{H}^s(\Xset, M)$, the evaluations $f = (f(X_1),\ldots,f(X_n)) \in \Reals^n$ satisfy the upper bound
+	\begin{equation}
+	\label{eqn:graph_sobolev_seminorm_asymptotic}
+	f^T \Lap_{n,r}^s f \lesssim M(n^{s + 1}r^{s(d + 2)})
+	\end{equation}
+	and second that the eigenvalues $\lambda_k(G_{n,r})$ satisfy the lower bound
+	\begin{equation*}
+	\bigl[\lambda_k(G_{n,r})\bigr]^s = \lambda_k(\Lap_{{n,r}}^s) \gtrsim k^{2s/d} (n^s r^{s(d + 2)});
+	\end{equation*}
+	both statements will hold with high probability. These results elucidate why our graph-based procedures ``work'' as well as their continuum counterparts---in the sense of being statistically rate-optimal over (continuum) Sobolev classes. They also clarify when our analysis does and does not apply---in terms of various degrees of smoothness $s$ and dimensions $d$.
+\end{itemize}
+
+\subsection{Graph Sobolev seminorm}
+We will state and prove three different results involving the graph Sobolev semi-norm $f_0 \Lap_{n,r}^s f_0$. In each case, we will derive that the asymptotic relation~\eqref{eqn:graph_sobolev_seminorm_asymptotic} holds with high probability, whenever $r \to 0$ sufficiently slowly as $n \to \infty$. The difference between the three results will be the assumptions we make, and the resulting rate of permissible decay for the radius $r$. 
+
+\subsubsection{First-order graph Sobolev semi-norm.}
+We begin by upper bounding $f_0^T \Lap_{n,r} f_0$ under the assumption $f_0 \in H^1(\Xset,M)$. This will be the easiest of the three Lemmas to prove, while still giving some sense of how the proofs develop in the more complicated cases. The upper bound will depend on the kernel $K$; we assume throughout that $K:[0,\infty) \to [0,\infty)$ is a $K_{\max}$-Lipschitz function supported on $[0,1]$, and without loss of generality that
+\begin{equation*}
+\int_{\Reals^d} K(\norm{z}) \,dz = 1.
+\end{equation*}
+\begin{lemma}
+	\label{lem:first_order_graph_sobolev_seminorm}
+	Suppose $\Xset$ is a Lipschitz domain, and that $p(x) \leq p_{\max}$ for all $x \in \Xset$. Then, for any $f \in H^1(\Xset,M)$, there exists a constant $C > 0$ which may depend only on $\Xset$ and $d$ such that
+	\begin{equation}
+	f^T \Lap_{n,r} f \leq \frac{C}{\delta} n^2 r^{d + 2} M^2
+	\end{equation}
+	with probability at least $1 - \delta$.
+\end{lemma}
+
+\subsubsection{General graph Sobolev semi-norm}
+
+When $s > 1$, in order to obtain the desired upper bound on the graph Sobolev semi-norm we must make some additional assumptions regarding the behavior of $f_0$ near the boundary of $\Xset$, as well as on the smoothness of the density function $p$.
+\begin{theorem}
+	\label{thm:graph_sobolev_seminorm}
+	For some integer $s > 1$, suppose that the density $p \in C^{s - 1}(\Xset,p_{\max})$ and $f \in H_0^s(\Xset,M)$, and additionally that the domain $\Xset$ is Lipschitz. Let $r = r(n)$ be a sequence of connectivity radii satisfying $r(n) \to 0$ and $r(n) \gtrsim n^{-1/(2(s - 1) +d)}$ as $n \to \infty$. Then for all $n$ sufficiently large, there exists a constant $C > 0$ which may depend only on $\Xset$ and $d$ such that
+	\begin{equation}
+	\label{eqn:graph_sobolev_seminorm}
+	f^T \Lap_{n,r}^s f \leq \frac{C}{\delta} n^{s + 1} r^{s(d + 2)}M^2
+	\end{equation}
+	with probability at least $1 - \delta$.
+\end{theorem}
+It is worth pausing to make a few remarks.
+\begin{itemize}
+	\item \textbf{Bounded norm vs. bounded semi-norm.}
+	\item \textbf{Markov's inequality, as opposed to exponential concentration.}
+	\item \textbf{Simpler proof and stronger concentration under Holder assumption.}
+	\item \textbf{Explain why~\eqref{eqn:graph_sobolev_seminorm} should be familiar, and a lower bound on $r$ expected.} The scaling (in $n$, $r$, and $M$) on the right hand side of~\eqref{eqn:graph_sobolev_seminorm} will be familiar to the informed reader. For a sufficiently regular function $f \in C^3(\Xset,M)$ and density $p \in C^1(\Xset,p_{\max})$, it is known \textcolor{red}{(references)} that $\frac{1}{nr^{d + 2}}\Lap_{n,r}f \to \Delta_pf$ for \textcolor{red}{$r \geq ???$}. \textcolor{red}{A recursive argument shows that when $f \in C^{2s + 1}(\Xset)$ and $p \in C^{2s}(\Xset)$ are sufficiently regular and $r$ is sufficiently large},
+	\begin{equation*}
+	\Bigl(\frac{1}{nr^{d + 2}}\Lap_{n,r}\Bigr)^s f \to \Delta_p^sf \Longrightarrow \frac{1}{n^{s + 1} r^{s(d + 2)}} f^T \Lap_{n,r}^s f \to \int_{\Xset} f(x) \cdot  \Delta_p^sf(x) p(x) \,dx \leq c M^2.
+	\end{equation*}
+	\item \textbf{Explain why the actual proof is more subtle.} In fact, the actual proof of Theorem~\ref{thm:graph_sobolev_seminorm} is rather more involved. Among other subtleties we highlight the mismatch, in the previous remark, between the number of smooth derivatives $f$ possesses ($2s + 1$) and the degree of the Laplacian operator $\Lap_{{n,r}}^s$ $(s)$; this is unsuitable for our purposes. A more careful analysis implies~\eqref{thm:graph_sobolev_seminorm}, but note well that~\eqref{eqn:graph_sobolev_seminorm} is only an upper bound rather than a statement about consistency. This is the price we pay for insisting that the assumed number of smooth derivatives match the degree of the Laplacian; fortunately an upper bound will be sufficient for our purposes.
+\end{itemize}
+
+\subsubsection{Graph Sobolev semi-norm under manifold assumption.}
+
+\textcolor{red}{(TODO)}
+
+\subsection{Graph Laplacian eigenvalues}
+
+\textcolor{red}{(TODO)}
+
 \section{Minimax optimal graph Laplacian methods}
 \label{sec:minimax_optimal_graph_Laplacian_methods}
 
-Let us start by assuming $f_0 \in H^1(P,M)$. In this section, we will establish that the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and the resulting test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test}, achieve the standard minimax optimal estimation and hypothesis testing rates, respectively. 
+Let us start by assuming $f_0 \in H^1(P,M)$. In this section, we will establish that the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and the resulting test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test}, achieve the standard minimax optimal estimation and hypothesis testing rates, respectively. Pleasingly, these results will go through with essentially no additional regularity conditions---additional, that is, to~\ref{asmp:bounded_density}---on either the regression function $f_0$ or the density $p$. The story will also be complete: we will obtain the ``right'' rates for all regimes--that is, all values of $s$ and $d$---for which we would expect to get these rates.
 
 \subsection{Minimax optimal estimation}
 
@@ -441,7 +514,7 @@ Theorem~\ref{thm:laplacian_smoothing_estimation1} is analogous to Theorem~\ref{t
 
 \begin{itemize}
 	\item \textbf{Proof techniques}: Because the solution to~\eqref{eqn:laplacian_smoothing} has an analytic form, we can rely on a bias-variance decomposition---as opposed to empirical process theory---to derive~Theorem~\ref{thm:laplacian_smoothing_estimation1}.
-	\item A key difference between Theorems~\ref{thm:laplacian_eigenmaps_estimation1} and~\ref{thm:laplacian_smoothing_estimation1} is that the latter holds only when $d \leq 4$. This restriction is unsurprising, and reflects a fundamental drawback in (penalized) least squares estimators more generally. The underlying phenomenon is similar to that elucidated by the seminal papers~\cite{birge1993} and~\cite{birge1998}: when the dimension $d$ is large enough, the parameter space is too large, and (penalized) least squares approaches are no longer minimax optimal. It is interesting to note that we see a gap emerge between the graph- (Laplacian smoothing) and continuum (tensor product spline) estimator when $d = 3$: the former continues to be minimax optimal, whereas the latter no longer is. We should also mention that in a related context (estimation over a $d$-dimensional lattice graph), \cite{sadhanala2016} require the same restriction $d \leq 4$. 
+	\item A key difference between Theorems~\ref{thm:laplacian_eigenmaps_estimation1} and~\ref{thm:laplacian_smoothing_estimation1} is that the latter holds only when $d \leq 4$. This restriction is unsurprising, and reflects a fundamental drawback in (penalized) least squares estimators more generally. The underlying phenomenon is similar to that elucidated by the seminal papers~\cite{birge1993} and~\cite{birge1998}: when the dimension $d$ is large enough, the parameter space is too large, and (penalized) least squares approaches are no longer minimax optimal. It is interesting to note that we see a gap emerge between the graph- (Laplacian smoothing) and continuum (smoothing spline) estimator when $d = 3$: the former continues to be minimax optimal, whereas the latter is not even well-defined. We should also mention that in a related context (estimation over a $d$-dimensional lattice graph), \cite{sadhanala2016} require the same restriction $d \leq 4$. 
 \end{itemize}
 
 \subsection{Minimax optimal hypothesis testing}
