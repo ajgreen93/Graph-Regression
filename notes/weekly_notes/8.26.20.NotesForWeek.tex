@@ -179,7 +179,7 @@
 \date{\today}
 \maketitle
 
-In this week's notes, I state and prove all results regarding graph Sobolev semi-norms that we need for our graph regression work. 
+In this week's notes, I state and prove all results regarding graph Sobolev semi-norms that we need for our graph regression work. These notes make their way into Section 3 (theorem statements and remarks) and Appendix B (proofs) of our graph regression document.
 
 \section{Bounds on the graph Sobolev semi-norm}
 In this section we will state and prove three different results involving the graph Sobolev semi-norm $f_0 \Lap_{n,r}^s f_0$. In each Lemma, we will derive that the asymptotic relation
@@ -330,7 +330,7 @@ Consequently, a few standard computations show that the graph Sobolev semi-norm 
 f^T \Lap_{n,r}^s f = r^{ds} \cdot
 \begin{dcases}
 \sum_{i = 1}^{n} \sum_{k \in [n]^q} \sum_{\ell \in [n]^q} \bigl(D_kf\bigr)(X_i) \cdot \bigl(D_\ell f\bigr)(X_i),~~ & \textrm{if $s$ is even, for $q = s/2$} \\
-\sum_{i,j = 1}^{n} \sum_{k \in [n]^q} \sum_{\ell \in [n]^q} \bigl(d_jD_kf\bigr)(X_i) \cdot \bigl(d_jD_{\ell}f\bigr)(X_i) \cdot K_r(X_i,X_j),~~ & \textrm{if $s$ is odd, for $q = (s - 1)/2$}
+\frac{1}{r^d}\sum_{i,j = 1}^{n} \sum_{k \in [n]^q} \sum_{\ell \in [n]^q} \bigl(d_jD_kf\bigr)(X_i) \cdot \bigl(d_jD_{\ell}f\bigr)(X_i) \cdot K_r(X_i,X_j),~~ & \textrm{if $s$ is odd, for $q = (s - 1)/2$}
 \end{dcases}
 \end{equation}
 where $\bigl(d_jf\bigr)(x) := f(X_j) - f(x)$ is the simple difference operator. 
@@ -365,9 +365,17 @@ and define $\Delta_r^q = \Delta_r \circ \cdots \circ \Delta_r$, with the operato
 \end{lemma}
 \begin{lemma}
 	\label{lem:expected_difference_lower_order_1}
-	Let $I = \abs{k \cup \ell \cup i} < 2q + 1$ for given index vectors $k,\ell \in [n]^q$ and index $i \in [n]$. Then for any $f \in H^1(\Xset)$,
+	Let $I = \abs{k \cup \ell \cup i} < 2q + 1 = s + 1$ for given index vectors $k,\ell \in [n]^q$ and index $i \in [n]$. If $f \in H^1(\Xset)$ for $\Xset$ a Lipschitz domain, and \textcolor{red}{$p$ satisfies (P2)}, then, 
 	\begin{equation*}
-	\Bigl|\Ebb\Bigl[\bigl(D_kf\bigr)(X) \cdot \bigl(D_{\ell}f\bigr)(X)\Bigr]\Bigr| \leq C r^{2 + d(I - (s + 1))} \abs{f}_{H^1(\Xset)}^2
+	\Bigl|\Ebb\Bigl[\bigl(D_kf\bigr)(X_i) \cdot \bigl(D_{\ell}f\bigr)(X_i)\Bigr]\Bigr| \leq C r^{2 + d(I - (s + 1))} \abs{f}_{H^1(\Xset)}^2
+	\end{equation*}
+	for a constant $C$ which does not depend on $f$.
+\end{lemma}
+\begin{lemma}
+	\label{lem:expected_difference_lower_order_2}
+	Let $I = \abs{k \cup \ell \cup i \cup j} < 2q + 2 = s + 1$ for given index vectors $k,\ell \in [n]^q$ and indices $i,j \in [n]$. If $f \in H^1(\Xset)$ for $\Xset$ a Lipschitz domain, and \textcolor{red}{$p$ satisfies (P2)}, then, 
+	\begin{equation*}
+	\Bigl|\Ebb\Bigl[\bigl(d_jD_kf\bigr)(X_i) \cdot \bigl(d_jD_{\ell}f\bigr)(X_i) \cdot K_r(X_i,X_j)\Bigr]\Bigr| \leq C r^{2 + d(I - s))} \abs{f}_{H^1(\Xset)}^2
 	\end{equation*}
 	for a constant $C$ which does not depend on $f$.
 \end{lemma}
@@ -482,11 +490,64 @@ A few remarks:
 	\label{pf:expected_difference_boundary}
 	\norm{f}_{\Leb^2(\Xset^{(q + 1)r})}^2 \leq c r^{2s} \norm{f}_{H^s(\Xset)}^2,
 	\end{equation}
-	and in Subsection~\ref{subsec:proof_sobolev_norm_boundary} we show that this inequality holds whenever $r > 0$ is sufficiently small.
+	and in \ref{subsec:proof_sobolev_norm_boundary} we show that this inequality holds whenever $r > 0$ is sufficiently small.
+\end{proof}
+
+\begin{proof}[\textbf{Proof of Lemma~\ref{lem:expected_difference_lower_order_1}}]
+	The proof of Lemma~\ref{lem:expected_difference_lower_order_2} will be essentially the same as that of Lemma~\ref{lem:expected_difference_lower_order_1}, and so we include only the proof of the latter.
+	
+	We first reduce the problem of upper bounding the iterated difference operator to that of upper bounding a sum of single difference operators. Letting $k = (k_1,\ldots,k_q)$, we can show by induction that the absolute value of the iterated difference operator $\abs{D_kf(X_i)}$ is upper bounded,
+	\begin{equation*}
+	\abs{D_kf(X_i)} \leq \left(\frac{2K_{\max}}{r^d}\right)^{q-1} \sum_{h \in k \cup i} \abs{D_{k_q}f(X_h)} \cdot \1\Bigl\{G_{n,r}[X_{k \cup i}]~\textrm{is a connected graph} \Bigr\}.
+	\end{equation*}
+	Therefore, for $\ell = (\ell_1,\ldots,\ell_q)$, the product
+	\begin{align}
+	& \Bigl|D_kf(X_i)\Bigr| \cdot \Bigl|D_{\ell}f(X_i)\Bigr| \leq \nonumber \\
+	&~~ \left(\frac{2K_{\max}}{r^d}\right)^{2(q - 1)} \sum_{h,j \in k \cup \ell \cup i} \Bigl|D_{k_q}f(X_h)\Bigr| \cdot \Bigl|D_{\ell_q}f(X_j)\Bigr| \cdot \1\Bigl\{G_{n,r}[X_{k \cup i}], G_{n,r}[X_{\ell \cup i}]~\textrm{are connected graphs} \Bigr\} =  \nonumber \\
+	&~~ \left(\frac{2K_{\max}}{r^d}\right)^{2(q - 1)} \sum_{h,j \in k \cup \ell \cup i} \Big|D_{k_q}f(X_h)\Bigr| \cdot \Bigl|D_{\ell_q}f(X_j)\Bigr| \cdot \1\Bigl\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is a connected graph} \Bigr\} \label{pf:expected_difference_lower_order_1_0}
+	\end{align}
+	
+	We now break our analysis into three cases, based on the number of distinct indices in $k_q,\ell_q,h,j$. In each case we will obtain the same rate
+	\begin{equation*}
+	\Ebb\Bigl[\abs{D_{k_q}f(X_h)} \cdot \abs{D_{\ell_q}f(X_j)}\Bigr] = O(r^{(\abs{k \cup \ell \cup i} - 3)d + 2}) \cdot |f|_{H^1(\Xset)}^2,
+	\end{equation*}
+	and plugging this back in to~\eqref{pf:expected_difference_lower_order_1_0} establishes the desired claim.
+
+	\textit{Case 1: Two distinct indices.}
+	Let $k_q = \ell_q = i$, and $h = j$. Using the law of iterated expectation, we obtain
+	\begin{align*}
+	\Ebb \left[\bigl(D_{i}f(X_j)\bigr)^2 \cdot \1\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected} \}\right] &= \Ebb \left[\bigl(D_{i}f(X_j)\bigr)^2 \cdot \Pbb\bigl[\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected} \} |X_i,X_j\bigr]\right] \\
+	& = O(r^{(\abs{k \cup \ell \cup i} - 2)d}) \cdot \Ebb\left[\bigl(D_{i}f(X_j)\bigr)^2\right] \\
+	& = O(r^{(\abs{k \cup \ell \cup i} - 3)d}) \cdot \Ebb\left[\bigl(d_{i}f(X_j)\bigr)^2K_r(X_i,X_j)\right] \\
+	& = O(r^{(\abs{k \cup \ell \cup i} - 3)d + 2}) \cdot |f|_{H^1(\Xset)}^2
+	\end{align*}
+	where we established the last equality in the proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm}.
+	
+	\textit{Case 2: Three distinct indices.}
+	Let $k_q = \ell_q = i$, for some $i \neq j \neq h$. Using the law of iterated expectation, we obtain
+	\begin{align}
+	\Ebb \Bigl[ & \abs{D_{i}f(X_j)} \cdot \abs{D_if(X_h)} \cdot \1\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected} \}\Bigr] \nonumber \\
+	& = \Ebb\Bigl[\abs{D_{i}f(X_j)} \cdot \abs{D_if(X_h)} \cdot \Pbb\bigl[\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected} \} |X_i,X_j,X_h\bigr]\Bigr] \nonumber \\
+	& = O(r^{(\abs{k \cup \ell \cup i} - 3)d}) \cdot \Ebb\Bigl[\abs{D_{i}f(X_j)} \cdot \abs{D_if(X_h)} \Bigr]\nonumber \\
+	& = O(r^{(\abs{k \cup \ell \cup i} - 3)d + 2})\cdot|f|_{H^1(\Xset)}^2. \label{pf:expected_difference_lower_order_1_1}
+	\end{align}
+	where we prove~\eqref{pf:expected_difference_lower_order_1_1} in~\ref{subsec:proof_expected_difference_lower_order}.
+	
+	\textit{Case 3: Four distinct indices.}
+	Using the law of iterated expectation, we find that
+	\begin{align}
+	\Ebb\Bigl[ &\abs{D_{k_q}f(X_i)}\cdot{\abs{D_{\ell_q}f(X_j)}} \cdot \1\{G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected} \}\Bigr] \nonumber \\
+	& = \Ebb\Bigl[\abs{D_{k_q}f(X_i)}\cdot{\abs{D_{\ell_q}f(X_j)}} \cdot\Pbb\bigl[G_{n,r}[X_{k \cup \ell \cup i}] ~\textrm{is connected}|X_i,X_j,X_{k_q},X_{\ell_q}\bigr]\Bigr] \nonumber \\
+	& = O(r^{(\abs{k \cup \ell \cup i} - 4)d}) \cdot \Ebb\Bigl[\abs{D_{k_q}f(X_i)}\cdot{\abs{D_{\ell_q}f(X_j)}}\cdot\1\{\norm{X_i - X_j} \leq (2q + 1)r\}\Bigr] \nonumber \\
+	& = O(r^{(\abs{k \cup \ell \cup i} - 3)d + 2}) \cdot |f|_{H^1(\Xset)}^2 \label{pf:expected_difference_lower_order_1_2}
+	\end{align}
+	where we prove~\eqref{pf:expected_difference_lower_order_1_2} in~\ref{subsec:proof_expected_difference_lower_order}.
 \end{proof}
 
 \begin{proof}[\textbf{Proof of Theorem~\ref{thm:graph_sobolev_seminorm}}]
-	From the representation~\eqref{eqn:graph_sobolev_seminorm_1}, we have that 
+	We will divide our proof into two cases: when $s$ is even and when $s$ is odd. 
+	
+	\textit{Case 1: $s$ is even.} We gather from~\eqref{eqn:graph_sobolev_seminorm_1} that 
 	\begin{equation}
 	\label{pf:graph_sobolev_seminorm}
 	\Ebb\Bigl[f^T \Lap_{n,r}^s f\Bigr] = r^{ds}\sum_{i = 1}^{n} \sum_{k \in [n]^q} \sum_{\ell \in [n]^q} \Ebb\Bigl[\bigl(D_kf\bigr)(X_i) \cdot  \bigl(D_{\ell}f\bigr)(X_i)\Bigr].
@@ -505,9 +566,43 @@ A few remarks:
 	& \leq c \Bigl\|\Delta_r^{q - 1}f - r^{2(q - 1)}I_{2e_1}^q\Delta_p^{q - 1}f\Bigr\|_{\Leb^2(\Xset_{(q - 1)r})} +  c r^{s}I_{2e_1}^q\Bigl\|\Delta_p^{q - 1}f\Bigr\|_{H^2(\Xset_{(q - 1)r})} \nonumber \\
 	& \leq c M r^s
 	\end{align}
-	with the second inequality following from~\eqref{eqn:norm_expected_difference_operator}. There are at most $O(n^{s + 1})$ such terms, hence the overall contribution of these terms to the expectation~\eqref{pf:graph_sobolev_seminorm} is $O(n^{s + 1}r^{s(d + 2)})M^2$. 
+	with the second inequality following from~\eqref{eqn:norm_expected_difference_operator}. Put simply, for those terms in~\eqref{pf:graph_sobolev_seminorm} such that $\abs{k \cup \ell \cup i} = 2q + 1$ the expectation $\Ebb\bigl[\bigl(D_kf\bigr)(X_i) \cdot \bigl(D_{\ell}f\bigr)(X_i)\bigr] = O(r^{s(d + 2)})M^2$. There are at most $O(n^{s + 1})$ such terms, hence the overall contribution of these terms to the sum in~\eqref{pf:graph_sobolev_seminorm} is $O(n^{s + 1}r^{s(d + 2)})M^2$. 
 	
 	Otherwise $\abs{k \cup \ell \cup i} = I < 2q + 1$. By Lemma~\ref{lem:expected_difference_lower_order_1} the total contribution of such terms inside the sum~\eqref{pf:graph_sobolev_seminorm} is $O(n^{I}r^{d(I - 1) + 2}) M^2$; by assumption $r \geq n^{-1/d}$, and therefore this increases with $I$. Taking $I = s$ to be the largest integer less than $s + 1$, the contribution of these terms to the sum is therefore $O(n^sr^{d(s - 1) + 2})M^2$, which in light of the restriction $r \geq n^{-1/(2(s - 1) + d)}$ is $O(n^{s+1}r^{s(d +2)})M^2$.
+	
+	\textit{Case $2$: $s$ is odd.} We see from~\eqref{eqn:graph_sobolev_seminorm_1} that for $q = (s - 1)/2$,
+	\begin{equation}
+	\label{pf:graph_sobolev_seminorm_4}
+	\Ebb\Bigl[f^T \Lap_{n,r}^s f\Bigr] = r^{d(s - 1)}\sum_{i,j = 1}^{n} \sum_{k \in [n]^q} \sum_{\ell \in [n]^q} \Ebb\Bigl[\bigl(d_jD_kf\bigr)(X_i) \cdot  \bigl(d_jD_{\ell}f\bigr)(X_i) \cdot K_r(X_i,X_j)\Bigr]
+	\end{equation}
+	and we divide into cases based on the cardinality of $\abs{k \cup \ell \cup i \cup j}$. If $\abs{k \cup \ell \cup i \cup j} = 2q + 2$, the intersection between any two of $k \in (n)^q$, $\ell \in (n)^q$, $i \in [n]$ and $j \in [n]$ is empty, and the law of iterated expectation implies
+	\begin{align}
+	\Ebb\Bigl[\bigl(d_jD_kf\bigr)(X_i) \cdot  \bigl(d_jD_{\ell}f\bigr)(X_i) \cdot K_r(X_i,X_j)\Bigr] & =\Ebb\Bigl[\Bigl\{\bigl(d_j\Delta_r^qf\bigr)(X_i)\Bigr\}^2  K_r(X_i,X_j)\Bigr] \nonumber \\
+	&\leq p_{\max}^2 \int_{\Xset} \int_{\Xset} \Bigl(\Delta_r^qf(x') - \Delta_r^qf(x)\Bigr)^2 K_r(x',x) \,dx' \,dx \label{pf:graph_sobolev_seminorm_3}
+	\end{align}
+	From here the basic idea is the same as in the case where $s$ was even. We partition the domain of integration into $\Xset = \Xset_{qr} \cup \Xset^{qr}$, with the result being that
+	\begin{align}
+	\int_{\Xset} & \int_{\Xset} \Bigl(\Delta_r^qf(x') - \Delta_r^qf(x)\Bigr)^2 K_r(x',x) \,dx' \,dx \nonumber \\ & = \int_{\Xset} \biggl\{\int_{\Xset_{qr}} \Bigl(\Delta_r^qf(x') - \Delta_r^qf(x)\Bigr)^2 K_r(x',x) \,dx' + \int_{\Xset^{qr}} \Bigl(\Delta_r^qf(x') - \Delta_r^qf(x)\Bigr)^2 K_r(x',x) \,dx'\biggr\}\,dx \nonumber \\
+	& \leq \int_{\Xset_{qr}} \int_{\Xset_{qr}} \Bigl(\Delta_r^qf(x') - \Delta_r^qf(x)\Bigr)^2 K_r(x',x) \,dx' \,dx + 2 \int_{\Xset} \int_{\Xset^{qr}} \Bigl(\Delta_r^qf(x') - \Delta_r^qf(x)\Bigr)^2 K_r(x',x) \,dx'\,dx \nonumber \\ 
+	& \leq \int_{\Xset_{qr}} \int_{\Xset_{qr}} \Bigl(\Delta_r^qf(x') - \Delta_r^qf(x)\Bigr)^2 K_r(x',x) \,dx' \,dx + 8 r^d \int_{\Xset^{(q + 1)r}} \Bigl(\Delta_r^qf(x)\Bigr)^2 \,dx \label{pf:graph_sobolev_seminorm_1}
+	\end{align}
+	with the inequality~\eqref{pf:graph_sobolev_seminorm_1} following since the kernel $K$ is supported on $[0,1]$ and integrates to $1$. 
+	
+	Now, noticing that the second integral in~\eqref{pf:graph_sobolev_seminorm_1} is exactly $\norm{\Delta_r^{q}f}_{\Leb^2(\Xset^{(q + 1)r})}$, we have from Lemma~\ref{lem:expected_difference_boundary} that
+	\begin{equation}
+	\label{pf:graph_sobolev_seminorm_5}
+	\int_{\Xset^{(q + 1)r}} \Bigl(\Delta_r^qf(x)\Bigr)^2 \leq CMr^{2s}.
+	\end{equation}
+	For the first integral in~\eqref{pf:graph_sobolev_seminorm_1}, we apply the triangle inequality and obtain
+	\begin{align}
+	\int_{\Xset_{qr}} & \int_{\Xset_{qr}} \Bigl(\Delta_r^qf(x') - \Delta_r^qf(x)\Bigr)^2 K_r(x',x) \,dx' \,dx \nonumber \\
+	& \leq 6 \int_{\Xset_{qr}} \int_{\Xset_{qr}} \Bigl(\Delta_r^qf(x) - \Delta_p^qf(x) \Bigr)^2 K_r(x',x) \,dx' \,dx + 3 \int_{\Xset_{qr}} \int_{\Xset_{qr}} \Bigl(\Delta_p^qf(x') - \Delta_p^qf(x) \Bigr)^2 K_r(x',x) \,dx' \,dx \nonumber \\
+	& \leq 6r^d \int_{\Xset_{qr}} \int_{\Xset_{qr}} \Bigl(\Delta_r^qf(x) - \Delta_p^qf(x) \Bigr)^2 \,dx + 3 \int_{\Xset_{qr}} \int_{\Xset_{qr}} \Bigl(\Delta_p^qf(x') - \Delta_p^qf(x) \Bigr)^2 K_r(x',x) \,dx' \,dx \nonumber \\
+	& \leq c M r^{2s + d} \label{pf:graph_sobolev_seminorm_2}
+	\end{align}
+	where the last inequality follows from Lemma~\ref{lem:expected_difference_sobolev}---which bounds the first term---and the proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm}---which bounds the second term since $\Delta_p^qf \in H^1(\Xset)$ for $q = (s - 1)/2$. Combining~\eqref{pf:graph_sobolev_seminorm_3}-\eqref{pf:graph_sobolev_seminorm_2}, we have that for those terms inside the sum~\eqref{pf:graph_sobolev_seminorm_4} with a total of $\abs{k \cup \ell \cup i \cup j} = s$ distinct indices, the expectation $\Ebb\bigl[(d_jD_kf)(X_i) \cdot (d_jD_{\ell}f)(X_i)\bigr] = O(r^{s(d + 2)})M^2$.
+	
+	Otherwise $\abs{k \cup \ell \cup j \cup i} = I < 2q + 2$.  By Lemma~\ref{lem:expected_difference_lower_order_2} the total contribution of such terms inside the sum~\eqref{pf:graph_sobolev_seminorm} is $O(n^{I}r^{d(I - 1) + 2}) M^2$, which in turn is $O(n^{s + 1}r^{s(d + 2)})M^2$ by exactly the same used in the first case, when $s$ was even.
 \end{proof}
 
 \section{Review}
@@ -582,6 +677,9 @@ In this section, I put results that will (probably) not be need for our graph re
 	Combining~\eqref{pf:expected_difference_holder_3}-\eqref{pf:expected_difference_holder_5}, we have that~\eqref{eqn:expected_difference_holder_0} holds for the $(q + 1)$st expected difference operator, completing the inductive step and thus the proof of the Lemma.
 \end{proof}
 
+\section{Integrals}
+We compute several bounds on several integrals referenced in various proofs.
+
 \subsection{Proof of~\eqref{eqn:integrated_remainder_term_sobolev} and~\eqref{eqn:integrated_remainder_term_holder}}
 \label{subsec:proof_integrated_remainder_terms}
 
@@ -640,6 +738,43 @@ Therefore, using~\eqref{eqn:integrated_remainder_term_sobolev}-\eqref{eqn:produc
 & \leq \frac{C}{r^d} \biggl\{ \sum_{i = 1}^{d} \sum_{j = 1}^{d} \Bigl\|\Ibb_{e_i + e_j}[R_p^{(e_j)}]\Bigr\|_{\Leb^{\infty}(V_r)} \cdot \Bigl\|f^{(e_i)} \Bigr\|_{\Leb^2(V_r)} + \sum_{\abs{\alpha} = 2} \Bigl\|\Ebb_{\alpha}[R_f^{(\alpha)}]\Bigr\|_{\Leb^2(V_r)} \biggr\} \\
 & \leq c r^2 \norm{f}_{H^2(V)}.
 \end{align*}
+
+\subsection{Proof of~\eqref{pf:expected_difference_lower_order_1_1} and~\eqref{pf:expected_difference_lower_order_1_2}}
+\label{subsec:proof_expected_difference_lower_order}
+
+We will assume that $f \in C^{\infty}(\Xset)$, without loss of generality due to the density of $C^{\infty}(\Xset)$ in $H^1(\Xset)$. Additionally, since $\Xset$ is a Lipschitz domain, we may take $g \in C^{\infty}(\Rd)$ to be an extension of $f$ such that $g = f$ almost everywhere on $\Xset$, and
+\begin{equation*}
+|g|_{H^1(\Rd)} \leq C|f|_{H^1(\Xset)},
+\end{equation*}
+Since $g = f$ almost everywhere on $\Xset$, it suffices to establish the inequalities~\eqref{pf:expected_difference_lower_order_1_1} and~\eqref{pf:expected_difference_lower_order_1_2} hold with respect to $g$.
+
+We begin by proving~\eqref{pf:expected_difference_lower_order_1_1}, following a very similar series of steps to the proof of~\eqref{eqn:norm_expected_difference_operator} when $s = 1$. First, we account for the effect of the density $p$ using $|p(x)| \leq p_{\max}$, 
+\begin{align}
+\Ebb\Bigl[\abs{D_{i}g(X_j)} \cdot \abs{D_ig(X_h)} \Bigr] & = \frac{1}{r^{2d}}\int_{\Xset} \int_{\Xset} \int_{\Xset} \bigl|g(x'') - g(x)\bigr| \cdot \bigl|g(x') - g(y)\bigr| K_r(x'',x) K_r(x',x) p(x'') p(x') p(x) \,dx'' \,dx' \,dx \nonumber \\
+& = \int \left[\frac{1}{r^d}\int_{\Xset} \bigl|g(x') - g(x)\bigr| K_r(x',x) p(x') \,dx'\right]^2 p(x) \,dx \nonumber \\
+& \leq p_{\max}^3 \left[\frac{1}{r^d}\int_{\Xset} \bigl|g(x') - g(x)\bigr| K_r(x',x) \,dx'\right]^2 \,dx \label{pf:proof_expected_difference_lower_order_1}
+\end{align}
+Then taking a Taylor expansion of $g$ about $x' = x$ gives 
+\begin{align*}
+\int_{\Xset} \bigl|g(x') - g(x)\bigr| K_r(x',x) \,dx' & \leq \int_{\Rd} \bigl|g(x') - g(x)\bigr| K_r(x',x) \,dx' \\
+& = \int_{\Rd} \abs{\int_{0}^{1} (1 - t) \sum_{i = 1}^{d} g^{(e_i)}(x + t(x' - x)) (x' - x)^{e_i} \,dt} K_r(x',x) \,dx \\
+& \leq \int_{\Rd} \int_{0}^{1} \sqrt{\sum_{i = 1}^{d}\Bigl(g^{(e_i)}\bigl(x + t(x' - x)\bigr)\Bigr)^2} \cdot \bigl\|x - x'\bigr\| \,dt K_r(x',x) \,dx \\
+& \leq r \int_{\Rd} \int_{0}^{1} \sqrt{\sum_{i = 1}^{d}\Bigl(g^{(e_i)}\bigl(x + t(x' - x)\bigr)\Bigr)^2} \,dt K_r(x',x) \,dx \\
+& \leq K_{\max} r^{d + 1} \int_{B(0,1)} \int_{0}^{1} \sqrt{\sum_{i = 1}^{d}\Bigl(g^{(e_i)}(x + tzr)\Bigr)^2} \,dt \,dz,
+\end{align*}
+whence the claim~\eqref{pf:expected_difference_lower_order_1_1} follows from plugging back in to~\eqref{pf:proof_expected_difference_lower_order_1}, then using Jensen's inequality and Fubini's inequality as in~\ref{subsec:proof_integrated_remainder_terms}.
+
+We prove~\eqref{pf:expected_difference_lower_order_1_2} in similar fashion. First we account for the density,
+\begin{align*}
+\Ebb\Bigl[& \bigl|D_{k}g(X_i)\bigr|\cdot \bigl|D_{\ell}g(X_j)\bigr| \cdot\1\bigl\{\norm{X_i - X_j} \leq (2q + 1)r\bigr\}\Bigr] \\
+& \leq \frac{p_{\max}^4}{r^{2d}} \int_{\Xset^4} \bigl|g(x''') - g(x'')\bigr| \cdot \bigl|g(x') - g(x)\bigr| \cdot  K_r(x''',x'') K_r(x',x) \1\bigl\{\norm{x''' - x} \leq (2q + 1)r\bigr\} \,dx''' \,dx'' \,dx' \,dx.
+\end{align*}
+Substituting $z = (x''' - x)/r$, $z' = (x' - x)/r$, and $z'' = (x''' - x'')/r$, we can simplify the integral in the previous display,
+\begin{align*}
+\int_{\Xset^4} & \bigl|g(x''') - g(x'')\bigr| \cdot \bigl|g(x') - g(x)\bigr| \cdot  K_r(x''',x'') K_r(x',x) \1\bigl\{\norm{x''' - x} \leq (2q + 1)r\bigr\} \,dx''' \,dx'' \,dx' \,dx \\
+& \leq K_{\max}^2 r^{3d} \int_{\Xset} \int_{B(0,2q + 1)^3} \big|g\bigl((x + r(z + z'')\bigr) - g(x + rz)\bigr| \cdot \bigl|g(x + z'r) - g(x)\bigr| \,dz'' \,dz' \,dz \,dx.
+\end{align*}
+From here the claim~\eqref{pf:expected_difference_lower_order_1_2} follows upon Taylor expansion of $g$, in essentially the same fashion as the proof of~\eqref{pf:expected_difference_lower_order_1_1}.
 
 \subsection{Proof of~\eqref{pf:expected_difference_boundary}}
 \label{subsec:proof_sobolev_norm_boundary}

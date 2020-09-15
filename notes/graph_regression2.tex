@@ -42,11 +42,10 @@
 \newcommand{\ext}[1]{\widetilde{#1}}
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\seq}[1]{\set{#1}_{n \in \N}}
-\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
 \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
 \newcommand{\Var}{\mathrm{Var}}
 \newcommand{\Cov}{\mathrm{Cov}}
-\newcommand{\Xsetiam}{\mathrm{diam}}
+\newcommand{\diam}{\mathrm{diam}}
 
 \newcommand{\emC}{C_n}
 \newcommand{\emCpr}{C'_n}
@@ -130,7 +129,7 @@
 \newcommand{\LE}{\mathrm{LE}}
 \newcommand{\LS}{\mathrm{LS}}
 \newcommand{\SM}{\mathrm{SM}}
-\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\OS}{\mathrm{FS}}
 \newcommand{\PLS}{\mathrm{PLS}}
 
 %%% Order of magnitude
@@ -186,7 +185,7 @@
 \section{Introduction}
 \label{sec:introduction}
 
-In the random design nonparametric regression problem, we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$, where $X_1,\ldots,X_n$ are independent samples from a distribution $P$ with support $\Xset \subset \Rd$, and 
+In the random design nonparametric regression problem, we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$, where $X_1,\ldots,X_n$ are independent samples from a distribution $P$ supported on a domain $\Xset \subset \Rd$, and 
 \begin{equation}
 \label{eqn:random_design_regression}
 Y_i = f_0(X_i) + \varepsilon_i
@@ -208,7 +207,7 @@ The two graph-based regression methods we will consider are \emph{Laplacian eige
 \label{eqn:laplacian_eigenmaps}
 \wh{f}_{\textrm{LE}} = \sum_{k = 1}^{\kappa} \Dotp{Y}{v_k(G_{n,r})}_n v_{k}(G_{n,r})
 \end{equation}
-where $\kappa \in \{1,...,n\}$ is a tuning parameter. (Here $\dotp{u}{v}_n = \frac{1}{n}\sum_{i = 1}^{n} u_i v_i$ for vectors $u,v \in \Reals^n$.) The Laplacian smoothing estimator $\wt{f}_{\LS}$ \citep{smola2003} is a penalized least square estimator, given by
+where $\kappa \in \{1,...,n\}$ is a tuning parameter. (Here $\dotp{u}{v}_n = \frac{1}{n}\sum_{i = 1}^{n} u_i v_i$ for vectors $u,v \in \Reals^n$.) The Laplacian smoothing estimator $\wt{f}_{\LS}$ \citep{smola2003} is a penalized least squares estimator, given by
 \begin{equation}
 \label{eqn:laplacian_smoothing}
 \wt{f}_{\LS}= \min_{f \in \Reals^n} \Bigl\{\sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^T \Lap_{n,r}^s f \Bigr\}
@@ -223,428 +222,586 @@ T_{\LS} = \Bigl\|\wt{f}_{\LS}\Bigr\|_n^2 \label{eqn:laplacian_smoothing_test}
 \end{equation}
 are in turn reasonable statistics to test whether or not $f_0 = 0$.
 
+There already exist a vast number of methods for both the nonparametric testing and, especially, the nonparametric estimation problems. In fact, as we will see in Section~\ref{sec:problem_setup_and_background} some of these methods are actually quite analogous to the graph Laplacian estimation and testing methods we have just introduced. Nevertheless, methods such as~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} have a deserved place in the nonparametric regression toolbox. Graph-based methods such as these have many advantages: they are easy to implement, fast and stable to compute, generalizable to non-standard data---for instance, text or images, or really any data modality on which it is possible to define a kernel--- and non-standard learning paradigms---such as the semi-supervised setting---and last but not least, have enjoyed widespread practical success.
+
+For these reasons, a substantial body of work has arisen assessing the statistical properties of graph Laplacian based methods. Taken as a whole, this work views the graph Laplacian matrix as an estimator of a weighted continuum Laplace operator $\Delta_P$ (see equations~\eqref{eqn:laplace_operator} and~\eqref{eqn:laplace_operator_weighted} in Section~\ref{sec:problem_setup_and_background}), and establishes that it is in fact a \emph{consistent} estimator of $\Delta$, in various respects. For instance,  \citet{belkin03,belkin05} show that when $\Pbb$ is the uniform distribution over $\Xset$, $\Lap_{n,r}f \to \Delta f$ for sufficiently smooth functions $f$, \citet{lafon04,hein05} extend the statement to hold when $\Pbb$ is non-uniform, \citet{singer06} sharpens the convergence rates, and \cite{gine06} establish a CLT. On the other hand, \citet{belkin07} prove that when $\Pbb$ is the uniform distribution over $\mathcal{X}$, the eigenvalues and eigenvectors of $\Lap_{n,r}$ converge to those of $\Delta$ when $r_n \to 0$ as $n \to \infty$, \citet{garciatrillos18} extend this result to hold for general $\Pbb$, and \cite{calder2019} obtain sharper rates at which $r_n$ may converge to $0$. 
+
+These developments notwithstanding, the following fundamental theoretical question remains unanswered: are graph-based methods for nonparametric regression not merely consistent but in fact \emph{optimal}, in the minimax sense? In this paper, we confirm that they are. We show that when the regression function $f_0$ is suitably smooth---by which we mean that it belongs to a first-order Sobolev ball; roughly speaking, that it possesses weak derivative $Df$ bounded in $L^2(\Xset)$ norm---both~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing} are with high probability asymptotically rate-optimal estimators, and that both~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} are asymptotically rate-optimal test statistics. We also show that under appropriate conditions, these estimators and test statistics can leverage additional assumed structure, either on the regression function $f_0$ or distribution $P$. Our fundamental message is a reassuring one: the practitioner who wishes to use neighborhood graph procedures, for any of the various reasons outline above, may do so without fear that they are sacrificing statistical optimality in the process.
+
 \begin{itemize}
-	\item \textbf{Motivate graph Laplacians.} There already exist a vast number of methods for both the nonparametric testing and, especially, the nonparametric estimation problems. In fact, as we will see in Section~\ref{sec:problem_setup_and_background} some of these methods are actually quite analogous to the graph Laplacian estimation and testing methods we have just introduced. Nevertheless, methods such as~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} have a deserved place in the nonparametric regression toolbox. Their advantages include:
-	\begin{itemize}
-		\item Simplicity.
-		\item Computational efficiency and stability.
-		\item Domain and density adaptivity.
-		\item Easily generalizable.
-		\item Practical success.
-	\end{itemize}
-	\item \textbf{Our contributions, short version.} For these reasons, there is a  substantial body of work assessing the statistical properties of graph Laplacian based methods. \textcolor{red}{(TODO): Include citations.} In this paper, we adopt a different perspective, and analyze~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} through the minimax lens. We show that when the regression function $f_0$ is suitably smooth (by which we mean that it belongs to a first-order Sobolev ball; roughly speaking, that it possesses weak derivative $Df$ bounded in $L^2(\Xset)$ norm) both~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing} are minimax optimal estimators, and both~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} are minimax optimal test statistics. We also show that under appropriate conditions, these estimators and test statistics can leverage additional assumed structure, either on the regression function $f_0$ or distribution $P$.
+	\item \textbf{Motivate graph Laplacians.} 
+	
+	\item \textbf{Literature review.} 
 	\item \textbf{Organization.}
 \end{itemize}
 
 \paragraph{Notation.}
 \begin{itemize}
-	\item We write $\mathbb{Z}^d$ for $\mathbb{Z} \otimes \cdots \mathbb{Z}$, where the tensor product is taken a total of $d$ times.
-	\item We denote by $\Leb^2(\Xset)$ be the set of square integrable functions $f:\Xset \to \Reals$.
+	\item We write $\mathbb{Z}^d = \mathbb{Z} \otimes \cdots \otimes \mathbb{Z}$ (the tensor product is taken a total of $d$ times); the sequence space $\ell^2(\mathbb{Z}^d)$ contains those vectors $\theta: \mathbb{Z}^d \to \Reals$ for which $\sum_{k \in \mathbb{Z}^d} \theta_k^2 < \infty$. 
+	\item We denote by $\Leb^2(\Xset)$ the set of square integrable functions $f:\Xset \to \Reals$. \textcolor{red}{Holder}.
 	\item For functions $f,g$ which map from $\Xset$ to $\Reals$, we write $\dotp{f}{g}_n := \frac{1}{n}\sum_{i = 1}^{n} f(X_i) g(X_i)$, which we refer to as the \emph{empirical inner product}, and $\norm{f}_n^2 = \dotp{f}{f}_n$, which we refer to as the (squared) \emph{empirical norm}. For vectors $v \in \Reals^n$, we write $\norm{v}_p^p := \sum_{i = 1}^{n} \abs{v_i}^p$.
-	\item For a graph $G$, we use $\Lap_G$ for the Laplacian of $G$. The matrix $\Lap_G$ is a square, symmetric, positive semi-definite matrix, with $n$ eigenvalues $\lambda_k(G)$ and eigenvector $v_k(G)$ pairs, defined according to
+	\item For a graph $G$, we use $\Lap_G$ to denote the Laplacian of $G$. The matrix $\Lap_G$ is a square, symmetric, positive semi-definite matrix, with $n$ eigenvalues $\lambda_k(G)$ and eigenvector $v_k(G)$ pairs, defined according to
 	\begin{equation*}
 	\Lap_G v_k(G) = \lambda_k(G) v_k(G), ~~\frac{1}{n} \norm{v_k(G)}_2^2 = 1 
 	\end{equation*}
-	and ordered so that $0 \leq \lambda_1(G) \leq \ldots \leq \lambda_n(G)$. For convenience, we write $\Lap_{n,r}$ instead of $\Lap_{G_{n,r}}$. 
+	and ordered so that $0 \leq \lambda_1(G) \leq \ldots \leq \lambda_n(G)$. For convenience, when dealing with the neighborhood graph $G_{n,r}$ we denote $\Lap_{n,r} = \Lap_{G_{n,r}}$. 
+	\item When convenient we write $\mathbf{X} = (X_1,\ldots,X_n)$. 
 \end{itemize}
 
 \section{Problem Setup and Background}
 \label{sec:problem_setup_and_background}
 
-Before we get to our main results, we will review some of the relevant literature on minimax optimal nonparametric estimation and testing of Sobolev functions. We will also briefly recall some (of the many) estimators and tests which achieve these rates: in particular the \emph{truncated series} and \emph{smoothing spline} methods. As we will see, Laplacian eigenmaps and Laplacian smoothing can be seen as graph-based, i.e. discrete, analogues to these ``continuuum'' methods.
+Before we get to our main results, we will review some of the relevant literature on minimax optimal nonparametric estimation and testing of Sobolev functions. We will also briefly recall some (of the many) estimators and tests which achieve these rates: in particular the \emph{Fourier series projection} and \emph{smoothing spline} methods. As we will see, Laplacian eigenmaps and Laplacian smoothing can be seen as graph-based, i.e. discrete, counterparts to these ``continuum'' methods.
+
+We start by giving a (very) brief exposition of Sobolev spaces, with an emphasis on the material relevant in the statistical context. 
 
 \subsection{Sobolev spaces}
 \label{subsec:sobolev_spaces}
 
-\begin{itemize}
-	\item \textbf{Sobolev spaces.}  Roughly speaking, Sobolev spaces contain functions $f \in \Leb^p(\Xset)$ with derivatives which themselves belong to $\Leb^p(\Xset)$. More formally, for given integers $s, p > 0$, the Sobolev space $W^{s,p}(\Xset)$ consists of all functions $f \in \Leb^p(\Xset)$ such that for each multiindex $\alpha = (\alpha_1,\ldots,\alpha_d) \in \mathbb{N}^d$ satisfying $\abs{\alpha} := \sum_{i = 1}^{d} \alpha_i \leq s$, the weak derivative $D^{\alpha}f$ belongs to $\mathcal{L}^p(\Xset)$. The Sobolev-$\{s,p\}$ seminorm $\seminorm{f}_{W^{s,p}(\Xset)}$ and norm $\norm{f}_{W^{s,p(\Xset)}}$ are then given by 
-	\begin{equation*}
-	\seminorm{f}_{W^{s,p}(\Xset)}^p = \sum_{\abs{\alpha} = s}\int_{\mathcal{X}} \Bigl|\bigl(D^{\alpha}f\bigr)(x)\Bigr|^p \,dx, ~~ \norm{f}_{W^{s,p}(\Xset)}^p = \sum_{k = 0}^{s} \seminorm{f}_{W^{k,p}(\Xset)}^p
-	\end{equation*}
-	and for a given $M > 0$, the corresponding ball is $W^{s,p}(\Xset, M) = \set{f: \norm{f}_{W^{s,p}(\Xset)} \leq M}$. In the special case when $p = 2$, the Sobolev space $W$ is a Hilbert space, and we adopt the usual convention of writing $H^s(\Xset) = W^{s,p}(\Xset)$ and $H^s(\Xset,M) = W^{s,2}(\Xset,M)$. We will confine our attention to this special case hereafter. 
-	\item \textbf{Connections to sequence spaces.} The balls $H^s(\Xset,M)$ are closely connected with the \emph{Sobolev ellipsoids} $\Theta_s(M) \subseteq \ell^2(\mathbb{Z}^d)$, defined as
-	\begin{equation*}
-	\Theta_s(M) = \Bigl\{\theta \in \ell_2(\mathbb{Z}^d): \sum_{k \in \mathbb{Z}^d} \theta_k^2 \abs{k}^{2s} < M\Bigr\}
-	\end{equation*}
-	Let us assume that the domain $\Xset = [0,1]^d$. Letting be $\set{\phi_k}_{k \in \mathbb{Z}^d}$ be the tensor product trigonometric polynomial basis of $\Leb^2(\Xset)$, the space
-	\begin{equation*}
-	H_{\textrm{per}}^s(\Xset,M) = \Bigl\{\sum_{k \in \mathbb{Z}^d} \theta_k \phi_k: \theta_k \in \Theta_s(M) \Bigr\}
-	\end{equation*}
-	satisfies $H_{\textrm{per}}^s(\Xset,M) \subseteq H^s(\Xset,M')$ for a sufficiently large value of $M_1 > 0$. On the other hand, any $1$-periodic function $f \in W^{s,p}(\Xset,M)$ also belongs to $H_{\textrm{per}}^s(\Xset,M_0)$ for a sufficiently large value of $M_0 > 0$.
-	\item \textbf{Zero-trace Sobolev spaces.} We will also be interested in the \emph{zero-trace} Sobolev spaces.
-\end{itemize}
+Roughly speaking, Sobolev spaces contain functions $f \in \Leb^p(\Xset)$ with derivatives which themselves belong to $\Leb^p(\Xset)$. More formally, for given integers $s$ and $p > 0$, the Sobolev space $W^{s,p}(\Xset)$ consists of all functions $f \in \Leb^p(\Xset)$ such that for each multiindex $\alpha = (\alpha_1,\ldots,\alpha_d) \in \mathbb{N}^d$ satisfying $\abs{\alpha} := \sum_{i = 1}^{d} \alpha_i \leq s$, the weak derivative $D^{\alpha}f$ belongs to $\mathcal{L}^p(\Xset)$. The Sobolev-$\{s,p\}$ seminorm $\seminorm{f}_{W^{s,p}(\Xset)}$ and norm $\norm{f}_{W^{s,p(\Xset)}}$ are then given by 
+\begin{equation*}
+\seminorm{f}_{W^{s,p}(\Xset)}^p = \sum_{\abs{\alpha} = s}\int_{\mathcal{X}} \Bigl|\bigl(D^{\alpha}f\bigr)(x)\Bigr|^p \,dx, ~~ \norm{f}_{W^{s,p}(\Xset)}^p = \sum_{k = 0}^{s} \seminorm{f}_{W^{k,p}(\Xset)}^p
+\end{equation*}
+and for a given $M > 0$, the corresponding ball is $W^{s,p}(\Xset, M) = \set{f: \norm{f}_{W^{s,p}(\Xset)} \leq M}$. In the special case when $p = 2$, the Sobolev space $W$ is a Hilbert space, and we adopt the usual convention of writing $H^s(\Xset) = W^{s,p}(\Xset)$ and $H^s(\Xset,M) = W^{s,2}(\Xset,M)$; we will confine our attention to this case hereafter. One special fact worth mentioning: when $\Xset$ is sufficiently smooth, for all Sobolev spaces $H^s(\Xset)$ the Holder space $C^{\infty}(\Xset)$ is dense in $H^s(\Xset)$. Said differently, for each integer $s$, the Sobolev space $H^s(\Xset)$ is simply the completion of $C^{\infty}(\Xset)$ in the norm $\norm{\cdot}_{H^s(\Xset)}$.
 
-\subsection{Orthogonal series and smoothing splines.}
+Periodic functions $f \in H^s(\Xset)$ admit a representation in terms of Fourier coefficients. Define the \emph{Sobolev ellipsoids} $\Theta_s(M) \subseteq \ell^2(\mathbb{Z}^d)$ to be
+\begin{equation*}
+\Theta_s(M) = \Bigl\{\theta \in \ell_2(\mathbb{Z}^d): \sum_{k \in \mathbb{Z}^d} \theta_k^2 \abs{k}^{2s} \leq M^2\Bigr\}.
+\end{equation*}
+To see the connection between $H^s(M)$ and $\Theta_s(M)$, for the moment let us fix the domain $\Xset = [0,1]^d$, and write $\set{\phi_k}_{k \in \mathbb{Z}^d}$ for the tensor product trigonometric polynomial basis of $\Leb^2(\Xset)$. Then the periodic Sobolev balls
+\begin{equation*}
+H_{\textrm{per}}^s(\Xset,M) = \Bigl\{\sum_{k \in \mathbb{Z}^d} \theta_k \phi_k: \theta_k \in \Theta_s(M) \Bigr\}
+\end{equation*}
+satisfy $H_{\textrm{per}}^s(\Xset,M) \subseteq H^s(\Xset,M')$ for a sufficiently large value of $M_1 > 0$. On the other hand, any $1$-periodic function $f \in H^s(\Xset,M)$ also belongs to $H_{\textrm{per}}^s(\Xset,M_0)$ for a sufficiently large value of $M_0 > 0$.
+
+We will also be interested in the \emph{zero-trace} Sobolev spaces, which impose more severe boundary conditions than periodicity. Letting $\partial \Xset$ denote the boundary of $\Xset$, informally one can think of the order-$s$ zero-trace Sobolev space as the set of functions $f \in H^s(\Xset)$ for which ``$f(x) = 0$ for all $x \in \partial\Xset$''. However, since functions $f \in H^s(\Xset)$ are defined only up to sets of measure zero, such a definition is not really meaningful. Instead, letting $C_c^{\infty}(\Xset)$ consist of those functions in $C^{\infty}(\Xset)$ which are compactly supported in $\Xset$, we formally define the order-$s$ zero-trace Sobolev space $H_0^{s}(\Xset)$ as the completion of $C_c^{\infty}(\Xset)$ in the $H^{s}(\Xset)$ norm. When the domain $\Xset = [0,1]^d$, it holds that $H_0^{s}(\Xset) \subseteq H_{\textrm{per}}^{s}(\Xset)$. \textcolor{red}{Justify this statement with a reference.}
+
+\textcolor{red}{(TODO 1)}: Refer also to the Sobolev embedding theorem, for at least three reasons: (1) to facilitate later discussion of why smoothing splines are ill-posed when $2s < d$; (2) to make explicit why the statistical problem isn't ill-posed when $2s < d$ in the random design setting; (3) to make clear why the testing problem is hopeless when $4s < d$.
+
+\subsection{Nonparametric regression: Fourier series and smoothing splines.}
 \label{subsec:continuum_methods}
-When the regression function is assumed to belong to a Sobolev space, two approaches particularly well-suited for nonparametric regression are orthogonal series \textcolor{red}{projection}, and smoothing splines. The orthogonal series estimator $\wh{f}_{\OS}$ is given by
+When the regression function $f_0$ is assumed to belong to a Sobolev space, two approaches particularly well-suited for nonparametric regression are orthogonal projection onto the Fourier basis, and smoothing splines. In the former, we estimate the Fourier coefficients $\wh{\theta}_k := \dotp{Y}{\phi_k}_n$, with the resultant function estimate $\wh{f}_{\OS}$ defined as
 \begin{equation}
 \label{eqn:orthogonal_series}
-\wh{f}_{\OS} = \sum_{k: \abs{k} \leq \kappa} \dotp{Y}{\phi_k}_n \phi_k .
+\wh{f}_{\OS} = \sum_{k: \abs{k} \leq \kappa} \wh{\theta}_k \phi_k
 \end{equation}
-where $\kappa \geq 0$ is a hyperparameter, and we recall that $\{\phi_k\}_{k \in \mathbb{Z}^d}$ is the tensor product trigonometric polynomial basis of $\Leb^2(\Xset)$. The smoothing spline estimator $\wt{f}_{\SM}$ is a variational estimator, defined as the solution to the following optimization problem,
+for some $\kappa \geq 0$. In contrast, the smoothing spline estimator $\wt{f}_{\SM}$ is a variational estimator, defined as the solution to the following optimization problem,
 \begin{equation}
 \label{eqn:smoothing_spline}
-\wt{f}_{\SM} = \argmin_{f} \sum_{i = 1}^{n} \bigl(Y_i - f(X_i)\bigr)^2 + \seminorm{f}_{H^{s}(\Xset)}^2
+\wt{f}_{\SM} = \argmin_{f} \biggl\{\sum_{i = 1}^{n} \bigl(Y_i - f(X_i)\bigr)^2 + \seminorm{f}_{H^{s}(\Xset)}^2\biggr\}
 \end{equation}
-where the minimum is taken over all $f \in H^s(\Xset)$.
+with the minimum taken over all $f \in H^s(\Xset)$.
 
-\begin{itemize}
-	\item \textbf{Connecting orthogonal series and Laplacian eigenmaps estimators.}The orthogonal series estimator $\wh{f}_{\OS}$ is closely connected with the Laplacian eigenmaps estimator $\wh{f}_{\LE}$. At a high-level, one can go from~\eqref{eqn:orthogonal_series} to~\eqref{eqn:laplacian_eigenmaps} simply by substituting $\{v_k\}_{k \in [n]}$ for $\{\phi_k\}_{k \in \mathbb{Z}^d}$. More deeply, just as the vectors $v_k$ are eigenvectors of the graph Laplacian $\Lap_{n,r}$, so too are the functions $\phi_k$ eigenfunctions of a particular differential operator $\Delta: C^2(\Xset) \to \Leb^2(\Xset)$, known as the \emph{Laplace} operator and formally defined as
-	\begin{equation}
-	\label{eqn:laplace_operator}
-	\Delta g := -\mathrm{div}(\nabla g).
-	\end{equation}
-	In fact, it has been shown in \textcolor{red}{(references)} that when the radius $r \to 0$ as $n \to \infty$, the graph Laplacian $\Lap_{n,r}$ converges in an appropriate sense to a weighted version $\Delta_{P}$ of $\Delta$, with
-	\begin{equation}
-	\Delta_{P} g := -\frac{1}{p}\mathrm{div}(p^2 \nabla g).
-	\end{equation}
-	Along similar lines, \textcolor{red}{(references)} have established that for any fixed $k \geq 0$, as $n \to \infty$ the eigenvector $v_k$ will converge, again in an appropriate sense, to an eigenfunction $\phi_k$ of $\Delta_{P}$. The upshot is that when $P$ is the uniform measure, for an appropriate sequence of radii $r(n) \to 0$ and any fixed $\kappa \geq 0$ the estimator $\wh{f}_{OS}$ is in fact the limit of $\wh{f}_{\LE}$, in the sense that
-	\begin{equation}
-	\label{eqn:laplacian_eigenmaps_consistency}
-	\abs{\wh{f}_{\LE}(X_i) - \wh{f}_{\OS}(X_i)} \overset{P}{\to} 0~~\textrm{as $n \to \infty$.}
-	\end{equation} 
-	for each $i \in \mathbb{N}$.
-	\item 
-	\textbf{Connecting smoothing spline and Laplacian smoothing estimators.} In a similar vein, the smoothing spline estimator $\wh{f}_{\SM}$ has deep connections with the Laplacian smoothing estimator $\wh{f}_{\LS}$. Using the definition~\eqref{eqn:laplace_operator}, recursively applying integration by parts, and then invoking the aforementioned convergence properties of $\Lap_{n,r}$, it can be shown that \textcolor{red}{references} that for any $f \in C^{2s}(\Xset)$,
-	\begin{equation}
-	\label{eqn:pointwise_seminorm_convergence}
-	\abs{f}_{H^s(\Xset)} = \int_{\Xset} \bigl(\Delta^sf\bigr)(x) f(x) \,dx = \lim_{n \to \infty} f^T \Lap_{n,r}^s f.
-	\end{equation}
-	By applying appropriation concentration inequalities, one can extend~\eqref{eqn:pointwise_seminorm_convergence} to hold uniformly over all $f \in H^{2s}(\Xset)$. While this does not imply a formal statement about the convergence of $\wh{f}_{\LS}$ to $\wh{f}_{SM}$ as in~\eqref{eqn:laplacian_eigenmaps_consistency}---note the difference between the domain of minimization in~\eqref{eqn:smoothing_spline} and the regularity required for~\eqref{eqn:pointwise_seminorm_convergence}---it nevertheless makes clear that the estimators $\wh{f}_{\LS}$ and $\wh{f}_{\SM}$ are linked.
-	\item \textbf{Domain and density adaptivity.} \textcolor{red}{(TODO)}
-\end{itemize}
+The orthogonal series estimator $\wh{f}_{\OS}$ is closely connected with the Laplacian eigenmaps estimator $\wh{f}_{\LE}$. Just as $v_k(G_{n,r})$ are eigenvectors of the graph Laplacian $\Lap_{n,r}$, so too are $\phi_k$ eigenfunctions of a particular differential operator $\Delta: C^2(\Xset) \to \Leb^2(\Xset)$, known as the \emph{Laplace} operator and formally defined as
+\begin{equation}
+\label{eqn:laplace_operator}
+\Delta g := -\mathrm{div}(\nabla g),
+\end{equation}
+where $\mathrm{div}$ stands for the divergence, and $\nabla$ for the gradient. As mentioned previously, when the radius $r \to 0$ as $n \to \infty$ at an appropriate rate, the graph Laplacian $\Lap_{n,r}$ in fact converges to a weighted Laplace operator $\Delta_P$, given by
+\begin{equation}
+\label{eqn:laplace_operator_weighted}
+\Delta_{P} g := -\frac{1}{p}\mathrm{div}(p^2 \nabla g),
+\end{equation}
+with the eigenvectors $v_k(G_{n,r})$ converging in an appropriate sense to eigenfunctions of $\Delta_{P}$. The upshot is that when $P$ is the uniform measure---and thus the eigenfunctions of $\Delta_P = \Delta$ are in fact the trigonometric basis functions $\phi_k$---for an appropriate sequence of radii $r(n) \to 0$ and any fixed $\kappa \geq 0$ the estimator $\wh{f}_{\OS}$ is in fact the limit of $\wh{f}_{\LE}$, in the sense that
+\begin{equation}
+\label{eqn:laplacian_eigenmaps_consistency}
+\abs{\wh{f}_{\LE}(X_i) - \wh{f}_{\OS}(X_i)} \overset{P}{\to} 0~~\textrm{as $n \to \infty$.}
+\end{equation} 
+for each $i \in \mathbb{N}$.
+
+By viewing $\Delta_P$ as the continuum limit of~$\Lap_{n,r}$, one can also tie the smoothing spline estimator $\wh{f}_{\SM}$ to the Laplacian smoothing estimator $\wh{f}_{\LS}$. Using the definition~\eqref{eqn:laplace_operator}, recursively applying integration by parts, and then invoking the aforementioned convergence properties of $\Lap_{n,r}$, it can be shown that for any $f \in C^{2s}(\Xset)$,
+\begin{equation}
+\label{eqn:pointwise_seminorm_convergence}
+\abs{f}_{H^s(\Xset)} = \int_{\Xset} \bigl(\Delta_P^sf\bigr)(x) f(x) \,dx = \lim_{n \to \infty} \frac{1}{n^{s + 1}r^{s(d + 2)}}f^T \Lap_{n,r}^s f.
+\end{equation}
+(See \citet{zhou11} for an argument along these lines.)
+While this does not imply a formal statement about the convergence of $\wh{f}_{\LS}$ to $\wh{f}_{SM}$ akin to~\eqref{eqn:laplacian_eigenmaps_consistency}---note, for instance, the difference between the domain of minimization in~\eqref{eqn:smoothing_spline} and the regularity required for~\eqref{eqn:pointwise_seminorm_convergence}---it nevertheless makes the connection between $\wh{f}_{\LS}$ and $\wh{f}_{\SM}$ obvious.
 
 \subsection{Minimax rates over Sobolev classes}
 \label{subsec:minimax_rates}
-One reason all of this is intriguing is that, as we mentioned previously, the continuum estimators $\wh{f}_{\OS}$ and $\wh{f}_{\SM}$---and test statistics based on functionals of these estimators--- have strong statistical properties. In particular, these estimators and tests are known to have error rates within a constant factor of (minimax) optimal.
+One reason all of this is intriguing is that, as mentioned previously, the continuum estimators $\wh{f}_{\OS}$ and $\wh{f}_{\SM}$---and test statistics based on functionals of these estimators--- have strong statistical properties. In particular, these estimators and tests are known to have error rates within a constant factor of minimax optimal.
 
 \paragraph{Estimation rates.}
 Under appropriate regularity conditions, the minimax estimation rate over Sobolev balls is 
 \begin{equation}
 \label{eqn:sobolev_space_estimation_minimax_rate}
-\inf_{\wh{f}} \sup_{f_0 \in \mc{H}^s(M)} \Ebb\Bigl[\norm{\wh{f} - f_0}_{L^2(\Xset)}^2\Bigr] \asymp n^{-2s/(2s + d)}~~\textrm{for all $s$ and $d \geq 0$,}
+\inf_{\wh{f}} \sup_{f_0 \in \mc{H}^s(\Xset, M)} \Ebb\Bigl[\norm{\wh{f} - f_0}_{L^2(\Xset)}^2\Bigr] \asymp n^{-2s/(2s + d)}~~\textrm{for all $s$ and $d \geq 0$,}
 \end{equation}
-where the infimum is over all measurable maps $\wh{f}(X_1,Y_1,\ldots,X_n,Y_n)$, and the function class $\mc{H}^s(M)$ is one of $H^s(\Xset,M)$, $H_{\mathrm{per}}^s(\Xset,M)$ or $H_0^s(\Xset,M)$. Orthogonal series and smoothing spline estimators are two (of the many) estimators which certify the upper bound in~\eqref{eqn:sobolev_space_estimation_minimax_rate}. Concretely, if we are willing to assume
+where the infimum is over all measurable maps $\wh{f}$, and the function class $\mc{H}^s(\Xset,M)$ is any one of $H^s(\Xset,M)$, $H_{\mathrm{per}}^s(\Xset,M)$ or $H_0^s(\Xset,M)$. Fourier series and smoothing spline estimators are two (of the many) estimators which certify the upper bound in~\eqref{eqn:sobolev_space_estimation_minimax_rate}. In the former case, if we assume that
 \begin{enumerate}[label=(P\arabic*)]
 	\item
 	\label{asmp:uniform_density}
-	the distribution $P$ is the uniform probability measure defined on domain $\Xset = [0,1]^d$.
+	the distribution $P$ is the uniform probability measure on the unit cube $\Xset = [0,1]^d$.
 \end{enumerate}
-then the orthogonal series estimator is minimax optimal over the Sobolev ellipsoids $H_{\mathrm{per}}^s(M)$, meaning
+then $\wh{f}_{\OS}$ is minimax optimal over the Sobolev ellipsoids $H_{\mathrm{per}}^s(\Xset, M)$, meaning
 \begin{equation*}
 \sup_{f \in H_{\mathrm{per}}^s(\Xset,M)}\Ebb\Bigl[\norm{\wh{f}_{\OS} - f}_{L^2(\Xset)}^2\Bigr]  \lesssim n^{-2s/(2s + d)}~~\textrm{for all $s$ and $d \geq 0$.}
 \end{equation*}
-An advantage of $\wt{f}_{\SM}$ over $\wh{f}_{\OS}$ is that it requires less stringent assumptions on the design density in order to be minimax optimal. Instead of Assumption~\ref{asmp:uniform_density}, we will merely assume that the density is bounded above and below.
+An advantage of $\wt{f}_{\SM}$ over $\wh{f}_{\OS}$ is that it requires weaker assumptions on the design density in order to be minimax optimal. Instead of Assumption~\ref{asmp:uniform_density}, we will merely assume that the density is bounded above and below.
 \begin{enumerate}[label=(P\arabic*)]
 	\setcounter{enumi}{1}
 	\item 
 	\label{asmp:bounded_density}
-	The distribution $P$ is defined on domain $\Xset = [0,1]^d$, and admits a density $p$ with respect to the uniform (Lebesgue) measure on $[0,1]^d$. The density $p$ is bounded away from $0$ and $\infty$, that is
+	The density $p$ is bounded away from $0$ and $\infty$, that is
 	\begin{equation*}
 	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty
 	\end{equation*}
-	for all $x \in [0,1]^d$.
+	for all $x \in \Xset$.
 \end{enumerate}
-The assumption~\ref{asmp:bounded_density} is itself a standard but significant assumption; we will return to discuss it further at \textcolor{red}{a later point}.
+The assumption~\ref{asmp:bounded_density} is itself a standard but significant assumption, but clearly it is much less stringent than~\ref{asmp:uniform_density}: it does not specify that either the density $p$ or domain $\Xset$ be known.
 Assuming~\ref{asmp:bounded_density}, the estimator $\wt{f}_{\SM}$ satisfies
 \begin{equation*}
 \sup_{f_0 \in H^s(\Xset,M)}\Ebb\Bigl[\norm{\wh{f}_{\SM} - f_0}_{L^2(\Xset)}^2\Bigr]  \lesssim n^{-2s/(2s + d)}~~\textrm{for all $2s > d$.}
 \end{equation*}
-The restriction $2s > d$ is a severe limitation of smoothing splines relative to  orthogonal series. It is worth emphasizing that this is a fundamental defect of the smoothing spline estimator, as opposed to any flaw in the theory; when $2s \leq d$, the optimization problem~\eqref{eqn:smoothing_spline} is not even well-defined! \textcolor{red}{(TODO):} succinctly explain why.
+The restriction $2s > d$ is a severe limitation of smoothing splines relative to  orthogonal series estimators. It is worth emphasizing that this is a fundamental defect of smoothing splines, as opposed to any flaw in the theory; when $2s \leq d$, the optimization problem~\eqref{eqn:smoothing_spline} is not even well-defined!
+
+\textcolor{red}{(TODO 2):} succinctly explain why, by referring to the Sobolev Embedding Theorem.
 
 \paragraph{Goodness-of-fit testing rates.} 
 
-\begin{itemize}
-	\item \textbf{Minimax hypothesis testing.} In the nonparametric regression hypothesis testing problem, we ask for a test function (formally, a Borel measurable map $\phi: \mc{X}^n \times \Reals^n \to \{0,1\}$) which can distinguish between the null and alternative hypotheses
-	\begin{equation}
-	\mathbf{H}_0: f_0 = 0, ~~\textrm{versus}~~ \mathbf{H}_a: f_0 \neq 0.
-	\end{equation}
-	We measure the performance of a test $\phi$ by its Type I error $\Ebb_0(1 - \phi)$, and Type II error $\mathbb{E}_{f_0}(\phi)$. It is well known that no test $\phi$ with controlled Type I error---say, $\Ebb_0(\phi) \leq 1/b$ for some constant $b > 1$---
-	can have controlled Type II error---$\Ebb_{f_0}(\phi) \leq 1/b$--- for every $f_0 \neq 0$. As a result, it is standard to impose two kinds of restrictions on the alternative hypothesis class $\mathbf{H}_a$. The first is a smoothness condition on $f_0$: specifically, we will assume that $f_0$ belongs to a Sobolev ball $\mc{H}^s(M)$. The latter is a separation condition, enforcing a minimum distance between $f_0$ and $0$: specifically, we will insist that $\norm{f_0  - 0}_{\Leb^2(\Xset)} > \epsilon$ for some $\epsilon > 0$.
-	\item\textbf{Minimax testing rates over Sobolev classes.} Once smoothness and separation conditions are established, the following becomes a natural question to ask: what is the smallest value of $\epsilon$ for which there exists a test $\phi$ with both small Type I error, and small Type II error over all functions $f_0$ which are smooth and separated from $0$ by at least $\epsilon$? This smallest separation $\epsilon$ is known as the critical radius, and in the case of the Sobolev classes it is given by
-	\begin{equation*}
-	\epsilon_n^{\star}\bigl(\mc{H}^s(M)\bigr):= \inf\biggl\{\epsilon: \inf_{\phi} \Bigl\{\Ebb_0(\phi) +  \sup_{\substack{f_0 \in \mc{H}^s(M) \\ \norm{f_0}_{\Leb^2(\Xset)} \geq \epsilon}} \Ebb_{f_0}[1 - \phi]\Bigr\} \leq \frac{2}{b} \biggr\} \asymp n^{-2s/(4s + d)}
-	\end{equation*}
-	for any $4s > d$, and $\mc{H}^s(M)$ one of $H^s(\Xset,M)$, $H_{\mathrm{per}}^s(\Xset,M)$ or $H_0^s(\Xset,M)$. On the other hand, when $4s \leq d$ the minimax rate is dimension-free,
-	\begin{equation*}
-	\epsilon_n^{\star}\Bigl(\mc{H}^s(M)\Bigr) \asymp n^{-1/4},
-	\end{equation*}
-	revealing a distinction between the estimation and goodness-of-fit testing problems.
-	\item \textbf{Error rates of orthogonal series and smoothing spline-based tests.} 
-	Just as $\wh{f}_{\OS}$ and $\wh{f}_{\SM}$ achieve minimax optimal estimation rates, tests using the plug-in statistics
-	\begin{equation*}
-	T_{\OS} = \bigl\|\wh{f}_{\OS}\bigr\|_{\Leb^2(\Xset)}^2,~~\textrm{and}~~T_{\SM} = \bigl\|\wt{f}_{\SM}\bigr\|_{n}^2
-	\end{equation*}
-	are minimax optimal for the goodness-of-fit testing problem over Sobolev balls (see \citet{ingster2009} for analysis of the former statistic, and \citet{liu2019} for analysis of the latter).
-\end{itemize}
+In the nonparametric regression goodness-of-fit testing problem, we ask for a test function (formally, a Borel measurable map $\phi: \mc{X}^n \times \Reals^n \to \{0,1\}$) which can distinguish between the null and alternative hypotheses
+\begin{equation}
+\mathbf{H}_0: f_0 = 0, ~~\textrm{versus}~~ \mathbf{H}_a: f_0 \neq 0.
+\end{equation}
+We measure the performance of a test $\phi$ by its Type I error $\Ebb_0[1 - \phi]$, and Type II error $\mathbb{E}_{f_0}[\phi]$. It is well known that no test $\phi$ with controlled Type I error---say, $\Ebb_0[\phi] \leq 1/b$ for some constant $b > 1$---
+can have controlled Type II error---$\Ebb_{f_0}[\phi] \leq 1/b$--- for every $f_0 \neq 0$. As a result, it is standard to impose two kinds of restrictions on the alternative hypothesis class $\mathbf{H}_a$. The first is a smoothness condition on $f_0$: in our case, we will assume that $f_0$ belongs to a Sobolev ball $\mc{H}^s(\Xset,M)$. The latter is a separation condition, enforcing a minimum distance between $f_0$ and $0$: in our case, we will insist that $\norm{f_0  - 0}_{\Leb^2(\Xset)} > \epsilon$ for some $\epsilon > 0$.
+
+Once smoothness and separation conditions are established, the following becomes a natural question to ask: what is the smallest value of $\epsilon$ for which there exists a test $\phi$ with both small Type I error, and small Type II error over all functions $f_0$ which are smooth and separated from $0$ by at least $\epsilon$? This smallest separation $\epsilon$ is known as the critical radius, and in the case of the Sobolev classes it is given by
+\begin{equation}
+\label{eqn:sobolev_space_testing_critical_radius}
+\epsilon_n^{\star}\Bigl(\mc{H}^s(\Xset,M)\Bigr):= \inf\biggl\{\epsilon: \inf_{\phi} \Bigl\{\Ebb_0[\phi] +  \sup_{\substack{f_0 \in \mc{H}^s(\Xset,M), \\ \norm{f_0}_{\Leb^2(\Xset)} \geq \epsilon}} \Ebb_{f_0}[1 - \phi]\Bigr\} \leq \frac{2}{b} \biggr\} \asymp n^{-2s/(4s + d)}
+\end{equation}
+for any $4s > d$, and $\mc{H}^s(\Xset,M)$ any one of $H^s(\Xset,M)$, $H_{\mathrm{per}}^s(\Xset,M)$ or $H_0^s(\Xset,M)$.  Just as $\wh{f}_{\OS}$ and $\wh{f}_{\SM}$ achieve minimax optimal estimation rates, tests using the plug-in statistics
+\begin{equation*}
+T_{\OS} = \bigl\|\wh{f}_{\OS}\bigr\|_{\Leb^2(\Xset)}^2,~~\textrm{and}~~T_{\SM} = \bigl\|\wt{f}_{\SM}\bigr\|_{n}^2
+\end{equation*}
+are minimax optimal for the goodness-of-fit testing problem over Sobolev balls; see \citet{ingster2009} for analysis of the former statistic, and \citet{liu2019} for analysis of the latter (when $2s > d$).
+
+When $4s \leq d$, the Sobolev classes $H^s(\Xset,M)$ are too irregular for any test statistic to accurately discern whether $\norm{f_0}_{\Leb^2(\Xset)} = 0$; in particular, some functions in these classes will not have a bounded $4$th moment. However, we will show in Section~\ref{sec:minimax_optimal_graph_Laplacian_methods} that upon explicitly assuming a bounded 4th moment, one obtains the dimension-free minimax rate
+\begin{equation*}
+\epsilon_n^{\star}\Bigl(\Leb^4(\mc{X},M)\Bigr) \asymp n^{-1/4},
+\end{equation*}
+revealing a distinction between the estimation and goodness-of-fit testing problems. This extends the results of \cite{guerre02}, who show the analogous result over Holder balls.
+
+\paragraph{Manifold hypothesis.}
+
+Suppose that $\Xset$ satisfies the manifold hypothesis, meaning informally that it has intrinsic dimension $m < d$ (see~\ref{asmp:domain_manifold} in Section~\ref{sec:graph_sobolev_classes} for a formal definition). In this context, both~\eqref{eqn:sobolev_space_estimation_minimax_rate} and~\eqref{eqn:sobolev_space_testing_critical_radius} now hold with the ambient dimension $d$ replaced by the intrinsic dimension $m$. What's more, suitable adaptations of the estimators $\wh{f}_{\OS}$ and $\wt{f}_{\SM}$, and the test statistics $T_{\OS}$ and $T_{\SM}$, achieve these faster rates. We will not further review the details here, except to emphasize one point: in this context, in order for either the smoothing spline or Fourier series approaches to be optimal, the domain $\Xset$ must be known; as we will see, our graph-based procedures will be optimal without this requirement. We will return to this topic, and comment more generally on how different methods and analyzes make use of different assumptions on the design distribution $P$, in Section~\ref{sec:discussion}.
 
 \subsection{Our contributions}
 \label{subsec:our_contributions}
 
+At a high level, the connections between the graph-based methods~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} and the continuum methods outlined in Subsection~\ref{subsec:continuum_methods} give us reason to hope that the strong statistical properties of the latter are shared by the former. Making this rough statement precise is the content of this paper. In particular, we will prove the following results:
+
 \begin{itemize}
-	\item \textbf{Departure from what's already known.} At a high level, the connections between the graph-based methods~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test} and the continuum methods outlined in Subsection~\ref{subsec:continuum_methods} give reason to believe that the strong statistical properties of the latter are shared by the former. Making this rough statement precise is the content of this paper. In particular, we will prove the following results:
-	\begin{itemize}
-		\item \textbf{Minimax optimal estimation.}
-		We show that with high probability, $\norm{\wh{f}_{\LE} - f_0}_{n}^2 \lesssim n^{-2s/(2s + d)}$ over all $f_0 \in H^1(\Xset;M)$. The same conclusions hold with respect to $\wt{f}_{\LS}$ when $d \leq 4$. 
-		\item \textbf{Minimax optimal testing.}
-		We show that with high probability, a test constructed using $T_{\LE}$ has non-trivial power whenever $f_0 \in H^1(\Xset;M)$ satisfies $\norm{f_0}_{\Leb^2(\Xset)} \gtrsim \max\{n^{-2s/(4s + d)},n^{-1/4}\}$. \textcolor{red}{The same conclusions hold with respect to $\wt{f}_{LS}$.}
-		\item \textbf{Taking advantage of higher-order smoothness conditions.} Under appropriate boundary conditions on the function classes $H^s(\Xset)$ and additional smoothness conditions on the density $p$, when $s > 1$  each of the aforementioned conclusions hold for certain values of $d$.
-		\item \textbf{Manifold adaptivity.}
-		If $\mc{X} \subset \Rd$ is a submanifold of dimension $m < d$, each of the aforementioned rates hold with $d$ replaced by $m$.
-	\end{itemize}	
+	\item \textbf{Minimax optimal estimation.}
+	With high probability, $\norm{\wh{f}_{\LE} - f_0}_{n}^2 \lesssim n^{-2/(2 + d)}$ over all $f_0 \in H^1(\Xset;M)$. The same conclusions hold with respect to $\wt{f}_{\LS}$ when $d \leq 4$. 
+	\item \textbf{Minimax optimal testing.}
+	A test constructed using $T_{\LE}$ has non-trivial power whenever $f_0 \in H^1(\Xset;M)$ satisfies $\norm{f_0}_{\Leb^2(\Xset)} \gtrsim n^{-2/(4 + d)}$ and $d < 4$. The same conclusions hold with respect to $T_{LS}$.
+	\item \textbf{Taking advantage of higher-order smoothness conditions.} Under appropriate boundary conditions on the function classes $H^s(\Xset)$ and additional smoothness conditions on the density $p$, with high probability the error $\norm{\wh{f}_{\LE} - f_0}_{n}^2 \lesssim n^{-2s/(2s + d)}$ over all $f_0 \in H^s(\Xset;M)$. Additionally, a test constructed using $T_{\LE}$ has non-trivial power whenever $f_0 \in H^s(\Xset;M)$ satisfies $\norm{f_0}_{\Leb^2(\Xset)} \gtrsim \max\{n^{-2s/(4s + d)}\}$ and $d < 4$.
+	\item \textbf{Manifold adaptivity.}
+	If $\mc{X} \subset \Rd$ is a submanifold of dimension $m < d$, each of the aforementioned rates hold with $d$ replaced by $m$.
 \end{itemize}
 
 \section{Graph Sobolev classes}
 \label{sec:graph_sobolev_classes}
+In this section, we introduce graph Sobolev balls, which as we will see are discrete (graph-based) analogues to continuum Sobolev balls, and establish some relations between the discrete and continuum classes. For an integer $s > 0$ and some $M > 0$, define the $s$th-order graph Sobolev ball to be
+\begin{equation}
+\label{eqn:graph_sobolev_ball}
+H^s(G_{n,r},M) = \Bigl\{f \in \Reals^n: f^T \Lap_{n,r}^s f \leq M^2\Bigr\}
+\end{equation}
+where we recall that the \emph{$s$th-order graph Sobolev seminorm} $f^T \Lap_{{n,r}}^s f$ is precisely the penalty term in~\eqref{eqn:laplacian_smoothing}. 
 
-\begin{itemize}
-	\item For $s,M > 0$, define the order-$s$ graph Sobolev ball to be
-	\begin{equation}
-	\label{eqn:graph_sobolev_ball}
-	H^s(G_{n,r},M) = \set{f \in \Reals^n: f^T \Lap_{n,r}^s f \leq M}
-	\end{equation}
-	where we recall that the \emph{graph Sobolev seminorm} $f^T \Lap_{{n,r}}^s f$ is precisely the penalty term in~\eqref{eqn:laplacian_smoothing}. 
-	To understand the relevance of the graph Sobolev ball to the analysis of our graph-based procedures, let us reason again by analogy with the continuum world. The statistical analysis of continuum-time methods such as Fourier series projection and smoothing splines rests on two facts about the continuum classes $\mc{H}^s(\Xset)$: first, the \textit{a priori} assumption that the regression function $f_0$ belongs to an appropriate Sobolev ball $\mc{H}(\Xset,M)$, and second that the asymptotic decay of the eigenvalues of the continuum Laplace operator $\Delta$ obey Weyl's law, meaning $\lambda_k(\Delta) \asymp \abs{k}^{2s}$ for $k \in \mathbb{Z}^d$. In this section, we will show that both these statements have appropriate analogues in the graph setting. Roughly speaking, we will show first that for functions $f$ belonging to $\mc{H}^s(\Xset, M)$, the evaluations $f = (f(X_1),\ldots,f(X_n)) \in \Reals^n$ satisfy the upper bound
-	\begin{equation}
-	\label{eqn:graph_sobolev_seminorm_asymptotic}
-	f^T \Lap_{n,r}^s f \lesssim M(n^{s + 1}r^{s(d + 2)})
-	\end{equation}
-	and second that the eigenvalues $\lambda_k(G_{n,r})$ satisfy the lower bound
-	\begin{equation*}
-	\bigl[\lambda_k(G_{n,r})\bigr]^s = \lambda_k(\Lap_{{n,r}}^s) \gtrsim k^{2s/d} (n^s r^{s(d + 2)});
-	\end{equation*}
-	both statements will hold with high probability. These results elucidate why our graph-based procedures ``work'' as well as their continuum counterparts---in the sense of being statistically rate-optimal over (continuum) Sobolev classes. They also clarify when our analysis does and does not apply---in terms of various degrees of smoothness $s$ and dimensions $d$.
-\end{itemize}
+To understand the relevance of the graph Sobolev balls to the analysis of our graph-based procedures, let us return for a moment to the continuum setting. The statistical analysis of continuous-time methods such as Fourier series projection and smoothing splines rests on two facts about the continuum classes $\mc{H}^s(\Xset)$: first, an \textit{a priori} assumption that the regression function $f_0$ belongs to an appropriate Sobolev ball $\mc{H}(\Xset,M)$, and second that the asymptotic decay of the eigenvalues of the continuum Laplace operator $\Delta$ obey Weyl's law, meaning $\lambda_k(\Delta) \asymp \abs{k}^{2s}$ for $k \in \mathbb{Z}^d$. In this section, we will show that both these statements have rough analogues in the graph setting. Roughly speaking, we will show first that for functions $f$ belonging to $\mc{H}^s(\Xset, M)$, the evaluations $f = (f(X_1),\ldots,f(X_n)) \in \Reals^n$ satisfy the upper bound
+\begin{equation}
+\label{eqn:graph_sobolev_seminorm_asymptotic}
+f^T \Lap_{n,r}^s f \lesssim M(n^{s + 1}r^{s(d + 2)})
+\end{equation}
+and second that the eigenvalues $\lambda_k(G_{n,r})$ satisfy the asymptotic scaling
+\begin{equation}
+\label{eqn:neighborhood_graph_eigenvalue_asymptotic}
+\bigl[\lambda_k(G_{n,r})\bigr]^s = \lambda_k(\Lap_{{n,r}}^s) \asymp k^{2s/d} (n^s r^{s(d + 2)}).
+\end{equation}
+Both statements will hold with high probability. Additionally, when we assume $\Xset$ is a manifold of dimension $m$, they will hold with $d$ replaced by $m$. These results elucidate why our graph-based procedures ``work'' as well as their continuum counterparts---in the sense of being statistically rate-optimal over (continuum) Sobolev classes. They also clarify when our analysis does and does not apply---in terms of various orders of smoothness $s$ and dimensions $d$ (or $m$).
 
 \subsection{Graph Sobolev seminorm}
-We will state and prove three different results involving the graph Sobolev semi-norm $f_0 \Lap_{n,r}^s f_0$. In each case, we will derive that the asymptotic relation~\eqref{eqn:graph_sobolev_seminorm_asymptotic} holds with high probability, whenever $r \to 0$ sufficiently slowly as $n \to \infty$. The difference between the three results will be the assumptions we make, and the resulting rate of permissible decay for the radius $r$. 
+\label{subsec:graph_sobolev_seminorm}
+We will state and prove three different results involving the graph Sobolev semi-norm $f_0^T \Lap_{n,r}^s f_0$. In each case, we will derive that a version of the asymptotic relation~\eqref{eqn:graph_sobolev_seminorm_asymptotic} holds with high probability, whenever $r \to 0$ sufficiently slowly as $n \to \infty$. The difference between the three results will be the assumptions we make, and the resulting rate of permissible decay for the radius $r$. 
 
 \subsubsection{First-order graph Sobolev semi-norm.}
-We begin by upper bounding $f_0^T \Lap_{n,r} f_0$ under the assumption $f_0 \in H^1(\Xset,M)$. This will be the easiest of the three Lemmas to prove, while still giving some sense of how the proofs develop in the more complicated cases. The upper bound will depend on the kernel $K$; we assume throughout that $K:[0,\infty) \to [0,\infty)$ is a $K_{\max}$-Lipschitz function supported on $[0,1]$, and without loss of generality that
-\begin{equation*}
-\int_{\Reals^d} K(\norm{z}) \,dz = 1.
-\end{equation*}
+\label{subsec:first_order_graph_sobolev_seminorm}
+We begin by upper bounding $f_0^T \Lap_{n,r} f_0$ under the assumption $f_0 \in H^1(\Xset,M)$. We separate this out from the analysis of general $s$ because the regularity conditions we require when $s = 1$ will be meaningfully weaker than when $s > 1$. Specifically, we will assume the kernel $K$ and domain $\Xset$ satisfy conditions~\ref{asmp:kernel} and~\ref{asmp:domain}, respectively.
+\begin{enumerate}[label=(K\arabic*)]
+	\item
+	\label{asmp:kernel}
+	$K:[0,\infty) \to [0,\infty)$ is supported on $[0,1]$, and its restriction to $[0,1]$ is Lipschitz. Additionally, it is normalized so that
+	\begin{equation*}
+	\int_{\Reals^d} K\bigl(\norm{z}\bigr) \,dz = 1.
+	\end{equation*}
+\end{enumerate}
+\begin{enumerate}[label=(P\arabic*)]
+	\setcounter{enumi}{2}
+	\item 
+	\label{asmp:domain}
+	\textcolor{red}{(TODO): Explain what a Lipschitz domain is.} The density $p$ is supported on a Lipschitz domain $\Xset$.
+\end{enumerate}
+The former is a relatively mild assumption: the choice of kernel is under the user's control, and moreover~\ref{asmp:kernel} covers many (though certainly not all) common kernel choices. The latter is somewhat more restrictive, but an important point is that we do not require that the domain be \textit{a priori} known in order to formulate our estimators and tests; we will elaborate on this point in Section~\ref{sec:discussion}. In Lemma~\ref{lem:first_order_graph_sobolev_seminorm}, we prove that under these conditions, if the density $p$ is merely upper bounded then~\eqref{eqn:graph_sobolev_seminorm_asymptotic} holds with respect to the first-order graph Sobolev semi-norm.
 \begin{lemma}
 	\label{lem:first_order_graph_sobolev_seminorm}
-	Suppose $\Xset$ is a Lipschitz domain, and that $p(x) \leq p_{\max}$ for all $x \in \Xset$. Then, for any $f \in H^1(\Xset,M)$, there exists a constant $C > 0$ which may depend only on $\Xset$ and $d$ such that
+	Assume~\ref{asmp:kernel} and~\ref{asmp:domain}, and additionally that $p(x) \leq p_{\max}$ for all $x \in \Xset$. Then, for any $f \in H^1(\Xset,M)$, there exists a constant $C_1 > 0$ which depends only on $\Xset$, $d$, $p_{\max}$ and $K$ such that
 	\begin{equation}
-	f^T \Lap_{n,r} f \leq \frac{C}{\delta} n^2 r^{d + 2} M^2
+	\label{eqn:first_order_graph_sobolev_seminorm}
+	f^T \Lap_{n,r} f \leq \frac{C_1}{\delta} n^2 r^{d + 2} M^2
 	\end{equation}
 	with probability at least $1 - \delta$.
 \end{lemma}
+The proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm}, as with all of our proofs, is contained in the Appendix. There are a few remarks worth making regarding Lemma~\ref{lem:first_order_graph_sobolev_seminorm}, but they all apply equally well to our analysis of $f^T\Lap_{{n,r}}^sf$ for $s > 1$, and so will wait to make them.
 
-\subsubsection{General graph Sobolev semi-norm}
-
-When $s > 1$, in order to obtain the desired upper bound on the graph Sobolev semi-norm we must make some additional assumptions regarding the behavior of $f_0$ near the boundary of $\Xset$, as well as on the smoothness of the density function $p$.
+\subsubsection{Higher-order graph Sobolev semi-norm}
+\label{subsec:higher_order_graph_sobolev_seminorm}
+When $s > 1$, in order to obtain the desired upper bound~\eqref{eqn:graph_sobolev_seminorm_asymptotic} on the asymptotic growth of the graph Sobolev semi-norm we must make two kinds of additional assumptions: the first on the behavior of $f_0$ near the boundary of $\Xset$, and the second on the smoothness of the density function $p$.
 \begin{theorem}
 	\label{thm:graph_sobolev_seminorm}
-	For some integer $s > 1$, suppose that the density $p \in C^{s - 1}(\Xset,p_{\max})$ and $f \in H_0^s(\Xset,M)$, and additionally that the domain $\Xset$ is Lipschitz. Let $r = r(n)$ be a sequence of connectivity radii satisfying $r(n) \to 0$ and $r(n) \gtrsim n^{-1/(2(s - 1) +d)}$ as $n \to \infty$. Then for all $n$ sufficiently large, there exists a constant $C > 0$ which may depend only on $\Xset$ and $d$ such that
+	Fix some integer $s > 1$. Assume~\ref{asmp:kernel} and~\ref{asmp:domain}, and additionally suppose that the density $p \in C^{s - 1}(\Xset,p_{\max})$ and that $f \in H_0^s(\Xset,M)$. Let $r = r(n)$ be a sequence of connectivity radii satisfying $r(n) \to 0$ and $r(n) \gtrsim n^{-1/(2(s - 1) +d)}$ as $n \to \infty$. Then for all $n$ sufficiently large, there exists a constant $C_2 > 0$ which depends only on $\Xset$, $d$, $p_{\max}$ and $K$ such that
 	\begin{equation}
 	\label{eqn:graph_sobolev_seminorm}
-	f^T \Lap_{n,r}^s f \leq \frac{C}{\delta} n^{s + 1} r^{s(d + 2)}M^2
+	f^T \Lap_{n,r}^s f \leq \frac{C_2}{\delta} n^{s + 1} r^{s(d + 2)}M^2
 	\end{equation}
 	with probability at least $1 - \delta$.
 \end{theorem}
-It is worth pausing to make a few remarks.
+Now, we make some remarks:
 \begin{itemize}
-	\item \textbf{Bounded norm vs. bounded semi-norm.}
-	\item \textbf{Markov's inequality, as opposed to exponential concentration.}
-	\item \textbf{Simpler proof and stronger concentration under Holder assumption.}
-	\item \textbf{Explain why~\eqref{eqn:graph_sobolev_seminorm} should be familiar, and a lower bound on $r$ expected.} The scaling (in $n$, $r$, and $M$) on the right hand side of~\eqref{eqn:graph_sobolev_seminorm} will be familiar to the informed reader. For a sufficiently regular function $f \in C^3(\Xset,M)$ and density $p \in C^1(\Xset,p_{\max})$, it is known \textcolor{red}{(references)} that $\frac{1}{nr^{d + 2}}\Lap_{n,r}f \to \Delta_pf$ for \textcolor{red}{$r \geq ???$}. \textcolor{red}{A recursive argument shows that when $f \in C^{2s + 1}(\Xset)$ and $p \in C^{2s}(\Xset)$ are sufficiently regular and $r$ is sufficiently large},
-	\begin{equation*}
+	\item 
+	The scaling (in $n$ and $r$) on the right hand side of~\eqref{eqn:graph_sobolev_seminorm} will be familiar to the informed reader. For a sufficiently regular function $f \in C^3(\Xset,M)$ and density $p \in C^1(\Xset,p_{\max})$, it is known \textcolor{red}{(references)} that $\frac{1}{nr^{d + 2}}\Lap_{n,r}f \to \Delta_pf$ for $n^{-1/(2 + d)}$. A recursive argument shows that when $f \in C^{2s + 1}(\Xset)$, $p \in C^{2s}(\Xset)$, and $r$ is sufficiently large,
+	\begin{equation}
+	\label{eqn:graph_sobolev_seminorm_heuristic}
 	\Bigl(\frac{1}{nr^{d + 2}}\Lap_{n,r}\Bigr)^s f \to \Delta_p^sf \Longrightarrow \frac{1}{n^{s + 1} r^{s(d + 2)}} f^T \Lap_{n,r}^s f \to \int_{\Xset} f(x) \cdot  \Delta_p^sf(x) p(x) \,dx \leq c M^2.
-	\end{equation*}
-	\item \textbf{Explain why the actual proof is more subtle.} In fact, the actual proof of Theorem~\ref{thm:graph_sobolev_seminorm} is rather more involved. Among other subtleties we highlight the mismatch, in the previous remark, between the number of smooth derivatives $f$ possesses ($2s + 1$) and the degree of the Laplacian operator $\Lap_{{n,r}}^s$ $(s)$; this is unsuitable for our purposes. A more careful analysis implies~\eqref{thm:graph_sobolev_seminorm}, but note well that~\eqref{eqn:graph_sobolev_seminorm} is only an upper bound rather than a statement about consistency. This is the price we pay for insisting that the assumed number of smooth derivatives match the degree of the Laplacian; fortunately an upper bound will be sufficient for our purposes.
+	\end{equation}
+	
+	\textcolor{red}{(TODO 1)}: Figure out the right scaling of $r$ for this heuristic argument to go through.
+	
+	In fact, the actual proof of Theorem~\ref{thm:graph_sobolev_seminorm} is rather more involved. Among other subtleties we highlight the mismatch, in the heuristic argument just given, between the number of smooth derivatives $f$ possesses ($2s + 1$) and the degree of the Laplacian operator $\Lap_{{n,r}}^s$ $(s)$; this is unsuitable for our purposes. We use a more careful analysis to prove Theorem~\eqref{thm:graph_sobolev_seminorm}, but note well that~\eqref{eqn:graph_sobolev_seminorm} is only an upper bound rather than a statement about consistency. This is the price we pay for insisting that the assumed number of smooth derivatives match the degree of the Laplacian; fortunately an upper bound will be sufficient for our purposes in Section~\ref{sec:minimax_optimal_graph_Laplacian_methods}.
+	
+	\item In~\eqref{eqn:first_order_graph_sobolev_seminorm} and~\eqref{eqn:graph_sobolev_seminorm}, we state the upper bound as a function of the Sobolev norm $\norm{f}_{H^s(\Xset)}$ of $f$, rather than the Sobolev seminorm $|f|_{H^s(\Xset)}$. The derivations in~\eqref{eqn:graph_sobolev_seminorm_heuristic} might leave us some hope that it suffices to assume a bounded seminorm. Indeed, in Lemma~\ref{lem:first_order_graph_sobolev_seminorm}, we may relax this---that is, we may replace $M$ by $|f|_{H^1(\Xset)}$---because the graph Laplacian $\Lap_{n,r}$ annihilates the constant part of any function $f$. In the latter case, we may not replace $M$ by $|f|_{H^s(\Xset)}$. 
+	
+	\textcolor{red}{(TODO 2)}: Explain why.
+	
+	\textcolor{red}{(TODO 3)}: Check with Ryan and Siva--- or if not them, Google--- to figure out whether boundedness in seminorm plus zero-trace condition implies boundedness in norm. Intuitively, it feels like it does.
+	
+	\textcolor{red}{(TODO 4)}: Go back and check whether Fourier series projection requires boundedness in norm, or only in semi-norm.
+	\item We note also that~\eqref{eqn:first_order_graph_sobolev_seminorm} and~\eqref{eqn:graph_sobolev_seminorm}---which each hold with probability $1 - \delta$---are proportional to $1/\delta$, as opposed to $\log(1/\delta)$ as is typical of exponential concentration. The reason: the Sobolev assumption $f \in H^s(\Xset,M)$ only grants us control over the second moment of $f$ and its derivatives, and so we are afforded only the relatively weak concentration implied by Markov's inequality. Under higher-order moment control on $f$ and its derivatives---for instance if $f \in C^s(\Xset,M)$---we can get sharper upper bounds.
 \end{itemize}
+
+Finally, we note that while the particular requirement in Theorem~\ref{thm:graph_sobolev_seminorm} that $f$ be zero-trace may be a tad overkill, it is essential that $f$ display some type of periodicity for the upper bound~\eqref{eqn:graph_sobolev_seminorm} to hold.
+
+\textcolor{red}{(TODO 5)}: Elaborate on this: (a) reference developments in the literature showing that the eigenvectors of $\Lap_{n,r}$ satisfy Neumann boundary conditions in the limit $n \to \infty, r \to 0$, and (b) state, as a Lemma, that there exists a function $g$ which is not zero-trace, and for which the upper bound~\eqref{eqn:graph_sobolev_seminorm} is not satisfied.
 
 \subsubsection{Graph Sobolev semi-norm under manifold assumption.}
 
-\textcolor{red}{(TODO)}
+As mentioned in the introduction, an attractive quality of the neighborhood graph is that it automatically captures the geometry of $P$ and $\Xset$. We now show one manifestation of this phenomenon: the graph Sobolev semi-norm automatically adapts to the intrinsic dimension of $\Xset$. Formally, we make the following assumption on $\Xset$.
+\begin{enumerate}[label=(P\arabic*)]
+	\setcounter{enumi}{3}
+	\item 
+	\label{asmp:domain_manifold}
+	The measure $P$ is supported on a compact, connected, smooth submanifold $\Xset$ of $\Reals^d$; the domain $\Xset$ is of fixed dimension $1 \leq m \leq d$ and without boundary. Moreover, $P$ has a density $p$ with respect to the volume form of $\Xset$ which is bounded away from $0$ and $\infty$,
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty
+	\end{equation*}
+	for all $x \in \Xset$.
+\end{enumerate}
+In Theorem~\ref{thm:manifold_graph_sobolev_seminorm}, the scaling of the graph Sobolev semi-norm now depends on the intrinsic dimension $m$, rather than the ambient dimension $d$.
+\begin{theorem}
+	\label{thm:manifold_graph_sobolev_seminorm}
+	Fix some integer $1 \leq s \leq 3$. Assume~\ref{asmp:kernel},~\ref{asmp:domain_manifold} and additionally suppose that $p \in C^{s - 1}(\Xset,p_{\max})$ and $f \in C^s(\Xset,M)$. Let $r = r(n)$ be a sequence of connectivity radii satisfying $r(n) \to 0$ and $r(n) \gtrsim n^{-1/(2(s - 1) + m)}$ as $n \to \infty$. Then for all $n$ sufficiently large, there exists a constant $C_3 > 0$ which depends only on $\Xset, m$ and $p$ such that
+	\begin{equation*}
+	f^T \Lap_{n,r}^s f \leq \frac{C_3}{\delta}n^{s + 1}r^{s(m + 2)}M^2
+	\end{equation*}
+	with probability at least $1 - \delta$.
+\end{theorem}
+\begin{itemize}
+	\item \textcolor{red}{(TODO 6)}: Explain why we require $s \leq 3$.
+	\item \textcolor{red}{(TODO 7)}: See if we can replace the Holder assumption $f \in C^s$ with the Sobolev assumption $f \in H^s$.
+\end{itemize}
 
 \subsection{Graph Laplacian eigenvalues}
 
-\textcolor{red}{(TODO)}
+Lemma~\ref{lem:neighborhood_eigenvalue} establishes a scaling rate which holds for all eigenvalues $\lambda_{k}(G_{n,r})$, assuming appropriate regularity conditions on $P$.
+\begin{lemma}
+	\label{lem:neighborhood_eigenvalue}
+	Suppose the distribution $P$ satisfies~\ref{asmp:bounded_density} and~\ref{asmp:domain}, and the kernel $K$ satisfies~\ref{asmp:kernel}. Let $r = r(n)$ be a sequence of connectivity radii satisfying $r(n) \to 0$ as $n \to \infty$. Then for all $n$ sufficiently large, there exist constants $c_4$ and $C_4$ which depend only on $p_{\min}, p_{\max},d$ and $\Xset$, such that the following statement
+	\begin{equation}
+	\label{eqn:neighborhood_eigenvalue}
+	c_4 \cdot \min\Bigl\{nr^{d + 2}k^{2/d}, nr^d\Bigr\} \leq \lambda_k(G_{n,r}) \leq C_4 nr^{d + 2}k^{2/d}~~\textrm{for all $2 \leq k \leq n$,}
+	\end{equation}	
+	holds with probability at least $1 - C_4 r^{-d} \exp\bigl\{- c_4 n r^d\bigr\}$.
+\end{lemma}
+In Lemma~\ref{lem:neighborhood_eigenvalue_manifold}, we show that under the manifold assumption, these scalings hold but with the ambient dimension $d$ replaced by the intrinsic dimension $m$.
+\begin{lemma}
+	\label{lem:neighborhood_eigenvalue_manifold}
+	Suppose the distribution $P$ satisfies~\ref{asmp:domain_manifold} and the kernel $K$ satisfies~\ref{asmp:kernel}. Let $r = r(n)$ be a sequence of connectivity radii satisfying $r(n) \to 0$ as $n \to \infty$. Then there exist constants $c_5$ and $C_5$ which depend only on $p_{\min}, p_{\max}$,$m$ and $\Xset$, such that the following statement 
+	\begin{equation}
+	\label{eqn:neighborhood_eigenvalue_manifold}
+	 c_5 \cdot \min\Bigl\{nr^{m + 2}k^{2/m}, nr^m\Bigr\} \leq \lambda_k(G_{n,r}) \leq C_5 nr^{m + 2}k^{2/m}~~\textrm{for all $2 \leq k \leq n$,}
+	\end{equation}	
+	holds with probability at least $1 - C_5 r^{-m} \exp\bigl\{- c_5 n r^m\bigr\}$.
+\end{lemma}
+
+
+The second term in the lower bound of~\eqref{eqn:neighborhood_eigenvalue} and~\eqref{eqn:neighborhood_eigenvalue_manifold} is an artifact of the well known inequality $\lambda_n(G) \leq 2 \max_{i = 1,\ldots,n} \mathbf{D}_{ii}$---in words, that the maximum eigenvalue of the Laplacian can never be more than twice the maximum degree of the graph. To obtain optimal rates for our Laplacian eigenmaps estimator and test statistic, we will need the eigenvalues $\lambda_k(G_{n,r})$ to asymptotically scale like~\eqref{eqn:neighborhood_graph_eigenvalue_asymptotic} for particular values of $k$. Doing some algebra, we deduce in Corollary~\ref{cor:neighborhood_eigenvalue} various conditions on $k$ and $r$ under which the graph eigenvalue scales at least as fast as is desired, i.e. $\lambda_k(G_{n,r}) \gtrsim n r^{d + 2}k^{2/d}$. 
+
+\begin{corollary}
+	\label{cor:neighborhood_eigenvalue}
+	Suppose the distribution $P$ satisfies~\ref{asmp:bounded_density} and~\ref{asmp:domain}, and the kernel $K$ satisfies~\ref{asmp:kernel}. Then each of the following statements:
+	\begin{itemize}
+		\item For $k = M^{2d/(2s + d)} n^{d/(2s + d)}$ and any $r \leq M^{-2/(2s + d)} n^{-1/(2s + d)}$, 
+		\begin{equation}
+		\label{eqn:neighborhood_eigenvalue_1}
+		\lambda_{k}(G_{n,r}) \geq c_4 \cdot nr^{d+2}{k}^{2/d}
+		\end{equation}
+		\item For $k = M^{4d/(4s + d)}n^{2d/(4s + d)}$ and any $r \leq M^{-4/(4s + d)} n^{-2/(4s + d)}$,
+		\begin{equation}
+		\label{eqn:neighborhood_eigenvalue_2}
+		\lambda_{k}(G_{n,r}) \geq c_4 \cdot nr^{d+2}{k}^{2/d}
+		\end{equation}
+	\end{itemize}
+	hold with probability at least $1 - C_4 r^{-d} \exp\{- c_4 n r^d\}$.
+	
+	If instead the distribution $P$ satisfies~\ref{asmp:domain_manifold}, then each of the previous statements hold with $d$ replaced by $m$, and with the constants $C_4$ and $c_4$ replaced by $C_5$ and $c_5$, respectively.
+\end{corollary}
+
+Some remarks:
+\begin{itemize}
+	\item We will use inequality~\eqref{eqn:neighborhood_eigenvalue_1} to upper bound the bias of the Laplacian eigenmaps estimator $\wh{f}_{\LE}$, and inequality~\eqref{eqn:neighborhood_eigenvalue_2} to upper bound the bias of the Laplacian eigenmaps test statistic $T_{\LE}$. 
+	\item Let us briefly summarize the various restrictions on the asymptotic scaling of $r$. Corollary~\ref{cor:neighborhood_eigenvalue} tells us that the desired eigenvalue scalings~\eqref{eqn:neighborhood_graph_eigenvalue_asymptotic} kick in only when the neighborhood graph radius $r$ is sufficiently small. On the other hand, in order for the probabilistic bounds of this corollary to be non-facile, the neighborhood graph radius must be sufficiently large, roughly speaking $r \gtrsim (\log n/n)^{1/d}$ (or in the manifold case $r \gtrsim (\log n/n)^{1/m}$). What's more, the conclusions of Theorem~\ref{thm:graph_sobolev_seminorm} hold only when neighborhood graph radius $r$ is sufficiently large. Consequently, our results in Section~\ref{sec:minimax_optimal_graph_Laplacian_methods} regarding statistical optimality of Laplacian eigenmaps will hold only for the values of $r$ which satisfy all these restrictions, when such values exist.
+	\item For Laplacian smoothing, in a rough sense the story is the same: to prove rate-optimal upper bounds, we will still want $\lambda_k(G_{n,r})$ to scale according to~\eqref{eqn:neighborhood_graph_eigenvalue_asymptotic}; to establish such a scaling we will require the neighborhood graph radius $r$ be small, but not so small that the probabilistic bounds are facile; and there will be attendant consequences for our theory in Section~\ref{sec:minimax_optimal_graph_Laplacian_methods}. However the technical details are a bit fussier than for Laplacian eigenmaps, and we consign them to the appendix.
+\end{itemize}
 
 \section{Minimax optimal graph Laplacian methods}
 \label{sec:minimax_optimal_graph_Laplacian_methods}
 
-Let us start by assuming $f_0 \in H^1(P,M)$. In this section, we will establish that the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and the resulting test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test}, achieve the standard minimax optimal estimation and hypothesis testing rates, respectively. Pleasingly, these results will go through with essentially no additional regularity conditions---additional, that is, to~\ref{asmp:bounded_density}---on either the regression function $f_0$ or the density $p$. The story will also be complete: we will obtain the ``right'' rates for all regimes--that is, all values of $s$ and $d$---for which we would expect to get these rates.
+We now turn to formalizing the main conclusions of this work: that in various settings and under various conditions, the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and the resulting test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test}, are asymptotically minimax-rate optimal. We divide these conclusions into three parts. First, we will show that when $f_0$ itself is smooth---measured in the Sobolev $H^1(\Xset)$ norm---all of our graph-based procedures are minimax rate-optimal under minimal conditions. Second, we will show that when $f_0$ additionally possesses smooth (partial) derivatives, some of our graph-based procedures can---under certain conditions---provably achieve the faster minimax rates. Third, we will show that when the density $p$ is supported on a low-dimensional manifold our graph-based procedures again achieve faster rates than in the full-dimensional case, thereby confirming their domain-adaptive properties. 
 
-\subsection{Minimax optimal estimation}
+Unless otherwise stated, for all results in this Section we will always assume that the density $p$ satisfies~\ref{asmp:bounded_density}, the domain $\Xset$ satisfies~\ref{asmp:domain}, and the kernel $K$ satisfies~\ref{asmp:kernel}. Additionally, within our Theorem statements we use $c$ and $C$ to denote constants which possibly differ from Theorem to Theorem,  and which may depend on $K$, $d$, $p_{\min}$, $p_{\max}$, $\Xset$ and $s$, but do not depend on $f_0$, the radius of the Sobolev ball $M$, or the sample size $n$.
 
-Under appropriate conditions, the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ achieves minimax rates over all $f_0 \in H^1(P,M)$ with high probability. The conditions we impose will be on the neighborhood graph $G_{n,r}$. As the construction of the graph is in the user's control, these assumptions are therefore mild.
-\begin{enumerate}[label=(K\arabic*)]
+\subsection{First-order smoothness.}
+\label{subsec:minimax_first_order_smoothness}
+Let us start by assuming $f_0 \in H^1(\Xset,M)$, and proving upper bounds on the risk of our various graph-based procedures. Pleasingly, these results will go through with essentially no additional regularity conditions---additional, that is, to the standard~\ref{asmp:bounded_density} and~\ref{asmp:domain}---on either the regression function $f_0$ or the density $p$. The story will also be complete: we will obtain the ``right'' rates for all scales---that is, all values of $s$ and $d$---at which we would expect to get such rates.
+
+\subsubsection{Estimation}
+\label{subsubsec:first_order_smoothness_estimation}
+
+Under appropriate conditions, the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ achieves, up to constants, the minimax risk $n^{-2/(2 + d)}$ over all $f_0 \in H^1(\Xset,M)$. To prove this, we will invoke Lemma~\ref{lem:first_order_graph_sobolev_seminorm} and Corollary~\ref{lem:neighborhood_eigenvalue} to suitably upper bound the bias of $\wh{f}_{\LE}$: in order to do so, we must restrict the scaling of neighborhood graph radii $r(n)$.
+\begin{enumerate}[label=(R\arabic*)]
 	\item 
-	\label{asmp:kernel_form}
-	The kernel function $K(z) = \1\Bigl\{\norm{z}_2/r \leq 1 \Bigr\}$.
-	\item 
-	\label{asmp:kernel_radius_estimation}
-	The radii $r = r(n)$ satisfies $r(n) \to 0$ as $n \to \infty$, and additionally
+	\label{asmp:le_kernel_radius_estimation}
+	The sequence of radii $r = r(n)$ satisfies
 	\begin{equation*}
-	n^{-1/d}\leq r(n) \leq M^{2/(2 + d)}n^{-1/(2 + d)}
+	\biggl(\frac{\log n}{n}\biggr)^{1/d} \lesssim r(n) \lesssim M^{-2/(2 + d)}n^{-1/(2 + d)}
 	\end{equation*}
 	for all $n$ sufficiently large.
 \end{enumerate}
-
-We use~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_estimation} to ensure that the approximation error (bias) of $\wh{f}_{\LE}$ is of the correct order. On the other hand, bounding the estimation error of $\wh{f}_{\LE}$ -- both in expectation and in probability-- is straightforward. Together, bounds on these two sources of error imply Theorem~\ref{thm:laplacian_eigenmaps_estimation1}.
+On the other hand bounding the estimation error of $\wh{f}_{\LE}$ is straightforward. Together, bounds on these two sources of error imply Theorem~\ref{thm:laplacian_eigenmaps_estimation1}.
 \begin{theorem}
 	\label{thm:laplacian_eigenmaps_estimation1}
-	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}. Suppose that $f_0 \in H^1(P,M)$, that $P$ satisfies~\ref{asmp:bounded_density}, and that neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_estimation}. Then, for the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ as given by~\eqref{eqn:laplacian_eigenmaps}, when $\kappa = M^{2/(2 + d)}n^{d/(2 + d)}$, the following statement holds: for all $n$ sufficiently large, there exist constants $c$ and $C$ such that
+	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression} with $f_0 \in H^1(\Xset,M)$. Suppose that the neighborhood graph $G_{n,r}$ is computed with a radius $r$ which satisfies~\ref{asmp:le_kernel_radius_estimation}, and the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ with $\kappa = M^{2/(2 + d)}n^{d/(2 + d)}$. Then for all $n$ sufficiently large,
 	\begin{equation*}
-	\Bigl\|\wh{f}_{\LE} - f_0\Bigr\|_n^2 \leq \frac{C}{\delta} M^{2d/(4 + d)} n^{-2/(2 + d)}
+	\Bigl\|\wh{f}_{\LE} - f_0\Bigr\|_n^2 \leq \frac{C}{\delta} M^{d/(2 + d)} n^{-2/(2 + d)}
 	\end{equation*}
-	with probability at least $1 - \delta -  Cr^{-d}\exp\{-cnr^d\} - \exp(-\kappa)$.
+	with probability at least $1 - \delta -  Cr^{-d}\exp\{-cnr^d\} - \exp\{-\kappa\}$.
 \end{theorem}
 
-\begin{itemize}
-	\item Discuss the choice of radius $r$ imposed by~\ref{asmp:kernel_radius_estimation}.
-	\item Comment on the distinction between error rates as measured by the norm in $L^2(P_n)$ vs. $L^2(P)$.
-	\item \textbf{Proof techniques}: to prove results we rely on both (a) classical bias-variance decomposition of orthogonal series estimators (see e.g. \textcolor{red}{Tsybakov}), and (b) pointwise and variational results on neighborhood graph Laplacian semi-norms and eigenvalues (see e.g. \textcolor{red}{Belkin04, Belkin08, GarciaTrillos18, Calder19})
-\end{itemize}
-
-Theorem~\ref{thm:laplacian_smoothing_estimation1} is analogous to Theorem~\ref{thm:laplacian_eigenmaps_estimation1}, except it deals with the Laplacian smoothing estimator $\wt{f}_{\LS}$ rather than the Laplacian eigenmaps estimator $\wh{f}_{\LE}$.   
-\begin{theorem}
-	\label{thm:laplacian_smoothing_estimation1}
-	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}. Suppose that $f_0 \in H^1(P,M)$, that $P$ satisfies~\ref{asmp:bounded_density}, and that neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_estimation}. Then, for the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ as given by~\eqref{eqn:laplacian_eigenmaps}, when we set $\kappa = M^{2/(2 + d)}n^{d/(2 + d)}$ the following statement holds: for all $n$ sufficiently large, there exist constants $c$ and $C$ such that
-	\begin{equation*}
-	\Bigl\|\wh{f}_{\LS} - f_0\Bigr\|_n^2 \leq \frac{C}{\delta} M^{2d/(4 + d)} n^{-2/(2 + d)}
-	\end{equation*}
-	with probability at least $1 - \delta -  Cr^{-d}\exp\{-cnr^d\} - \exp(-\kappa)$.
-\end{theorem}
-
-\begin{itemize}
-	\item \textbf{Proof techniques}: Because the solution to~\eqref{eqn:laplacian_smoothing} has an analytic form, we can rely on a bias-variance decomposition---as opposed to empirical process theory---to derive~Theorem~\ref{thm:laplacian_smoothing_estimation1}.
-	\item A key difference between Theorems~\ref{thm:laplacian_eigenmaps_estimation1} and~\ref{thm:laplacian_smoothing_estimation1} is that the latter holds only when $d \leq 4$. This restriction is unsurprising, and reflects a fundamental drawback in (penalized) least squares estimators more generally. The underlying phenomenon is similar to that elucidated by the seminal papers~\cite{birge1993} and~\cite{birge1998}: when the dimension $d$ is large enough, the parameter space is too large, and (penalized) least squares approaches are no longer minimax optimal. It is interesting to note that we see a gap emerge between the graph- (Laplacian smoothing) and continuum (smoothing spline) estimator when $d = 3$: the former continues to be minimax optimal, whereas the latter is not even well-defined. We should also mention that in a related context (estimation over a $d$-dimensional lattice graph), \cite{sadhanala2016} require the same restriction $d \leq 4$. 
-\end{itemize}
-
-\subsection{Minimax optimal hypothesis testing}
-
-Under appropriate conditions, the Laplacian eigenmaps test statistic $T_{\LE}$ has non-trivial power over all $f_0 \in H^1(P,M)$ that are separated from $0$ in $\Leb^2(P)$ norm by at least the minimax critical radius. These conditions include~\ref{asmp:kernel_form} and~\ref{asmp:smooth_density}, but not~\ref{asmp:kernel_radius_estimation}. Instead, we will require the following scaling of the neighborhood graph radius.
-\begin{enumerate}[label=(K\arabic*)]
-	\setcounter{enumi}{2}
+In Theorem~\ref{thm:laplacian_smoothing_estimation1} we consider the Laplacian smoothing estimator $\wt{f}_{\LS}$, and draw a similar conclusion to Theorem~\ref{thm:laplacian_eigenmaps_estimation1}. One difference: to establish Theorem~\ref{thm:laplacian_smoothing_estimation1}, we will require (much) tighter restrictions on $r$ than were required for Theorem~\ref{thm:laplacian_eigenmaps_estimation1}.
+\begin{enumerate}[label=(R\arabic*)]
+	\setcounter{enumi}{1}
 	\item 
-	\label{asmp:kernel_radius_testing}
-	The radii $r = r(n)$ satisfy $r(n) \to 0$ as $n \to \infty$, and additionally
+	\label{asmp:ls_kernel_radius_estimation}
+	The sequence of radii $r = r(n)$ satisfies
 	\begin{equation*}
-	n^{-1/d} \leq r(n) \leq n^{-2/(4 + d)}
+	\biggl(\frac{\log n}{n}\biggr)^{1/d} \lesssim r(n) \lesssim n^{-3/(4 + 2d)} M^{(d - 4)/(4 + 2d)}
 	\end{equation*}
 	for all $n$ sufficiently large.
 \end{enumerate}
+\begin{theorem}
+	\label{thm:laplacian_smoothing_estimation1}
+	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}, with $d < 4$ and $f_0 \in H^1(\Xset,M)$. Suppose that that the neighborhood graph $G_{n,r}$ is computed with a radius $r$ which satisfies~\ref{asmp:ls_kernel_radius_estimation},  and the Laplacian smoothing estimator $\wh{f}_{\LS}$ with $\rho = M^{-4/(2 + d)} (nr^{d + 2})^{-1} n^{-2/(2 + d)}$ and $s = 1$. Then for all $n$ sufficiently large,
+	\begin{equation*}
+	\Bigl\|\wh{f}_{\LS} - f_0\Bigr\|_n^2 \leq \frac{C}{\delta} M^{d/(2 + d)} n^{-2/(2 + d)}
+	\end{equation*}
+	with probability at least $1 - \delta -  Cr^{-d}\exp\{-cnr^d\} - \exp\{-c M^{d/(2d + 4)} n^{d/(2+d)}\}$.
+\end{theorem}
+To summarize: except on a set of small probability, when appropriately tuned the Laplacian eigenmaps ($\wh{f}_{\LE}$) and Laplacian smoothing ($\wh{f}_{\LS}$) estimators have asymptotic in-sample mean-squared error within a constant factor of the minimax risk. Some remarks:
 
+\begin{itemize}
+	\item The range of radii $r$ imposed by~\ref{asmp:le_kernel_radius_estimation} and~\ref{asmp:ls_kernel_radius_estimation} are compatible with practice, where by far the most common choice of radius is the connectivity threshold $r(n) \asymp (\log(n)/n)^{1/d}$, chosen to make the graph $G_{n,r}$ as sparse as possible while still being connected. 
+	\item For Laplacian eigenmaps, the choice of $\kappa$ is made to balance the squared-bias and variance terms, i.e. chosen so that with high probability
+	\begin{equation*}
+	\frac{f_0^T \Lap_{n,r} f_0}{n \lambda_{\kappa}(G_{n,r})} \lesssim \frac{\kappa}{n}.
+	\end{equation*}
+	Unlike in the analysis of the Fourier series projection estimator, here the (conditional on $\mathbf{X}$) bias is itself a random variable. To upper bound it, we rely on the pointwise and spectral convergence of neighborhood graph Laplacian semi-norms and eigenvalues, as established in Section~\ref{sec:graph_sobolev_classes}. 
+	\item A similar set of conclusions hold with respect to the choice of $\rho$ for the Laplacian smoothing estimator $\wt{f}_{\LS}$, where we seek to balance
+	\begin{equation*}
+	\frac{\rho}{n} f_0^T \Lap_{{n,r}} f_0 \lesssim \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_{k}(G_{n,r}) + 1\bigr)^2}.
+	\end{equation*}
+	The notable differences are: (i) now both the (conditional on $\mathbf{X}$) bias and variance are random, and (ii) to balance bias and variance we require control on all the eigenvalues $\lambda_1(G_{n,r}),\ldots,\lambda_n(G_{n,r})$. The second point is the source of the tighter upper bound on $r$ we require in~\ref{asmp:ls_kernel_radius_estimation}.
+	\item Our graph-based estimators are defined only at the design points $(X_1,\ldots,X_n)$ and we therefore measure error using the in-sample mean-squared error $\norm{\cdot}_n^2$. Because we work in the random design framework, the in-sample error is a random variable, and our bound is thus a bound in high probability. That being said, it is possible to smoothly extend $\wh{f}_{\LE}$ and $\wt{f}_{\LS}$ to be defined on all of $\Xset$, or indeed all of $\Reals^d$---the canonical extension being the \emph{Nystrom extension} \textcolor{red}{(reference)}---and evaluate the error of the extension in $\Leb^2(\Xset)$ norm. Assuming that the extension of our estimators and the regression function $f_0$ are suitably smooth, tools from empirical process theory will guarantee that the $\Leb^2(\Xset)$ error is not too much greater than the in-sample error, but we do not further pursue the details here.
+	\item A key difference between Theorems~\ref{thm:laplacian_eigenmaps_estimation1} and~\ref{thm:laplacian_smoothing_estimation1} is that the latter holds only when $d \leq 4$. This restriction reflects a fundamental drawback in (penalized) least squares estimators more generally. The underlying phenomenon is similar to that elucidated by the seminal papers~\cite{birge1993} and~\cite{birge1998}: when the dimension $d$ is large enough, the parameter space---in their case $C^1(\Xset,M)$, in our case $H^1(G_{n,r},M)$---is too large, and (penalized) least squares approaches are no longer minimax optimal. It is interesting to note that we see a gap emerge between the graph- (Laplacian smoothing) and continuum- (smoothing spline) estimators when $2 \leq d \leq 3$: the former continues to be minimax optimal, whereas the latter is not even well-defined. We should also mention that in a related context (estimation over a $d$-dimensional lattice graph), \cite{sadhanala2016} arrive at the same restriction $d < 4$. As in that work, when $d = 4$ our analysis results in a bound on risk within a $\log n$ factor of the minimax risk (in our context, we set $r \asymp (\log n/n)^{1/4}$ to derive this rates.)
+\end{itemize}
+
+\subsubsection{Testing}
+
+Let us define two simple tests, the first using $T_{\LE}$ and the second using $T_{\LS}$. For $b \geq 1$, define the thresholds $\wh{t}_b$ and $\wt{t}_b$ to be
+\begin{equation*}
+\wh{t}_{b} := \frac{\kappa}{n} + \frac{2b\sqrt{\kappa}}{n},~~ \wt{t}_{b} := \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k(G_{n,r}) + 1\bigr)^2} + \frac{2b}{n}\sqrt{\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k(G_{n,r}) + 1\bigr)^4}}.
+\end{equation*}
+Then let the Laplacian eigenmaps test $\wh{\phi}_{\LE} := \1\bigl\{T_{\LE} \leq \wh{t}_b\bigr\}$, and the Laplacian smoothing test $\wt{\phi}_{\LS} := \1\bigl\{T_{\LS} \leq \wt{t}_b\bigr\}$; clearly the tests $\wh{\phi}_{\LE}$ and $\wt{\phi}_{\LS}$ depend on $b$, but we suppress this notationally. The number $b$---or more accurately $1/b$---reflects the tolerated Type I and Type II error. In fact, some standard computations show that the thresholds $\wh{t}_b$ ($\wt{t}_b$) are sufficiently large to control the Type I error of $\wh{\phi}_{\LE}$ ($\wt{\phi}_{\LS}$), 
+\begin{equation*}
+\Ebb_0\bigl[\wh{\phi}_{\LE}\bigr],~~\Ebb_0\bigl[\wt{\phi}_{\LS}\bigr] \leq \frac{1}{b^2};
+\end{equation*}
+we relegate these computations to the appendix (see Lemmas~\ref{lem:le_fixed_graph_testing} and~\ref{lem:ls_fixed_graph_testing}). It remains to show that these tests have small Type II error whenever $f_0$ is separated from $0$ by more than the critical radius $\epsilon_n^{\star}(\mc{H}^s(\Xset,M))$, which we recall was defined in~\eqref{eqn:critical_radius}. We proceed in a parallel manner to Section~\ref{subsubsec:first_order_smoothness_estimation}, starting first with the Laplacian eigenmaps test and moving on to the Laplacian smoothing test. 
+
+Just as in the estimation context, to analyze the risk of the Laplacian eigenmaps test we will want to invoke Lemma~\ref{lem:first_order_graph_sobolev_seminorm} and Corollary~\ref{cor:neighborhood_eigenvalue} to upper bound the bias, and so we will need to restrict the scaling of $r(n)$.
+\begin{enumerate}[label=(R\arabic*)]
+	\setcounter{enumi}{2}
+	\item 
+	\label{asmp:le_kernel_radius_testing}
+	The sequence of radii $r = r(n)$ satisfies
+	\begin{equation*}
+	\biggl(\frac{\log n}{n}\biggr)^{1/d} \lesssim r(n) \lesssim M^{-4/(4 + d)}n^{-2/(4 + d)}
+	\end{equation*}
+	for all $n$ sufficiently large.
+\end{enumerate}
+When the sequence of radii $r$ do scale in such a fashion, we establish in Theorem~\ref{thm:laplacian_eigenmaps_testing1} that the Laplacian eigenmaps test achieves, up to constants, the minimax critical radius $n^{-4/(4 + d)}$ for all $f_0 \in H^1(\Xset,M)$.
 \begin{theorem}
 	\label{thm:laplacian_eigenmaps_testing1}
-	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}, with $d \leq 3$. Suppose that $f_0 \in H^1(P,M)$, that
-	$P$ satisfies~\ref{asmp:bounded_density}, and that the neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_testing}.
-	Then for the Laplacian eigenmaps test statistic $T_{\LE}$ as in~\eqref{eqn:laplacian_eigenmaps_test} with $\kappa = n^{2d/(4 + d)} M^{4d/(4 + d)}$, the following statement holds true for all $n$ sufficiently large: there exist constants $C_1$ and $C_2$ which do not depend on $f_0$ such that if
+	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}, with $d < 4$ and $f_0 \in H^1(\Xset,M)$ for $M \leq n^{(4 - d)/(4 + d)}$. Suppose that the neighborhood graph $G_{n,r}$ is computed with a radius $r$ which satisfies~\ref{asmp:le_kernel_radius_testing}, and the Laplacian eigenmaps test $\wh{\phi}_{\LE}$ with $\kappa = n^{2d/(4 + d)} M^{4d/(4 + d)}$ and any $b \geq 1$. Then for all $n$ sufficiently large, the following statement holds: if
 	\begin{equation}
-	\label{eqn:laplacian_eigenmaps_testing}
-	\norm{f_0}_{\Leb^2(P)}^2 \geq \frac{C_1}{\delta^2} M^{2d/(4 + d)} n^{-4/(4 + d)}
+	\label{eqn:laplacian_eigenmaps_testing1}
+	\norm{f_0}_{\Leb^2(\Xset)}^2 \geq C b^2 M^{2d/(4 + d)} n^{-4/(4 + d)}
 	\end{equation}
 	then
 	\begin{equation*}
-	\Pbb \biggl(T_{\LE} \geq \frac{\kappa}{n} + \frac{1}{\delta}\sqrt{\frac{2\kappa}{n^2}}\biggr) \geq 1 - C_2\Bigl(\delta + r^{-d} \exp\{- c n r^d\}\Bigr).
+	\Ebb_{f_0}\Bigl[1 - \wh{\phi}_{\LE}\Bigr] \leq C \Bigl(\frac{1}{b} + r^{-d} \exp\{- c n r^d\}\Bigr).
 	\end{equation*}
 \end{theorem}
-\begin{itemize}
-	\item Explain why Theorem~\ref{thm:laplacian_eigenmaps_testing1} implies minimax optimality.
-	\item Include results regarding the low-smoothness regime (i.e. the case when $d \geq 4$.)
-\end{itemize}
 
-\section{Higher-order smoothness classes}
-\label{sec:higher_order_smoothness_classes}
-The estimation and testing rates derived in Section~\ref{sec:minimax_optimal_graph_Laplacian_methods} reflect a bonafide curse of dimensionality: as  the dimension $d$ gets larger, inference quickly becomes (much) harder. As covered in Section~\ref{sec:problem_setup_and_background}, it is well known that by making additional structural assumptions---either on the regression function $f_0$, the distribution $P$, or both---one can derive improved minimax rates. In the following two sections, we show that under such assumptions, the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing}, and test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} can in certain situations obtain the faster (known) minimax rates in the nonparametric estimation and testing problems.
-
-In this section, we will assume that $f_0 \in H^s(P,M)$ for some integer $s > 1$. In other words, we will assume that $f_0$ has at least two smooth derivatives. 
-
-\subsection{Minimax optimal estimation}
-\label{subsec:minimax_estimation_higher_order}
-Under the following three conditions, the estimation error of the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ achieves the minimax optimal rate for any $f_0 \in H^s(P,M)$.
-\begin{enumerate}[label=(K\arabic*)]
-	\setcounter{enumi}{2}
+Theorem~\ref{thm:laplacian_smoothing_testing1} is analogous to Theorem~\ref{thm:laplacian_eigenmaps_testing1}, except it deals with the Laplacian smoothing test statistic $T_{\LS}$ as opposed to $T_{\LE}$. As in the estimation setting, we will require a tight range of scalings for $r$.
+\begin{enumerate}[label=(R\arabic*)]
+	\setcounter{enumi}{3}
 	\item 
-	\label{asmp:kernel_radius_higher_order}
-	\textbf{Neighborhood graph radius}:
-	The sequence of radii $r = r(n)$ satisfy $r(n) \to 0$ as $n \to \infty$, and additionally
+	\label{asmp:ls_kernel_radius_testing}
+	The sequence of radii $r = r(n)$ satisfies
 	\begin{equation*}
-	n^{-1/(2(s - 1) + d)}\leq r(n) \leq M^{2/(2s + d)}n^{-1/(2s + d)}
+	\biggl(\frac{\log n}{n}\biggr)^{1/d} \lesssim r(n) \lesssim M^{(16 - d)/(8 + 2d)}n^{(d - 20)/(32 + 8d)}
 	\end{equation*}
 	for all $n$ sufficiently large.
 \end{enumerate}
-\begin{enumerate}[label=(F\arabic*)]
-	\setcounter{enumi}{0}
-	\item 
-	\label{asmp:boundary} \textbf{Boundary condition}; The regression function $f_0$ is zero-trace. In other words, $f_0 \in H_0^s(P,M)$. 
-\end{enumerate}
-\begin{enumerate}[label=(P\arabic*)]
-	\setcounter{enumi}{1}
-	\item 
-	\label{asmp:smooth_density}\textbf{$\beta$-Holder density}: The design distribution $P$ has a density $p \in C^{\beta}([0,1]^d;p_{\max})$ for some $\beta \geq 0$. 
-\end{enumerate}
 
 \begin{theorem}
-	\label{thm:laplacian_eigenmaps_estimation}
-	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}. Suppose that $f_0 \in H_0^s(P,M)$, that $P$ satisfies~\ref{asmp:smooth_density} with $\beta = s - 1$, and that neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_higher_order}. Then, for the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ as in~\eqref{eqn:laplacian_eigenmaps}, when $\kappa = M^{2/(2s + d)}n^{d/(2s + d)}$, the following statement holds: for all $n$ sufficiently large, there exist constants $c$ and $C$ such that
+	\label{thm:laplacian_smoothing_testing1}
+	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}, with $d < 4$ and $f_0 \in H^1(\Xset,M)$ for $M \leq n^{(4 - d)/(4 + d)}$. Suppose that the neighborhood graph $G_{n,r}$ is computed with radius $r$ which satisfies~\ref{asmp:ls_kernel_radius_testing}, and the Laplacian smoothing test $\wh{\phi}_{\LS}$ with $\rho = (nr^{d + 2})^{-1} n^{-4/(4 + d)} M^{-8/(4 + d)}$, $s = 1$, and any $b \geq 1$. Then for all $n$ sufficiently large, the following statement holds: if
+	\begin{equation}
+	\label{eqn:laplacian_smoothing_testing1}
+	\norm{f_0}_{\Leb^2(\Xset)}^2 \geq C b^2 M^{2d/(4 + d)} n^{-4/(4 + d)}
+	\end{equation} 
+	then
+	\begin{equation*}
+	\Ebb_{f_0}\Bigl[1 - \wt{\phi}_{\LS} \Bigr] \leq C\Bigl(\frac{1}{b}\bigl[1 + n^{-d(4 + d)}M^{-2d/(4 + d)}\bigr] + \frac{1}{r^d}\exp\bigl\{-cnr^d\bigr\}\Bigr)
+	\end{equation*}
+\end{theorem}
+
+A few remarks:
+\begin{itemize}
+	\item As mentioned in Section~\ref{subsec:sobolev_spaces}, when $d \geq 4$ we do not have minimax testing rates over $H^1(\Xset,M)$; these Sobolev balls include quite unsmooth functions, indeed functions without bounded $4$th moment, and it seems likely that no test---graph-based or otherwise--- can even be consistent against all alternatives in these classes. However, in Section~\ref{subsec:minimax_higher_order_smoothness} we derive upper bounds over those functions in $H^1(\Xset,M)$ which \emph{do} have bounded $4$th moment, in fact over all functions $f \in \Leb^4(\Xset)$.
+	\item To compute the threshold $\wt{t}_b$, one must know each of the eigenvalues $\lambda_1(G_{n,r}),\ldots,\lambda_n(G_{n,r})$. This is computationally more onerous than computing any of the estimators/statistics~\eqref{eqn:laplacian_eigenmaps}-\eqref{eqn:laplacian_smoothing_test}, which involve either finding only the first $\kappa$ eigenvalue/eigenvector pairs (Laplacian eigenmaps) or solving a linear system (Laplacian smoothing). That being said, this is not a serious impediment: in practice using asymptotically-optimal thresholds like $\wh{t}_b$ or $\wt{t}_b$ results in substantial loss of efficiency for moderate values of $n$, and we would make the standard recommendation to calibrate via permutation. 
+\end{itemize}
+
+We now briefly set the stage for the rest of this Section. The estimation and testing rates established in Theorems~\ref{thm:laplacian_eigenmaps_estimation1}-\ref{thm:laplacian_smoothing_testing1} reflect a bonafide curse of dimensionality: as the dimension $d$ gets larger, inference quickly becomes (much) harder. As covered in Section~\ref{sec:problem_setup_and_background}, it is well known that by making additional structural assumptions---either on the smoothness of the regression function $f_0$, the dimension of the domain $\Xset$, or both---one can derive improved minimax rates. In the following two subsections, we show that under such assumptions, the estimators~\eqref{eqn:laplacian_eigenmaps} and~\eqref{eqn:laplacian_smoothing} and test statistics~\eqref{eqn:laplacian_eigenmaps_test} and~\eqref{eqn:laplacian_smoothing_test} can in certain situations obtain the well-known faster minimax rates in the nonparametric estimation and testing problems. We treat these cases separately---from each other, and from the first-order full-dimensional case just covered---because we will require additional regularity conditions for the analysis to go through.
+
+\subsection{Higher-order smoothness}
+\label{subsec:minimax_higher_order_smoothness}
+
+In this section, we will assume that $f_0 \in H^s(\Xset,M)$ for some integer $s > 1$---in other words, that $f_0$ has at least $s$ (partial) weak derivatives bounded in $\Leb^2$ norm---and upper bound the risk of the Laplacian eigenmaps procedures. 
+
+\subsubsection{Estimation}
+\label{subsec:minimax_estimation_higher_order}
+Now we would like to invoke Theorem~\ref{thm:graph_sobolev_seminorm}---as opposed to Lemma~\ref{lem:first_order_graph_sobolev_seminorm}---to upper bound the bias of $\wh{f}_{\LE}$: as a result, we will require that $r(n)$ satisfy the conditions of that Theorem. 
+\begin{enumerate}[label=(R\arabic*)]
+	\setcounter{enumi}{4}
+	\item 
+	\label{asmp:kernel_radius_higher_order_estimation}
+	\textbf{Neighborhood graph radius}:
+	The sequence of radii $r = r(n)$ satisfies
+	\begin{equation*}
+	n^{-1/(2(s - 1) + d)} \lesssim r(n) \lesssim M^{-2/(2s + d)}n^{-1/(2s + d)}
+	\end{equation*}
+	for all $n$ sufficiently large.
+\end{enumerate}
+The lower bound in~\ref{asmp:kernel_radius_higher_order_estimation} is now meaningfully larger than the connectivity threshold $r \asymp (\log n/n)^{1/d}$. However, fundamentally speaking the assumption is still a mild one: we as the user are free to construct the neighborhood graph $G_{n,r}$ however we'd like. In Theorem~\ref{thm:laplacian_eigenmaps_estimation_higher_order}, we show that under such a scaling of $r$ and certain regularity conditions, the Laplacian eigenmaps estimator is, up to constants, asymptotically rate-optimal.
+
+\begin{theorem}
+	\label{thm:laplacian_eigenmaps_estimation_higher_order}
+	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}, with $f_0 \in H_0^s(\Xset,M)$ and $p \in C^{s - 1}(\Xset,p_{\max})$. Suppose that the neighborhood graph $G_{n,r}$ is computed with radius $r$ which satisfies~\ref{asmp:kernel_radius_higher_order_estimation}, and the Laplacian eigenmaps estimator $\wh{f}_{\LE}$ with $\kappa = M^{2/(2s + d)}n^{d/(2s + d)}$. Then for all $n$ sufficiently large,
 	\begin{equation*}
 	\Bigl\|\wh{f}_{\LE} - f_0\Bigr\|_n^2 \leq \frac{C}{\delta} M^{2d/(4s + d)} n^{-2s/(2s + d)}
 	\end{equation*}
-	with probability at least $1 - \delta -  Cr^{-d}\exp\{-cnr^d\} - \exp(-\kappa)$.
+	with probability at least $1 - \delta -  Cr^{-d}\exp\{-cnr^d\} - \exp\{-\kappa\}$.
 \end{theorem}
 
-We note that the assumption~\ref{asmp:kernel_radius_higher_order} is rather mild, since the user can choose how to construct the neighborhood graph $G_{n,r}$. The assumptions~\ref{asmp:boundary} and~\ref{asmp:smooth_density} are more stringent. That being said, some restrictions on the boundary behavior of the regression function $f_0$ are typical in the analysis of orthogonal series estimators (see e.g. \textcolor{red}{Tsybakov}). On the other hand, restrictions on the smoothness of the density $p$ are also typical when analyzing orthogonal series estimators under a random design setup (see e.g. \textcolor{red}{Mukherjee16}).
+We have already commented on why we require that $p$ belong to $C^{s-1}(\Xset,M)$ and that $f_0$ be zero-trace, in Section~\ref{subsec:higher_order_graph_sobolev_seminorm}. However, it is worth pointing out that similar restrictions are also familiar in the broader context of orthogonal series estimators in nonparametric regression. For instance, in \textcolor{red}{(Tsybakov, other references)} it is assumed that $f_0 \in H_{\mathrm{per}}^s(\Xset,M)$. Additionally, in \textcolor{red}{(Mukherjee16)}, one of the relatively few treatments of orthogonal series regression with random design sampled from an unknown density, it is assumed that $p \in H^s(\Xset,M)$. 
 
-\begin{enumerate}
-	\item \textcolor{red}{(TODO)}: Comment a bit on the proof strategy; i.e., 
-\end{enumerate}
-
-\subsection{Minimax optimal hypothesis testing}
+\subsubsection{Testing}
 \label{subsec:minimax_testing_higher_order}
 
-Under appropriate conditions, the Laplacian eigenmaps test statistic $T_{\LE}$ has non-trivial power over all $f_0 \in H_0^s(P,M)$ that are separated from $0$ in $\Leb^2(P)$ norm by at least the minimax critical radius. These conditions include~\ref{asmp:kernel_form} and~\ref{asmp:smooth_density}. Additionally, we will require the following scaling of the neighborhood graph radii.
-\begin{enumerate}[label=(K\arabic*)]
-	\setcounter{enumi}{2}
+Under similar regularity conditions, the Laplacian eigenmaps test statistic $T_{\LE}$ has non-trivial power whenever $f_0 \in H_0^s(\Xset,M)$ is separated from $0$ in $\Leb^2(\Xset)$ norm by at least (a constant times) the minimax critical radius. Additionally, we will require the following scaling of the neighborhood graph radii.
+\begin{enumerate}[label=(R\arabic*)]
+	\setcounter{enumi}{5}
 	\item 
-	\label{asmp:kernel_radius_testing}
-	The radii $r = r(n)$ satisfy $r(n) \to 0$ as $n \to \infty$, and additionally
+	\label{asmp:kernel_radius_higher_order_testing}
+	The sequence of radii $r = r(n)$ satisfies
 	\begin{equation*}
-	n^{-1/(2(s - 1) + d)} \leq r(n)~~\textrm{and}~~ r(n) \leq n^{-2/(4s + d)}
+	n^{-1/(2(s - 1) + d)} \leq r(n)~~\textrm{and}~~ r(n) \leq M^{-4/(4s + d)}n^{-2/(4s + d)}
 	\end{equation*}
 	for all $n$ sufficiently large.
 \end{enumerate}
-In one sense this is still a mild condition, in that the neighborhood graph radius is still a tuning parameter to be selected by the user. However, some elementary calculations show that when $d > 4$, it is in fact the case that $n^{-1/(2(s - 1) + d)} > n^{-2/(4s + d)}$; hence no choice of $r$ can satisfy~\ref{asmp:kernel_radius_testing}. As a result, our theory applies only when $d \leq 4$.
+In one sense this is still a mild condition, in that the neighborhood graph radius is still a tuning parameter to be selected by the user. However, some elementary calculations show that when $d > 4$, it is in fact the case that $n^{-1/(2(s - 1) + d)} \gtrsim n^{-2/(4s + d)}$; hence no choice of $r$ can satisfy~\ref{asmp:kernel_radius_higher_order_testing}, unless $M$ is very small. As a result, our theory applies only when $d \leq 4$.
 
 \begin{theorem}
-	\label{thm:laplacian_eigenmaps_testing}
-	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}. Suppose that $d \leq 4$, that $f_0 \in H_0^s(P,M)$, that
-	$P$ satisfies~\ref{asmp:smooth_density} with $\beta = s - 1$, and that the neighborhood graph $G_{n,r}$ is computed with kernel $K$ and radius $r$ which satisfy~\ref{asmp:kernel_form} and~\ref{asmp:kernel_radius_testing}.
-	Then for the Laplacian eigenmaps test statistic $T_{\LE}$ given by~\eqref{eqn:laplacian_eigenmaps_test} with tuning parameter $\kappa = n^{2d/(4s + d)} M^{4d/(4s + d)}$, the following statement holds true for all $n$ sufficiently large: there exist constants $C_1$ and $C_2$ which do not depend on $f_0$ such that if
+	\label{thm:laplacian_eigenmaps_testing_higher_order}
+	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}, with $d \leq 4$, $f_0 \in H_0^s(\Xset,M)$ for some $M \leq n^{(4 - d)/(4 + d)}$, and $p \in C^{s - 1}(\Xset,p_{\max})$. Suppose that the neighborhood graph $G_{n,r}$ is computed with radius $r$ which satisfies~\ref{asmp:kernel_radius_higher_order_testing}, and the Laplacian eigenmaps test $\wh{\phi}_{\LE}$ with $\kappa = n^{2d/(4s + d)} M^{4d/(4s + d)}$ and any $b \geq 1$. Then for all $n$ sufficiently large, the following statement holds: if
 	\begin{equation}
 	\label{eqn:laplacian_eigenmaps_testing}
-	\norm{f_0}_{\Leb^2(P)}^2 \geq \frac{C_1}{\delta^2} M^{2d/(4s + d)} n^{-4s/(4s + d)}
+	\norm{f_0}_{\Leb^2(\Xset)}^2 \geq C b^2 M^{2d/(4s + d)} n^{-4s/(4s + d)}
 	\end{equation}
 	then
 	\begin{equation*}
-	\Pbb \biggl(T_{\LE} \geq \frac{\kappa}{n} + \frac{1}{\delta}\sqrt{\frac{2\kappa}{n^2}}\biggr) \geq 1 - C_2\Bigl(\delta + r^{-d} \exp\{- c n r^d\}\Bigr).
+	\Ebb_{f_0}\bigl[1 - \wh{\phi}_{\LE}\bigr] \leq C \Bigl(\frac{1}{b} + r^{-d} \exp\{- c n r^d\}\Bigr).
 	\end{equation*}
 \end{theorem}
 
 \begin{itemize}
-	\item \textbf{Test based on the Laplacian smoothing test statistic}. 
-	\item \textbf{Low-smoothness regime}. Include results on minimax testing when $4s < d$.
-	\item \textbf{Head off potential criticism}. Acknowledge frankly that there is a regime---when $4 < d < 4s$---where minimax testing rates are known, but for which we cannot prove that either of our test statistics achieve these rates.
+	\item \textbf{Low-smoothness regime}. \textcolor{red}{(TODO): Include results on minimax testing when $4s \leq d$.}
+	\item \textbf{Head off potential criticism}. \textcolor{red}{(TODO): Acknowledge frankly that there is a regime---when $4 < d < 4s$---where minimax testing rates are known, but for which we cannot prove that either of our test statistics achieve these rates. Our analysis will give some rates, but they will be suboptimal.}
+	\item \textbf{Whither Laplacian smoothing?} In the higher-order smoothness case, our analysis on the Laplacian smoothing methods is no longer tight enough, for all but a few values of $s$ and $d$, to imply minimax rate-optimality. We do not know whether a tighter analysis is possible, or whether the method itself is defective, and leave the matter to future work.
 \end{itemize}
 
-\section{Manifold Assumption}
-\label{sec:manifold_assumption}
+\subsection{Manifold Assumption}
+\label{subsec:manifold_assumption}
+
+\textcolor{red}{(TODO)}
 
 
 \section{Discussion}
-
+\label{sec:discussion}
+We have therefore shown that the properties of graph Sobolev classes established in Section~\ref{sec:graph_sobolev_classes} imply that graph-based procedures with high probability asymptotically achieve rate-optimal minimax risk, under appropriate regularity conditions. 
 \begin{itemize}
+	\item \textbf{Weaker conditions than required for ``continuum'' methods.}  We would like to emphasize one point regarding these regularity conditions: our analysis of graph-based procedures requires weaker assumptions on the design distribution $P$ than is needed to prove the equivalent results for their continuum counterparts. We require only that the density $p$ be bounded above and below, and that the domain $\Xset$ be Lipschitz (in the full-dimensional case) or smooth (in the manifold case), but crucially we do not assume that either the domain or density be known. This is in contrast with the continuum methods~\eqref{eqn:orthogonal_series} and~\eqref{eqn:smoothing_spline}, and it quantifies in a precise sense an advantage of graph-based methods over their continuum counterparts: the former automatically learn and leverage the shape of $p$ and $\Xset$ in a way the latter do not.
 	\item \textbf{Relationships between $s$ and $d$}. Comment on the different types of relationships between $s$ and $d$. (1) Those due to fundamental upper bounds on testing; (2) those due to ``defects'' in the proposed methods, i.e. largeness of the parameter space for Laplacian smoothing, and (3) those (potentially) due to ``defects'' in our proof strategy.
 	\item \textbf{Proof techniques}. On the subject of our proof techniques, the careful reader will note that our proofs do not rely on convergence of the Laplacian eigenvectors $v_k(G_{n,r})$ towards eigenfunctions of a limiting (weighted) Laplace-Beltrami operator.
 	
 	\textcolor{red}{(TODO) Flesh the following out.} This is helpful for at least the following two reasons. First, proving convergence of eigenvectors is harder than proving convergence of eigenvalues, a fact which is reflected in the gap between the best known rates for the two problems. Second, because in order for our methods to be minimax optimal, orthogonal series estimators rely on projecting onto $\kappa$ basis functions, where $\kappa$ is a number growing in $n$. Thus we have an accumulation of error problem.
-	\item \textbf{Possible extensions}.
+	\item 
+		 In order to prove optimality of the continuum methods~\ref{eqn:orthogonal_series} and~\ref{eqn:smoothing_spline}, we require much stronger information on the design distribution $P$ than we do for our graph-based procedures. 
+	\item \textbf{Possible extensions}. Methodologically: E.g. kNN graphs, different non-linear embedding schemes, etc. Theoretically: relaxing~\ref{asmp:bounded_density}, relaxing boundary conditions.
+	\item \textbf{Boundary conditions}. Refer to \textcolor{red}{Belkin12} for a more precise description of the boundary conditions imposed by Laplacian eigenmaps, and \textcolor{red}{Ting18} for a catalog of potential solutions. Make clear that to ``fix'' the boundary bias problem---i.e. to obtain sharp rates for functions $f$ which do not satisfy $f \in H_0(\Xset)$, or at the least $f$ satisfying some Neumann boundary condition---likely requires a change of estimators, and is beyond the scope of this work.
 \end{itemize}
 
 \section{Simulations}
@@ -935,74 +1092,142 @@ In Lemma~\ref{lem:ls_fixed_graph_testing}., we upper bound the testing error of 
 	(In the previous derivation: in $(i)$ the maximum is over all indices $k$ such that the eigenvalue $\lambda_k(G)$ is strictly positive; and $(ii)$ follows from the basic algebraic identity $1 - 1/(1 + \rho x)^2 \leq 2 \rho x$ for any $x, \rho > 0$.
 \end{proof}
 
-
-\clearpage
-To prove Theorems~\ref{thm:laplacian_eigenmaps_estimation},\textcolor{red}{...}, we would like to apply Lemmas~\ref{lem:fixed_graph_estimation},\textcolor{red}{...} in the random design context, i.e. to the random geometric graph $G_{n,r}$. To do so, we must establish the following (high probability) bounds: (i) an upper bound on the graph Sobolev seminorm of the regression function $f_0 \Lap_{n,r}^s f_0$, (ii) a lower bound on the Laplacian eigenvalue $\lambda_{\kappa}(G_{n,r})$ as a function of $\kappa$, and (iii) a lower bound on the empirical norm $\norm{f}_{n}$ as a function of $\norm{f}_{L^2(P)}$. 
-
-\section{Bounds on the graph Sobolev semi-norm}
+\section{Bound on the neighborhood graph Sobolev semi-norm}
 \label{sec:graph_sobolev_seminorm}
-We first bound $f_0^T \Lap_{n,r}^s f_0$ in expectation.
-\begin{lemma}
-	\label{lem:roughness_functional_expectation_sobolev}
-	Let $\Xset$ be a Lipschitz domain and let $s \geq 1$ be an integer. Suppose that \textcolor{red}{$f \in H_0^{s}(P,M)$}, and that $P$ admits a density $p \in C^{s-1}(\Xset,p_{\max})$ for some constant $p_{\max} < \infty$. Let $\{r(n)\}$ be a sequence of connectivity radii such that $n^{-1/(2(s - 1) + d)} \leq r(n)$ for all $n$ sufficiently large, and $r(n) \to 0$ as $n \to \infty$. Then \textcolor{red}{for any $2$nd-order kernel $K$}, there exists a constant $c$ depending only on $p_{\max}, K_{\max}$, $s$, $d$ and $\Xset$ such that the resulting neighborhood graph Laplacian satisfies
-	\begin{equation}
-	\label{eqn:roughness_functional_expectation_sobolev}
-	\Ebb\bigl[f^T L_{n,r}^s f\bigr] \leq c \cdot n \cdot (nr^{d+2})^s \cdot M^2
-	\end{equation}
-	for all $n$ sufficiently large.
-\end{lemma}
 
-\section{Bounds on graph eigenvalues}
+
+\section{Bounds on neighborhood graph eigenvalues}
 \label{sec:graph_eigenvalues}
-Lemma~\ref{lem:neighborhood_eigenvalue} establishes a scaling rate which holds for all eigenvalues $\lambda_{k}(G_{n,r})$, assuming appropriate regularity conditions on $P$.
-\begin{lemma}
-	\label{lem:neighborhood_eigenvalue}
-	Suppose the distribution $P$ satisfies~\ref{asmp:bounded_density}. Then there exists constants $c$ and $C$ which depend only on $p_{\min}, p_{\max}$ and $d$, such that with probability at least $1 - C r^{-d} \exp\bigl\{- c n r^d\bigr\}$, for all $2 \leq k \leq n$
-	\begin{equation}
-	\label{eqn:neighborhood_eigenvalue}
-	\lambda_k(G_{n,r}) \geq c \cdot \min\Bigl\{nr^{d + 2}k^{2/d}, nr^d\Bigr\}.
-	\end{equation}	
-\end{lemma}
-As those readers familiar with Sobolev spaces will be aware of, the scaling $k^{2/d}$ is the \textcolor{red}{typical scaling of a Sobolev ellipsoid}, and is thus the scaling of the eigenvalues we desire. On the other hand, the second term on the right hand side of~\eqref{eqn:neighborhood_eigenvalue} is an artifact of the well known inequality $\lambda_n(G) \leq 2 \max_{i = 1,\ldots,n} \mathbf{D}_{ii}$--- in words, that the maximum eigenvalue of the Laplacian can never be more than twice the maximum degree of the graph. Doing some algebra, we may deduce the conditions on $k$ and $r$ under which the graph eigenvalue follows the desired scaling, i.e. $\lambda_k(G_{n,r}) \sim n r^{d + 2}k^{2/d}$. 
 
-First, when $k = M^{2/(2s + d)} n^{d/(2s + d)}$, it holds that for any $r \leq M^{-2/(d(2s +d))} n^{-1/(2s + d)}$, 
-\begin{equation}
-\label{eqn:neighborhood_eigenvalue_1}
-\lambda_{k}(G_{n,r}) \geq c \cdot nr^{d+2}{k}^{2/d}
-\end{equation}
-with probability at least $1 - C r^{-d} \exp\{- c n r^d\}$. Second, when $k$
+\section{Bounds on the empirical norm}
+\label{sec:empirical_norm}
+
+We use Lemma~\ref{lem:empirical_norm_sobolev} to lower bound $\norm{f_0}_n^2$ by (a constant times) the $\Leb^2$ norm of $f$.
+
+\begin{lemma}
+	\label{lem:empirical_norm_sobolev}
+	Suppose $P$ satisfies~\ref{asmp:bounded_density}. Then for any $\delta \leq 1$ and $f \in H^s(\Xset,M)$, there exists a constant $C_6$ which depends only on $s$, $\Xset$, $d$, $p_{\min}$ and $p_{\max}$, such that if 
+	\begin{equation}
+	\label{eqn:empirical_norm_sobolev_1}
+	\norm{f}_{\Leb^2(\Xset)} \geq 
+	\begin{cases*}
+	\frac{C_6 M}{\delta} \cdot \max\Bigl\{n^{-1/2},n^{-s/d}\Bigr\},& ~~\textrm{if $2s \neq d$} \\
+	\frac{C_6 M}{\delta} \cdot n^{-a/2},& ~~\textrm{if $2s = d$, for any $0 < a < 1$}
+	\end{cases*}
+	\end{equation}
+	then,
+	\begin{equation}
+	\label{eqn:empirical_norm_sobolev}
+	\norm{f}_n^2 \geq \delta \Ebb\Bigl[\norm{f}_n^2\Bigr] 
+	\end{equation}
+	with probability at least $1 - 5 \delta$.
+\end{lemma}
 
 
 \section{Proofs of Theorems}
 \label{sec:proofs_theorems}
-With the results of Sections~\ref{sec:fixed_graph_error_bounds}-\ref{sec:graph_eigenvalues} established, the proofs of our main theorems are quite straightforward.
+With the results of Sections~\ref{sec:graph_sobolev_classes} and Section~\ref{sec:fixed_graph_error_bounds} in hand, the proofs of our main theorems are quite straightforward. In each case, we will proceed by conditioning on the random design, and showing that there exists a high-probability set $\mc{E} \subseteq \Xset^n$ over which the conditional risk is uniformly upper bounded.
 
-\subsection{Proof of Theorem~\ref{thm:laplacian_eigenmaps_estimation}}
-\label{subsec:laplacian_eigenmaps_estimation_pf}
+\subsection{Proof of Theorem~\ref{thm:laplacian_eigenmaps_estimation1}}
+\label{subsec:laplacian_eigenmaps_estimation1_pf}
 
+\textcolor{red}{(TODO)}
 
-\paragraph{\eqref{eqn:fixed_graph_estimation_sobolev_rate_2} holds with high probability.}
-
-Since $\Lap_{n,r}$ is a positive semi-definite matrix, $f_0^T \Lap_{{n,r}}^s f_0$ must be non-negative. We may therefore apply Markov's inequality and conclude
+\subsection{Proof of Theorem~\ref{thm:laplacian_smoothing_estimation1}}
+\label{subsec:laplacian_smoothing_estimation1_pf}
+Let $\mc{E} = \mc{E}(f_0, K,r,\rho,c,C,\delta) \subset \mc{X}^n$ be the set of $\mathbf{X} = (X_1,\ldots,X_n)$ such that
+\begin{enumerate}[(i)]
+	\item
+	\label{pf:laplacian_smoothing_estimation1_0}
+	 $f_0^T \Lap_{n,r}^s f_0 \leq \frac{C}{\delta} n^2 r^{d + 2}M^2$
+	\item 
+	\label{pf:laplacian_smoothing_estimation1_1}
+	$c \cdot \min\{k^{2/d}nr^{d+2},nr^d\} \leq \lambda_k(G_{n,r}) \leq Ck^{2/d}nr^{d + 2} $ for all $2 \leq k \leq n$.
+\end{enumerate}
+We already know, from Lemmas~\ref{lem:first_order_graph_sobolev_seminorm} and~\ref{lem:neighborhood_eigenvalue}, that there exist sufficiently small/large constants $c$ and $C$ such that
 \begin{equation}
-\label{eqn:roughness_functional_probability_sobolev}
-f_0^T \Lap_{{n,r}}^s f_0 \leq  \frac{1}{\delta} \cdot c \cdot n \cdot (nr^{d+2})^s \cdot M^2
+\label{pf:laplacian_smoothing_estimation1_1.5}
+\Pbb(\mc{E}) \geq 1 - \delta - \frac{C}{r^d}\exp\bigl\{-cnr^d\bigr\}
 \end{equation}
-with probability at least $1 - \delta$.
+We will now show that for any such $\mathbf{X} \in \mc{E}$, the empirical mean square error is small with high probability. Having conditioned on $\mathbf{X}$, we can control the remaining randomness arising from the noise $Y$ by Lemma~\ref{lem:ls_fixed_graph_estimation}, which in this context implies
+\begin{equation}
+\label{pf:laplacian_smoothing_estimation1_2}
+\begin{aligned}
+\Pbb\Biggl(& \frac{1}{n}\bigl\|\wt{f}_{\LS}(G_{n,r}) - f_0\bigr\|_2^2 \leq \frac{2\rho}{n} \bigl(f_0^T \Lap_{n,r} f_0\bigr) + \frac{10}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_{k}(G_{n,r}) + 1\bigr)^2} \Bigg| \mathbf{X}\Biggr) \\
+& \geq 1 - \exp\Biggl\{-\sum_{k = 1}^{n}\frac{1}{\bigl(\rho \lambda_k(G_{n,r}) + 1\bigr)^2}\Biggr\} \\
+& \geq 1 - \exp\Biggl\{-\sum_{k = 1}^{n}\frac{1}{\bigl(CM^{-4/(2+d)}k^{2/d}n^{-2/(2+d)} + 1\bigr)^2}\Biggr\} \\
+& \geq 1 - \exp\Bigl\{-c M^{d/(2d + 4)} n^{d/(2+d)}\Bigr\}
+\end{aligned}
+\end{equation}
+where the second inequality follows from the lower bound in~\ref{pf:laplacian_smoothing_estimation1_1} and the choice of regularization parameter $\rho = M^{-4/(2+d)}(nr^{d+2})^{-1}n^{-2/(2+d)}$. 
 
-\paragraph{\eqref{eqn:fixed_graph_estimation_sobolev_rate_1} holds with high probability.}
+We have therefore shown that with high probability, the empirical mean squared error is upper bounded by squared bias and variance terms. It remains only to upper bound the squared bias and variance terms. A sufficient upper bound on the bias term comes immediately from the upper bound~\ref{pf:laplacian_smoothing_estimation1_0} and our choice of $\rho$,
+\begin{equation}
+\label{pf:laplacian_smoothing_estimation1_2.5}
+\frac{\rho}{n} \bigl(f_0^T \Lap_{{n,r}} f_0\bigr) \leq \frac{C}{\delta} M^{2/(2+d)} n^{-2/(2 + d)}.
+\end{equation}
 
-\paragraph{Putting the pieces together.}
+To upper bound the variance term, we replace the eigenvalues $\lambda_k(G_{n,r})$ by their lower bounds in~\ref{pf:laplacian_smoothing_estimation1_1}, plug in our choice of $\rho$, apply the upper bound $r \leq C n^{-3/(4 + 2d)} M^{(d - 4)/(4 + 2d)}$ given by~\ref{asmp:ls_kernel_radius}, and obtain
+\begin{align}
+\frac{C}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_{k}(G_{n,r}) + 1\bigr)^2} & \leq \frac{C}{n}\sum_{k = 1}^{n} \biggl\{\frac{1}{(\rho k^{2/d} n r^{d + 2} + 1)^2} + \frac{1}{(\rho n r^{d} + 1)^2} \biggr\} \nonumber \\
+& \leq \frac{C}{n}\sum_{k = 1}^{n} \biggl\{\frac{1}{\bigl(M^{-4/(2 + d)}n^{-2/(2+d)}k^{2/d} + 1\bigr)^2}\biggr\} + Cn^{4/(2 + d)}M^{8/(2+d)}r^{4} \nonumber \\
+& \leq CM^{2d/(2 + d)} n^{-2/(2 + d)} + CM^{8/(2 + d)}n^{(2 - d)/(2 + d)} \sum_{k = k_{\star}}^{n} \Bigl\{\frac{1}{k^{4/d}}\Bigr\}  + CM^{8/(2 + d)}n^{4/(2 + d)}r^4 \nonumber \\
+& \leq  CM^{2d/(2 + d)} n^{-2/(2 + d)} + CM^{8/(2 + d)}n^{(2 - d)/(2 + d)} \sum_{k = k_{\star}}^{n} \Bigl\{\frac{1}{k^{4/d}}\Bigr\}  + CM^{2d/(2 + d)}n^{-2/(2 + d)} \label{pf:laplacian_smoothing_estimation1_3}
+\end{align}
+where $k_{\star} = M^{2d/(2 + d)}n^{d/(2 + d)}$. Treating the last term in the above line as a Riemann sum evaluated at the right end points of $[k_{\star},k_{\star} + 1], [n - 1,n]$, we use the fact that such a Riemann sum upper bounds the integral of a montonically nonincreasing function to conclude that
+\begin{align*}
+\sum_{k = k_{\star}}^{n} \frac{1}{k^{4/d}} & \leq \int_{k_{\star}}^{n} \frac{1}{x^{4/d}} \,dx \\
+& = - \frac{1}{(4/d - 1)} x^{-(4/d - 1)} \Big|_{k_{\star}}^{n} \\
+& \leq \frac{1}{(4/d - 1)} k_{\star}^{-(4/d - 1)}
+\end{align*}
+where the equality in the above computation holds because $d < 4$. Recalling the definition of $k_{\star}$, plugging this back into~\eqref{pf:laplacian_smoothing_estimation1_3} implies a sufficient upper bound on the variance term. Along with~\eqref{pf:laplacian_smoothing_estimation1_1.5}-\eqref{pf:laplacian_smoothing_estimation1_2.5}, this establishes the claim.
 
-Let $n$ be sufficiently large so that $n^{-1/(2(s - 1)+ d)} \leq r(n) \leq M^{-2/(d(2s + d))} n^{-1/(2s + d)}$. Then by~\eqref{eqn:roughness_functional_probability_sobolev} and~\eqref{eqn:neighborhood_eigenvalue_1}, there exists a set $\mathcal{E}(f_0) \subseteq \Xset^n$ of probability at least $1 - \delta - Cr^{-d}\exp\{-cnr^d\}$ such that whenever ${\bf X} \in \mathcal{E}(f_0)$,
+\subsection{Proof of Theorem~\ref{thm:laplacian_eigenmaps_testing1}}
+In this proof---as well as in the proof of Theorem~\ref{thm:laplacian_eigenmaps_testing1}---we will need to invoke Lemma~\ref{lem:empirical_norm_sobolev}, and it is in order to satisfy the conditions of this Lemma that we require $M \leq n^{(4 - d)/(4 + d)}$. More specifically, by~\eqref{eqn:laplacian_eigenmaps_testing1} along with the restriction $M \leq n^{(4 - d)/(4 + d)}$,
 \begin{equation*}
-f_0^T \Lap_{n,r}^s f_0 \leq C \cdot n \cdot C_n^s \cdot M^2
+\norm{f}_{\Leb^2(\Xset)} \geq \frac{C}{\delta^2} M^{2d/(4 + d)} n^{-4/(4 + d)} \geq \frac{C}{\delta^2} M^2 n^{-2/d}
 \end{equation*}
-and
-\begin{equation*}
-\lambda_{\kappa}(G_{n,r}) \geq c \cdot nr^{d+2}\kappa^{2/d}
-\end{equation*}
-Theorem~\ref{thm:laplacian_eigenmaps_estimation} then follows by Corollary~\ref{cor:fixed_graph_estimation_sobolev_rate}.
+and~\eqref{eqn:empirical_norm_sobolev_1} is therefore satisfied when we choose $C \geq C_6$ in~\eqref{eqn:laplacian_eigenmaps_testing1}.
+
+We proceed to prove Theorem~\ref{thm:laplacian_eigenmaps_testing1}. Throughout this proof we set $\delta = 1/b$. Let $\mc{E}(f_0)$ be the set of $\mathbf{X} \in \Xset^n$ such that~\eqref{eqn:first_order_graph_sobolev_seminorm},~\eqref{eqn:neighborhood_eigenvalue}, and~\eqref{eqn:empirical_norm_sobolev_1} hold: by Lemmas~\ref{lem:first_order_graph_sobolev_seminorm},\ref{lem:neighborhood_eigenvalue} and~\ref{lem:empirical_norm_sobolev}, $\Pbb(\mc{E}(f_0)) \geq 1 - 6\delta - C_4/r^d\exp\{-c_4nr^d\}$. For any $\mathbf{X} \in \mc{E}(f_0)$,
+\begin{align*}
+\frac{f_0^T \Lap_{{n,r}} f_0}{n \lambda_k(G_{n,r})} + \frac{4\sqrt{\kappa}}{\delta n} & \leq \frac{(C_1/c_4 + 4)}{\delta}M^{2d/(4 + d)}n^{-4/(4 + d)} \\
+& \leq \frac{\delta}{p_{\min}} \norm{f}_{\Leb^2(\Xset)}^2 \leq \delta \Ebb\bigl[\norm{f}_n^2\bigr] \\
+& \leq \norm{f}_n^2
+\end{align*}
+where the second inequality follows upon choosing $C \geq p_{\min}^{-1}(C_1/c_4 + 4)$ in~\eqref{eqn:laplacian_eigenmaps_testing1}. The claim follows by Lemma~\ref{lem:le_fixed_graph_testing}.
+
+\subsection{Proof of Theorem~\ref{thm:laplacian_smoothing_testing1}}
+Let $\delta$ and $\mc{E}(f_0)$ be the same as in the proof of Theorem~\ref{thm:laplacian_eigenmaps_testing1}. For any $\mathbf{X} \in \mc{E}(f_0)$, the conditional variance of $T_{\LS}$ can be upper bounded using~\eqref{eqn:neighborhood_eigenvalue} and~\ref{asmp:ls_kernel_radius_testing},
+\begin{align*}
+\frac{1}{n} \biggl(\sum_{k = 1}^{n} \bigl[\lambda_k(G_{n,r}) + 1\bigr]^{-4}\biggr)^{1/2} & \leq \frac{1}{c_5^2 n} \biggl(M^{\frac{32}{8 + d}}r^8n^{\frac{20+d}{4+d}} + \sum_{k = 1}^{n} \bigl[n^{-\frac{4}{4 + d}}k^{\frac{2}{d}}M^{-\frac{8}{4 + d}} + 1\bigr]^{-4}\biggr)^{1/2} \\
+& \leq \frac{1}{c_5^2 n} \biggl(M^{\frac{4d}{4 + d}}n^{\frac{2d}{4 + d}} + \sum_{k = 1}^{n} \bigl[n^{-\frac{4}{4 + d}}k^{\frac{2}{d}}M^{-\frac{8}{4 + d}} + 1\bigr]^{-4}\biggr)^{1/2} \\
+& \leq \frac{1}{c_5^2 n} \biggl(3 M^{\frac{4d}{4 + d}}n^{2d/(4 + d)}\biggr)^{1/2} \\
+& = \frac{\sqrt{3}}{c_5^2} M^{\frac{2d}{4 + d}} n^{-\frac{4}{4 + d}}.
+\end{align*}
+The last inequality in the above display follows from treating the sum as a Riemann sum over a monotonically decreasing function, which can be upper bounded by an integral as in \ref{subsec:laplacian_smoothing_estimation1_pf}, i.e by setting $k_{\star} = n^{2d/(4+d)}M^{4d/(4 + d)}$ and deriving
+\begin{equation}
+\begin{aligned}
+\label{pf:laplacian_smooting_testing1}
+\sum_{k = 1}^{n} \bigl[n^{-\frac{4}{4 + d}}k^{\frac{2}{d}}M^{-\frac{8}{4 + d}} + 1\bigr]^{-4} & \leq k_{\star} + n^{\frac{16}{4 + d}} M^{\frac{32}{4 + d}}\sum_{k = k_{\star}}^{n} k^{-\frac{8}{d}}\\
+& \leq k_{\star} + n^{\frac{16}{4 + d}} M^{\frac{32}{4 + d}} \int_{k_{\star}}^{n} x^{-\frac{8}{d}} \,dx \\
+& \leq  k_{\star} + \frac{1}{(8/d - 1)}n^{\frac{16}{4 + d}} M^{\frac{32}{4 + d}} k_{\star}^{1 - 8/d} \\
+& \leq 2k_{\star}.
+\end{aligned}
+\end{equation}
+As a result, 
+\begin{align*}
+\frac{2\rho}{n} \bigl(f_0^T \Lap_{n,r} f_0) + \frac{4}{\delta n}\biggl(\sum_{k = 1}^{n} \bigl[\lambda_k(G_{n,r}) + 1\bigr]^{-4}\biggr)^{1/2} & \leq \frac{1}{\delta}\biggl(2C_1 + \frac{4\sqrt{3}}{c_5^2}\biggr)n^{-\frac{4}{4 + d}} M^{\frac{2d}{4 + d}} \\
+& \leq \delta p_{\min} \norm{f}_{\Leb^2(\Xset)}^2 \leq \delta \Ebb\bigl[\norm{f}_n^2\bigr] \\
+& \leq \norm{f}_n^2,
+\end{align*}
+where the second inequality follows upon choosing $C \geq p_{\min}^{-1}(2C_1 + 4\sqrt{3}/c_5^2)$ in~\eqref{eqn:laplacian_smoothing_testing1}. We may therefore bound the Type II error of $\wt{\phi}_{\LS}$ by appealing to Lemma~\ref{lem:ls_fixed_graph_testing},
+\begin{align*}
+\Ebb_{f_0}\Bigl[1 - \wt{\phi}_{\LS}\Bigr] & \leq \Ebb_{f_0}\Bigl[1 - \wt{\phi}_{\LS}\big| \mathbf{X} \in \mc{E}(f_0)\Bigr] + 1 - \Pbb\Bigl(\mc{E}(f_0)\Bigr) \\
+& \leq 4 \delta^2 + 8 \delta \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k(G_{n,r})^s + 1)^4} \Biggr)^{-1/2} + 6\delta + \frac{C_4}{r^d}\exp\{-c_4nr^d\} \\
+& \leq 4 \delta^2 + 16\delta n^{-d(4 + d)}M^{-2d/(4 + d)}  + 6\delta + \frac{C_4}{r^d}\exp\bigl\{-c_4nr^d\bigr\} 
+\end{align*}
+where the last inequality follows from similar reasoning to~\eqref{pf:laplacian_smooting_testing1}, with the inequalities reversed and a factor of $1/2$ instead of $2$ in front. 
 
 \section{Concentration Inequalities}
 \begin{lemma}
