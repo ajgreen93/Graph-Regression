@@ -1,0 +1,298 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{tikz}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Minimax optimal Laplacian smoothing}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\textbf{Disclaimer:} This largely follows the same setup as in the draft I have written which combines Laplacian smoothing and Laplacian eigenmaps results. That draft --- document name \textit{graph\_regression2} --- should for the moment be considered obsolete.
+
+\section{Introduction}
+
+\textbf{(1)} Laplacian smoothing is a graph-based approach to nonparametric regression. 
+
+\begin{itemize}
+	\item In the random design nonparametric regression problem, we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$, where $X_1,\ldots,X_n$ are independent samples from a distribution $P$ supported on a domain $\Xset \subset \Rd$, and 
+	\begin{equation}
+	\label{eqn:random_design_regression}
+	Y_i = f_0(X_i) + \varepsilon_i
+	\end{equation}
+	with $\varepsilon_i \sim N(0,1)$ independent Gaussian noise. Our goal is to perform statistical inference on the unknown regression function $f_0: \Xset \to \Reals$, by which we mean either (a) \emph{estimating} $f_0$ by $\wh{f}$, an estimator constructed from the data $(X_1,Y_1),\ldots,(X_n,Y_n)$ or (b) simply \emph{testing} whether $f_0 = 0$, i.e whether there is any signal present. 
+	\item In graph-based nonparametric regression, we perform the above inferential tasks by first building a neighborhood graph $G_{n,r}$ which captures the geometry of $P$ and $\mc{X}$ in an appropriate sense, and then constructing an estimate $\wh{f}$ which is smooth with respect to the graph $G_{n,r}$. The neighborhood graph $G_{n,r} = ([n],{\bf W})$ is a weighted, undirected graph on vertices $[n] = \{1,...,n\}$, which we associate with the samples $\{X_1,\ldots,X_n\}$. The $n \times n$ weight matrix ${\bf W} = ({\bf W}_{ij})_{ij}$ encodes proximity between pairs of samples; for a kernel function $K: [0,\infty) \to \Reals$ and connectivity radius $r > 0$, the entries $\mathbf{W}_{ij}$ are given by
+	\begin{equation*}
+	\label{eqn:neighborhood_graph}
+	{\bf W}_{ij} = K\Biggl(\frac{\norm{X_i - X_j}_{\Rd}}{r}\Biggr).
+	\end{equation*}
+	Then the degree matrix ${\bf D}$ is the $n \times n$ diagonal matrix with entries ${\bf D}_{ii} = \sum_{j = 1}^{n}{\bf W}_{ij}$, and the graph Laplacian can be written as
+	\begin{equation}
+	\label{eqn:graph_Laplacian}
+	\Lap_{n,r} = \bf{D} - \bf{W}
+	\end{equation}
+	\item The Laplacian smoothing estimator $\wh{f}_{\LS}$ \citep{smola2003} is a penalized least squares estimator, given by
+	\begin{equation}
+	\label{eqn:laplacian_smoothing}
+	\wh{f}_{\LS} := \min_{f \in \Reals^n} \biggl\{\sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^T \Lap_{n,r} f \biggr\}
+	\end{equation}
+	where $\rho > 0$ acts a tuning parameter on the penalty $f^T \Lap_{{n,r}} f$.
+	Assuming~\eqref{eqn:laplacian_smoothing} is a reasonable estimator of $f_0$, the squared empirical norm
+	\begin{equation}
+	T_{\LS} = \frac{1}{n}\Bigl\|\wt{f}_{\LS}\Bigr\|_2^2 \label{eqn:laplacian_smoothing_test}
+	\end{equation}
+	is in turn a reasonable statistic to assess whether or not $f_0 = 0$. 
+\end{itemize}
+
+
+\textbf{(2.a)} Laplacian smoothing has many advantages compared to other nonparametric regression methods. For instance:
+
+\begin{itemize}
+	\item It is fast, easy, and stable to compute. Letting ${\bf Y} = (Y_1,\ldots,Y_n) \in \Reals^n$, it is not hard to see that the minimizer $\wt{f}_{\LS} = (\rho \Lap_{n,r} + I)^{-1}{\bf Y}$ can be computed by solving a linear equation; in practice, one typically chooses $r$ to be small, with the result being that the matrix $\Lap_{n,r}$ is sparse. There exist known fast solvers of exactly this system.
+	\item Is is generalizable to non-standard data---for instance, text or images, or really any data modality on which it is possible to define a kernel.
+	\item It is easily adaptable to the semi-supervised learning setting. 
+\end{itemize}
+
+\textbf{(2.b)} For this reason a considerable body of work has emerged analyzing the consistency of the graph Laplacian $\Lap_{{n,r}}$ as $n \to \infty$ and $r(n) \to 0$. This is meant in various senses:
+\begin{itemize}
+	\item Pointwise consistency, meaning $\Lap_{n,r}f \to \Delta_Pf$ for an appropriate limiting operator $\Delta_P$.
+	\item Spectral consistency, meaning the eigenvalues $\lambda_k(\Lap_{n,r}) \to \lambda_k(\Delta_P)$.
+	\item Consistency of norms, meaning $f^T \Lap_{n,f} f \to \langle f,\Delta_Pf \rangle_{\Leb^2(P)}$. 
+\end{itemize}
+However, the statistical optimality of Laplacian smoothing is still not well understood.
+
+\textbf{(2.c)} Our main contributions lie in this latter direction, and they can all be summarized as follows: Laplacian smoothing methods are minimax optimal over Sobolev spaces. In more detail, we will show that when $f_0$ belongs to the Sobolev ball $H^1(\Xset;M)$:
+\begin{itemize}
+	\item \textbf{Minimax optimal estimation.} With high probability, $\frac{1}{n}\norm{\wt{f}_{\LS} - f_0}_{2}^2 \lesssim n^{-2/(2 + d)}$.
+	\item \textbf{Minimax optimal testing.}
+	A level-$\alpha$ test constructed using $T_{\LS}$ has non-trivial power whenever $\norm{f_0}_{\Leb^2(\Xset)}^2 \gtrsim n^{-4/(4 + d)}$. 
+	\item \textbf{Manifold adaptivity.}
+	If $\mc{X} \subset \Rd$ is a submanifold of dimension $m < d$, both of the aforementioned rates hold with $d$ replaced by $m$.
+\end{itemize}
+Finally, we will also establish that the Laplacian smoothing estimator can be altered to take advantage of higher-order smoothness assumptions on $f_0$. This last conclusion will hold only under very limited circumstances.
+
+\paragraph{Organization.}
+
+List out what is to come.
+
+\section{Minimax regression over Sobolev spaces}
+
+\textbf{(3)} Sobolev spaces are classical function spaces, over which linear nonparametric regression methods. One notable such method is smoothing splines, to which we give special attention because of their close connection to Laplacian smoothing.
+
+\textbf{(4)} In fact, an alternative way to motivate Laplacian smoothing nonparametric regression methods---as opposed to the advantages mentioned in \textbf{(2.a)}---comes from viewing them as discrete-time versions of smoothing splines. This is made more rigorous by the consistency results of \textbf{(2.b)}. Viewed in this light, an additional advantage of Laplacian smoothing emerges: it automatically adapts to the geometry of $\Xset$ and $p$. 
+
+\textbf{(5)} Smoothing splines are known to have strong minimax optimal properties. Reasoning by analogy, we might hope that Laplacian smoothing would share these properties. 
+
+\section{Graph Sobolev classes}
+
+\textbf{(6)} The minimax optimality of smoothing splines rests on two crucial facts: one, the a priori assumption that $|f|_{H^1(\Xset)}$ is bounded; two, an upper bound on the metric entropy of $H^1(\Xset)$, characterized by the decay of its eigenvalues. \textcolor{red}{(TODO)}:(I know this isn't well-stated, and I need to clean it up.)  We now show that qualitatively similar statements hold with respect to 
+
+\quad \textbf{(6.1)} the graph Sobolev semi-norm $f_0^T \Lap_{n,r} f_0$ and,
+ 
+\quad \textbf{(6.2)} the graph eigenvalues $\lambda_k(\Lap_{n,r})$. 
+
+\section{Minimax optimality of Laplacian smoothing}
+
+\textbf{(7)} Using \textbf{(6.1)} and \textbf{(6.2)}, we establish upper bounds on the estimation and testing error of Laplacian smoothing, which confirm that Laplacian smoothing is asymptotically minimax rate-optimal over the Sobolev class $H^1(\Xset)$. 
+
+\textbf{(8)} While we motivated graph Laplacians by suggesting they might replicate the statistical properties of smoothing splines, we have in fact managed to show something stronger. In particular:
+
+\quad \textbf{(8.1)} When $d \geq 2$, there is no Sobolev embedding of $H^1(\Xset) \subseteq C^s(\Xset)$ for any $s > 0$. Therefore the smoothing spline estimator is ill-posed.
+
+\quad \textbf{(8.2)} Additionally, the metric entropy of $C^1(\Xset)$ is too large to obtain optimal rates for \textcolor{red}{Holder-smoothing splines} when $d \geq 2$. Thus, we see a gap emerge between the optimality properties of the discrete-time (Laplacian smoothing) and continuous-time (smoothing splines) estimators, in favor of the latter.
+
+\quad \textbf{(8.3)} On the other hand, when $d \geq 4$, we no longer get the known optimal rates in the estimation problem. When $d = 4$, our rates are suboptimal by a factor of $\log n$. When $d > 5$ they are very suboptimal. We believe this is related to classical results regarding the entropy of low-smoothness Holder classes, i.e. the results used to justify \textbf{(8.2)}. The interesting point is that the parameter spaces $C^1(\Xset)$ and $H^1(G_{n,r})$ become ``too large'' for different values of $d$.
+ 
+\quad \textbf{(8.4)} \textcolor{red}{(TODO)}: Translate these results into error in $\Leb^2(P)$ error, if possible. 
+
+\subsection{Manifold adaptivity}
+
+\quad \textbf{(9)} We now show that when $\Xset$ is an $m$-dimensional submanifold of $\Reals^d$, Laplacian smoothing approaches automatically ``feel'' the intrinsic dimension $m$ of $\Xset$, which translate into improved upper bounds on estimating and testing error. This confirms the statement in \textbf{(4)} that Laplacian smoothing automatically adapts to the geometry of $\Xset$ and $p$. 
+
+\subsection{Higher-order smoothness classes}
+
+\quad \textbf{(10)} Analogously to smoothing splines, Laplacian smoothing can also be adapted to take advantage of additional assumed regularity on $f_0$, i.e. $f_0 \in H^s(\mc{\Xset})$ for $s > 1$. In very limited circumstances, we can show that this adapted estimator achieves the sharper minimax rates over these classes. However, the general story--for all combinations of $s$ and $d$---remains beyond our reach.
+
+\section{Simulations}
+
+\quad \textbf{(11)} Empirically, we demonstrate that the risk for Laplacian smoothing is comparable to that of smoothing splines, in the full dimensional case. Although one cannot carry out a comparison in the case of an unknown manifold --- since the smoothing spline estimator must be changed in a non-obvious manner --- we do show that when the density $p$ is concentrated close to a manifold and $f_0$ is smooth where $p$ is peaked, we have improved performance for $\wh{f}_{\LS}$ compared to $\wh{f}_{\mathrm{SM}}$. 
+
+\section{Discussion}
+
+\clearpage
+
+\bibliographystyle{plainnat}
+\bibliography{../../../graph_testing_bibliography} 
+
+\end{document}
