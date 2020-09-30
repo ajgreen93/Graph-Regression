@@ -1,0 +1,796 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{tikz}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for Week 9/16/2020 - 9/23/2020}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+In these notes, I will carefully examine the results of \textcolor{red}{(GarciaTrillos18, Calder19)} on the convergence of neighborhood-graph eigenvalues towards eigenvalues of a continuum Laplace-Beltrami operator. The idea is to: (a) prove results in the ``flat Euclidean'' setting (where the manifold is full-dimensional and has boundary), and (b) to ensure there are no hidden dependencies in the stated constants that I am missing.
+
+\section{Main results}
+Let $X_1,\ldots,X_n$ be sampled iid from a distribution $P$, supported on a compact set $\Xset \subset \Reals^d$. 
+
+\begin{enumerate}[(P1)]
+	\item 
+	\label{asmp:bounded_lipschitz_density} We assume the distribution $P$ admits density $p$ that is Lipschitz continuous with Lipschitz parameter $L_p$ and satisfies
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty,~~\textrm{for all $x \in \Xset$.}
+	\end{equation*}
+\end{enumerate}
+
+For a given radius $r > 0$, and kernel function $K: [0,\infty) \to [0,\infty)$, define the neighborhood graph $G_{n,r} = ([n],\mathbf{W})$ to be the graph with weighted edges $\mathbf{W}_{ij} = K(\|X_i - X_j\|/r)$. The neighborhood graph Laplacian is $\Lap_{n,r} = \mathbf{D} - \mathbf{W}$, where $\mathbf{D}$ is the degree matrix, and $0 = \lambda_1(G_{n,r}) \leq \cdots \leq \lambda_n(G_{n,r})$ are the eigenvalues of $\Lap_{n,r}$. Our goal is to relate these eigenvalues to the eigenvalues $\lambda_k(\Delta_P)$ of the Laplace-Beltrami operator
+\begin{equation*}
+\Delta_{P}f  := -\frac{1}{2p} \dive(p^2 \nabla f)
+\end{equation*}
+We would like to show the following result.
+\begin{theorem}
+	\label{thm:neighborhood_eigenvalue}
+	There constants $A_1$ and $a_1$ which do not depend on $n$ or $r$ such that the following statement holds with probability at least $1 - A_1n\exp(-a_1n\theta^2\wt{\delta}^{m})$: for any $\ell \in \mathbb{N}$ such that
+	\begin{equation}
+	\label{eqn:neighborhood_eigenvalue_1}
+	1 - A_1\Biggl(r \sqrt{\lambda_{\ell}(\Delta_P)} + (\theta + \wt{\delta})\Biggr)  \geq \frac{1}{2}
+	\end{equation}
+	we have that
+	\begin{equation}
+	\label{eqn:eigenvalue_bound}
+	\frac{1}{A_1} \lambda_k(G_{n,r}) \leq nr^{d+2} \lambda_k(\Delta_P) \leq A_1 \lambda_k(G_{n,r}),~~\textrm{for all $1 \leq k \leq \ell$}
+	\end{equation}
+\end{theorem}
+Some results along these lines (see \textcolor{red}{(Burago13, GarciaTrillos18, Calder19)}) have been shown when $\Xset$ is an $m$-dimensional submanifold of $\Reals^d$---in this case, replace $r^{d + 2}$ by $r^{m+2}$ in~\eqref{eqn:eigenvalue_bound}. Indeed in these results the constant $A = (1 + e)$ for an error term $e$ which goes to $0$ as $n \to \infty, r(n) \to 0$. However, (a) the manifold is assumed to be boundaryless, and (b) the right hand side in (their equivalent of)~\eqref{eqn:neighborhood_eigenvalue_1} depends on $\ell$ which is a bit strange and unsuitable for our purposes. We would like to ``fix'' both (a) and (b). 
+ 
+\section{Ancillary results.}
+Following the lead of~\textcolor{red}{(Burago13, GarciaTrillos18, Calder19)}, we relate $\lambda_k(\Delta_P)$ and $\lambda_k(G_{n,r})$ by means of the Sobolev semi-norms (Dirichlet energies)
+\begin{equation*}
+b_r(f) := \frac{1}{n^2 r^{d+ 2}}f^T \Lap_{n,r} f~~\textrm{for any $f \in \Leb^2(P_n)$}
+\end{equation*}
+and
+\begin{equation*}
+D_2(f) :=
+\begin{cases*}
+\int_{\Xset} \|\nabla f(x)\|^2 p^2(x) \,dx~~ &\textrm{if $f \in H^1(\Xset)$} \\
+\infty~~ & \textrm{otherwise,}
+\end{cases*}
+\end{equation*}
+Suppose one could upper bound $b_r(u)$ by $D_2\bigl(G(u)\bigr)$ for an appropriate choice of mapping $G: \Leb^2(P_n) \to \Leb^2(P)$, and vice versa upper bound $D_2(f)$ by $b_r(V(f))$ for some $V: \Leb^2(P) \to \Leb^2(P_n)$. Suppose also that $G$ and $V$ are near-isometries, meaning $\|G(u)\|_{\Leb^2(P)} \approx \|u\|_{\Leb^2(P_n)}$ and $\|V(f)\|_{\Leb^2(P_n)} \approx \|f\|_{\Leb^2(P)}$. Then using the variational characterization of eigenvalues $\lambda_k(\Delta_P)$ and $\lambda_k(G_{n,r})$---i.e. the Courant-Fischer Theorem---one can obtain estimates on the error of $|\lambda_k(\Delta_P) - \lambda_k(G_{n,r})|$.
+
+We now move to define maps $V$ and $G$ which provably satisfy such bounds. Let $\wt{P}_n$ be a probability measure with density $\wt{p}_n$, that satisfy the conclusions of Theorem~\ref{thm:calder19_2}. Denote by $\wt{T}_n$ an \emph{optimal transport map} (in sup-norm) between $\wt{P}_n$ and $P_n$, and let $U_1,\ldots,U_n$ be the preimages of $X_1,\ldots,X_n$ under $\wt{T}_n$. Define the discretization map  $\wt{\mathcal{P}}: \Leb^2(P) \to \Leb^2(P_n)$ by
+\begin{equation*}
+\bigl(\wt{\mathcal{P}}f\bigr)(X_i) := n \cdot \int_{U_i} f(x) \wt{p}_n(x) \,dx
+\end{equation*}
+Define the interpolation map $\wt{\mc{I}}: \Leb^2(P_n) \to \Leb^2(\Xset)$ as $\wt{\mc{I}}u := \Lambda_{r - 2\wt{\delta}}(\wt{\mc{P}}^{\star}u)$. Here, $\wt{\mc{P}}^{\star} = u \circ \wt{T}$ is the adjoint of $\wt{\mc{P}}$, i.e.
+\begin{equation*}
+\bigl(\wt{\mc{P}}^{\star}u\bigr)(x) = \sum_{j = 1}^{n} u(x_i) \1\{x \in U_i\} 
+\end{equation*} 
+and $\Lambda_r$ is a smoothening of this extension, formally
+\begin{equation*}
+\Lambda_r(f) := \frac{1}{r^d\tau(x)}\int_{\Xset} \eta_r(x',x) f(x') \,dx',~~ \eta_r(x',x) := \psi\biggl(\frac{\|x' - x\|}{r}\biggr)
+\end{equation*}
+where $\psi(t) := (1/\sigma_K)\int_{t}^{\infty} s K(s) \,ds$ and $\tau(x) := (1/r^d)\int_{\Xset} \eta_r(x',x) \,dx'$ is a normalizing constant.
+
+Assume the following.
+\begin{enumerate}[label=(K\arabic*)]
+	\item
+	\label{asmp:kernel}
+	$K:[0,\infty) \to [0,\infty)$ is a non-increasing function supported on $[0,1]$, and its restriction to $[0,1]$ is Lipschitz with Lipschitz constant $L_K$. Additionally, it is normalized so that
+	\begin{equation*}
+	\int_{\Reals^d} K\bigl(\norm{z}\bigr) \,dz = 1,
+	\end{equation*}
+	and $K(1/2) > 0$. Let $\sigma_{K} := \frac{1}{d}\int_{\Reals^d} \|z\|^2 K(\|z\|) \,dy$.
+\end{enumerate}
+\begin{enumerate}[label=(OT\arabic*)]
+	\item 
+	\label{asmp:calder19_1}
+	There exists $n^{-1/m} < \wt{\delta} < \frac{1}{4}r$.
+	\item 
+	\label{asmp:calder19_2} There exists $\theta$ such that $C(\theta + \wt{\delta}) \leq p_{\min}/2$.
+	\item
+	\label{asmp:r_small_1} For all $x,x' \in \Xset$ such that $\|x - x'\| \leq r$, we have that for $W = B(x,r) \cap B(x',r) \cap \Xset$,
+	\begin{equation*}
+	\vol(W) \geq a_1(\Xset,d) \cdot \nu_d \biggl(\frac{r}{2}\biggr)^d
+	\end{equation*}
+	for some constant $A_1(\Xset,d)$. 
+	\item
+	\label{asmp:r_small_2} For all $x,x' \in \Xset$, we have that $z_{xx'} = \frac{1}{2}x + \frac{1}{2}x' \in \Xset$.
+	\item 
+	\label{asmp:r_small_3} For any $x \in \Xset$, letting $\mc{B}_x:= (\Xset - x)/r \cap B(0,1)$, we have that $\int_{\mc{B}_x} \psi(\|z\|) \,dz \geq a_1(\Xset,d) \cdot \int_{B(0,1)} \psi(\|z\|) \,dz$.
+\end{enumerate}
+Very roughly speaking, one can view $\theta + \wt{\delta}$ as an upper bound on the optimal transport distance between $P_n$ and $\wt{P}_n$ and the $\Leb_{\infty}$ distance between $\wt{p}_n$ and $p$. 
+
+\textcolor{red}{(TODO)}: Eliminate these assumptions, by showing that each of them is a conseequence of the regularity assumption that $\Xset$ is a Lipschitz domain with positive reach.
+
+\begin{proposition}[\textbf{c.f. Proposition 4.1 of \textcolor{red}{Calder19}}]
+	\label{prop:dirichlet_energies}
+	With probability at least $1 - A_1n\exp(-a_1n\theta^2\wt{\delta}^{m})$, we have the following.
+	\begin{enumerate}[(1)]
+		\item For any $u \in \Leb^2(P_n)$,
+		\begin{equation*}
+		\sigma_{K} D_2(\wt{\mc{I}}u) \leq \frac{40 \bigl(1 + L_p r\bigr)}{\sigma_K} \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \biggl(1 + A_3(d,K,p)\frac{\wt{\delta}}{r}\biggr) b_r(u)
+		\end{equation*}
+		\item For any $f \in \Leb^2(P)$,
+		\begin{equation*}
+		b_r(\wt{\mc{P}}f) \leq \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \Bigl(1 + L_p(2r + 4\wt{\delta})\Bigr) \cdot \Bigl(1 + A_1(K)\frac{\wt{\delta}}{r}\Bigr) \sigma_{K} D_2(f).
+		\end{equation*}
+	\end{enumerate}
+\end{proposition}
+
+\begin{proposition}[\textbf{c.f. Proposition 4.2 of \textcolor{red}{Calder19}}]
+	\label{prop:isometry}
+	With probability at least $1 - A_1n\exp(-a_1n\theta^2\wt{\delta}^{m})$, we have the following.
+	\begin{enumerate}[(1)]
+		\item For every $f \in \Leb^2(\Xset)$,
+		\begin{equation*}
+		\Bigl|\|f\|_{\Leb^2(P)}^2 - \|\wt{P}f\|_{\Leb^2(P_n)}^2\Bigr| \leq A_2(\Xset,d,K,p_{\min}) \cdot \wt{\delta} \|f\|_{\Leb^2(P)} \sqrt{D_2(f)} + \frac{A_1\bigl(\theta + \wt{\delta}\bigr)}{p_{\min}} \|f\|_{\Leb^2(P)}^2
+		\end{equation*}
+		\item For every $u \in \Leb^2(P_n)$,
+		\begin{equation*}
+		\Bigl|\|\wt{\mc{I}}u\|_{\Leb^2(P)}^2 - \|u\|_{\Leb^2(P_n)}^2\Bigr| \leq C r \|u\|_{\Leb^2(P_n)} \sqrt{b_r(u)} + C\bigl(\theta + \wt{\delta}\bigr) \|u\|_{\Leb^2(P_n)}^2
+		\end{equation*}
+	\end{enumerate}
+\end{proposition}
+
+To prove these inequalities, it will help to introduce the intermediate energies
+\begin{equation*}
+\wt{E}_r(f,\eta,V) := \frac{1}{r^{d + 2}}\int_{V} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{r}\biggr) \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx
+\end{equation*}
+and
+\begin{equation*}
+{E}_r(f,\eta,V) := \frac{1}{r^{d + 2}}\int_{V} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{r}\biggr) p(x') p(x) \,dx' \,dx
+\end{equation*}
+where $\eta: [0,\infty) \to [0,\infty)$ is an arbitrary kernel, and $V \subseteq \Xset$ is a measurable set. We will abbreviate $\wt{E}_r(f,\eta,\Xset)$ as $\wt{E}_r(f,\eta)$ and $\wt{E}_r(f,K) = \wt{E}_r(f)$ (and likewise with $E_r$.)
+
+Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized} relates the graph Sobolev semi-norm $b_r(\wt{\mc{P}}f)$ to the non-local energy $\wt{E}_r(f)$. It follows exactly from the derivations in the proof of Lemma 13 in \cite{trillos2019}; indeed, in our flat Euclidean setting, the proof is simplified, and we include this simpler proof for completeness purposes only.
+\begin{lemma}[\textbf{c.f. Lemma 13 of \cite{trillos2019}, Lemma 4.3 of \cite{burago2014}}]
+	\label{lem:first_order_graph_sobolev_seminorm_discretized}
+	Suppose~\ref{asmp:kernel} is satisfied, and that the conclusions of Theorem~\ref{thm:calder19_2} are met. Then
+	\begin{equation*}
+	b_r(\wt{\mc{P}}f) \leq \wt{E}_{r + 2\wt{\delta}}(f) + 2\frac{L_K\wt{\delta}}{K(1/2)r} \wt{E}_{2(r + 2\wt{\delta})}(f)
+	\end{equation*}
+	for any $f \in \Leb^2(\Xset)$.
+\end{lemma}
+
+Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected} relates the non-local energy $E_r(f)$ to $D_2(f)$. It follows in large part from the proofs of Lemma 13 of \cite{trillos2019} and Lemma 6 of \cite{burago2014}, with minor modifications to account for the boundary of $\Xset$.
+\begin{lemma}[c.f. Lemma 13 of \cite{trillos2019}, Lemma 6 of \cite{burago2014}]
+	\label{lem:first_order_graph_sobolev_seminorm_expected}
+	For any $f \in \Leb^2(\Xset)$,
+	\begin{equation*}
+	E_r(f) \leq (1 + L_pr)^2 \cdot \sigma_K D_2(f)
+	\end{equation*}
+\end{lemma}
+
+In Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}, we establish the reverse of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected}. 
+\begin{lemma}[c.f. Lemma 9 of \cite{trillos2019}, Lemma 5.5 of \cite{burago2014}]
+	\label{lem:first_order_graph_sobolev_seminorm_expected_lb}
+	For any $f \in \Leb^2(\Xset)$,
+	\begin{equation*}
+	\sigma_KD_2(\Lambda_rf) \leq \frac{40 \bigl(1 + L_p r\bigr)}{\sigma_K}E_r(f)
+	\end{equation*}
+\end{lemma}
+
+In Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized_lb}, we establish the reverse of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized}. 
+\begin{lemma}[c.f. Lemma 14 of \cite{trillos2019}]
+	\label{lem:first_order_graph_sobolev_seminorm_discretized_lb}
+	Suppose $r$ satisfies~\ref{asmp:r_small_2}. For any $u \in \Leb^2(P_n)$, 
+	\begin{equation*}
+	\wt{E}_{r - 2\wt{\delta}}\bigl(\wt{\mc{P}}^{\star}u\bigr) \leq \biggl(1 + A_3(d,K,P)\frac{\wt{\delta}}{r}\biggr) b_{r}(u)
+	\end{equation*}
+\end{lemma}
+
+To prove Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}, we require upper and lower bounds on $\tau(x)$, as well as an upper bound on the gradient of $\tau$. The lower bound here---$\tau(x) \geq 1/2$---is quite a bit a looser than in the case where $\Xset$ has no boundary---$\tau(x) \geq (1 + Cr^2)^{-1}$. The same is the case regarding the upper bound of the size of the gradient $\|\nabla \tau(x)\|$. However, the bounds as stated here will be sufficient for our purposes.
+\begin{lemma}
+	\label{lem:tau_bound}
+	Suppose $r$ satisfies~\ref{asmp:r_small_3}. For all $x \in \Xset$,
+	\begin{equation*}
+	\frac{1}{2} \leq \tau(x) \leq 1,
+	\end{equation*}
+	and additionally $\|\nabla \tau(x)\| \leq \frac{1}{\sigma_K r}$.
+\end{lemma}
+
+To prove part (2) of Proposition~\ref{prop:isometry}, we require Lemma~\ref{lem:smoothening_error}, which gives an estimate on the error $\Lambda_h f - f$ in $\Leb^2(P)$ norm.
+\begin{lemma}[c.f Lemma 8 of \cite{trillos2019}, Lemma 5.4 of \cite{burago2014}]
+	\label{lem:smoothening_error}
+	For any $h > 0$, 
+	\begin{equation}
+	\label{eqn:smoothening_error_norm}
+	\bigl\|\Lambda_hf\bigr\|_{\Leb^2(P)}^2 \leq \frac{2p_{\max}}{p_{\min}} \bigl\|f\bigr\|_{\Leb^2(P)}^2
+	\end{equation}
+	and
+	\begin{equation}
+	\label{eqn:smoothening_error_energy}
+	\bigl\|\Lambda_hf - f\bigr\|_{\Leb^2(P)}^2 \leq \frac{2}{\sigma_Kp_{\min}} r E_r(f)
+	\end{equation}
+	for all $f \in \Leb^2(\Xset)$.
+\end{lemma}
+
+\section{Other's results}
+
+For a transport map $T: \Xset \to \mathbf{X}$ and a measure $\mu$ supported on $\Xset$, let $T_{\sharp}\mu$ denote the push-forward of $\mu$ by $T$, i.e the measure for which
+\begin{equation*}
+\bigl(T_{\sharp}\mu\bigr)(\mathbf{Z}) = \mu\bigl(T^{-1}(\mathbf{Z}))
+\end{equation*}
+for any $\mathbf{Z} \subseteq \mathbf{X}$.
+
+\begin{theorem}[Proposition~2.11 of \textcolor{red}{(Calder2019)}]
+	\label{thm:calder19_2}
+	Suppose the assumptions~\ref{asmp:calder19_1} and~\ref{asmp:calder19_2} are satisfied. Then with probability at least $1 - A_1n\exp(-a_1n\theta^2\wt{\delta}^d)$, there exists a probability measure $\wt{P}_n$ with density function $\wt{p}_n: \Xset \to \Reals$ such that
+	\begin{equation*}
+	\min_{T_{\sharp}\wt{P}_n = P_n} d_{\mc{M}}(x,T(x)) \leq \wt{\delta}
+	\end{equation*}
+	and
+	\begin{equation*}
+	\bigl\|\wt{p}_n - p\bigr\|_{\infty} \leq A_1\bigl(\theta + \wt{\delta}\bigr)
+	\end{equation*}
+\end{theorem}
+\textcolor{red}{(TODO)}: Replace this Theorem with it's ``flat'' predecessor.
+
+By Theorem~\ref{thm:calder19_2}, the two energies can be related,
+\begin{equation}
+\label{eqn:calder19_1}
+\bigl(1 - A_1(\theta + \wt{\delta})\bigr) E_r(f) \leq \wt{E}_r(f) \leq \bigl(1 + A_1(\theta + \wt{\delta})\bigr) E_r(f),
+\end{equation}
+and so can the norms
+\begin{equation}
+\label{eqn:calder19_2}
+\bigl(1 - A_1(\theta + \wt{\delta})\bigr) \|f\|_{\Leb^2(P)}^2 \leq \|f\|_{\Leb^2(\wt{P}_n)}^2 \leq \bigl(1 + A_1(\theta + \wt{\delta})\bigr) \|f\|_{\Leb^2(P)}^2.
+\end{equation}
+
+\section{Additional proofs}
+
+\paragraph{Proof of Theorem~\ref{thm:neighborhood_eigenvalue}.}
+\mbox{} \\
+\mbox{} \\
+We start with the upper bound, proceeding exactly as in \citep{burago2014} (Proposition 4.4). Let $W$ be the span of $f_1,\ldots,f_{\ell}$, the first ${\ell}$ eigenfunctions of $-\Delta_P$, so that for every $f \in W$ we have $D_2(f) \leq \lambda_k(\Delta_P) \|f\|_{\Leb^2(P)}$. As a result, by Part (1) of Proposition~\ref{prop:isometry} we have that for any $f \in W$
+\begin{equation*}
+\bigl\|\wt{\mc{P}}f\bigr\|_{\Leb^2(P_n)}^2 \geq \biggl(1 - A_2(\Xset,d,K,p_{\min}) \wt{\delta} \sqrt{\lambda_{\ell}(\Delta_P)} - \frac{A_1(\theta + \wt{\delta})}{p_{\min}}\biggr)\|f\|_{\Leb^2(P)}^2  \geq \frac{1}{2} \|f\|_{\Leb^2(P)}^2,
+\end{equation*}
+where the second inequality follows by assumption~\eqref{eqn:neighborhood_eigenvalue_1}.
+
+Therefore $\wt{\mc{P}}$ is injective over $W$, and $\wt{\mc{P}}W$ has dimension $\ell$. This means we can invoke the Courant-Fischer Theorem, along with Proposition \ref{prop:dirichlet_energies}, and conclude that
+\begin{align*}
+\lambda_k(G_{n,r}) & \leq \max_{\substack{u \in \wt{\mc{P}}W \\ u \neq 0} } \frac{b_r(u)}{\|u\|_{\Leb^2(P_n)}^2} \\
+& = \max_{\substack{f \in W \\ f \neq 0} } \frac{b_r(\wt{\mc{P}}f)}{\bigl\|\wt{\mc{P}}f\bigr\|_{\Leb^2(P_n)}^2} \\
+& \leq \frac{\Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \Bigl(1 + L_p(2r + 4\wt{\delta})\Bigr) \cdot \Bigl(1 + A_1(K)\frac{\wt{\delta}}{r}\Bigr)}{1 - A_2(\Xset,d,K,p_{\min}) \wt{\delta} \sqrt{\lambda_{\ell}(\Delta_P)} - 2\frac{A_1(\theta + \wt{\delta})}{p_{\min}}} \sigma_K \lambda_{\ell}(\Delta_P),
+\end{align*}
+establishing the upper bound in~\eqref{eqn:eigenvalue_bound} upon proper choice of $A$.
+
+\textcolor{red}{(TODO)}: Ask Siva how to `finish this proof off'. 
+
+
+\paragraph{Proof of Proposition~\ref{prop:dirichlet_energies}.}
+\mbox{} \\
+\mbox{} \\
+Part (1) follows from
+\begin{align*}
+\sigma_K D_2(\Lambda_{r - 2\wt{\delta}} \wt{\mc{P}}^{\star}u) & \overset{(i)}{\leq} \frac{40 \bigl(1 + L_p r\bigr)}{\sigma_K} E_{r - 2\wt{\delta}}(\wt{\mc{P}}^{\star}u) \\
+& \overset{(ii)}{\leq} \frac{40 \bigl(1 + L_p r\bigr)}{\sigma_K} \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \wt{E}_{r - 2\wt{\delta}}(\wt{\mc{P}}^{\star}u) \\
+& \overset{(iii)}{\leq} \frac{40 \bigl(1 + L_p r\bigr)}{\sigma_K} \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \biggl(1 + A_3(d,K,p)\frac{\wt{\delta}}{r}\biggr) b_r(u)
+\end{align*}
+where $(i)$ follows from Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}, $(ii)$ follows from~\eqref{eqn:calder19_1}, and $(iii)$ follows from~Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized_lb}.
+
+Part (2) follows from
+\begin{align*}
+b_r(\wt{\mc{P}}f) & \overset{(iv)}{\leq} \wt{E}_{r + 2\wt{\delta}}(f) + A_1(K)\frac{\wt{\delta}}{r}\wt{E}_{2(r + 2\wt{\delta})}(f)\\
+& \overset{(v)}{\leq} \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \Bigl({E}_{r + 2\wt{\delta}}(f) + A_1(K)\cdot\frac{\wt{\delta}}{r}{E}_{2(r + 2\wt{\delta})}(f)\Bigr) \\
+& \overset{(vi)}{\leq} \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \Bigl(1 + L_p(2r + 4\wt{\delta})\Bigr) \cdot \Bigl(1 + A_1(K)\frac{\wt{\delta}}{r}\Bigr) \cdot \sigma_{\eta} D_2(f)
+\end{align*}
+where $(iv)$ follows from Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized}, $(v)$ follows from~\eqref{eqn:calder19_1}, and $(vi)$ follows from Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected}.
+
+\paragraph{Proof of Proposition~\ref{prop:isometry}.}
+\mbox{}\\
+\mbox{}\\
+\textit{Proof of (1).}
+\mbox{}\\
+\mbox{}\\
+We begin by upper bounding $\bigl\|\wt{P}f\bigr\|_{\Leb^2(P_n)}$. By the Cauchy-Schwarz inequality and the bound on $\|\wt{p}_n - p\|_{\infty}$ in~\eqref{eqn:calder19_1},
+\begin{align*}
+\Bigl|\wt{P}f(X_i)\Bigr|^2 & = n^2 \Bigl|\int_{U_i} f(x) \wt{p}_n(x) \,dx\Bigr|^2 \\
+& \leq n \int_{U_i} \bigl|f(x)\bigr|^2 \wt{p}_n(x) \,dx \\
+& \leq n \cdot \biggl[\int_{U_i} \bigl|f(x)\bigr|^2 p(x) \,dx + \frac{A_1(\theta + \wt{\delta})}{p_{\min}} \int_{U_i} \bigl|f(x)\bigr|^2 p(x) \,dx\biggr]
+\end{align*}
+and summing over $i = 1,\ldots,n$, we obtain
+\begin{equation}
+\label{pf:prop_isometry_1}
+\bigl\|\wt{P}f\bigr\|_{\Leb^2(P_n)}^2 \leq \biggl(1 + \frac{A_1(\theta + \wt{\delta})}{p_{\min}}\biggr) \bigl\|f\bigr\|_{\Leb^2(P)}^2.
+\end{equation}
+Now, noticing that $\bigl\|\wt{P}f\bigr\|_{\Leb^2(P_n)} = \bigl\|\wt{P}^{\star}\wt{P}f\bigr\|_{\Leb^2(\wt{P}_n)}$, we can use the upper bound~\eqref{pf:prop_isometry_1} to show that
+\begin{align}
+\Bigl|\bigl\|\wt{P}f\bigr\|_{\Leb^2(P_n)}^2 - \bigl\|f\bigr\|_{\Leb^2(P)}^2\Bigr| & \leq \Bigl|\bigl\|\wt{P}f\bigr\|_{\Leb^2(P_n)}^2 - \bigl\|f\bigr\|_{\Leb^2(\wt{P}_n)}^2\Bigr| + \Bigl|\bigl\|f\bigr\|_{\Leb^2(\wt{P}_n)}^2 - \bigl\|f\bigr\|_{\Leb^2(P)}^2\Bigr| \nonumber \\
+& \overset{(i)}{\leq} \Bigl|\bigl\|\wt{P}f\bigr\|_{\Leb^2(P_n)}^2 - \bigl\|f\bigr\|_{\Leb^2(\wt{P}_n)}^2\Bigr|  + \frac{A_1(\theta + \wt{\delta})}{p_{\min}} \bigl\|f\bigr\|_{\Leb^2(P)}^2 \\
+& \overset{(ii)}{\leq} \biggl(2 + \frac{A_1(\theta + \wt{\delta})}{p_{\min}}\biggr) \Bigl|\bigl\|\wt{P}f\bigr\|_{\Leb^2(P_n)} - \bigl\|f\bigr\|_{\Leb^2(\wt{P}_n)}\Bigr| \cdot \bigl\|f\bigr\|_{\Leb^2(P)} + \frac{A_1(\theta + \wt{\delta})}{p_{\min}} \bigl\|f\bigr\|_{\Leb^2(P)}^2 \nonumber \\
+& \leq \biggl(2 + \frac{A_1(\theta + \wt{\delta})}{p_{\min}}\biggr) \bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\Leb^2(\wt{P}_n)} \cdot \bigl\|f\bigr\|_{\Leb^2(P)} + \frac{A_1(\theta + \wt{\delta})}{p_{\min}} \bigl\|f\bigr\|_{\Leb^2(P)}^2 \label{pf:prop_isometry_2}
+\end{align}
+where $(i)$ follows from~\eqref{eqn:calder19_2} and $(ii)$ follows from~\eqref{pf:prop_isometry_1}. 
+
+It remains to upper bound $\bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\Leb^2(\wt{P}_n)}^2$. Noting that $\wt{P}^{\star}\wt{P}f$ is piecewise constant over the cells $U_i$, we have
+\begin{equation*}
+\bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\Leb^2(\wt{P}_n)}^2 = \sum_{i = 1}^{n} \int_{U_i} \biggl(f(x) - n\cdot\int_{U_i} f(x') \wt{p}_n(x') \,dx'\biggr)^2 \wt{p}_n(x) \,dx.
+\end{equation*}
+We will now establish the following Poincare-type inequality, 
+\begin{equation}
+\label{pf:prop_isometry_3}
+\int_{U_i} \biggl(f(x) - n\cdot\int_{U_i} f(x') \wt{p}_n(x') \,dx'\biggr)^2 \wt{p}_n(x) \,dx \leq \frac{2^{d + 2}}{a_1(\Xset,d) \nu_d K(1/2)} \wt{\delta}^2 \wt{E}_{2\wt{\delta}}(f,U_i)
+\end{equation}
+which holds for all $i = 1,\ldots,n$. Summing up over $i$ implies
+\begin{equation*}
+\bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\Leb^2(\wt{P}_n)}^2 \leq \frac{2^{d+2}}{a_1(\Xset,d)K(1/2)p_{\min}} \cdot \wt{E}_{2\wt{\delta}}(f) \leq \frac{2^{d+3}}{a_1(\Xset,d)K(1/2)p_{\min}} A_1(\Xset,d,K,p_{\min}) D_2(f)
+\end{equation*}
+with the latter inequality following just as in the proof of Proposition~\ref{prop:dirichlet_energies}; the Lemma then follows by plugging this inequality into~\eqref{pf:prop_isometry_2}.
+
+Now it remains to show~\eqref{pf:prop_isometry_3}. The key point is that for any pair of points $x,x' \in \Xset$ such that $\|x - x'\| \leq r$  the triangle inequality
+\begin{equation*}
+\bigl|f(x') - f(x)\bigr|^2 \leq 2\bigl|f(x') - f(z)\bigr|^2 + 2\bigl|f(z) - f(x)\bigr|^2
+\end{equation*}
+holds for each $z \in B\bigl(x,\wt{\delta}\bigr) \cap B\bigl(x',\wt{\delta}\bigr) \cap \Xset =: W$, and we have that
+\begin{align*}
+\bigl|f(x') - f(x)\bigr|^2 & \leq \frac{2}{\vol(W)}\biggl[\int_{W} \bigl|f(x') - f(z)\bigr|^2 \,dz + \int_{W} \bigl|f(z) - f(x)\bigr|^2 \,dz\biggr] \\
+& \leq \frac{2}{\vol(W)K(1/2)}\biggl[\int_{\Xset} K\biggl(\frac{x' - z}{2\wt{\delta}}\biggr)\bigl|f(x') - f(z)\bigr|^2 \,dz + \int_{\Xset} K\biggl(\frac{z - x}{2\wt{\delta}}\biggr)\bigl|f(z) - f(x)\bigr|^2 \,dz\biggr] \\
+& \leq \frac{2^{d + 1}}{a_1(\Xset,d) \nu_d \wt{\delta}^d K(1/2)}\biggl[\int_{\Xset} K\biggl(\frac{x' - z}{2\wt{\delta}}\biggr)\bigl|f(x') - f(z)\bigr|^2 \,dz + \int_{\Xset} K\biggl(\frac{z - x}{2\wt{\delta}}\biggr)\bigl|f(z) - f(x)\bigr|^2 \,dz\biggr]
+\end{align*}
+where the last inequality follows from Assumption~\ref{asmp:r_small_1}. We use this along with the Cauchy-Schwarz inequality to prove~\eqref{pf:prop_isometry_3}:
+\begin{align*}
+\int_{U_i} & \biggl(f(x) - n\cdot\int_{U_i} f(x') \wt{p}_n(x') \,dx'\biggr)^2 \wt{p}_n(x) \,dx \\
+ & =\int_{U_i} \biggl(n\cdot\int_{U_i} \bigl(f(x) - f(x')\bigr) \wt{p}_n(x') \,dx'\biggr)^2 \wt{p}_n(x) \,dx \\
+& \leq n \cdot \int_{U_i} \int_{U_i} \bigl(f(x) - f(x')\bigr)^2 \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx \\
+& \leq \frac{2^{d + 2}}{a_1(\Xset,d) \nu_d \wt{\delta}^d K(1/2)}n\int_{U_i} \int_{U_i} \int_{\Xset} K\biggl(\frac{x - z}{2\wt{\delta}}\biggr)\bigl|f(x) - f(z)\bigr|^2 \wt{\rho}_n(x') \wt{\rho}_n(x)  \,dx' \,dz \,dx \\
+& \leq \frac{2^{d + 2}}{a_1(\Xset,d) \nu_d \wt{\delta}^d K(1/2) p_{\min}} \int_{U_i} \int_{U_i} K\biggl(\frac{x - z}{2\wt{\delta}}\biggr)\bigl|f(x) - f(z)\bigr|^2 \wt{\rho}_n(z) \wt{\rho}_n(x)  \,dz \,dx \\
+& =  \frac{2^{d + 2}}{a_1(\Xset,d) \nu_d K(1/2) p_{\min}} \wt{\delta}^2 \wt{E}_{2\wt{\delta}}(f,U_i).
+\end{align*}
+
+\textit{Proof of (2).}
+\mbox{}\\
+\mbox{}\\
+
+By the triangle inequality,
+\begin{align}
+\Bigl|\|\wt{\mc{I}}u\|_{\Leb^2(P)}^2 - \|u\|_{\Leb^2(P_n)}^2\Bigr| & \leq \Bigl|\|\wt{\mc{I}}u\|_{\Leb^2(P)}^2 - \|\wt{\mc{I}}u\|_{\Leb^2(\wt{P}_n)}^2\Bigr| + \Bigl|\|\wt{\mc{I}}u\|_{\Leb^2(\wt{P}_n)}^2 - \|u\|_{\Leb^2(P_n)}^2\Bigr| \nonumber \\
+& \leq A_1(\theta + \wt{\delta}) \|\wt{\mc{I}}u\|_{\Leb^2(\wt{P}_n)}^2 + \Bigl|\|\wt{\mc{I}}u\|_{\Leb^2(\wt{P}_n)}^2 - \|u\|_{\Leb^2(P_n)}^2\Bigr| \nonumber\\
+& = A_1(\theta + \wt{\delta}) \|\wt{\mc{I}}u\|_{\Leb^2(\wt{P}_n)}^2 + \Bigl(\|\wt{\mc{I}}u\|_{\Leb^2(\wt{P}_n)} + \|u\|_{\Leb^2(P_n)}\Bigr) \cdot \Bigl|\|\wt{\mc{I}}u\|_{\Leb^2(\wt{P}_n)} - \|u\|_{\Leb^2(P_n)}\Bigr| \label{pf:prop_isometry_4}
+\end{align}
+To upper bound the second term in the above expression, we first note that~$\|u\|_{\Leb^2(P_n)} = \|\wt{\mc{P}}^{\star}u\|_{\Leb^2(\wt{P}_n)}$, and thus
+\begin{align}
+\Bigl|\|\wt{\mc{I}}u\|_{\Leb^2(\wt{P}_n)} - \|u\|_{\Leb^2(P_n)} \Bigr| & = \Bigl|\|\wt{\mc{I}}u\|_{\Leb^2(\wt{P}_n)} - \|\wt{\mc{P}}^{\star}u\|_{\Leb^2(\wt{P}_n)}\Bigr| \nonumber \\
+& \overset{(iii)}{\leq} \|\Lambda_{\wt{r}}\wt{\mc{P}}^{\star}u - \wt{\mc{P}}^{\star}u\|_{\Leb^2(\wt{P}_n)} \nonumber \\
+& \overset{(iv)}{\leq} r \sqrt{\frac{2}{\sigma_K p_{\min}} E_{\wt{r}}(\wt{\mc{P}}^{\star}u)} \nonumber \\
+& \overset{(v)}{\leq} r \sqrt{\frac{2}{\sigma_K p_{\min}} \Bigl(1 + A_3(d,K,p)\frac{\wt{\delta}}{r}\Bigr) b_r(u)} \label{pf:prop_isometry_5}
+\end{align}
+where $(iii)$ follows by the triangle inequality, $(iv)$ follows from Lemma~\ref{lem:smoothening_error}, and $(v)$ follows from~\eqref{eqn:calder19_1} and Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized_lb}. On the other hand, by~\eqref{eqn:calder19_2} and Lemma~\ref{lem:smoothening_error},
+\begin{align*}
+\|\wt{\mc{I}}u\|_{\Leb^2(\wt{P}_n)}^2 & \leq \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \|\wt{\mc{I}}u\|_{\Leb^2(P)}^2 \\
+& \leq \frac{2p_{\max}}{p_{\min}} \cdot \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \|\wt{\mc{P}}^{\star}u\|_{\Leb^2(P)}^2 \\
+& \leq \frac{2p_{\max}}{p_{\min}} \cdot \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr)^2 \|\wt{\mc{P}}^{\star}u\|_{\Leb^2(\wt{P}_n)}^2 \\
+& = \frac{2p_{\max}}{p_{\min}} \cdot \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr)^2 \|u\|_{\Leb^2(P_n)}^2
+\end{align*}
+and plugging this estimate along with~\eqref{pf:prop_isometry_5} back into~\eqref{pf:prop_isometry_4}, we obtain part (2) of Proposition~\ref{prop:isometry}.
+
+\paragraph{Proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized}.} \mbox{} \\
+\mbox{} \\
+Recalling that $\bigl(\wt{P}f\bigr)(X_i) = n \cdot \int_{U_i} f(x) \wt{p}_n(x)$, the key point is that
+\begin{equation*}
+\biggl(\bigl(\wt{P}f\bigr)(X_i) - \bigl(\wt{P}f\bigr)(X_j)\biggr)^2 \leq n^2 \cdot \int_{U_i} \int_{U_j} \bigl(f(x') - f(x)\bigr)^2 \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx.
+\end{equation*}
+Additionally, the non-increasing and Lipschitz properties of $K$ imply that for any $x \in U_i$ and $x' \in U_j$, 
+\begin{equation*}
+K\biggl(\frac{\|X_i - X_j\|}{r}\biggr) \leq K\biggl(\frac{\bigl(\|x' - x\| - 2\wt{\delta}\bigr)_{+}}{r}\biggr) \leq K\biggl(\frac{\|x' - x\|}{r + 2\wt{\delta}}\biggr) + \frac{2L_K\wt{\delta}}{r}\1\Bigl\{\|x' - x\| \leq r + 2\wt{\delta}\Bigr\}
+\end{equation*}
+Using this along with the Lipschitz property of $K$, we get
+\begin{align*}
+b_r(f) & = \frac{1}{n^2r^{d + 2}} \sum_{i,j = 1}^n \Bigl(\bigl(\wt{P}f\bigr)(X_i) - \bigl(\wt{P}f\bigr)(X_j)\Bigr)^2 K\biggl(\frac{\|X_i - X_j\|}{r}\biggr) \\
+& \leq \frac{1}{r^{d + 2}} \sum_{i,j = 1}^n \int_{U_i} \int_{U_j}  \bigl(f(x') - f(x)\bigr)^2 \wt{p}_n(x') \wt{p}_n(x) K\biggl(\frac{\|X_i - X_j\|}{r}\biggr) \,dx' \,dx \\
+& \leq \frac{1}{r^{d + 2}} \sum_{i,j = 1}^n \int_{U_i} \int_{U_j}  \bigl(f(x') - f(x)\bigr)^2 \wt{p}_n(x') \wt{p}_n(x) \biggl[K\biggl(\frac{\|x' - x\|}{r + 2\wt{\delta}}\biggr) + \frac{2L_K\wt{\delta}}{r}\1\Bigl\{\|x' - x\| \leq r + 2\wt{\delta}\Bigr\}\biggr] \,dx' \,dx \\
+& = \wt{E}_{r + 2\wt{\delta}}(f) + \frac{2L_K\wt{\delta}}{r}\wt{E}_{r + 2\wt{\delta}}(f; \1_{[0,1]})
+\end{align*}
+for $\1_{[0,1]}(t) = \1\{0 \leq t \leq 1\}$. But clearly $\wt{E}_{r + 2\wt\delta}(f; \1_{[0,1]}) \leq 1/(K(1/2))\wt{E}_{2r + 4\wt{\delta}}(f)$, and the Lemma is shown.
+
+\paragraph{Proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected}.}
+\mbox{}\\
+\mbox{}\\
+Suppose $f \in C^{\infty}(\wb{\Xset})$, which we may do without loss of generality due to the density of $C^{\infty}(\wb{\Xset})$ in  $\Leb^2(\Xset)$.
+
+Taylor expanding $f(x')$ about $x' = x$, applying first Cauchy-Schwarz' and then Jensen's inequality, and then using the Lipschitz property of $p$, we have
+\begin{align*}
+E_r(f) & = \frac{1}{r^{d + 2}}\int_{\Xset} \int_{\Xset} (f(x') - f(x))^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) p(x') p(x) \,dx' \,dx \\
+& = \frac{1}{r^{d + 2}}\int_{\Xset} \int_{\Xset} \biggl(\sum_{i = 1}^{d} (x' - x)^{e_i} \int_0^1 f^{(e_i)}\bigl(x + t(x' - x)\bigr) \,dt\biggr)^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) p(x') p(x) \,dx' \,dx \\
+& \leq \frac{1}{r^{d + 2}}\int_{\Xset} \int_{\Xset} \|x' - x\|^2 \sum_{i = 1}^{d}\biggl(\int_0^1 f^{(e_i)}\bigl(x + t(x' - x)\bigr) \,dt\biggr)^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) p(x') p(x) \,dx' \,dx \\
+& \leq \frac{1}{r^{d + 2}}\int_{\Xset} \int_{\Xset} \int_0^1   \|x' - x\|^2 \biggl\{\sum_{i = 1}^{d} \Bigl(f^{(e_i)}\bigl(x + t(x' - x)\bigr)\Bigr)^2\biggr\} K\biggl(\frac{\|x' - x\|}{r}\biggr) p(x') p(x)   \,dt   \,dx' \,dx \\
+& \leq \frac{(1 + L_pr)^2}{r^{d + 2}}\int_{\Xset} \int_{\Xset} \int_0^1  \|x' - x\|^2 \biggl\{\sum_{i = 1}^{d} \Bigl(f^{(e_i)}\bigl(x + t(x' - x)\bigr)\Bigr)^2\biggr\} K\biggl(\frac{\|x' - x\|}{r}\biggr) p\bigl(x + t(x' - x)\bigr)^2   \,dt   \,dx' \,dx.
+\end{align*} 
+Then letting $z = (x' - x)/r$ and $\wt{x} = x + trz$, we obtain
+\begin{align*}
+E_r(f) & \leq (1 + L_pr)^2 \int_{\Xset} \int_{\mathcal{Z}_r(x)} \int_{0}^{1} \|z\|^2 \biggl\{\sum_{i = 1}^{d} \Bigl(f^{(e_i)}\bigl(x + trz\bigr)\Bigr)^2\biggr\} K\bigl(\|z\|\bigr) p(x + trz)^2 \,dt \,dz \,dx \\
+& = (1 + L_pr)^2 \int_{B(0,1)} \int_{0}^{1}  \int_{\Xset_r(z)} \|z\|^2 \biggl\{\sum_{i = 1}^{d} \Bigl(f^{(e_i)}\bigl(x + trz\bigr)\Bigr)^2\biggr\} K\bigl(\|z\|\bigr) p(x + trz)^2 \,dx \,dt \,dz \\
+& \leq (1 + L_pr)^2 \int_{B(0,1)} \int_{0}^{1} \|z\|^2 K\bigl(\|z\|\bigr) \biggl\{\int_{\wt{\Xset}_r(t,z)} \|\nabla f(\wt{x})\|^2 p(\wt{x})^2 \,d\wt{x}\biggr\} \,dt \,dz  \\
+& \leq (1 + L_pr)^2 \int_{B(0,1)} \int_{0}^{1} \|z\|^2 K\bigl(\|z\|\bigr) \biggl\{\int_{\Xset} \|\nabla f(\wt{x})\|^2 p(\wt{x})^2 \,d\wt{x}\biggr\} \,dt \,dz \\
+& = (1 + L_pr)^2 \int_{B(0,1)} \|z\|^2 K\bigl(\|z\|\bigr) \,dz 
+\end{align*}
+where $\mathcal{Z}_r(x) = B(0,1) \cap (\Xset - x)/r$, $\Xset_r(z) = \Xset \cap( \Xset - zr)$, $\wt{\Xset}_r(t,z) = \Xset_r(z) + trz$, and we note that since
+\begin{align*}
+\wt{x} \in \wt{\Xset}_r(t,z) & \Longrightarrow \wt{x} = x + trz ~~ \textrm{for some $x \in \Xset - zr$ and $t \in [0,1]$} \\
+& \Longrightarrow \wt{x} \in \Xset,~~ \textrm{(since $x \in \Xset$, $x + rz \in \Xset$ and $\Xset$ is connected)}
+\end{align*}
+it must be that $\wt{X}_r(t,z) \subseteq \Xset$ for all $z \in B(0,1)$ and $t \in [0,1]$. 
+
+\paragraph{Proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}.}
+\mbox{} \\
+\mbox{} \\
+For any $a \in \Reals$, $\Lambda_rf$ satisfies the identity
+\begin{equation*}
+\Lambda_rf(x) = a + \frac{1}{r^d\tau(x)}\int_{\Xset} \eta_r(x',x)\bigl(f(x') - a\bigr)\,dx'
+\end{equation*}
+and by differentiating we obtain
+\begin{equation*}
+\bigl(\nabla \Lambda_rf\bigr)(x)= \frac{1}{r^d\tau(x)}\int_{\Xset} \bigl(\nabla \eta_r(x',\cdot)\bigr)(x)\bigl(f(x') - a\bigr)\,dx' + \nabla\bigl(\tau^{-1}\bigr)(x)\cdot \frac{1}{r^d}\int_{\Xset} \eta_r(x',x)\bigl(f(x') - a\bigr)\,dx'
+\end{equation*} 
+Plugging in $a = f(x)$, we get $\nabla\Lambda_rf(x) = J_1(x)/\tau(x) + J_2(x)$ for
+\begin{equation*}
+J_1(x) := \frac{1}{r^d}\int_{\Xset} \bigl(\nabla \eta_r(x',\cdot)\bigr)(x)\bigl(f(x') - f(x)\bigr)\,dx',~~ J_2(x) := \nabla\bigl(\tau^{-1}\bigr)(x)\cdot \frac{1}{r^d}\int_{\Xset} \eta_r(x',x)\bigl(f(x') - f(x)\bigr)\,dx'.
+\end{equation*}
+To upper bound $\bigl\|J_1(x)\bigr\|^2$, we first compute the gradient of $\eta_r(x',\cdot)$,
+\begin{align*}
+\bigl(\nabla\eta_r(x',\cdot)\bigr)(x) & = \frac{1}{r} \psi'\biggl(\frac{\|x'  - x\|}{r}\biggr) \frac{(x - x')}{\|x' - x\|} \\
+& = \frac{1}{\sigma_Kr^2} K\biggl(\frac{\|x' - x\|}{r}\biggr) (x' - x),
+\end{align*}
+so that by the Cauchy-Schwarz inequality,
+\begin{align*}
+\bigl\|J_1(x)\bigr\|^2 & = \frac{1}{\sigma_K^2 r^{4 + 2d}} \Biggl[\int_{\Xset} \bigl(f(x') - f(x)\bigr)K\biggl(\frac{\|x' - x\|}{r}\biggr)(x' - x)\Biggr]^2 \,dx' \\
+& \leq \frac{1}{\sigma_K^2r^{4 + 2d}} \biggl[\int_{\Xset}K\biggl(\frac{\|x' - x\|}{r}\biggr)\|x' - x\|^2\,dx'\biggr] \biggl[\int_{\Xset}K\biggl(\frac{\|x' - x\|}{r}\biggr)\bigl(f(x') - f(x)\bigr)^2\,dx'\biggr] \\
+& \leq \frac{1}{\sigma_K r^{2 + d}}\int_{\Xset}K\biggl(\frac{\|x' - x\|}{r}\biggr)\bigl(f(x') - f(x)\bigr)^2\,dx'.
+\end{align*}
+To upper bound $\bigl\|J_2(x)\bigr\|^2$, we use the Cauchy-Schwarz inequality along with the observation $\eta_r(x',x) \leq \frac{1}{\sigma_K} K\bigl(\|x' - x\|/r\bigr)$ to deduce
+\begin{align*}
+\bigl\|J_2(x)\bigr\|^2 & \leq \Bigl\|\nabla\bigl(\tau^{-1}\bigr)(x)\Bigr\|^2\frac{1}{r^{2d}} \biggl[\int_{\Xset}\eta_r(x',x) \,dx'\biggr] \cdot \biggl[\int_{\Xset} \eta_r(x',x)\bigl(f(x') - f(x)\bigr)^2 \,dx' \biggr] \\
+& = \Bigl\|\nabla\bigl(\tau^{-1}\bigr)(x)\Bigr\|^2\frac{\tau(x)}{r^d} \int_{\Xset} \eta_r(x',x)\bigl(f(x') - f(x)\bigr)^2 \,dx'\\ 
+& \leq \Bigl\|\nabla\bigl(\tau^{-1}\bigr)(x)\Bigr\|^2\frac{\tau(x)}{\sigma_K r^d}\int_{\Xset} K\biggl(\frac{\|x' - x\|}{r}\biggr)\bigl(f(x') - f(x)\bigr)^2 \,dx' \\
+& \leq \frac{16}{\sigma_K^2r^{2 + d}} \biggl[\int_{\Xset} K\biggl(\frac{|x' - x|}{r}\biggr)\bigl(f(x') - f(x)\bigr)^2 \,dx' \biggr].
+\end{align*}
+where the last inequality follows by the estimates on $\tau$ and $\nabla \tau$ given in Lemma~\ref{lem:tau_bound}. Combining our bounds on $\bigl\|J_1(x)\bigr\|^2$ and $\bigl\|J_2(x)\bigr\|^2$ along with the lower bound on $\tau(x)$ in Lemma~\ref{lem:tau_bound} and integrating over $\Xset$, we have
+\begin{align*}
+\sigma_K D_2(\Lambda_r f) & = \sigma_K\int_{\Xset} \biggl\|\Bigl(\nabla \Lambda_rf)(x)\biggr\|^2 p^2(x) \,dx \\
+& \leq 2 \sigma_K \int_{\Xset} \Biggl(\frac{\bigl\|J_1(x)\bigr\|^2}{\tau^2(x)} + \bigl\|J_2(x)\bigr\|^2\Biggr) p^2(x) \,dx \\
+& \leq \frac{40}{\sigma_K r^{2 + d}} \int_{\Xset} \int_{\Xset} K\biggl(\frac{|x' - x|}{r}\biggr)\bigl(f(x') - f(x)\bigr)^2 p^2(x) \,dx' \,dx \\
+& \leq \frac{40 \bigl(1 + L_p r\bigr)}{\sigma_K} E_r(f),
+\end{align*}
+completing the proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}. 
+
+\paragraph{Proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized_lb}.}
+\mbox{} \\
+\mbox{} \\
+For brevity, we write $\wt{r} := r - 2\wt{\delta}$. We begin by expanding the energy $\wt{E}_{r - 2\wt{\delta}}\bigl(\wt{\mc{P}}^{\star}u\bigr)$ as a double sum of double integrals,
+\begin{align*}
+\wt{E}_{\wt{r}}\bigl(\wt{\mc{P}}^{\star}u\bigr) & = \frac{1}{\wt{r}^{d + 2}} \sum_{i = 1}^{n} \sum_{j = 1}^{n} \int_{U_i} \int_{U_j} \Bigl(u(X_i) - u(X_j)\Bigr)^2 K\biggl(\frac{\|x' - x\|}{\wt{r}}\biggr) \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx
+\end{align*}
+We next use the Lipschitz property of the kernel $K$---in particular that for $x \in U_i$ and $x' \in U_j$,
+\begin{equation*}
+K\biggl(\frac{\|x' - x\|}{\wt{r}}\biggr) \leq K\biggl(\frac{\|x_i - x_j\|}{r}\biggr) + \frac{2L_K\wt{\delta}}{\wt{r}} \cdot \1\biggl\{\frac{\|x' - x\|}{\wt{r}}\biggr\}
+\end{equation*}
+---to conclude that
+\begin{align}
+\wt{E}_{\wt{r}}\bigl(\wt{\mc{P}}^{\star}u\bigr) & \leq \frac{1}{n^2\wt{r}^{d + 2}} \sum_{i = 1}^{n} \sum_{j = 1}^{n} \Bigl(u(X_i) - U(X_j)\Bigr)^2 K\biggl(\frac{\|x_i - x_j\|}{r}\biggr) + \frac{2L_K\wt{\delta}}{\wt{r}}\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) \nonumber \\
+& \leq \biggl(1 + 4\bigl(2^{d + 2} - 1\bigr)\frac{\wt{\delta}}{r}\biggr) b_r(u) + \frac{2L_K\wt{\delta}}{\wt{r}}\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) \label{pf:lem_first_order_graph_sobolev_seminorm_discretized_1}.
+\end{align}
+We focus now on the factor of $\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,1_{[0,1]})$. For any $x$ and $x' \in \Xset$ such that $\|x - x'\| \leq r$, note that by assumption $z_{xx'}:= \frac{1}{2}x + \frac{1}{2}x' \in \Xset \cap B(x,\wt{r}/2) \cap B(x',\wt{r}/2)$. Moreover by the triangle inequality
+\begin{equation*}
+\bigl|f(x) - f(x')\bigr|^2 \leq 2\bigl|f(x) - f(z_{xx'})\bigr|^2 + 2\bigl|f(z_{xx'}) - f(x')\bigr|^2
+\end{equation*}
+so that
+\begin{align*}
+\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) & \leq \int_{\Xset} \int_{\Xset \cap B(x,r)} \Bigl[ 2\bigl|f(x) - f(z_{xx'})\bigr|^2 +  2\bigl|f(z_{xx'}) - f(x')\bigr|^2\Bigr] \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx.
+\end{align*}
+Now, by a change of variables along with the Lipschitz property of $p$, we can deduce that
+\begin{align*}
+ \int_{\Xset} \int_{\Xset \cap B(x,r)} \bigl|f(x) - f(z_{xx'})\bigr|^2 \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx & \leq 2^d \bigl(1 + L_p\wt{r}\bigr)\int_{\Xset} \int_{\Xset \cap B(x,r/2)} \bigl|f(x) - f(z)\bigr|^2 \wt{p}_n(z) \wt{p}_n(x) \,dz \,dx \\
+ & = 2^d \bigl(1 + L_p\wt{r}\bigr) \wt{E}_{\wt{r}/2}\bigl(f; \1_{[0,1]}\bigr),
+\end{align*}
+and therefore by symmetry
+\begin{equation*}
+\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) \leq 2^{d + 2} \bigl(1 + L_p\wt{r}\bigr) \wt{E}_{\wt{r}/2}\bigl(f; \1_{[0,1]}\bigr).
+\end{equation*}
+Finally, noting that $\wt{E}_{\wt{r}/2}\bigl(f; \1_{[0,1]}) \leq \frac{1}{K(1/2)} \wt{E}_{\wt{r}}\bigl(f)$, the proof is completed by plugging our upper bound on $\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr)$ back into~\eqref{pf:lem_first_order_graph_sobolev_seminorm_discretized_1}.
+\paragraph{Proof of Lemma~\ref{lem:tau_bound}.}
+\mbox{}\\
+\mbox{}\\
+First prove the estimates of $\tau(x)$, and then upper bound on $\|\nabla\tau(x)\|$. Substituting $z = (x' - x)/r$ and using~\ref{asmp:r_small_3}, we have that
+\begin{align*}
+\tau(x) & = \frac{1}{r^d} \int_{\Xset} \psi\biggl(\frac{\|x' - x\|}{r}\biggr) \,dx' \\
+& =  \int_{\mc{B}_x} \psi\bigl(\|z\|\bigr) \,dz \\
+& \geq a_1(\Xset,d) \cdot \int_{B(0,1)} \psi(\|z\|) \,dz
+\end{align*}
+We will now show that $\int_{B(0,1)} \psi(\|z\|) \,dz = 1$, which will imply our estimate of $\tau(x)$. To see this identity, note that on the one hand, by converting to polar coordinates and integrating by parts we obtain
+\begin{align*}
+\int_{B(0,1)} \psi\bigl(\|z\|\bigr) \,dz = d \nu_d \int_{0}^{1} \psi(t) t^{d - 1} \,dt = \nu_d \int_{0}^{1} \psi'(t) t^{d} \,dt = \frac{\nu_d}{\sigma_K} \int_{0}^{1} t^{d + 1} K(t) \,dt;
+\end{align*}
+on the other hand, again converting to polar coordinate, we have
+\begin{equation*}
+\sigma_K = \frac{1}{d} \int_{\Reals^d} \|x\|^2 K(\|x\|) \,dx = \nu_d \int_{0}^{1}t^{d + 1} K(t) \,dt.
+\end{equation*}
+
+Finally, we upper bound $\|\nabla\tau(x)\|^2$. Exchanging derivative and integral, we have
+\begin{align*}
+\nabla\tau(x) = \frac{1}{r^d} \int_{\Xset} \bigl(\nabla \eta_r(x',\cdot)\bigr)(x) \,dx' = \frac{1}{\sigma_K r^{d + 2}} \int_{\Xset} K\biggl(\frac{\|x' - x\|}{r}\biggr)(x' - x)\,dx',
+\end{align*}
+and by the Cauchy-Schwarz inequality,
+\begin{equation*}
+\|\nabla\tau(x)\|^2 \leq \frac{1}{\sigma_K^2 r^{2d + 4}} \biggl[\int_{\Xset} K\biggl(\frac{\|x' - x\|}{r}\biggr)\,dx'\biggr] \int_{\Xset} K\biggl(\frac{\|x' - x\|}{r}\biggr)\|x' - x\|^2\,dx', \leq \frac{1}{\sigma_K r^{2}}
+\end{equation*}
+concluding the proof of Lemma~\ref{lem:tau_bound}. One note: while $\nabla\tau(x) = 0$ when $B(x,r) \in \Xset$, near the boundary the upper bound we derived by using Cauchy-Schwarz appears tight. 
+
+\paragraph{Proof of Lemma~\ref{lem:smoothening_error}.}
+\mbox{}\\
+\mbox{}\\
+By Jensen's inequality and Lemma~\ref{lem:tau_bound},
+\begin{align*}
+\Bigl[\Lambda_rf(x)\Bigr]^2 & \leq \frac{1}{r^d \tau(x)}\int_{\Xset} \eta_r(x',x) \bigl[f(x')\bigr]^2 \,dx' \\
+& \leq \frac{2}{r^d p_{\min}}\int_{\Xset} \eta_r(x',x) \bigl[f(x')\bigr]^2 p(x') \,dx'
+\end{align*}
+Then integrating over $x$ and swapping the order of integraton, we have
+\begin{align*}
+\bigl\|\Lambda_rf\bigr\|_{\Leb^2(P)}^2 & \leq \frac{2}{r^d p_{\min}} \int_{\Xset} \int_{\Xset} \eta_r(x',x) \bigl[f(x')\bigr]^2 p(x') p(x) \,dx' \,dx \\ 
+& \leq \frac{2p_{\max}}{p_{\min}} \int_{\Xset} \bigl[f(x')\bigr]^2 p(x') \,dx' \\
+& = \frac{2p_{\max}}{p_{\min}} \|f\|_{\Leb^2(P)}^2.
+\end{align*}
+
+Noting that $\Lambda_ra = a$ for any $a \in \Reals$, by the Cauchy-Schwarz inequality we have that for all $x \in \Xset$,
+\begin{align*}
+\bigl|\Lambda_rf(x) - f(x)\bigr|^2 & = \biggl[\frac{1}{r^d\tau(x)} \int_{\Xset} \eta_r(x',x) \bigl(f(x') - f(x)\bigr) \,dx'\biggr]^2 \\
+& \leq \frac{1}{r^{2d} \tau^2(x)} \biggl[\int_{\Xset} \eta_r(x',x) \,dx'\biggr] \cdot \biggl[\int_{\Xset} \eta_r(x',x) \bigl(f(x') - f(x)\bigr)^2 \,dx'\biggr] \\
+& = \frac{1}{r^d \tau(x)} \int_{\Xset} \eta_r(x',x) \bigl(f(x') - f(x)\bigr)^2 \,dx'. \\
+& \leq \frac{1}{r^d \tau(x) p_{\min}} \int_{\Xset} \eta_r(x',x) \bigl(f(x') - f(x)\bigr)^2 p(x') \,dx'.
+\end{align*}
+Then integrating over $\Xset$ with respect to $p$ yields~\eqref{eqn:smoothening_error_energy}.
+
+\clearpage
+
+\section{Miscellaneous}
+
+\paragraph{Proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb} (simplified setting).}
+\mbox{} \\
+\mbox{} \\
+Assume $d = 1$ and $\Xset = [0,1]$. For any $a \in \Reals$,
+\begin{equation*}
+\Lambda_rf(x) = a + \frac{1}{r\tau(x)}\int_{0}^{1} \eta_r(x',x)\bigl(f(x') - a\bigr)\,dx'
+\end{equation*}
+Differentiating with respect to $x$, we obtain
+\begin{equation*}
+\frac{d}{dx}\Lambda_rf = \frac{1}{r\tau(x)}\int_{0}^{1} \frac{\partial}{\partial x}\eta_r(x',x)\bigl(f(x') - a\bigr)\,dx' + \frac{d}{dx}\bigl(\tau^{-1}(x)\bigr) \frac{1}{r}\int_{0}^{1} \eta_r(x',x)\bigl(f(x') - a\bigr)\,dx'
+\end{equation*} 
+and plugging in $a = f(x)$, we get $\frac{d}{dx}\Lambda_rf(x) = J_1(x)/\tau(x) + J_2(x)$ for
+\begin{equation*}
+J_1(x) := \frac{1}{r}\int_{0}^{1} \frac{\partial}{\partial x}\eta_r(x',x)\bigl(f(x') - f(x)\bigr)\,dx',~~ J_2(x) := \frac{d}{dx}\bigl(\tau^{-1}(x)\bigr)\frac{1}{r}\int_{0}^{1} \eta_r(x',x)\bigl(f(x') - f(x)\bigr)\,dx'.
+\end{equation*}
+To upper bound $\bigl|J_1(x)\bigr|^2$, we first compute the partial derivative
+\begin{align*}
+\frac{\partial}{\partial x}\eta_r(x',x) & = \frac{1}{r} \psi'\biggl(\frac{|x'  - x|}{r}\biggr) \cdot \frac{(x - x')}{\|x' - x\|} \\
+& = \frac{1}{\sigma_Kr^2} K\biggl(\frac{\|x' - x\|}{r}\biggr) \cdot (x' - x),
+\end{align*}
+so that by the Cauchy-Schwarz inequality,
+\begin{align*}
+\bigl|J_1(x)\bigr|^2 & = \frac{1}{\sigma_K^2 r^6} \Biggl[\int_{0}^{1} K\biggl(\frac{\|x' - x\|}{r}\biggr) \cdot (x' - x) \cdot \bigl(f(x') - f(x)\bigr)\Biggr]^2 \,dx' \\
+& \leq \frac{1}{\sigma_K^2r^6} \biggl[\int_{0}^{1}K\biggl(\frac{\|x' - x\|}{r}\biggr)(x' - x)^2\,dx'\biggr] \cdot \biggl[\int_{0}^{1}K\biggl(\frac{\|x' - x\|}{r}\biggr)\bigl(f(x') - f(x)\bigr)^2\,dx'\biggr] \\
+& \leq \frac{1}{\sigma_K r^3}\int_{0}^{1}K\biggl(\frac{\|x' - x\|}{r}\biggr)\bigl(f(x') - f(x)\bigr)^2\,dx'.
+\end{align*}
+To upper bound $\bigl|J_2(x)\bigr|^2$, we note that $\eta_r(x',x) \leq \frac{1}{\sigma_K} K_r(x',x)$. Then by the Cauchy-Schwarz inequality again,
+\begin{align*}
+\bigl|J_2(x)\bigr|^2 & \leq \biggl[\frac{d}{dx}\bigl(\tau^{-1}(x)\bigr)\biggr]^2\frac{1}{r^2} \biggl[\int_{0}^1\eta_r(x',x) \,dx'\biggr] \cdot \biggl[\int_{0}^{1} \eta_r(x',x)\bigl(f(x') - f(x)\bigr)^2 \,dx' \biggr] \\
+& \leq \biggl[\frac{d}{dx}\bigl(\tau^{-1}(x)\bigr)\biggr]^2\frac{\tau(x)}{r}\biggl[\int_{0}^{1} \eta_r(x',x)\bigl(f(x') - f(x)\bigr)^2 \,dx' \biggr]\\ 
+& \leq \biggl[\frac{d}{dx}\bigl(\tau^{-1}(x)\bigr)\biggr]^2\frac{\tau(x)}{\sigma_K r}\biggl[\int_{0}^{1} K\biggl(\frac{|x' - x|}{r}\biggr)\bigl(f(x') - f(x)\bigr)^2 \,dx' \biggr] \\
+& \leq \frac{8}{\sigma_Kr^3} \biggl[\int_{0}^{1} K\biggl(\frac{|x' - x|}{r}\biggr)\bigl(f(x') - f(x)\bigr)^2 \,dx' \biggr].
+\end{align*}
+where the last inequality follows by Lemma~\ref{lem:tau_bound}. Combining our bounds on $\bigl|J_1(x)\bigr|^2$ and $\bigl|J_2(x)\bigr|^2$, we have
+\begin{align*}
+\sigma_K D_2(\Lambda_r f) & = \sigma_K\int_{0}^{1} \biggl|\frac{d}{dx} \Lambda_rf(x)\biggr|^2 p^2(x) \,dx \\
+& \leq \frac{18}{r^3} \int_{0}^{1} \int_{0}^{1} K\biggl(\frac{|x' - x|}{r}\biggr)\bigl(f(x') - f(x)\bigr)^2 p^2(x) \,dx' \,dx \\
+& = 18 E_r(f),
+\end{align*}
+completing the proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}. 
+\paragraph{Proof of Lemma~\ref{lem:tau_bound} (simplified setting).} 
+\mbox{} \\
+\mbox{} \\
+Assume $d = 1$ and $\Xset = [0,1]$. First we show the lower bound on $\tau(x)$, then the upper bound on $\tau(x)$, and finally the upper bound on $|\tau'(x)|$. Substituting $z = (x' - x)/r$ and integrating by parts, we have
+\begin{align*}
+\tau(x) & = \frac{1}{r} \int_{0}^{1} \psi\biggl(\frac{|x' - x|}{r}\biggr) \,dx' \\
+& =  \int_{-x/r}^{(1 - x)/r}  \psi\bigl(\abs{z}\bigr) \,dz \\
+& = z \psi\bigl(|z|\bigr) \bigg|_{-x/r}^{(1 - x)/r} - \int_{-x/r}^{(1 - x)/r}  z \psi'\bigl(\abs{z}\bigr) \,dz \\
+& \geq \frac{1}{\sigma_K}\int_{-x/r}^{(1 - x)/r}  z^2 K\bigl(|z|\bigr) \,dz. \\
+\end{align*}
+By our smallness assumption on $r$, one of $x > r$ or $(1 - x) > r$ must be true; we will assume without loss of generality that $(1 - x) > r$. In that case,
+\begin{equation*}
+\int_{-x/r}^{(1 - x)/r}  z^2 K\bigl(|z|\bigr) \,dz \geq \int_{0}^{1} z^2K\bigl(|z|\bigr) = \frac{1}{2} \int_{-1}^{1} z^2K\bigl(|z|\bigr) \,dz = \frac{1}{2}\sigma_K,
+\end{equation*}
+so that $\tau(x) \geq 1/2$. 
+
+The upper bound on $\tau(x)$ follows along similar lines. Again substituting $z = (x' - x)/r$ and integrating by parts, we have
+\begin{align*}
+\tau(x) & = \frac{1}{r} \int_{0}^{1} \psi\biggl(\frac{|x' - x|}{r}\biggr) \,dx' \\
+& \leq \int_{-\infty}^{\infty}  \psi\bigl(\abs{z}\bigr) \,dz \\
+& = \frac{1}{\sigma_K}\int_{-\infty}^{\infty} z^2 K(z) \,dz = 1.
+\end{align*}
+
+Finally, we upper bound $|\tau'(x)|$:
+\begin{align*}
+\abs{\tau'(x)} & = \frac{1}{r} \int_{0}^{1} \frac{\partial}{\partial x} \eta_r(x',x) \,dx' \\
+& = \frac{1}{\sigma_Kr^{3}} \int_{0}^{1} K\biggl(\frac{\|x' - x\|}{r}\biggr) \cdot (x' - x) \,dx' \\
+& = \frac{1}{\sigma_Kr} \int_{-x/r}^{(1 - x)/r} z K\bigl(|z|\bigr) \,dz \\
+& \leq \frac{1}{\sigma_Kr} \biggl[\int_{-\infty}^{\infty} K\bigl(|z|\bigr) \,dz\biggr] \cdot \biggl[\int_{-\infty}^{\infty}z^2 K\bigl(|z|\bigr) \,dz \biggr] \\
+& \leq \frac{1}{r}.
+\end{align*}
+The first upper bound in the previous display follows from the Cauchy-Schwarz inequality. While much tighter upper bounds are possible when $B(x,r) \subseteq \Xset$---indeed $\tau'(x) = 0$ for such $x$---near the boundary this inequality is tight. 
+
+
+\clearpage
+
+\bibliographystyle{plainnat}
+\bibliography{../../graph_testing_bibliography} 
+
+\end{document}
