@@ -22,6 +22,7 @@
 \DeclareMathAccent{\wb}{0}{mathx}{"73}
 
 \DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
 
 \newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
 \newcommand{\Graph}{\mathcal{G}}
@@ -246,9 +247,18 @@ Finally, we will also establish that the Laplacian smoothing estimator can be al
 
 List out what is to come.
 
-\section{Minimax regression over Sobolev spaces}
+\section{Minimax-optimal regression over Sobolev spaces}
 
-\textbf{(3)} Sobolev spaces are classical function spaces, over which linear nonparametric regression methods. One notable such method is smoothing splines, to which we give special attention because of their close connection to Laplacian smoothing.
+Before we get to our main results, we briefly review minimax optimal estimation and testing rates over Sobolev classes. We also single out a notable method which achieves these rates: \emph{smoothing splines}. As we will see, Laplacian smoothing can be seen as a graph-based---i.e. discrete---counterpart to the ``continuous-time'' approach of smoothing splines. 
+
+\subsection{Sobolev spaces}
+\label{subsec:sobolev_spaces}
+
+We start by briefly introducing Sobolev spaces, emphasizing only the material relevant to our statistical context. Roughly speaking, Sobolev spaces contain functions $f \in \Leb^p(\Xset)$ with derivatives which themselves belong to $\Leb^p(\Xset)$. More formally, for given integers $s$ and $p > 0$, the Sobolev space $W^{s,p}(\Xset)$ consists of all functions $f \in \Leb^p(\Xset)$ such that for each multiindex $\alpha = (\alpha_1,\ldots,\alpha_d) \in \mathbb{N}^d$ satisfying $\abs{\alpha} := \sum_{i = 1}^{d} \alpha_i \leq s$, the weak derivative $D^{\alpha}f$ exists and belongs to $\Leb^p(\Xset)$. For such functions, the $(s,p)$-Sobolev seminorm $\seminorm{f}_{W^{s,p}(\Xset)}$ and norm $\norm{f}_{W^{s,p}(\Xset)}$ are given by 
+\begin{equation*}
+\seminorm{f}_{W^{s,p}(\Xset)}^p = \sum_{\abs{\alpha} = s}\int_{\mathcal{X}} \Bigl|\bigl(D^{\alpha}f\bigr)(x)\Bigr|^p \,dx, ~~ \norm{f}_{W^{s,p}(\Xset)}^p = \sum_{k = 0}^{s} \seminorm{f}_{W^{k,p}(\Xset)}^p
+\end{equation*}
+and for a given $M > 0$, the $(s,p)$-Sobolev ball is $W^{s,p}(\Xset, M) = \set{f: \norm{f}_{W^{s,p}(\Xset)} \leq M}$. In the special case when $p = 2$, the Sobolev space $W$ is a Hilbert space, and we adopt the usual convention of writing $H^s(\Xset) = W^{s,2}(\Xset)$ and $H^s(\Xset,M) = W^{s,2}(\Xset,M)$; we will confine our attention to this case hereafter.
 
 \textbf{(4)} In fact, an alternative way to motivate Laplacian smoothing nonparametric regression methods---as opposed to the advantages mentioned in \textbf{(2.a)}---comes from viewing them as discrete-time versions of smoothing splines. This is made more rigorous by the consistency results of \textbf{(2.b)}. Viewed in this light, an additional advantage of Laplacian smoothing emerges: it automatically adapts to the geometry of $\Xset$ and $p$. 
 
