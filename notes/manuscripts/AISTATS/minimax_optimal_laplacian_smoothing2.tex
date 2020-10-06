@@ -177,7 +177,7 @@
 
 \begin{document}
 \title{Minimax optimal Laplacian smoothing}
-\author{Alden Green, Sivaraman Balakrishnan, and Ryan Tibshirani}
+\author{Alden Green, Sivaraman Balakrishnan, and Ryan J. Tibshirani}
 \date{\today}
 \maketitle
 
@@ -233,27 +233,22 @@ Laplacian smoothing has many advantages compared to other nonparametric regressi
 	\item Is is generalizable to non-standard data---for instance, text or images, or really any data modality on which it is possible to define a kernel.
 	\item It is easily adaptable to the semi-supervised learning setting. 
 \end{itemize}
+\textcolor{red}{(TODO)}: Perhaps additional motivation is needed?
 
 \paragraph{Related work.} For this reason a considerable body of work has emerged analyzing the properties of Laplacian smoothing, as well as of graph-based methods more generally. Roughly speaking this work can divided into two categories.
 
-Works in the first category view the responses $Y = \theta + \varepsilon$ as noisy samples of a regression function $\theta \in \Reals^n$ defined on the vertices of \emph{fixed graph} $G$. and bound the statistical error as a function of $\theta$ and $G$. (In the estimation literature, see for instance \citep{wang2016, sadhanala16,sadhanala17,kirichenko2017,kirichenko2018}; in the testing literature, see \citep{sharpnack2013,sharpnack2013b,sharpnack2015}.) Note that in our setting, the graph $G_{n,r}$ and the evaluations $(f_0(X_1),\ldots,f_0(X_n))$ are random rather than fixed, and our assumptions are placed only on the underlying objects $P$ and $f_0$ from which these random object arise. As such, both our analysis and conclusions are naturally quite different.
+Works in the first category view the responses $Y = \theta + \varepsilon$ as noisy samples of a regression function $\theta \in \Reals^n$ defined on the vertices of a \emph{fixed graph} $G$. and bound the statistical error as a function of $\theta$ and $G$. (In the estimation literature, see for instance \citep{wang2016, sadhanala16,sadhanala17,kirichenko2017,kirichenko2018}; in the testing literature, see \citep{sharpnack2013,sharpnack2013b,sharpnack2015}.) Note that in our setting, the graph $G_{n,r}$ and the evaluations $(f_0(X_1),\ldots,f_0(X_n))$ are random rather than fixed, and our assumptions are placed only on the underlying objects $P$ and $f_0$ from which these random object arise. As such, both our analysis and conclusions are naturally quite different.
 
 Works in the second category prove the consistency of neighborhood graph Laplacian smoothing and other neighborhood graph-based methods in the large-sample limit. They do so by establishing the convergence of the graph Laplacian $\Lap_{{n,r}}$ to the continuum Laplace operator $\Delta_P: C^2(\Xset) \to \Leb^2(\Xset)$,
 \begin{equation}
 \label{eqn:laplace_operator}
 \Delta_Pg := -\frac{1}{p} \dive(p^2 \nabla g)
 \end{equation}
-as $n \to \infty$ and $r \to 0$. This is meant in various senses:
-\begin{itemize}
-	\item Pointwise convergence, meaning that $\Lap_{n,r}f \to \Delta_Pf$ in an appropriate norm \citep{belkin03,belkin05,lafon04,hein05,singer06,gine06}. 
-	\item Spectral convergence, meaning the eigenvalues $\lambda_k(\Lap_{n,r}) \to \lambda_k(\Delta_P)$, where the latter are the Dirichlet eigenvalues of $\Delta_P$ \citep{belkin07,burago2014,trillos2018,trillos2019,calder2019}.\footnote{\label{footnote:dirichlet_eigenvalues} Formally, Dirichlet eigenvalues are solutions to the problem
-		$$
-		\Delta_Pg = \lambda g,\\
-		\restr{g}{\partial \Xset} = 0
-		$$} 
-	\item Convergence of norms, meaning $f^T \Lap_{n,r} f \to \langle f,\Delta_Pf \rangle_{\Leb^2(P)}$ \citep{bousquet03,hein06,zhou11}. 
-\end{itemize}
-While these results imply \emph{consistency} of many different graph Laplacian based procedures, the statistical \emph{optimality} of Laplacian smoothing over neighborhood graphs is still not well understood.
+as $n \to \infty$ and $r \to 0$. This is meant in (at least) three senses: (1) \emph{pointwise convergence}, meaning that $\Lap_{n,r}f \to \Delta_Pf$ in an appropriate norm \citep{belkin03,belkin05,lafon04,hein05,singer06,gine06}; (2) spectral convergence, meaning the eigenvalues $\lambda_k(\Lap_{n,r}) \to \lambda_k(\Delta_P)$, where the latter are the Dirichlet eigenvalues of $\Delta_P$ \citep{belkin07,burago2014,trillos2018,trillos2019,calder2019}.\footnote{\label{footnote:dirichlet_eigenvalues} Formally, Dirichlet eigenvalues are solutions to the problem
+	$$
+	\Delta_Pg = \lambda g,\\
+	\restr{g}{\partial \Xset} = 0
+	$$}, and (3) convergence of norms, meaning $f^T \Lap_{n,r} f \to \langle f,\Delta_Pf \rangle_{\Leb^2(P)}$ \citep{bousquet03,hein06,zhou11}. While these results imply \emph{consistency} of many different graph Laplacian based procedures, the statistical \emph{optimality} of Laplacian smoothing over neighborhood graphs is still not well understood.
 
 \paragraph{Our contributions.} Our three main contributions lie in this latter direction, and they can all be summarized as follows: Laplacian smoothing methods are minimax optimal over first order Sobolev spaces. In more detail, we will show that when $f_0$ belongs to the first order Sobolev ball $H^1(\Xset;M)$:
 \begin{itemize}
@@ -269,17 +264,19 @@ While these results imply \emph{consistency} of many different graph Laplacian b
 	\item In Section~\ref{sec:minimax_optimal_regression_sobolev_spaces}, for completeness we review some standard results regarding minimax nonparametric regression over Sobolev spaces.
 	\item In Section~\ref{sec:graph_sobolev_classes}, we introduce the graph Sobolev class $H^1(G_{n,r})$, which we view as a graph-based analog to the continuum Sobolev class $H^1(\Xset)$. We show that key properties of $H^1(\Xset)$ used to derive minimax rates are shared by $H^1(G_{n,r})$.
 	\item In Section~\ref{sec:minimax_optimal_laplacian_smoothing}, we leverage the results of Section~\ref{sec:graph_sobolev_classes} to derive tight upper bounds on the error of Laplacian smoothing methods.
-	\item In Section~\ref{sec:simulations} we provide some experiments supporting our theory, and conclude in Section~\ref{sec:discussion} with some potential methodological and theoretical extensions.
+	\item In Section~\ref{sec:simulations} we provide some experiments supporting our theory, before concluding in Section~\ref{sec:discussion}.
 \end{itemize}
 
 \textbf{Notation.}
 
 We use $A,A_1, \ldots$ and $C,C_1, \ldots$ to refer to constants which do not depend on $n$, $r$, or $f_0$; likewise with $a, a_1,\ldots$ and $c, c_1,\ldots$.
 
+\textcolor{red}{(TODO)}: Complete this.
+
 \section{Minimax-optimal regression over Sobolev spaces}
 \label{sec:minimax_optimal_regression_sobolev_spaces}
 
-Before we get to our main results, we briefly review minimax optimal estimation and testing rates over Sobolev classes. We also single out a notable method which achieves these rates: \emph{smoothing splines}. As we will see, Laplacian smoothing can be seen as a graph-based---i.e. discrete---counterpart to the ``continuous-time'' approach of smoothing splines. 
+Before we get to our main results, we review minimax optimal estimation and testing rates over Sobolev classes. We also single out a notable method which achieves these rates: \emph{smoothing splines}. As we will see, Laplacian smoothing can be seen as a graph-based---i.e. discrete---counterpart to the ``continuous-time'' approach of smoothing splines. 
 
 \paragraph{Sobolev spaces, and the Sobolev embedding theorem.} We start by briefly introducing Sobolev spaces, emphasizing only the material relevant to our statistical context. 
 
@@ -296,21 +293,24 @@ Much of statistical analysis of nonparametric regression over Sobolev spaces rel
 \end{itemize}
 In the above, the exponents $p$ and $q$ cannot be improved upon. 
 
-When $d = 1$, the embedding of $H^1(\Xset)$ into $C^{0,q}(\Xset)$ facilitates a general analysis of (penalized) least estimators over $H^1(\Xset)$, using arguments from empirical process theory. However when $d \geq 2$, such arguments fall apart: for example, good bounds on the metric entropy of $H^1(\Xset)$ are not known in this setting. More troubling still, least squares estimators over $H^1(\Xset)$ are not even well-posed when $d \geq 2$.
+% AJG commented this out.
+% When $d = 1$, the embedding of $H^1(\Xset)$ into $C^{0,q}(\Xset)$ facilitates a general analysis of (penalized) least estimators over $H^1(\Xset)$, using arguments from empirical process theory. However when $d \geq 2$, such arguments fall apart: for example, good bounds on the metric entropy of $H^1(\Xset)$ are not known in this setting. More troubling still, least squares estimators over $H^1(\Xset)$ are not even well-posed when $d \geq 2$.
 
-For these reasons, analysis of least squares estimators for the nonparametric regression problem over Sobolev spaces typically assume $d = 1$---or more generally that $f_0 \in H^s(\Xset)$ for some $2s > d$. However, the Laplacian smoother $\wh{f}_{\LS}$ is a special least-squares estimator: it has a nice closed-form solution amenable to a bias-variance decomposition. We therefore do not need to rely on empirical process theory, and so we will be able to analyze $\wh{f}_{\LS}$ and $T_{\LS}$ beyond the univariate setting.
+% For these reasons, analysis of least squares estimators for the nonparametric regression problem over Sobolev spaces typically assume $d = 1$---or more generally that $f_0 \in H^s(\Xset)$ for some $2s > d$. However, the Laplacian smoother $\wh{f}_{\LS}$ is a special least-squares estimator---it has a nice closed-form solution amenable to a bias-variance decomposition. We therefore do not need to rely on empirical process theory, and so we will be able to analyze $\wh{f}_{\LS}$ and $T_{\LS}$ beyond the univariate setting.
+
+As we will see, the Sobolev embedding theorem has rather grave consequences for least-squares estimators over $H^1(\Xset)$ when $d > 1$, rendering such estimators ill-posed. However, the Laplacian smoother $\wh{f}_{\LS}$ is a special least-squares estimator. It has a nice closed-form solution amenable to a bias-variance decomposition, and so we will be able to analyze $\wh{f}_{\LS}$ and $T_{\LS}$ beyond the univariate setting.
 
 \paragraph{Connecting Laplacian smoothing to smoothing splines.} 
-To better motivate Laplacian smoothing as a tool for nonparametric regression, we review its connection to one of the most classical methods of nonparametric regression: smoothing splines.
+To better motivate Laplacian smoothing as a tool for nonparametric regression, we connect it to one of the most classical methods of nonparametric regression: smoothing splines.
 
-Smoothing splines are specially designed for regression over Sobolev spaces: they are penalized least squares estimators where the penalty is itself the Sobolev semi-norm. Mathematically, the smoothing spline estimator $\wh{f}_{\SM}$ is defined as the solution to the following optimization problem,
+Smoothing splines are specially designed for regression over Sobolev spaces, as they are penalized least squares estimators where the penalty is itself a Sobolev semi-norm. Mathematically, the (first-order) smoothing spline estimator $\wh{f}_{\SM}$ is defined as the solution to the following optimization problem,
 \begin{equation}
 \label{eqn:smoothing_spline}
 \wt{f}_{\SM} = \argmin_{f} \biggl\{\sum_{i = 1}^{n} \bigl(Y_i - f(X_i)\bigr)^2 + \rho \cdot \seminorm{f}_{H^{1}(\Xset)}^2\biggr\}.
 \end{equation}
 In~\eqref{eqn:smoothing_spline}, the minimum can either be taken over all $f \in H^1(\Xset)$ or over all $f \in C^1(\Xset)$; we shall refer to the former as smoothing splines, and the latter as \emph{Lipschitz} smoothing splines.
 
-By viewing $\Delta_P$ as the continuum limit of~$\Lap_{n,r}$, one can tie the penalty used by the smoothing spline estimator $\wh{f}_{\SM}$ to that used by the Laplacian smoothing estimator $\wh{f}_{\LS}$. Suppose for the moment that $P$ is the uniform distribution over $\Xset$. Using the definition~\eqref{eqn:laplace_operator}, integrating by parts, and invoking the aforementioned convergence properties of $\Lap_{n,r}$, we have that for any $f \in C^{2}(\Xset)$ which satisfies Dirichlet boundary conditions (see footnote~\ref{footnote:dirichlet_eigenvalues}),
+By viewing $\Delta_P$ as the continuum limit of~$\Lap_{n,r}$, one can tie the penalty used by the smoothing spline estimator $\wt{f}_{\SM}$ to that used by the Laplacian smoothing estimator $\wh{f}_{\LS}$. Suppose for the moment that $P$ is the uniform distribution over $\Xset$. Using the definition~\eqref{eqn:laplace_operator}, integrating by parts, and invoking the aforementioned convergence properties of $\Lap_{n,r}$, we have that for any $f \in C^{2}(\Xset)$ which satisfies Dirichlet boundary conditions (see footnote~\ref{footnote:dirichlet_eigenvalues}),
 \begin{equation}
 \label{eqn:seminorm_convergence}
 \abs{f}_{H^1(\Xset)}^2 = \int_{\Xset} \bigl(\Delta_P f\bigr)(x) \cdot f(x) \,dx = \lim_{n \to \infty} \frac{1}{n^{2}r^{(d + 2)}}f^T \Lap_{n,r} f.
@@ -335,13 +335,13 @@ where $\mc{F}$ is some class of functions. The minimax critical radius is the sm
 \label{eqn:sobolev_space_testing_critical_radius}
 \epsilon^2\Bigl(H^1(\Xset,M)\Bigr):= \inf\Biggl\{\epsilon^2: \inf_{\phi} \biggl[\Ebb_0[\phi] +  \sup_{f_0 \in H_{\epsilon}^1(\Xset,M)} \Ebb_{f_0}[1 - \phi]\biggr] \leq 2\alpha \Biggr\} \asymp M^{2d/(4 + d)}n^{-4/(4 + d)}~~\textrm{for $1 \leq d < 4$;}
 \end{equation}
-see \cite{ingster09} for a proof of this statement, and \cite{ariascastro2018} for a more extended discussion of the minimax paradigm in goodness-of-fit testing. When $d \geq 4$ we no longer have a continuous embedding of $H^1(\Xset)$ into $\Leb^4(\Xset)$; the functions in $H^1(\Xset)$ are very irregular, and the minimax rates in this regime are unknown. 
+see \cite{ingster09} for a proof of this statement, and \cite{ariascastro2018} for a more extended discussion of the minimax paradigm in nonparametric testing. When $d \geq 4$ we no longer have a continuous embedding of $H^1(\Xset)$ into $\Leb^4(\Xset)$; the functions in $H^1(\Xset)$ are very irregular, and the minimax rates in this regime are unknown. 
 
-The estimator $\wh{f}_{\SM}$ and the level-$\alpha$ test $\phi_{\SM} := \1\{T_{\SM} \geq {t}_{\alpha}\}$ are known to be minimax rate-optimal---meaning they achieve the rates in~\eqref{eqn:sobolev_space_estimation_minimax_rate} and~\eqref{eqn:sobolev_space_testing_critical_radius}, respectively---when $d = 1$ (see e.g. \cite{vandergeer2000} for the estimation result, and \cite{liu2019} for the testing result). When $d > 1$, as a consequence of the Sobolev Embedding Theorem\footnote{Or to be more precise, as a consequence of the \emph{tightness} of the Sobolev Embedding Theorem.} the variational problem~\eqref{eqn:smoothing_spline} is not well-posed: as illustrated in e.g. \cite{green93}, the criterion is minimized by interpolating the responses $\mathbf{Y}$, and the resulting estimator $\wt{f}_{\SM}$ will be inconsistent. By replacing the domain of minimization $H^1(\Xset)$ by $C^1(\Xset)$, we can force the solution to~\eqref{eqn:smoothing_spline} to be less wild, and \cite{birge1993} show that the resulting Lipschitz smoothing spline is not merely consistent but in fact minimax optimal when $d = 2$.\footnote{At least in the estimation problem. We could not find either a positive or negative result for the testing problem.} However when $d > 2$, the Holder space $C^1(\Xset)$ is itself too large, and even the Lipschitz smoothing spline has risk provably larger than optimal \cite{birge1993}. Previewing things a bit, we will see in Section~\ref{sec:minimax_optimal_laplacian_smoothing} that a similar phenomenon occurs for the Laplacian smoother $\wh{f}$, but interestingly the breakdown point will come when $d > 4$, rather than $d > 1$ or $d > 2$.
+The estimator $\wt{f}_{\SM}$ and the level-$\alpha$ test $\wt{\phi}_{\SM} := \1\{T_{\SM} \geq \wt{t}_{\alpha}\}$ are known to be minimax rate-optimal---meaning they achieve the rates in~\eqref{eqn:sobolev_space_estimation_minimax_rate} and~\eqref{eqn:sobolev_space_testing_critical_radius}, respectively---when $d = 1$ (see e.g. \cite{vandergeer2000} for the estimation result, and \cite{liu2019} for the testing result). When $d > 1$, as a consequence of the Sobolev Embedding Theorem\footnote{Or to be more precise, as a consequence of the \emph{tightness} of the Sobolev Embedding Theorem.} the variational problem~\eqref{eqn:smoothing_spline} is not well-posed: as illustrated in e.g. \cite{green93}, the criterion is minimized by interpolating the responses $\mathbf{Y}$, and the resulting estimator $\wt{f}_{\SM}$ will be inconsistent. By replacing the domain of minimization $H^1(\Xset)$ by $C^1(\Xset)$, we can force the solution to~\eqref{eqn:smoothing_spline} to be less wild, and \cite{birge1993} show that the resulting Lipschitz smoothing spline is not merely consistent but in fact minimax optimal when $d = 2$.\footnote{At least in the estimation problem. We could not find either a positive or negative result for the testing problem.} However when $d > 2$, the Holder space $C^1(\Xset)$ is itself too large, and even the Lipschitz smoothing spline has risk provably larger than optimal \cite{birge1993}. Previewing things a bit, we will see in Section~\ref{sec:minimax_optimal_laplacian_smoothing} that a similar phenomenon occurs for the Laplacian smoother $\wh{f}$, but interestingly the breakdown point will come when $d > 4$, rather than $d > 1$ or $d > 2$.
 
-Finally, it is well known that if $\Xset$ satisfies the manifold hypothesis, meaning informally that it has intrinsic dimension $m < d$ (see~\ref{asmp:domain_manifold} in Section~\ref{sec:graph_sobolev_classes} for a formal statement), both~\eqref{eqn:sobolev_space_estimation_minimax_rate} and~\eqref{eqn:sobolev_space_testing_critical_radius} continue to hold, but with the ambient dimension $d$ replaced by the intrinsic dimension $m$ \citep{bickel2007,ingster2000}. Encouragingly, the smoothing spline estimator $\wt{f}$ and test $\wt{\phi}$ achieve these faster rates, with one caveat: in order for smoothing splines to properly leverage the manifold hypothesis, the domain $\Xset$ must be known.
+Finally, it is well known that if $\Xset$ satisfies the manifold hypothesis, meaning informally that it has intrinsic dimension $m < d$ (see~\ref{asmp:domain_manifold} in Section~\ref{sec:graph_sobolev_classes} for a formal statement), both~\eqref{eqn:sobolev_space_estimation_minimax_rate} and~\eqref{eqn:sobolev_space_testing_critical_radius} continue to hold, but with the ambient dimension $d$ replaced by the intrinsic dimension $m$ \citep{bickel2007,ingster2000}. Encouragingly, the smoothing spline estimator $\wt{f}_{\SM}$ and test $\wt{\phi}_{\SM}$ achieve these faster rates, with one caveat: in order for smoothing splines to properly leverage the manifold hypothesis, the domain $\Xset$ must be known.
 
-\paragraph{Consequences?} Intuitively, the connections between Laplacian smoothing and smoothing splines give us reason to hope that the strong statistical properties of the latter might be shared by the former. Unfortunately, it is not so easy to mathematically tie $\wh{f}$ to $\wt{f}$: for example, note that the convergence in~\eqref{eqn:seminorm_convergence} assumes $f \in C^2(\Xset)$ whereas the domain of minimization in~\eqref{eqn:smoothing_spline} is either $H^1(\Xset)$ or $C^1(\Xset)$. Instead, we will take a different approach and analyze $\wh{f}$ by leveraging properties of the graph Sobolev class $H^1(G_{n,r})$, which we now introduce.
+\paragraph{Consequences?} Intuitively, the connections between Laplacian smoothing and smoothing splines give us reason to hope that the strong statistical properties of the latter might be shared by the former. Unfortunately, it is not so easy to mathematically tie $\wh{f}_{\LS}$ to $\wt{f}_{\SM}$: for example, note that the convergence in~\eqref{eqn:seminorm_convergence} assumes $f \in C^2(\Xset)$ whereas the domain of minimization in~\eqref{eqn:smoothing_spline} is either $H^1(\Xset)$ or $C^1(\Xset)$. Instead, we will take a different approach and analyze $\wh{f}_{\LS}$ by leveraging properties of the graph Sobolev class $H^1(G_{n,r})$, which we now introduce.
 
 \section{Graph Sobolev classes}
 \label{sec:graph_sobolev_classes}
@@ -353,7 +353,7 @@ H^1(G_{n,r},M) = \Bigl\{f \in \Reals^n: f^T \Lap_{n,r} f \leq M^2\Bigr\}
 \end{equation}
 where we recall that the \emph{graph Sobolev seminorm} $f^T \Lap_{{n,r}} f$ is precisely the penalty term in~\eqref{eqn:laplacian_smoothing}. 
 
-To understand the role graph Sobolev balls play in our analysis of Laplacian smoothing, let us return for a moment to the continuous-time setting. Upper bounds on the error of smoothing splines rest on two crucial facts, both of which involve the continuum Laplace operator $\Delta_P$. The first is the \textit{a priori} assumption that the Sobolev semi-norm $|f|_{H^1(\Xset)}^2 = \langle f, \Delta_P f \rangle_{\Leb^2(P)} \leq M^2$.\footnote{The equality holding when $P$ is uniform and  only for functions $f \in C^2(\Xset)$ which satisfy boundary conditions.} The second is an upper bound on the metric entropy of $H^1(\Xset,M)$, characterized by the eigenvalue decay $\lambda_k(\Delta_P) \asymp k^{2/d}$ (i.e. Weyl's Law). In this section we will show that both these statements have analogues in the graph setting.
+To understand the role graph Sobolev balls play in our analysis of Laplacian smoothing, let us return for a moment to the continuous-time setting. Upper bounds on the error of smoothing splines rest on two crucial facts, both of which involve the continuum Laplace operator $\Delta_P$. The first is the \textit{a priori} assumption that the Sobolev semi-norm $|f_0|_{H^1(\Xset)}^2 = \langle f_0, \Delta_P f_0 \rangle_{\Leb^2(P)} \leq M^2$.\footnote{The equality holding when $P$ is uniform and  for functions $f_0 \in C^2(\Xset)$ which satisfy Dirichlet conditions.} The second is an upper bound on the metric entropy of $H^1(\Xset,M)$, characterized by the eigenvalue decay $\lambda_k(\Delta_P) \asymp k^{2/d}$ (i.e. Weyl's Law). In this section we will show that both these statements have analogues in the graph setting.
 \begin{itemize}
 	\item For functions $f$ belonging to $H^1(\Xset,M)$, the evaluations $f \in (f(X_1),\ldots,f(X_n)) \in \Reals^n$ are upper bounded,
 	\begin{equation}
@@ -369,7 +369,7 @@ To understand the role graph Sobolev balls play in our analysis of Laplacian smo
 Both statements will hold with high probability, and when we assume $\Xset$ is a manifold of intrinsic dimension $m$, they will hold with $d$ replaced by $m$.  These results elucidate why Laplacian smoothing ``works'' as well as its continuous-time counterpart ---in the sense of being statistically rate-optimal over (continuum) Sobolev classes.
 
 \paragraph{Graph Sobolev semi-norm.}
-We begin by upper bounding $f_0^T \Lap_{n,r} f_0$ under the assumption $f_0 \in H^1(\Xset,M)$. We will assume the kernel $K$ satisfies condition~\ref{asmp:kernel}.
+We begin by upper bounding $f^T \Lap_{n,r} f$ under the assumption $f_0 \in H^1(\Xset,M)$. We will assume the kernel $K$ satisfies condition~\ref{asmp:kernel}.
 \begin{enumerate}[label=(K\arabic*)]
 	\item
 	\label{asmp:kernel}
@@ -470,7 +470,7 @@ As mentioned in the introduction, an attractive quality of the neighborhood grap
 
 \begin{proposition}[Restatement of Theorem 4 of~\cite{trillos2019}]
 	\label{prop:manifold_neighborhood_eigenvalue}
-	Assume~\ref{asmp:kernel}, ~\ref{asmp:domain_manifold}, and~\ref{asmp:radius2}. Then there exist constants $A_4, A_5$ and $a_4,a_5$ which do not depend on $n$ or $r$ such that 
+	Assume~\ref{asmp:kernel}, ~\ref{asmp:domain_manifold}, and~\ref{asmp:radius2}. It holds that
 	\begin{equation}
 	\label{eqn:manifold_neighborhood_eigenvalue}
 	a_5 \cdot \min\Bigl\{nr^{m + 2}k^{2/m},nr^d\Bigr\} \leq \lambda_k(G_{n,r}) \leq A_5 \cdot \min\Bigl\{nr^{m + 2}k^{2/m}, nr^m\Bigr\}~~\textrm{for all $2 \leq k \leq n$}	
@@ -501,11 +501,11 @@ Suppose the domain $\Xset$ satisfies~\ref{asmp:domain}. Under appropriate condit
 	\label{thm:laplacian_smoothing_estimation1}
 	Let $(X_1,Y_1),\ldots,(X_n,Y_n)$ be random samples drawn according to the model~\eqref{eqn:random_design_regression}, with $d < 4$ and $f_0 \in H^1(\Xset,M)$. Suppose that that the neighborhood graph $G_{n,r}$ is computed with a radius $r$ which satisfies~\ref{asmp:ls_kernel_radius_estimation},  and the Laplacian smoothing estimator $\wh{f}_{\LS}$ with $\rho = M^{-4/(2 + d)} (nr^{d + 2})^{-1} n^{-2/(2 + d)}$. It holds that
 	\begin{equation*}
-	\frac{1}{n}\Bigl\|\wh{f}_{\LS} - f_0\Bigr\|_2^2 \leq \frac{C}{\delta} M^{d/(2 + d)} n^{-2/(2 + d)}
+	\Bigl\|\wh{f}_{\LS} - f_0\Bigr\|_n^2 \leq \frac{C}{\delta} M^{d/(2 + d)} n^{-2/(2 + d)}
 	\end{equation*}
 	with probability at least $1 - \delta -  A_1n\exp(-a_1nr^d) - \exp(-c M^{d/(2d + 4)} n^{d/(2+d)})$.
 \end{theorem}
-To summarize: when $d = 1,2$ or $3$, the Laplacian smoothing estimator $\wh{f}_{\LS}$ has in-sample mean squared error with a constant factor of the minimax risk, except on a set of small probability. Some remarks:
+To summarize: when $d = 1,2$ or $3$, the Laplacian smoothing estimator $\wh{f}_{\LS}$ has in-sample mean squared error within a constant factor of the minimax risk, except on a set of small probability. Some remarks:
 \begin{itemize}
 	\item When $d = 4$, our analysis results in an upper bound on the mean squared error within a $\log n$ factor of the minimax risk, but when $d \geq 5$ our analysis yields upper bounds that are much worse than the minimax rate. This mirrors the conclusions of~\cite{sadhanala16}, who investigate estimation rates of Laplacian smoothing over the $d$-dimensional grid graph. In our setting, when $d = 4$ we would set $r \asymp (\log n/n)^{1/4}$---slightly outside the scaling~\ref{asmp:ls_kernel_radius_estimation}---to get the near-optimal rate.
 	\item The range of radii $r$ imposed by~\ref{asmp:ls_kernel_radius_estimation} is  compatible with practice, where by far the most common choice of radius is the connectivity threshold $r \asymp (\log(n)/n)^{1/d}$, chosen to make the graph $G_{n,r}$ as sparse as possible while still being connected. 
@@ -515,7 +515,7 @@ To summarize: when $d = 1,2$ or $3$, the Laplacian smoothing estimator $\wh{f}_{
 	\frac{\rho}{n} f_0^T \Lap_{{n,r}} f_0 \lesssim \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_{k}(G_{n,r}) + 1\bigr)^2}.
 	\end{equation}
 	To balance bias and variance as in~\eqref{eqn:laplacian_smoothing_bias_variance} we require control on all the graph eigenvalues $\lambda_1(G_{n,r}),\ldots,\lambda_n(G_{n,r})$. As mentioned in our commentary after Lemma~\ref{lem:neighborhood_eigenvalue}, when $r$ is small enough the large eigenvalues $\lambda_k(G_{n,r})$ contribute negligibly to the variance term. The upper bound in~\ref{asmp:radius1} is the largest value of $r$ such that this statement is still true.
-	\item The Laplacian smoothing estimator $\wh{f}_{\LS}$ is defined only at the design points $X_1,\ldots,X_n$ and we therefore measure error using the in-sample mean squared error $\frac{1}{n}\norm{\cdot}_2^2$. Because we work in the random design framework, the in-sample error is a random variable, and our bound is thus a bound in high probability. That being said, it is possible to smoothly extend $\wh{f}_{\LS}$ to be defined on all of $\Xset$, or indeed all of $\Reals^d$---for instance, using the \emph{Nystrom extension}---and evaluate the error of the extension in $\Leb^2(\Xset)$ norm. Assuming that the extension of our estimators and the regression function $f_0$ are suitably smooth, tools from empirical process theory will guarantee that the $\Leb^2(\Xset)$ error is not too much greater than the in-sample error, but we do not further pursue the details here.
+	\item The Laplacian smoothing estimator $\wh{f}_{\LS}$ is defined only at the design points $X_1,\ldots,X_n$ and we therefore measure error using the in-sample mean squared error $\norm{\cdot}_n^2$. Of course the in-sample error is a random variable, and our bound is thus a bound in high probability. That being said, it is possible to smoothly extend $\wh{f}_{\LS}$ to be defined on all of $\Xset$, or indeed all of $\Reals^d$---for instance, using the \emph{Nystrom extension}---and evaluate the error of the extension in $\Leb^2(\Xset)$ norm. Assuming that the extension of our estimators and the regression function $f_0$ are suitably smooth, tools from empirical process theory will guarantee that the $\Leb^2(\Xset)$ error is not too much greater than the in-sample error, but we do not further pursue the details here.
 \end{itemize}
 
 \paragraph{Testing error of Laplacian smoothing.}
@@ -528,7 +528,7 @@ and the Laplacian smoothing test $\wh{\phi}_{\LS} := \1\bigl\{T_{\LS} \leq \wh{t
 \Ebb_0\Bigl[\wh{\phi}_{\LS}\Bigr] \leq \frac{1}{b^2}.
 \end{equation*}
 
-In Theorem~\ref{thm:laplacian_smoothing_testing}, we show this test also has small Type II error, uniformly over all $f_0$ separated from $0$ by at least the critical radius $\epsilon\bigl(H^1(\Xset,M)\bigr)$ given in~\eqref{eqn:sobolev_space_testing_critical_radius}. For this to hold, we will require a tight range of scalings for $r$.
+Theorem~\ref{thm:laplacian_smoothing_testing} establishes that this test also has small Type II error, uniformly over all $f_0$ separated from $0$ by at least the critical radius $\epsilon\bigl(H^1(\Xset,M)\bigr)$ given in~\eqref{eqn:sobolev_space_testing_critical_radius}. For this to hold, we will require a tight range of scalings for $r$.
 \begin{enumerate}[label=(R\arabic*)]
 	\setcounter{enumi}{3}
 	\item 
@@ -554,12 +554,12 @@ In Theorem~\ref{thm:laplacian_smoothing_testing}, we show this test also has sma
 
 A few remarks:
 \begin{itemize}
-	\item As mentioned in Section~\ref{sec:minimax_optimal_regression_sobolev_spaces}, when $d \geq 4$ the Sobolev balls $H^1(\Xset,M)$ include quite irregular functions $f \not\in \Leb^4(\Xset)$. Proving tight lower bounds over such classes is non-trivial, and to the best of our knowledge such an analysis remains outstanding. On the other hand, if we explicitly assume that $f \in \Leb^4(\Xset,M)$, then \cite{guerre02} show that the testing problem is characterized by the dimension-free lower bound $\epsilon^{\star}(\Leb^4(\Xset,M)) \gtrsim n^{-1/4}$. Moreover, by training $\wh{f}_{\LS}$ to the interpolation limit, i.e. setting $\rho = 0$, the test $\wh{\phi}_{\LS}$ achieves (up to constants) this lower bound. That is, 
+	\item As mentioned in Section~\ref{sec:minimax_optimal_regression_sobolev_spaces}, when $d \geq 4$ the Sobolev balls $H^1(\Xset,M)$ include quite irregular functions $f \not\in \Leb^4(\Xset)$. Proving tight lower bounds over such classes is non-trivial, and to the best of our knowledge such an analysis remains outstanding. On the other hand, if we explicitly assume that $f \in \Leb^4(\Xset,M)$, then \cite{guerre02} show that the testing problem is characterized by the dimension-free lower bound $\epsilon^{2}(\Leb^4(\Xset,M)) \gtrsim n^{-1/2}$. Moreover, by training $\wh{f}_{\LS}$ to the interpolation limit, i.e. setting $\rho = 0$, the test $\wh{\phi}_{\LS}$ achieves (up to constants) this lower bound. That is, 
 	\begin{equation}
 	\label{eqn:laplacian_smoothing_testing_low_smoothness}
 	E_{f_0}\Bigl[1 - \wh{\phi}_{\LS}\Bigr] \leq \frac{C(1 + M^4)}{b^2}
 	\end{equation}
-	for any $f_0 \in \Leb^4(\Xset,M)$ for which $\|f_0\|_{\Leb^2(\Xset)} \geq C bn^{-1/4}$. 
+	for any $f_0 \in \Leb^4(\Xset,M)$ for which $\|f_0\|_{\Leb^2(\Xset)}^2 \geq C b^2n^{-1/2}$. 
 	\item To compute the threshold $\wh{t}_b$, one must know each of the eigenvalues $\lambda_1(G_{n,r}),\ldots,\lambda_n(G_{n,r})$. Computing all $n$ of these eigenvalues is far more expensive than computing $T_{\LS}$. That being said, in practice we would not recommend using $\wh{t}_b$ anyway: the threshold is justified by asymptotic theory, but in practice $n$ is always finite, and using such thresholds can result in substantial loss of efficiency. We would instead make the standard recommendation to calibrate via permutation. 
 \end{itemize}
 It is worth circling back to our comparison of Laplacian smoothing methods to smoothing splines. While we motivated Laplacian smoothing methods in part by suggesting they might replicate the statistical properties of smoothing splines, we have in fact managed to show something stronger. Theorems~\ref{thm:laplacian_smoothing_estimation1} and~\ref{thm:laplacian_smoothing_testing} imply that Laplacian smoothing methods are minimax optimal for both estimation and testing in dimensions $d = 1,2$ and $3$, and are nearly minimax-optimal for the estimation problem when $d = 4$. On the other hand, as covered in Section~\ref{sec:minimax_optimal_regression_sobolev_spaces} smoothing spline methods are optimal only when $d = 1$ or, for Lipschitz smoothing splines, $d = 2$. Thus, we see a somewhat surprising gap emerge between the optimality properties of the discrete-time (Laplacian smoothing) and continuous-time (smoothing spline) approaches, in favor of the former.
