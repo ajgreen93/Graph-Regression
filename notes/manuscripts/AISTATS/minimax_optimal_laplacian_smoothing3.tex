@@ -1,0 +1,287 @@
+\documentclass[twoside]{article}
+\usepackage{aistats2021}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+
+\begin{document}
+	
+\twocolumn[
+
+	\aistatstitle{Minimax optimal Laplacian smoothing}
+	
+	\aistatsauthor{Alden Green, Sivaraman Balakrishnan, and Ryan J. Tibshirani}
+
+	\aistatsaddress{Carnegie Mellon University}]
+	
+
+\begin{abstract}
+	In this paper we study the statistical properties of Laplacian smoothing, a graph-based approach to non-parametric regression. We show that under standard regularity conditions, the Laplacian smoothing estimator $\wh{f}$, and a test using the statistic $T = \frac{1}{n}\|\wh{f}\|_2^2$, attain the minimax optimal estimation and testing rates of convergence over the first-order Sobolev class $H^1(\Xset)$, where $\Xset \subset \Rd$ and $1 \leq d \leq 4$. Additionally, we prove that Laplacian smoothing is manifold adaptive: if $\Xset$ is an $m$ dimensional manifold embedded in $\Reals^d$ with $m \ll d$, then the error rate of Laplacian smoothing methods depends only on the intrinsic dimension $m$ and not on the ambient dimension $d$. We support our theory with simulations.
+\end{abstract}
+
+\section{INTRODUCTION}
+
+Suppose we observe responses according to the signal plus noise model:
+\begin{equation}
+\label{eqn:signal_plus_noise_model}
+Y_i = f_{0,i} + \varepsilon_i
+\end{equation}
+with $\varepsilon_i \sim N(0,1)$ independent Gaussian noise. Our goal is to perform statistical inference on the unknown regression function $f_0$, by which we mean either \emph{estimating} $f_0$ or more simply \emph{testing} whether $f_0 = 0$, i.e whether there is any signal present. 
+
+The Laplacian smoothing estimator $\wh{f}$ \citep{smola2003} is a penalized least squares estimator, defined on a graph. Letting $G = \bigl(\{1,\ldots,n\},\mathbf{W}\bigr)$ be a weighted graph over the vertices $\{1,\ldots,n\}$, 
+\begin{equation}
+\label{eqn:laplacian_smoothing}
+\wh{f} :=  \min_{f \in \Reals^n} \biggl\{\sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^T \Lap f \biggr\},
+\end{equation}
+where $\Lap$ is the graph Laplacian matrix (defined in Section 2), and the penalty
+\begin{equation*}
+f^T \Lap f = \frac{1}{2} \sum_{i,j = 1}^{n} {\bf W}_{ij}\bigl(Y_i - Y_j\bigr)^2
+\end{equation*}
+encourages $\wh{f}_i \approx \wh{f}_j$ when ${\bf W}_{ij}$ is large. Assuming~\eqref{eqn:laplacian_smoothing} is a reasonable estimator of $f_0$, the squared empirical norm
+\begin{equation}
+\label{eqn:laplacian_smoothing_test}
+\wh{T} = \frac{1}{n}\bigl\|\wh{f}\bigr\|_2^2 
+\end{equation}
+is in turn a reasonable statistic to assess whether or not $f_0 = 0$. 
+
+Of course there exist many methods for nonparametric regression, but Laplacian smoothing has its own set of advantages. For instance:
+\begin{itemize}
+	\item \emph{Computational ease.} Laplacian smoothing is fast, easy, and stable to compute. The estimate $\wh{f}$ can be computed by solving a symmetric, diagonally dominant linear system. There are known extremely fast and reliable solvers for exactly this problem \textcolor{red}{(TODO)}: references.
+	\item \emph{Generalizability.} Laplacian smoothing is well defined whenever one can associate a graph with some observed responses. This generality lends itself to many different data modalities: for instance sentiment analysis and image classification, to name only two. \textcolor{red}{(TODO)}: references
+	\item \emph{Supervision.} Although we study Laplacian smoothing in the supervised learning setup~\eqref{eqn:signal_plus_noise_model}, it can be easily adapted to the semi-supervised or unsupervised settings.
+\end{itemize}
+
+For these reasons, a body of work has emerged analyzing the statistical properties of Laplacian smoothing, and graph-based methods more generally. Roughly speaking, these works can be divided into two categories, based on the perspective they adopt. 
+\begin{itemize}
+	\item In the \emph{discrete (fixed design) perspective}, both $G$ and $f_0 \in \Reals^n$ are treated as fixed, and the regression ``function'' is really a vector. In this context, tight upper bounds have been derived on the error of graph-based estimators, which certify that such estimators are \emph{optimal} over ``function'' classes $\mc{F} \subseteq \Reals^n$. The downside of this work is that, depending on the context, it may be unnatural to assume a priori that the graph $G$ is fixed, and that the signal $f_0$ belongs to some discrete ``function'' class.
+	\item In the arguably more natural \emph{continuum (random design) perspective}, in addition to the responses $Y_i$ one observes randomly sampled design points $\{X_1,\ldots,X_n\}$ belonging to a domain $\Xset \subseteq \Rd$, and assumes that $f_{0,i} \equiv f_0(X_i)$ are $n$ evaluations of a regression function $f_0: \Xset \to \Reals$. The user then builds a neighborhood graph over the design points, so that ${\bf W}_{ij}$ is large iff $X_i$ and $X_j$ are close, say in Euclidean distance. In this context, various graph-based estimators have been shown to be \emph{consistent}: as $n \to \infty$, the estimator converges to $f_0$ in an appropriate norm, assuming $f_0$ satisfies some notion of smoothness such as possessing a bounded derivative. However, until recently such statements were not accompanied by error rates, and such error rates as have been proved are not optimal.
+\end{itemize}
+Viewed as a whole, this body of work leaves a key question unanswered: what are the optimality properties of graph Laplacian smoothing, viewed as an estimator of a (continuum) regression function? This is no small point---rather, it is arguably the fundamental question of nonparametric regression, and without an answer one cannot fully compare the statistical properties of Laplacian smoothing to its competitors.
+
+Our work addresses this gap, and our main contributions can all be summarized as follows: Laplacian smoothing over a random design is minimax optimal over certain first-order \emph{continuum} Sobolev balls. We will show that this is true for the estimator $\wh{f}$ and test statistc $\wh{T}$, when $\Xset \subset \Rd$ is a full-dimensional domain and $1 \leq d \leq 4$. Additionally, we will consider the \emph{manifold assumption}---roughly, that $\Xset$ is a manifold embedded in $\Rd$, with intrinsic dimension $m \ll d$---and derive upper bounds which depend only on the intrinsic dimension $m$, and are independent of the ambient dimension $d$; these bounds too will be optimal. For ease of reading, we provide the upper bounds derived in our main theorems in Table~\textcolor{red}{(?)}. 
+
+\paragraph{Organization.}
+We now outline the structure of the rest of this paper. In Section~\ref{sec:problem_setup_and_background}, we formalize our model of nonparametric regression with random design, recall the minimax rates for the estimation and goodness-of-fit testing over Sobolev spaces, and review some related work. In Section~\ref{sec:minimax_optimal_laplacian_smoothing}, we give our main results on the optimality of Laplacian smoothing methods, offering some comparison with other nonparametric regression approaches as well as giving insight into our proof techniques. In Section~\ref{sec:simulations} we support our theory with some experiments, before concluding in Section~\ref{sec:discussion}.
+
+
+
+\textcolor{red}{(TODO)}:
+
+\section{PROBLEM SETUP AND BACKGROUND}
+\label{sec:problem_setup_and_background}
+Formally speaking, In the random design nonparametric regression problem, we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$, where $X_1,\ldots,X_n$ are independent samples from a distribution $P$ supported on a domain $\Xset \subset \Reals^d$, and 
+\begin{equation}
+\label{eqn:random_design_regression}
+Y_i = f_0(X_i) + \varepsilon_i
+\end{equation}
+with $\varepsilon_i \sim N(0,1)$ independent Gaussian noise. We will assume the following throughout:
+\begin{enumerate}[label=(P\arabic*)]
+	\item
+	\label{asmp:bounded_lipschitz_density} 
+	$P$ admits a density $p$ bounded away from $0$ and $\infty$, i.e.
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) \leq p_{\max} < \infty,~~\textrm{for all $x \in \Xset$.}
+	\end{equation*}
+	Additionally, $p$ is Lipschitz, with Lipschitz constant $L_p$.
+\end{enumerate}
+
+\paragraph{Neighborhood graph Laplacians.}
+As mentioned, in the graph-based approach to nonparametric regression, we perform the above inferential tasks by first building a neighborhood graph $G_{n,r}$ which captures the geometry of $P$ and $\mc{X}$ in an appropriate sense. The neighborhood graph $G_{n,r} = ([n],{\bf W})$ is a weighted, undirected graph on vertices $[n] = \{1,...,n\}$, which we associate with the samples $\{X_1,\ldots,X_n\}$. The $n \times n$ weight matrix ${\bf W} = ({\bf W}_{ij})_{ij}$ encodes proximity between pairs of samples; for a kernel function $K: [0,\infty) \to \Reals$ and connectivity radius $r > 0$, the entries $\mathbf{W}_{ij}$ are given by
+\begin{equation*}
+\label{eqn:neighborhood_graph}
+{\bf W}_{ij} = K\Biggl(\frac{\norm{X_i - X_j}}{r}\Biggr).
+\end{equation*}
+where $\norm{\cdot} = \norm{\cdot}_{\Rd}$ is the Euclidean norm. Then the degree matrix ${\bf D}$ is the $n \times n$ diagonal matrix with entries ${\bf D}_{ii} = \sum_{j = 1}^{n}{\bf W}_{ij}$, and the graph Laplacian can be written as
+\begin{equation}
+\label{eqn:graph_Laplacian}
+\Lap_{n,r} = \bf{D} - \bf{W};
+\end{equation}
+we add the subscripts $n$ and $r$ to $\Lap$ and $G$ to emphasize that they depend on the random design points $\bf{X}$ and the radius $r$.
+
+\paragraph{Minimax rates over Sobolev spaces.}
+Now that our estimator $\wh{f}$ and test statistic $\wh{T}$ are defined in the random design setup, we step away from these methods---indeed, away from graphs entirely--- for a moment, to briefly recall some very classical results regarding minimax rates over Sobolev classes.
+
+
+
+\paragraph{Previous work.}
+
+\textcolor{red}{(TODO)}
+
+\section{MINIMAX OPTIMALITY OF LAPLACIAN SMOOTHING}
+\label{sec:minimax_optimal_laplacian_smoothing}
+
+\textcolor{red}{(TODO)}: Section 4 of the previous draft.
+
+\paragraph{Comparison with the continuous-time approach.}
+
+\textcolor{red}{(TODO)}: Take some of section 4, and a little of section 2, to do this paragraph.
+
+\paragraph{Overview of analysis.}
+\begin{itemize}
+	\item Speaking in gross generality, there are two ways in which one can analyze nonparametric regression methods. 
+	\item Way (1) --- by far the more common approach to analyzing estimators defined as solutions to variational problems---is to use \emph{empirical process theory} as the workhorse. In other words, one bounds the supremum of the empirical process, i.e.
+	\begin{equation}
+	\label{eqn:empirical_process}
+	\sup_{f \in H^1(\Xset)} \abs{\langle \varepsilon, f \rangle} \lesssim \delta_n
+	\end{equation}
+	and then uses~\eqref{eqn:empirical_process} to guarantee that the estimator in question will not overfit to the noise $\varepsilon$. While this can give the right rate when $d = 1$, it will totally fail when $d \geq 2$. 
+	\item Way (2) is the bias-variance tradeoff. Typically this is not tractable for an estimators such as $\wh{f}_{\LS}$ that is defined as the solution to a variational problem. However the problem~\textcolor{red}{(?)} is special: it has a nice closed-form solution that is amenable to a bias-variance decomposition. We therefore do not need to rely on empirical process theory, and so we will be able to analyze $\wh{f}_{\LS}$ and $T_{\LS}$ beyond the univariate setting.
+\end{itemize}
+
+\section{SIMULATIONS}
+\label{sec:simulations}
+
+\section{DISCUSSION}
+\label{sec:discussion}
+
+\bibliographystyle{plainnat}
+\bibliography{../../../graph_testing_bibliography} 
+
+\end{document}
