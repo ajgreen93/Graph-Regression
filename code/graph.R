@@ -60,6 +60,9 @@ knn_graph <- function(X, k)
   neighbors_list <- as.matrix(melt(neighbors)[,-2])
   A[neighbors_list] <- 1
   
+  # symmetrize
+  A <- (A + t(A)) / 2
+  
   return(A)
 }
 

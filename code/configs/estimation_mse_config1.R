@@ -4,24 +4,12 @@
 
 ### General configs.
 d <- 1
-ns <- round( 4 * 10^{seq(2,3,length.out = 10)} )
+ns <- round( 10^{seq(2,3,length.out = 4)} )
 iters <- 5
 
 ### Configs for sampling. ###
-sample_X <- function(n){
-  X <- matrix(runif(n,-1,1),ncol = 1)
-  return(X)
-}
-
-make_f_0 <- function(n)
-{
-  # Choose M as small as possible such that 
-  # minimax rate of f_0 is n^{-2/(2 + d)}
-  m <- round(1/2 * n^{1/d * (2 - (4 + d)/(2 + d))})
-  f0 <- function(x){
-    return(1/m * cos(pi * m * x))
-  }
-}
+sample_X <- make_sample_uniform(d)
+make_f0 <- make_cosine_f0
 
 
 ### Methods. ###

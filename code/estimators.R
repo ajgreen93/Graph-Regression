@@ -72,9 +72,9 @@ initialize_laplacian_smoothing_knn_thetas <- function(sample_X,n){
   ks <- 5
   
   # Choose a range of penalty parameters.
-  rho_optimal_theory <- function(k){k^{1 + 2/d} / (n^{2/(2+d)} * n)} # bias-variance balance
+  rho_optimal_theory <- function(k){n^{2/d} / (n^{2/(2+d)} * k^{(d + 2)/d})} # bias-variance balance
   rho_optimals <- sapply(ks,rho_optimal_theory)
-  rhos <- sapply(rho_optimals,FUN = function(rho){seq(rho, 10 * rho,length.out = 50)})
+  rhos <- sapply(rho_optimals,FUN = function(rho){seq(2^{d - 2} * rho, 5^d * rho,length.out = 50)})
   
   # All combinations.
   for (ii in 1:length(ks))
