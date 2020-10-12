@@ -1,10 +1,10 @@
 #------------------------------------------------#
-# Configs for second estimation MSE experiment.
+# Configs for fourth estimation MSE experiment.
 #------------------------------------------------#
 
 ### General configs. ###
-d <- 1
-ns <- seq(200,5000,length.out = 10)
+d <- 3
+ns <- round( 10^seq(2.5,3.5,length.out = 10) )
 iters <- 5
 
 ### Configs for sampling. ###
@@ -14,10 +14,11 @@ make_f0 <- make_cosine_f0
 
 ### Methods. ###
 methods <- list(
-  knn = make_knn
- #make_laplacian_smoothing_knn
-                )
+  knn = make_knn,
+  laplacian_smoothing = make_laplacian_smoothing_knn
+)
+
 initialize_thetas <- list(
-  knn = initialize_knn_thetas
-# initialize_laplacian_smoothing_knn_thetas
-  )
+  knn = initialize_knn_thetas,
+  laplacian_smoothing = initialize_laplacian_smoothing_knn_thetas
+)

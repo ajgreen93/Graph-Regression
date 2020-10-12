@@ -1,5 +1,5 @@
 library(RANN)
-library(tidyverse)
+library(dplyr)
 library(Matrix)
 library(reshape2)
 library(gridExtra)
@@ -8,7 +8,7 @@ source("graph.R")
 source("estimators.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/estimation_mse_config2.R")
+source("configs/estimation_mse_config5.R")
 
 #----------------------------------------------------#
 # This is the pipeline for running regression estimation experiments.
@@ -51,7 +51,7 @@ for(ii in 1:length(ns))
       method <- methods[[jj]]
       fits_method <- matrix(nrow = nrow(thetas[[ii]][[jj]]), ncol = n)
       for(kk in 1:nrow(thetas[[ii]][[jj]])){
-        theta <- thetas[[ii]][[jj]][kk,]
+        theta <- slice(thetas[[ii]][[jj]],kk)
         estimator <- method(theta)
         fits_method[kk,] <- estimator(Y,X)
         logger::log_info("n: ", n, ".",
@@ -87,84 +87,20 @@ for(ii in 1:length(ns))
   f0s[[ii]] <- f0_evaluations
 }
 
-### Plot. ###
-
-# Plot of mse by tuning parameter.
-for(jj in 1:length(methods))
-{
-  tuning_plots <- vector(mode = "list",length = length(ns))
-  for(ii in 1:length(ns))
-  {
-      mse_ii_jj <- mse[[ii]][[jj]]
-      thetas_ii_jj <- thetas[[ii]][[jj]]
-      mean_mse <- rowMeans(mse_ii_jj)
-      sd_mse <- apply(mse_ii_jj,1,sd)
-      
-      plot_df <- data.frame(x = thetas_ii_jj[,2],y = mean_mse,
-                            col = as.factor(thetas_ii_jj[,1])) # this is the special choice for laplacian smoothing
-      tuning_plots[[ii]] <- 
-        ggplot(data = plot_df,aes(x = x,y = y)) + geom_line() + 
-        labs(x = "rho",
-             y = "mean_mse",
-             title = paste0("Mse by rho for sample size = ",ns[ii],".")) +
-        theme_bw()
-  }
-  ncol_plots <- floor(sqrt(length(ns)))
-  do.call("grid.arrange", c(tuning_plots, ncol=ncol_plots))
-}
-
-# Plot of fitted values for best choice of tuning parameter.
-for(jj in 1:length(methods))
-{
-  fitted_value_plots <- vector(mode = "list",length = length(ns))
-  for(ii in 1:length(ns))
-  {
-    plot_df <- data.frame(x = Xs[[ii]],f = f0s[[ii]], fhat = best_fits_by_method[[ii]][[jj]])
-    fitted_value_plots[[ii]] <- 
-      ggplot(data = plot_df,aes(x = x)) + 
-      geom_line(aes(y = f)) +
-      geom_point(aes(y = fhat), color = "red") +
-      labs(x = "X", y = "f0", 
-           title = paste0("Fitted values (red) and f0 (black) for sample size = ", 
-                   ns[ii], ".")
-           ) +
-      theme_bw()
-  }
-  ncol_plots <- floor(sqrt(length(ns)))
-  do.call("grid.arrange", c(fitted_value_plots, ncol=ncol_plots))
-}
-
-# Plot of mse---for best choice of tuning parameter---by sample size
-for(jj in 1:length(methods))
-{
-  best_mse <- numeric()
-  minimax_mse <- numeric()
-  for(ii in 1:length(ns))
-  {
-    mse_ii_jj <- mse[[ii]][[jj]]
-    best_mse[ii] <- min(rowMeans(mse_ii_jj))
-    minimax_mse[ii] <- (pi^{2}/2)^d * ns[ii]^{-2/(2 + d)}
-  }
-  plot_df_best_mse <- data.frame(x = ns, y = best_mse, z = minimax_mse) 
-  
-  # fitted slope
-  log_best_mse <- log(best_mse)
-  log_ns <- log(ns)
-  fitted_slope <- lm(I(log_best_mse - 1) ~ log(ns) + 0)
-  TEMP <- 
-    ggplot(data = plot_df_best_mse, aes(x = x)) +
-    coord_trans(x = "log10", y = "log10") + 
-    geom_line(aes(y = y), color = "red") + 
-    geom_point(aes(y = y), color = "red") + 
-    geom_line(aes(y = z)) + 
-    labs(x = "n",
-         y = "mse",
-         title = paste0("Mean squared error by sample size")) +
-    theme_bw()
-  print(TEMP)
-}
-
-
-
-
 ### Save. ###
+save_directory <- file.path("data",gsub("[^[:alnum:]]", "", Sys.time()))
+for(directory in c(save_directory))
+{
+  dir.create(directory)
+}
+configs <- list(d = d,
+                ns = ns,
+                methods = methods,
+                sample_X = sample_X,
+                make_f0 = make_f0)
+save(configs, file = paste0(save_directory, '/configs.R'))
+save(best_fits_by_method, file = paste0(save_directory, '/best_fits_by_method.R'))
+save(thetas, file = paste0(save_directory, '/thetas.R'))
+save(mse, file = paste0(save_directory, '/mse.R'))
+save(Xs, file = paste0(save_directory, '/Xs.R'))
+save(f0s, file = paste0(save_directory, '/f0s.R'))

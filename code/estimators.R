@@ -34,6 +34,24 @@ make_laplacian_smoothing_knn <- function(theta)
   }
 }
 
+make_knn <- function(theta)
+{
+  k <- theta[["k"]]
+  knn <- function(Y,X)
+  {
+    # Build G_{n,k} over X.
+    G <- knn_graph(X,k)
+    
+    # normalize by row sums
+    H <- G / rowSums(G)
+    
+    # kNN estimator
+    f_hat <- as.numeric(H %*% Y)
+    
+    return(f_hat)
+  }
+}
+
 initialize_laplacian_smoothing_thetas <- function(sample_X,n){
   thetas <- data.frame(r = numeric(), rho = numeric())
   
@@ -44,16 +62,17 @@ initialize_laplacian_smoothing_thetas <- function(sample_X,n){
   for(iter in 1:10)
   {
     X <- sample_X(n)
-    rneighborhood <- nn2(data = X, query = X, k = 3)
-    r_connects[iter] <- max(rneighborhood$nn.dists[,3]) # connectivity radius
+    rneighborhood <- nn2(data = X, query = X, k = round(log(n) + 1))
+    r_connects[iter] <- max(rneighborhood$nn.dists[,round(log(n) + 1)]) # connectivity radius
   }
   # Choose a range of radii centered around r_connect.
-  rs <- mean(r_connects)
+  rs <- mean(r_connects) + sd(r_connects) * seq(-2,2,length.out = 10)
+  
   
   # Choose a range of penalty parameters.
   rho_optimal_theory <- function(r){1 / (n^{2/(2+d)} * n * r^{d + 2})} # bias-variance balance
   rho_optimals <- sapply(rs,rho_optimal_theory)
-  rhos <- sapply(rho_optimals,FUN = function(rho){seq(rho, 10 * rho,length.out = 50)})
+  rhos <- sapply(rho_optimals,FUN = function(rho){seq(rho, 5 * rho,length.out = 25)})
   
   # All combinations.
   for (ii in 1:length(rs))
@@ -69,12 +88,18 @@ initialize_laplacian_smoothing_thetas <- function(sample_X,n){
 initialize_laplacian_smoothing_knn_thetas <- function(sample_X,n){
   thetas <- data.frame(k = numeric(), rho = numeric())
   
-  ks <- 5
+  # Choose a range of connectivity parameters.
+  ks <- seq(2, 17, by = 3)
   
   # Choose a range of penalty parameters.
-  rho_optimal_theory <- function(k){n^{2/d} / (n^{2/(2+d)} * k^{(d + 2)/d})} # bias-variance balance
+  m <- choose_f0_frequency(d)
+  a <- choose_f0_amplitude(d,m)
+  rho_optimal_theory <- function(k){
+    n^{2/d} / (n^{2/(2+d)} * k^{(d + 2)/d}) *
+    (d * (a^2/2^d) * m^2 * pi^2)^{-2/(2+d)}
+  } # bias-variance balance
   rho_optimals <- sapply(ks,rho_optimal_theory)
-  rhos <- sapply(rho_optimals,FUN = function(rho){seq(2^{d - 2} * rho, 5^d * rho,length.out = 50)})
+  rhos <- sapply(rho_optimals,FUN = function(rho){exp( seq(log(1/25 * rho),log(25 * rho),length.out = 25) )})
   
   # All combinations.
   for (ii in 1:length(ks))
@@ -85,4 +110,14 @@ initialize_laplacian_smoothing_knn_thetas <- function(sample_X,n){
     }
   }
   return(thetas)
+}
+
+initialize_knn_thetas <- function(sample_X,n){
+  m <- choose_f0_frequency(d)
+  a <- choose_f0_amplitude(d,m)
+  k_min <- 2
+  k_max <- min(max(round(5 * (d * (a^2/2^d) * m^2 * pi^2)^{-d/(2+d)} * n^{2/(d + 2)}), 50), n/4)
+  ks <- c(2:12, seq(13,k_max,by = 2))
+  
+  thetas <- data.frame(k = ks)
 }
