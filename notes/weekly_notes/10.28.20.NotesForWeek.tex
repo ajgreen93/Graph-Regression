@@ -1,0 +1,380 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+% Make a widecheck symbol (thanks, Stack Exchange!)
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+	<5> <6> <7> <8> <9> <10>
+	<10.95> <12> <14.4> <17.28> <20.74> <24.88>
+	mathx10
+}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+% widecheck made
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Note on: Lower bound for Laplacian smoothing on Geometric Graphs}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Suppose we observe design points $X_1,\ldots,X_n$, with associated responses
+\begin{equation*}
+Y_i = f_0(X_i) + \varepsilon_i;
+\end{equation*}
+here each $X_i$ belongs to a domain $\Xset$, the regression function $f_0: \Xset \to \Reals$, and $\varepsilon_i \sim N(0,1)$ are independent Gaussian noise. Let $G = (\{1,\ldots,n\},W)$ be a geometric graph defined over the vertices $\{1,\ldots,n\}$, which we associate with the design points $X_1,\ldots,X_n$, where $W_{ij} = 0$ unless $\|X_i - X_j\| \leq r$.  Let $\Lap$ be the (combinatorial) Laplacian matrix associated with $G$. The Laplacian smoothing estimator $\wh{f}$ is defined as
+\begin{equation*}
+\wh{f} := \argmin_{f \in \Reals^n} \Bigl\{\sum_{i = 1}^{n} (Y_i - f_0(X_i))^2 + \rho f^T \Lap f\Bigr\}.
+\end{equation*}
+The accuracy of $\wh{f}$ is measured by the in-sample mean squared error
+\begin{equation*}
+\|\wh{f} - f_0\|_n^2 := \frac{1}{n} \sum_{i = 1}^{n} \bigl(\wh{f}_i - f_0(X_i)\bigr)^2.
+\end{equation*}
+
+Suppose we make the following~\emph{random design} assumptions.
+\begin{enumerate}[label=(P\arabic*)]
+	\item
+	\label{asmp:domain}
+	 The domain $\Xset$ is an open, connected set, with Lipschitz boundary.
+	\item 
+	\label{asmp:density}
+	The design points $X_1,\ldots,X_n$ are independently drawn by a distribution $P$ defined on $\Xset$. The distribution $P$ admits a density $p$ with respect to Lebesgue measure, which is bounded away from $0$ and $\infty$,
+	\begin{equation*}
+	0 < \frac{1}{\alpha} \leq p(x) \leq \alpha < \infty,~~\textrm{for all $x \in \Xset$.}
+	\end{equation*}
+\end{enumerate}
+\begin{enumerate}[label=(G\arabic*)]
+	\item 
+	\label{asmp:geometric_graph}
+	The graph $G$ is an unweighted \emph{random geometric graph}: $W_{ij} = 1$ if $\|X_i - X_j\| \leq r$ and $0$ otherwise.
+\end{enumerate}
+\begin{enumerate}[label=(F\arabic*)]
+	\item 
+	\label{asmp:sobolev_norm}
+	The regression function $f_0$ belongs to the unit-norm first-order Sobolev ball $H^1(\Xset,1)$, meaning
+	\begin{equation}
+	\label{eqn:sobolev_norm}
+	\int_{\Xset} \|\nabla f_0(x)\|^2 \,dx \leq 1
+	\end{equation}
+\end{enumerate}
+We have derived the following upper bounds on the in-sample mean squared error of $\wh{f}$: with probability at least $1 - \delta$,
+\begin{equation*}
+\|\wh{f} - f_0\|_n^2 \leq C_{\delta}
+\begin{cases*}
+n^{-2/(2 + d)},& ~~\textrm{if $d = 1,2,3$} \\
+\Bigl(\log n/n\Bigr)^{1/3},&~~\textrm{if $d = 4$} \\
+n^{-4/(3d)},& ~~\textrm{if $d \geq 5$.}
+\end{cases*}
+\end{equation*}
+These upper bounds fail to match the known minimax rate $n^{-2/(2 + d)}$ when $d \geq 4$. Our question is: is it our estimator, or our theory, that is deficient when $d \geq 4$? Simulations, and theory from the related fixed design problem, suggest it is the estimator. In this note, I detail this fixed design theory, and show the difficulty in applying similar reasoning to the random design case.
+
+\section{Lower bounds in the fixed design setup}
+In the fixed design setting, we assume $X_1,\ldots,X_n$ are a priori fixed, so that the only randomness comes from the noise variables $\varepsilon_i$ (one can do a better job of formalizing this assumption, but for the moment I won't bother.) In the fixed design setup, we make different assumptions.
+\begin{enumerate}[label=(P\arabic*)]
+	\setcounter{enumi}{2}	
+	\item  
+	\label{asmp:grid}
+	The design points form a grid over the $d$-dimensional unit cube $[0,1]^d$. Adopting multiindex notation for conciseness, we have that for $N = n^{1/d}$, the design points are the set
+	\begin{equation*}
+	\Bigl\{X_j := \frac{1}{N}(j_1,\ldots,j_d): j \in [N]^d\Bigr\}
+	\end{equation*}
+\end{enumerate}
+
+\begin{enumerate}[label=(G\arabic*)]
+	\setcounter{enumi}{1}
+	\item 
+	\label{asmp:lattice}
+	The graph $G$ is an unweighted lattice graph, with $W_{ij} = 1$ if $\|i - j\|_1 = 1$, and $0$ otherwise.
+\end{enumerate}
+
+\begin{enumerate}[label=(F\arabic*)]
+	\setcounter{enumi}{1}
+	\item 
+	\label{asmp:graph_sobolev_norm}
+	The regression function $f_0: \{X_1,\ldots,X_n\} \to \Reals$ satisfies
+	\begin{equation*}
+	\frac{1}{n^2\wb{r}^{d + 2}} f_0^{\top} \Lap f_0 \leq 1
+	\end{equation*}
+	for $\wb{r} := n^{-1/d}$.
+\end{enumerate}
+(NB: the grid and lattice assumption are not essential. We could likely replace the lattice by a general geometric graph of radius $r$, replace $\wb{r}$ by $r$, and replace the grid assumption by a Weyl's-Law-type assumption on the resulting eigenvalues of $G$. But the above is simpler, and gets the main idea across.) 
+
+We shall prove the following when $d > 4$: For any $\rho > 0$, there exists a function $f_0 \in \Reals^n$ satisfying~\ref{asmp:graph_sobolev_norm} such that
+\begin{equation}
+\label{eqn:lb_mse}
+\mathbb{E}\bigl[\|\wh{f} - f_0\|_n^2\bigr] \gtrsim n^{-4/(3d)} \gg n^{-2/(d + 2)}.
+\end{equation}
+
+\paragraph{Proof of~\eqref{eqn:lb_mse}.}
+Our strategy to prove this claim parallels the development of the corresponding upper bound. In the fixed design setup, the expected in-sample mean squared error of $\wh{f}$ can be decomposed into squared bias and variance:
+\begin{align*}
+\Ebb\bigl[\|\wh{f} - f_0\|_n^2\bigr] & = \underbrace{\|\Ebb[\wh{f}] - f_0]\|_n^2}_{\mathbb{B}(\wh{f},f_0)} + \underbrace{\Ebb\bigl[\|\wh{f} - \Ebb[\wh{f}]\|_n^2\bigr]}_{\mathbb{V}(\wh{f})}
+\end{align*}
+and the task reduces to lower bounding of lower bounding mean squared error reduces to lower bounding the bias and variance terms.
+
+In the following two subsections, we give lower bounds on $\mathbb{B}(\wh{f},f_0)$ and $\mathbb{V}(\wh{f})$. The bounds take different forms, depending on which of the following situations we are in: (i) there exists $k \in \{2,\ldots,n/2 - 1\}$ such that $\rho \lambda_k = 1$, (ii) $\rho \lambda_2 > 1$, or (iii) $\rho \lambda_n < 1$. If we are in the first situation, then by Lemmas~\ref{lem:lb_bias} and~\ref{lem:lb_variance} there exists a choice of $f_0$ (which we make explicit in the statement of Lemma~\ref{lem:lb_bias}) such that
+\begin{equation*}
+\Ebb\bigl[\|\wh{f} - f_0\|_n^2\bigr] \geq c\biggl(\wb{\rho} + \frac{1}{\wb{\rho}^2}n^{-4/d}\biggr)
+\end{equation*}
+and a simple computation tells us that the right hand side is always greater than $cn^{-4/(3d)}$. 
+If we are in the second situation, then by Lemma~\ref{lem:lb_bias} $\Ebb\bigl[\|\wh{f} - f_0\|_n^2\bigr] \gtrsim 1$; if we are in the third situation, then by Lemma~\ref{lem:lb_variance} the same thing is true, and so we have proved the claim.
+
+(Of course, we have not handled the case where $\rho\lambda_k < 1 < \rho\lambda_{k + 1}$, but in spirit this is basically situation (i)---it should only introduce some negligible rounding error which I am not going to bother calculating right now.)
+
+\subsection{Lower bound on Bias}
+Let $S := (I + \rho \Lap)^{-1}$, and note that Laplacian smoothing can be written as $\wh{f} = S Y_{1:n}$ (writing $Y_{1:n} = (Y_1,\ldots,Y_n)$), and the bias of Laplacian smoothing as
+\begin{equation}
+\label{eqn:bias}
+\mathbb{B}(\wh{f},f_0) = \frac{1}{n}f_0^{\top}(I - S)^2 f_0
+\end{equation}
+For $\rho > 0$, set $\wb{\rho} := \rho \cdot n\wb{r}^{d + 2}$. 
+
+\begin{lemma}
+	\label{lem:lb_bias}
+	Fix tuning parameter $\rho > 0$. 
+	\begin{itemize}
+		\item Suppose there exists a number $k \in \{1,\ldots,n\}$ such that $\rho \lambda_k = 1$. Then, setting $f_0$ equal to $\sqrt{\frac{n^2 \wb{r}^{d + 2}}{\lambda_k}}v_k$, we have that $(n^2\wb{r}^{d + 2})^{-1}f_0^{\top}\Lap f_0 = 1$, and 
+		\begin{equation}
+		\label{eqn:lb_bias_1}
+		\mathbb{B}(\wh{f},f_0) = \frac{1}{4}\wb{\rho}
+		\end{equation}
+		\item Suppose $\lambda_1 \rho > 1$. Then, setting $f_0$ equal to $\sqrt{\frac{n^2 \wb{r}^{d + 2}}{\lambda_k}}v_1$, we have that $(n^2\wb{r}^{d + 2})^{-1}f_0^{\top}\Lap f_0 = 1$, and 
+		\begin{equation}
+		\label{eqn:lb_bias_2}
+		\mathbb{B}(\wh{f},f_0) \geq c.
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+Note: to properly trade off bias and variance when $d < 4$, we set $\wb{\rho} = n^{-2/(2 + d)}$. In this case, $\rho \lambda_k = 1$ implies that $k \asymp n^{d/(d + 2)}$, so that our choice of $f_0$ which saturates the upper bound $f_0^{\top} \Lap f_0 \lesssim \wb{\rho}$ (i.e the choice of $f_0$ for which~\eqref{eqn:lb_bias_1} holds) is a harmonic function of frequency $n^{1/(d + 2)}$. In plain English: its very wiggly.
+
+
+\subsection{Lower bound on Variance}
+The variance term $\mathbb{V}(\wh{f})$ is simply
+\begin{equation*}
+\mathbb{V}(\wh{f}) = \Ebb\bigl[\varepsilon^{\top} S^2 \varepsilon\bigr] = \frac{1}{n}\sum_{j = 1}^{n} \frac{1}{(\rho \lambda_j + 1)^2}
+\end{equation*} 
+
+\begin{lemma}
+	\label{lem:lb_variance}
+	Fix tuning parameter $\rho > 0$. Assume $d > 4$.
+	\begin{itemize}
+		\item Suppose there exists a number $k \in \{1,\ldots,n/2 - 1\}$ such that $\rho \lambda_k = 1$. Then
+		\begin{equation}
+		\label{eqn:lb_variance_1}
+		\mathbb{V}(\wh{f}) \geq c\frac{1}{\wb{\rho}^2}n^{-4/d}
+		\end{equation}
+		for $\wb{\rho} = (nr^{d + 2})\rho$. 
+		\item Suppose instead that $\rho \lambda_{n/2 - 1} < 1$. Then
+		\begin{equation}
+		\label{eqn:lb_variance_2}
+		\mathbb{V}(\wh{f}) \geq \frac{1}{4}.
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+
+\section{What's tricky about a lower bound in the random design setup?}
+The simple answer is: the bias. That is, it should not be hard to prove a rough analog to Lemma~\ref{lem:lb_variance} under the random design assumptions~\ref{asmp:density},~\ref{asmp:domain} and~\ref{asmp:geometric_graph}. However, to prove Lemma~\ref{lem:lb_bias} we set $f_0$ as a function of the graph $G$ (more specifically, as proportional to an eigenvector $v_k$ of $L$). In the random design setup, this is an impermissible operation, as we must choose the ``bad'' function $f_0$ before the design points $X_1,\ldots,X_n$ are drawn. Now, we could choose $f_0$ proportional to an eigenfunction $f_k$ of an appropriately weighted continuum Laplace-Beltrami operator. However, we would then need to argue that $f_k \approx v_k$, for a value of $k$ which is growing (quite rapidly) with $n$. 
+
+\section{Proofs}
+
+\paragraph{Proof of Lemma~\ref{lem:lb_bias}.}
+Take the representation~\eqref{eqn:bias}, and note that $(I - S)^2$ admits the eigendecomposition
+\begin{equation*}
+(I - S)^2 = \sum_{j = 1}^{n} \biggl(1 - \frac{1}{1 + \rho\lambda_j}\biggr)^2 v_j v_j^{\top} = \rho^2 \sum_{j = 1}^{n}\frac{\lambda_j^2}{(1 + \rho \lambda_j)^2} v_j v_j^{\top}
+\end{equation*}
+As a result, if $\lambda_k\rho = 1$, then 
+\begin{equation*}
+v_k^{\top} (I - S)^2 v_k = \rho^2 \frac{\lambda_k^2}{(1 + \rho \lambda_k)^2} = \frac{1}{4}
+\end{equation*}
+and setting $f_0 = \sqrt{\frac{n\wb{r}^{d+2}}{\lambda_k}}v_k$, we obtain
+\begin{equation*}
+\frac{1}{n}f_0^{\top} (I - S)^2 f_0 = \frac{n\wb{r}^{d + 2}}{\lambda_k} v_k^{\top} (I - S)^2 v_k =  \frac{1}{4}n\wb{r}^{d + 2}\rho.
+\end{equation*}
+On the other hand, if $\lambda_1\rho > 1$, then
+\begin{equation*}
+v_1^{\top} (I - S)^2 v_1  = \rho^2 \frac{\lambda_1^2}{(1 + \rho \lambda_1)^2} \geq \frac{1}{4}
+\end{equation*}
+and setting $f_0 = \sqrt{\frac{n\wb{r}^{d+2}}{\lambda_1}}v_1$ we obtain
+\begin{equation*}
+\frac{1}{n} f_0^{\top} (I - S)^2 f_0 \geq \frac{n\wb{r}^{d + 2}}{4\lambda_1} \geq c.
+\end{equation*}
+
+\paragraph{Proof of Lemma~\ref{lem:lb_variance}.}
+The inequality~\eqref{eqn:lb_variance_2} is immediate. 
+
+To prove the inequality~\eqref{eqn:lb_variance_1}, we note that by assumption
+\begin{equation*}
+1 + \lambda_j\rho \leq 
+\begin{cases*}
+2,& ~~\textrm{for all $j < k$} \\
+2\lambda_j\rho, & ~~\textrm{for all $j \geq k$.}
+\end{cases*}
+\end{equation*}
+and therefore
+\begin{equation}
+\label{pf:lb_variance_1}
+\mathbb{V}(\wh{f}) = \frac{1}{n}\sum_{j = 1}^{n} \frac{1}{(\rho \lambda_j + 1)^2} \geq \frac{1}{4n} \biggl( k - 1 + \sum_{j = k}^{n} \frac{1}{\rho^2 \lambda_j^2} \biggr)
+\end{equation}
+To lower bound the tail sum, we rely on the fact that for all $j = 1,\ldots,n$,
+\begin{equation*}
+\lambda_j \leq C j^{-2/d} n\wb{r}^{d + 2}
+\end{equation*}
+and so $\rho \lambda_j \leq C j^{-2/d} \wb{\rho}$. Therefore,
+\begin{align*}
+\sum_{j = k}^{n} \frac{1}{\rho^2 \lambda_j^2} & \geq \frac{c}{\wb{\rho}^2} \sum_{j = k}^{n} j^{-4/d} \\
+& \geq  \frac{c}{\wb{\rho}^2} \int_{k + 1}^{n} x^{-4/d} \,dx \\
+& = \frac{c}{\wb{\rho}^2}\biggl[n^{1 - 4/d} - (k + 1)^{4/d - 1}\biggr] \\
+& \geq \frac{c}{\wb{\rho}^2}n^{1 - 4/d}
+\end{align*}
+and by plugging back in to~\eqref{pf:lb_variance_1} we obtain~\eqref{eqn:lb_variance_1}.
+
+\end{document}
