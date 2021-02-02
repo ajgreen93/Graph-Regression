@@ -1,4 +1,4 @@
 # graph_testing
-Graph testing project with Ryan and Siva.
+Graph regression project with Ryan and Siva.
 
-The main document for this work is notes/graph_testing
+notes/manuscripts/AISTATS/minimax_optimal_laplacian_smoothing.tex: tex file for our AISTATS paper
