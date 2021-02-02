@@ -1,27 +1,163 @@
 \documentclass[twoside]{article}
-
 \usepackage{aistats2021}
-% If your paper is accepted, change the options for the package
-% aistats2021 as follows:
-%
-%\usepackage[accepted]{aistats2021}
-%
-% This option will print headings for the title of your paper and
-% headings for the authors names, plus a copyright note at the end of
-% the first column of the first page.
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{verbatim}
 
-% If you set papersize explicitly, activate the following three lines:
-%\special{papersize = 8.5in, 11in}
-%\setlength{\pdfpageheight}{11in}
-%\setlength{\pdfpagewidth}{8.5in}
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
 
-% If you use natbib package, activate the following three lines:
-%\usepackage[round]{natbib}
-%\renewcommand{\bibname}{References}
-%\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
 
-% If you use BibTeX in apalike style, activate the following line:
-%\bibliographystyle{apalike}
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+% Make a widecheck symbol (thanks, Stack Exchange!)
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+	<5> <6> <7> <8> <9> <10>
+	<10.95> <12> <14.4> <17.28> <20.74> <24.88>
+	mathx10
+}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+% widecheck made
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
 
 \begin{document}
 
