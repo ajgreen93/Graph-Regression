@@ -1,0 +1,213 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+% Make a widecheck symbol (thanks, Stack Exchange!)
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+	<5> <6> <7> <8> <9> <10>
+	<10.95> <12> <14.4> <17.28> <20.74> <24.88>
+	mathx10
+}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+% widecheck made
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for 10/13/2020}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Suppose $f_0 \in C^{0,1}(\Xset)$. In this document I will address two of Siva's comments in the following two statements:
+\begin{itemize}
+	\item For any $r \geq n^{-1/d}$ and any $b \geq 1$, 
+	\begin{equation}
+	\label{eqn:siva1}
+	f_0^T \Lap_{n,r} f_0 \leq C \cdot b \cdot n^2 r^{d + 2},
+	\end{equation}
+	with probability at least $1 - \frac{2\delta^2}{b^2n}$.
+	\item Let $V_1,\ldots,V_n$ be the Voronoi tesselation of $\Xset$ induced by $X_1,\ldots,X_n$. Let $\widecheck{f}$ represent the piecewise constant extension of $\wh{f}$ over the Voronoi cells, i.e.
+	\begin{equation}
+	\label{eqn:extension_voronoi}
+	\widecheck{f}(x) = \sum_{i = 1}^{n} \wh{f}_{i} \1\{x \in V_i\}.
+	\end{equation}
+	Then 
+	\begin{equation}
+	\label{eqn:L2P_error}
+	\|\widecheck{f} - f_0\|_{\Leb^2(\Xset)}^2 \leq \bigl(1 + o(1)\bigr) \cdot \|\wh{f} - f_0\|_n^2
+	\end{equation}
+\end{itemize}
+The former result I believe I may be able to show under the Sobolev assumption $f \in H^1(\Xset)$; the latter result seems to rely more heavily on the Lipschitz assumption.
+\section{Proof of~\eqref{eqn:siva1}}
+We will use Chebyshev's inequality, and hence need upper bounds on the first two moments of $f_0^T \Lap_{n,r} f_0$. We already have an upper bound on the mean:
+\begin{equation*}
+\Ebb\bigl[f_0^T \Lap_{n,r} f_0] \leq C n^2 r^{d + 2}.
+\end{equation*}
+Noting that $f_0^T \Lap f_0 = \sum_{i,j = 1}^{n} \bigl(f_0(X_i) - f_0(X_j)\bigr)^2 K(\|X_i - X_j\|/r)$ is a double sum, and expanding the square of sums as the sum of squares, we have
+\begin{align*}
+\Ebb\bigl[(f_0^T \Lap_{n,r} f_0)^2\bigr] & \leq n^2 \cdot \Ebb\biggl[\bigl(f_0(X') - f_0(X)\bigr)^4 K^2\Bigl(\frac{\|X' - X\|}{r}\Bigr)\biggr] + \\
+&~~ n^3 \cdot \Ebb\biggl[\bigl(f_0(X') - f_0(X)\bigr)^2 K\Bigl(\frac{\|X' - X\|}{r}\Bigr) \cdot \bigl(f_0(\wt{X}) - f_0(X)\bigr)^2 K\Bigl(\frac{\|\wt{X} - X\|}{r}\Bigr)\biggr]\\
+& \leq n^2 r^4 \Ebb\biggl[K^2\Bigl(\frac{\|X' - X\|}{r}\Bigr)\biggr] + n^3 r^{4}  \Ebb\biggl[K\Bigl(\frac{\|X' - X\|}{r}\Bigr) K\Bigl(\frac{\|\wt{X} - X\|}{r}\Bigr)\biggr] \\
+& \leq n^2 r^{4 + d} + n^3r^{4 + 2d} \\
+& \leq 2 n^3 r^{4 + 2d}
+\end{align*}
+where the last inequality follows because $r \geq n^{-1/d}$. Now, we apply Chebyshev's inequality:
+\begin{equation*}
+\Pbb\biggl(f_0^T \Lap f_0 \geq E\Bigl[f_0^T \Lap f_0\Bigr] + a\biggr) \leq \frac{\Var\bigl[f_0^T \Lap f_0\bigr]}{a^2} \leq \frac{2n^3r^{4 + 2d}}{a^2}
+\end{equation*}
+and taking $a = \delta^{-1}n^2r^{d + 2}$ gives the desired claim.
+
+
+
+
+
+\end{document}

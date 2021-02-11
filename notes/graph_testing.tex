@@ -115,6 +115,7 @@
 \newcommand{\Xsetxpr}{\,dx'}
 \newcommand{\Xsetypr}{\,dy'}
 \newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
 \newcommand{\ol}[1]{\overline{#1}}
 \newcommand{\spec}{\mathrm{spec}}
 
@@ -1097,7 +1098,7 @@ Then for the specific choice $\kappa = n^{2d/(4s + d)}$ and a sufficiently large
 and~\eqref{eqn:holder_testing_rate_grid_2} follows from Lemma~\ref{lem:fixed_graph_testing}.
 
 \subsubsection{Proof of~\eqref{eqn:grid_sobolev_norm_higher_order}.}
-To prove~\eqref{eqn:grid_sobolev_norm_higher_order}, we approximate the action $\wb{L}f(\wb{x})$ to within a factor of $h^s$ for all $\wb{x} \in \wb{X}$. The manner in which we do this depends on whether $\wb{x}$ is sufficiently in the interior, or conversely is near the boundary, of $\wb{X}$. With an appropriate approximation in hand, we then find the desired estimate on the discrete semi-norm $f^T \wb{L}^s f$.
+To prove~\eqref{eqn:grid_sobolev_norm_higher_order}, we approximate the action $\wb{L}f(\wb{x})$ to within a factor of $h^s$ for all $\wb{x} \in \wb{X}$. The manner in which we do this depends on whether $\wb{x}$ is sufficiently in the interior, or conversely is near the boundary, of $\wb{X}$. With an appropriate approximation of $\wb{L} f(\wb{x})$ in hand, we then find the desired estimate on the discrete semi-norm $f^T \wb{L}^s f$.
 
 \paragraph{Approximation at interior points.}
 Put $h = 1/N$, and for $j = 1,\ldots,d$, let $D_{e_j^2}f := f(\wb{x} + he_i) + f(\wb{x} - he_i) - 2f(\wb{x})$. At any point $\wb{x} \in \Xset_{h} \cap \wb{X} =: \wb{X}_{h}$, by taking a $2$nd order Taylor expansion of $f$ at $\wb{x}$ we can express the action of the lattice Laplacian as
@@ -1314,7 +1315,6 @@ when $4s \leq d$.
 
 
 \subsection{Proof of Proposition~\ref{prop:L4_testing_rate}}
-
 Let $T_{\mathrm{mean}} = \frac{1}{n}\sum_{i = 1}^{n} y_i^2$. The expectation of $T_{\mathrm{mean}}$ is
 \begin{equation*}
 \Ebb(T_{\mathrm{mean}}) = \mathbb{E}(f^2(x_1)) + 1,
@@ -2027,7 +2027,7 @@ Let $\overline{X}$ denote the $n$ evenly spaced grid points on $[0,1]^d$; formal
 
 \subsection{Integrals}
 
-For Lemmas~\ref{lem:expected_first_order_seminorm} - \ref{lem:expected_first_order_seminorm_3}, we will assume that $K$ is a kernel function compactly supported on $B(0,1)$ and upper bound $K(x) \leq K_{\max}$. Additionally, we note that although each Lemma assumes $g \in C^1(\Xset)$, in each case if we assume merely $g \in H^1(\Xset)$ the results still hold due to the density of $C^{\infty}$ in $H^1(\Xset)$.
+For Lemmas~\ref{lem:expected_first_order_seminorm} - \ref{lem:expected_first_order_seminorm_3}, we will assume that $K$ is a kernel function compactly supported on $B(0,1)$ satisfying the upper bound $K(x) \leq K_{\max}$ for all $x \in B(0,1)$. Additionally, we note that although each Lemma assumes $g \in C^1(\Xset)$, in each case if we assume merely $g \in H^1(\Xset)$ the results still hold due to the density of $C^{\infty}$ in $H^1(\Xset)$.
 
 \begin{lemma}
 	\label{lem:expected_first_order_seminorm}

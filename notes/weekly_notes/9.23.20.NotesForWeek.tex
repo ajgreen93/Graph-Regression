@@ -245,11 +245,11 @@ Assume the following.
 \begin{enumerate}[label=(K\arabic*)]
 	\item
 	\label{asmp:kernel}
-	$K:[0,\infty) \to [0,\infty)$ is a non-increasing function supported on $[0,1]$, and its restriction to $[0,1]$ is Lipschitz with Lipschitz constant $L_K$. Additionally, it is normalized so that
+	$K:[0,\infty) \to [0,\infty)$ is a non-increasing function supported on $[0,1]$, $K(1) > 0$, and its restriction to $[0,1]$ is Lipschitz with Lipschitz constant $L_K$. Additionally, it is normalized so that
 	\begin{equation*}
 	\int_{\Reals^d} K\bigl(\norm{z}\bigr) \,dz = 1,
 	\end{equation*}
-	and $K(1/2) > 0$. Let $\sigma_{K} := \frac{1}{d}\int_{\Reals^d} \|z\|^2 K(\|z\|) \,dy$.
+	Let $\sigma_{K} := \frac{1}{d}\int_{\Reals^d} \|z\|^2 K(\|z\|) \,dy$.
 \end{enumerate}
 \begin{enumerate}[label=(OT\arabic*)]
 	\item 
@@ -262,11 +262,9 @@ Assume the following.
 	\begin{equation*}
 	\vol(W) \geq a_1(\Xset,d) \cdot \nu_d \biggl(\frac{r}{2}\biggr)^d
 	\end{equation*}
-	for some constant $A_1(\Xset,d)$. 
-	\item
-	\label{asmp:r_small_2} For all $x,x' \in \Xset$, we have that $z_{xx'} = \frac{1}{2}x + \frac{1}{2}x' \in \Xset$.
+	for some constant $a_1(\Xset,d)$. 
 	\item 
-	\label{asmp:r_small_3} For any $x \in \Xset$, letting $\mc{B}_x:= (\Xset - x)/r \cap B(0,1)$, we have that $\int_{\mc{B}_x} \psi(\|z\|) \,dz \geq a_1(\Xset,d) \cdot \int_{B(0,1)} \psi(\|z\|) \,dz$.
+	\label{asmp:r_small_3} For any $x \in \Xset$, letting $\mc{B}_x:= (\Xset - x)/r~ \cap~B(0,1)$, we have that $\int_{\mc{B}_x} \psi(\|z\|) \,dz \geq a_1(\Xset,d) \cdot \int_{B(0,1)} \psi(\|z\|) \,dz$.
 \end{enumerate}
 Very roughly speaking, one can view $\theta + \wt{\delta}$ as an upper bound on the optimal transport distance between $P_n$ and $\wt{P}_n$ and the $\Leb_{\infty}$ distance between $\wt{p}_n$ and $p$. 
 
@@ -343,7 +341,7 @@ In Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}, we establish 
 In Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized_lb}, we establish the reverse of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized}. 
 \begin{lemma}[c.f. Lemma 14 of \cite{trillos2019}]
 	\label{lem:first_order_graph_sobolev_seminorm_discretized_lb}
-	Suppose $r$ satisfies~\ref{asmp:r_small_2}. For any $u \in \Leb^2(P_n)$, 
+	Suppose $\frac{\wt{\delta}}{r} \leq \min\bigl\{\frac{1}{4(2^{d + 2} - 1)}, \frac{K(1)}{2L_K}\bigr\}$. Then for any $u \in \Leb^2(P_n)$, 
 	\begin{equation*}
 	\wt{E}_{r - 2\wt{\delta}}\bigl(\wt{\mc{P}}^{\star}u\bigr) \leq \biggl(1 + A_3(d,K,P)\frac{\wt{\delta}}{r}\biggr) b_{r}(u)
 	\end{equation*}
@@ -390,18 +388,33 @@ for any $\mathbf{Z} \subseteq \mathbf{X}$.
 	\min_{T_{\sharp}\wt{P}_n = P_n} d_{\mc{M}}(x,T(x)) \leq \wt{\delta}
 	\end{equation*}
 	and
-	\begin{equation*}
+	\begin{equation}
+	\label{eqn:calder19_ot}
 	\bigl\|\wt{p}_n - p\bigr\|_{\infty} \leq A_1\bigl(\theta + \wt{\delta}\bigr)
-	\end{equation*}
+	\end{equation}
 \end{theorem}
-\textcolor{red}{(TODO)}: Replace this Theorem with it's ``flat'' predecessor.
 
-By Theorem~\ref{thm:calder19_2}, the two energies can be related,
+The assumptions~\ref{asmp:calder19_1} and~\ref{asmp:calder19_2}, as well as the $\Leb^{\infty}$ bound~\eqref{eqn:calder19_ot}, depend on constants which are not explicitly given. To make this dependence more transparent on the geometric parameters of the problem, we restate the Theorem in the flat Euclidean setting; for completeness, we provide a proof in~\textcolor{red}{???}.
+
+\begin{proposition}[Restatement of Proposition~2.11 of \textcolor{red}{(Calder2019)}]
+	\label{prop:optimal_transport}
+	Suppose $p$ satisfies~\ref{asmp:bounded_lipschitz_density}. Then there exists a probability measure $\wt{P}_n$ with density $\wt{p}_n$ such that for any $\wt{\delta} \geq n^{-1/d}$,
+	\begin{equation*}
+	\inf_{T: T_{\sharp} \wt{P}_n = P_n} \biggl\{\sup_{x \in \Xset}~\bigl|T(x) - x\bigr|\biggr\} \leq A_2(d,\Xset) \wt{\delta}
+	\end{equation*}
+	and
+	\begin{equation*}
+	\|\wt{p}_n - p\|_{\infty} \leq A_2(d,\Xset) L_p \wt{\delta} + \theta p_{\max} \leq A_1(\wt{\delta} + \theta)
+	\end{equation*}
+	with probability at least $1 - A_2(d,\Xset) n \cdot \exp\bigl\{-a_2(d,\Xset) p_{\min} n\theta^2\wt{\delta}^d\bigr\}$. 
+\end{proposition}
+
+By assumption $A_1(\wt{\delta} + \theta) \leq \frac{1}{2}$. Therefore Proposition~\ref{prop:optimal_transport} allows to relate the energies $\wt{E}_r(f)$ and $E_r(f)$:
 \begin{equation}
 \label{eqn:calder19_1}
 \bigl(1 - A_1(\theta + \wt{\delta})\bigr) E_r(f) \leq \wt{E}_r(f) \leq \bigl(1 + A_1(\theta + \wt{\delta})\bigr) E_r(f),
 \end{equation}
-and so can the norms
+as well as the norms $\|f\|_{\Leb^2(P)}$ and $\|f\|_{\Leb^2(P_n)}$:
 \begin{equation}
 \label{eqn:calder19_2}
 \bigl(1 - A_1(\theta + \wt{\delta})\bigr) \|f\|_{\Leb^2(P)}^2 \leq \|f\|_{\Leb^2(\wt{P}_n)}^2 \leq \bigl(1 + A_1(\theta + \wt{\delta})\bigr) \|f\|_{\Leb^2(P)}^2.
@@ -633,31 +646,21 @@ For brevity, we write $\wt{r} := r - 2\wt{\delta}$. We begin by expanding the en
 \end{align*}
 We next use the Lipschitz property of the kernel $K$---in particular that for $x \in U_i$ and $x' \in U_j$,
 \begin{equation*}
-K\biggl(\frac{\|x' - x\|}{\wt{r}}\biggr) \leq K\biggl(\frac{\|x_i - x_j\|}{r}\biggr) + \frac{2L_K\wt{\delta}}{\wt{r}} \cdot \1\biggl\{\frac{\|x' - x\|}{\wt{r}}\biggr\}
+K\biggl(\frac{\|x' - x\|}{\wt{r}}\biggr) \leq K\biggl(\frac{\|x_i - x_j\|}{r}\biggr) + \frac{2L_K\wt{\delta}}{\wt{r}} \cdot \1\biggl\{\frac{\|x' - x\|}{\wt{r}} \leq 1\biggr\}
 \end{equation*}
 ---to conclude that
 \begin{align}
-\wt{E}_{\wt{r}}\bigl(\wt{\mc{P}}^{\star}u\bigr) & \leq \frac{1}{n^2\wt{r}^{d + 2}} \sum_{i = 1}^{n} \sum_{j = 1}^{n} \Bigl(u(X_i) - U(X_j)\Bigr)^2 K\biggl(\frac{\|x_i - x_j\|}{r}\biggr) + \frac{2L_K\wt{\delta}}{\wt{r}}\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) \nonumber \\
-& \leq \biggl(1 + 4\bigl(2^{d + 2} - 1\bigr)\frac{\wt{\delta}}{r}\biggr) b_r(u) + \frac{2L_K\wt{\delta}}{\wt{r}}\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) \label{pf:lem_first_order_graph_sobolev_seminorm_discretized_1}.
+\wt{E}_{\wt{r}}\bigl(\wt{\mc{P}}^{\star}u\bigr) & \leq \frac{1}{n^2\wt{r}^{d + 2}} \sum_{i = 1}^{n} \sum_{j = 1}^{n} \Bigl(u(X_i) - u(X_j)\Bigr)^2 K\biggl(\frac{\|x_i - x_j\|}{r}\biggr) + \frac{2L_K\wt{\delta}}{\wt{r}}\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) \nonumber \\
+& \leq \biggl(1 + 4\bigl(2^{d + 2} - 1\bigr)\frac{\wt{\delta}}{r}\biggr) b_r(u) + \frac{2L_K\wt{\delta}}{\wt{r}}\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) \nonumber \\
+& \leq \biggl(1 + 4\bigl(2^{d + 2} - 1\bigr)\frac{\wt{\delta}}{r}\biggr) b_r(u) + \frac{2L_K\wt{\delta}}{K(1)\wt{r}} \wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u\bigr) \nonumber 
 \end{align}
-We focus now on the factor of $\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,1_{[0,1]})$. For any $x$ and $x' \in \Xset$ such that $\|x - x'\| \leq r$, note that by assumption $z_{xx'}:= \frac{1}{2}x + \frac{1}{2}x' \in \Xset \cap B(x,\wt{r}/2) \cap B(x',\wt{r}/2)$. Moreover by the triangle inequality
-\begin{equation*}
-\bigl|f(x) - f(x')\bigr|^2 \leq 2\bigl|f(x) - f(z_{xx'})\bigr|^2 + 2\bigl|f(z_{xx'}) - f(x')\bigr|^2
-\end{equation*}
-so that
+or in other words
 \begin{align*}
-\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) & \leq \int_{\Xset} \int_{\Xset \cap B(x,r)} \Bigl[ 2\bigl|f(x) - f(z_{xx'})\bigr|^2 +  2\bigl|f(z_{xx'}) - f(x')\bigr|^2\Bigr] \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx.
+\wt{E}_{\wt{r}}\bigl(\wt{\mc{P}}^{\star}u\bigr) & \leq \biggl(1 - \frac{2L_K\wt{\delta}}{K(1)\wt{r}}\biggr)^{-1}\biggl(1 + 4\bigl(2^{d + 2} - 1\bigr)\frac{\wt{\delta}}{r}\biggr) b_r(u) \\
+& \leq \biggl(1 + \frac{2L_K}{K(1)} + 8\bigl(2^{d + 2} - 1\bigr)\biggr) \frac{\wt{\delta}}{r}b_r(u)
 \end{align*}
-Now, by a change of variables along with the Lipschitz property of $p$, we can deduce that
-\begin{align*}
- \int_{\Xset} \int_{\Xset \cap B(x,r)} \bigl|f(x) - f(z_{xx'})\bigr|^2 \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx & \leq 2^d \bigl(1 + L_p\wt{r}\bigr)\int_{\Xset} \int_{\Xset \cap B(x,r/2)} \bigl|f(x) - f(z)\bigr|^2 \wt{p}_n(z) \wt{p}_n(x) \,dz \,dx \\
- & = 2^d \bigl(1 + L_p\wt{r}\bigr) \wt{E}_{\wt{r}/2}\bigl(f; \1_{[0,1]}\bigr),
-\end{align*}
-and therefore by symmetry
-\begin{equation*}
-\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) \leq 2^{d + 2} \bigl(1 + L_p\wt{r}\bigr) \wt{E}_{\wt{r}/2}\bigl(f; \1_{[0,1]}\bigr).
-\end{equation*}
-Finally, noting that $\wt{E}_{\wt{r}/2}\bigl(f; \1_{[0,1]}) \leq \frac{1}{K(1/2)} \wt{E}_{\wt{r}}\bigl(f)$, the proof is completed by plugging our upper bound on $\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr)$ back into~\eqref{pf:lem_first_order_graph_sobolev_seminorm_discretized_1}.
+where the second inequality follows from the algebraic identities $(1 - t)^{-1} \leq (1 + 2t)$ for any $0 < t < 1/2$ and $(1 + s)(1 + t) < 1 + 2s + t$ for any $0 < t < 1$ and $s > 0$.
+
 \paragraph{Proof of Lemma~\ref{lem:tau_bound}.}
 \mbox{}\\
 \mbox{}\\
@@ -709,6 +712,67 @@ Noting that $\Lambda_ra = a$ for any $a \in \Reals$, by the Cauchy-Schwarz inequ
 & \leq \frac{1}{r^d \tau(x) p_{\min}} \int_{\Xset} \eta_r(x',x) \bigl(f(x') - f(x)\bigr)^2 p(x') \,dx'.
 \end{align*}
 Then integrating over $\Xset$ with respect to $p$ yields~\eqref{eqn:smoothening_error_energy}.
+
+\paragraph{Proof of Proposition~\ref{prop:optimal_transport}.}
+We start by defining the density $\wt{p}_n$, which will be piecewise constant over a particular partition $\mc{Q}$ of $\Xset$; specifically if $x \in Q$ for $Q \in \mc{Q}$, then
+\begin{equation}
+\label{pf:prop_optimal_transport_0}
+\wt{p}_n(x) := \frac{P_n(Q)}{\vol(Q)}
+\end{equation}
+where $\vol(\cdot)$ denotes the full-dimensional Lebesgue measure. 
+
+We now construct the partition $\mc{Q}$, in progressive degrees of generality on the domain $\Xset.$
+\begin{itemize}
+	\item In the special case of the unit cube $\Xset = (0,1)^d$, the partition will simply be the collection of cubes
+	\begin{equation*}
+	\set{Q_k: k \in [\wt{\delta}^{-1}]^d} 
+	\end{equation*}
+	where $Q_k = \wt{\delta}\Bigl([k_1 - 1,k_1] \otimes \cdots \otimes [k_d - 1,k_d]\Bigr)$ and we assume without loss of generality that $\wt{\delta}^{-1} \in \mathbb{N}$.
+	\item If $\mc{\Xset}$ is an open, connected set with smooth boundary, then by Proposition 3.2 of \textcolor{red}{GarciaTrillos14}, there exist a finite number $N(\Xset) \in \mathbb{N}$ of disjoint polytopes which cover $\Xset$. Moreover, letting $U_j$ denote the intersection of the $j$th of these polytopes with $\wb{\Xset}$, this proposition establishes that for each $j$ there exists a bi-Lipschitz homeomorphism $\Phi_j: U_j \to [0,1]^d$. We take the collection of
+	\begin{equation*}
+	\mc{Q} = \biggl\{\Phi_j^{-1}(Q_k): j = 1,\ldots,N(\Xset)~~\textrm{and}~~k \in [\wt{\delta}^{-1}]^d\biggr\}
+	\end{equation*}
+	to be our partition. Denote by $L_{\Phi}$ the maximum of the bi-Lipschitz constants of $\Phi_1,\ldots,\Phi_{N(\Xset)}$.
+	\item Finally, in the general case where $\Xset$ is an open, connected set with Lipschitz boundary, then there exists a bi-Lipschitz homeomorphism $\Psi$ between $\Xset$ and a smooth, open, connected set with Lipschitz boundary. Letting $\Phi_j$ and $\wt{Q}_{j,k}$ be as before, we take the collection
+	\begin{equation*}
+	\mc{Q} = \biggl\{\wt{Q}_{j,k} = \Bigl(\Psi^{-1} \circ \Phi_j^{-1}\Bigr)(Q_k): j = 1,\ldots,N(\Xset)~~\textrm{and}~~k \in [\wt{\delta}^{-1}]^d\biggr\}
+	\end{equation*}
+	to be our partition. Denote by $L_{\Psi}$ the bi-Lipschitz constant of $\Psi$.
+\end{itemize}
+Let us record a few facts which hold for all $\wt{Q}_{j,k} \in \mc{Q}$, which follow from the bi-Lipschitz properties of $\Phi_j$ and $\Psi$: first that
+\begin{equation}
+\label{pf:prop_optimal_transport_1}
+\diam(\wt{Q}_{j,k}) \leq L_{\Psi} \L_{\Phi} \wt{\delta}
+\end{equation}
+and second that
+\begin{equation}
+\label{pf:prop_optimal_transport_2}
+\vol(\wt{Q}_{j,k}) \geq \biggl(\frac{1}{L_{\Psi} L_{\Phi}}\biggr)^d \wt{\delta}^d.
+\end{equation}
+We now use these facts to show that $\wt{P}_n$ satisfies the claims of Proposition~\ref{prop:optimal_transport}. One on the one hand, by the construction~\eqref{pf:prop_optimal_transport_0} clearly there exists a transport map $\wt{T}: \Xset \to \mathbf{X}$ for which every $x \in \wt{Q}_{j,k}$ is moved to a design point $X \in {\bf X} \cap \wt{Q}_{j,k}$, and so by~\eqref{pf:prop_optimal_transport_1}
+\begin{equation*}
+\sup_{x \in \Xset} \abs{\wt{T}(x) - x} \leq  L_{\Psi} \L_{\Phi} \wt{\delta}.
+\end{equation*}
+On the other hand, applying the triangle inequality we have that for $x \in \wt{Q}_{j,k}$
+\begin{align*}
+|\wt{p}_n(x) - p(x)| \leq \biggl|\frac{P_n(\wt{Q}_{j,k}) - P(\wt{Q}_{j,k})}{\vol(\wt{Q}_{j,k})}\biggr| + \frac{1}{\vol(\wt{Q}_{j,k})} \int_{\wt{Q}_{j,k}} |p(x') - p(x)| \,dx 
+\end{align*}
+and using the Lipschitz property of $p$ we find that 
+\begin{equation}
+\label{pf:prop_optimal_transport_3}
+\|\wt{p}_n - p\|_{\Leb^{\infty}} \leq \max_{j,k} \biggl|\frac{P_n(\wt{Q}_{j,k}) - P(\wt{Q}_{j,k})}{\vol(\wt{Q}_{j,k})}\biggr| + L_p L_{\Phi} L_{\Psi} \wt{\delta}
+\end{equation}
+From Hoeffding's inequality and a union bound, we obtain that 
+\begin{align*}
+\mathbb{P}\biggl( \bigl|P_n(\wt{Q}) - P(\wt{Q})\bigr| & \leq \theta P(\wt{Q}) \quad \forall \wt{Q} \in \mc{Q} \biggr) \geq 1 - 2 \sharp(\mc{Q}) \cdot \exp\biggl\{-\frac{\theta^2 n \min \{P(\wt{Q})\}}{3}\biggr\} \\
+& \geq 1 - \frac{2 N(\Xset)}{\wt{\delta}^d} \cdot \exp\biggl\{-\frac{\theta^2 n p_{\min} \wt{\delta}^d }{3\bigl(L_{\Psi} L_{\Phi}\bigr)^d}\biggr\}.
+\end{align*}
+Noting that by assumption $P(\wt{Q}) \leq p_{\max} \vol(\wt{Q})$ and $\wt{\delta}^{-d} \leq n$, the claim follows upon plugging back into~\eqref{pf:prop_optimal_transport_3}, and setting
+\begin{equation*}
+a_1(d, \Xset) := \frac{1}{3\bigl(L_{\Psi} L_{\Phi}\bigr)^d}~~\textrm{and}~~A_1(d,\Xset) := \max \Bigl\{2N(\Xset),L_p L_{\Psi} L_{\Phi} \Bigr\}
+\end{equation*}
+in the statement of the proposition.
+
 
 \clearpage
 

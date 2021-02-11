@@ -1,0 +1,290 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+% Make a widecheck symbol (thanks, Stack Exchange!)
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+	<5> <6> <7> <8> <9> <10>
+	<10.95> <12> <14.4> <17.28> <20.74> <24.88>
+	mathx10
+}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+% widecheck made
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Report on: Extension of (graph Laplacian) estimators}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{Extension of smooth functions}
+
+We review some classical results regarding extension of smooth functions. Suppose we observe data\\ $(X_1,f^{\ast}(X_1)), \ldots, (X_n,f^{\ast}(X_n))$, where $X_1,\ldots,X_n$ are independently sampled from a distribution $P$ with support $\Omega \subset \Rd$, and $f^{\ast}: \Omega \to \Reals$ is a function smooth in some sense. Our goal is to obtain an estimate $\wt{f}: \Omega \to \Reals$, which agrees with $f^{\ast}$ at the sample points $X_1,\ldots,X_n$, and is close to $f^{\ast}$ on the rest of $\Omega$. Naturally, the size of $\wt{f} - f^{\ast}$ will depend on the \emph{fill distance} $h(X_n) := \max_{x \in \Omega} \min_{i = 1,\ldots,n} \|x - X_i\|_2$
+
+\paragraph{Bounded variation functions, univariate.} Let $d = 1$ and $\Omega = [0,1]$. Lemma~15 in Ryan's paper on (discrete) splines establishes the error with which a function $f^{\star} \in BV([0,1])$ can be approximating using splines, assuming we observe only $(X_1,f^{\ast}(X_1)), \ldots, (X_n,f^{\ast}(X_n))$. For $k = 0$ or $k = 1$, we can use piecewise constant or piecewise linear interpolation.
+
+\begin{lemma}
+	Let $f$ be a function that is $k$ times weakly differentiable on $[0,1]$, such that $D^k f$ is of bounded variation. Also let $0 \leq x_1 < \cdots < x_n \leq 1$ be arbitrary design points. Then there exists a $k$th degree spline $g \in \mc{G}_n^k$, with knots in $x_{(k + 1):(n - 1)}$, such that for $k = 0$ or $k = 1$,
+	\begin{equation*}
+	\mathrm{TV}(D^k g) \leq \mathrm{TV}(D^k f),~~\textrm{and}~~ g(x_i) = f(x_i), i = 1,\ldots,n
+	\end{equation*}
+	and for $k \geq 2$,
+	\begin{equation*}
+	\mathrm{TV}(D^kg) \leq a_k \mathrm{TV}(D^k f),~~\textrm{and}~~ \|f - g\|_{\Leb_{\infty}} \leq b_k \delta_n^k \cdot \mathrm{TV}(D^k f).
+	\end{equation*}
+\end{lemma}
+In the lemma $\mc{G}_n^k$ is the space of $k$th degree splines with knots at $x_1,\ldots,x_n$, and $x_{(k + 1):(n - 1)} = \{x_{k + 1},\ldots, x_{n - 1}\}$. 
+
+\paragraph{Sobolev functions, multivariate.}
+When $f^{\ast}$ belongs to the Sobolev space $H^m(\Omega)$ for some $m > d/2$, one such method for obtaining $\wt{f}$ is \emph{thin-plate spline interpolation}. Let $If$ be the solution to
+\begin{equation*}
+\min |v|_{H^m(\Rd)},~~\textrm{s.t. $v(X_i) = f(X_i)$}
+\end{equation*}
+Then the size of the reconstruction error $I(f) - f$ can be upper bounded as a function of the \emph{fill distance} $h(X_n) := \max_{x \in \Omega} \min_{i = 1,\ldots,n} \|x - X_i\|_2$. 
+
+\begin{proposition}[Proposition 3 of J. Duchon]
+	\label{prop:duchon_thin_plate_spline_approximation}
+	Suppose $f \in H^m(\Omega)$. There exist constants $h_0, C_1, C_2$ depending only on $\Omega, m$, and $d$ such that for any collection $x_n = \{x_1,\ldots,x_N\} \subset \Omega$ with fill distance $h:= h(x_n) \leq h_0$, and any $k,p$ such that $W^{k,p}(\Omega) \subset H^m(\Omega)$, 
+	\begin{equation*}
+	\sum_{\abs{\alpha} = k} \|D^{\alpha}(f - If)\|_{L^p(\Omega)} \leq C_1 h^{m - k - d/2 + d/p} |f|_{H^m(\Omega)}
+	\end{equation*}
+\end{proposition}
+By taking $p = \infty$, such a statement establishes a kind of \emph{local} approximation property of splines (as Ryan said). On the other hand by taking $k = 0$ and $p = 2$, we get
+\begin{equation*}
+\|f - If\|_{L^2(\Omega)} \leq C_1 h^{m} |f|_{H^m(\Omega)}.
+\end{equation*}
+If the distribution $P$ has a density upper and lower bounded away from $0$ and $\infty$, then the fill distance $h(X_n) \sim (\log n/n)^{1/d}$, and 
+\begin{equation*}
+\|f^{\ast} - If^{\ast}\|_{L^2(P)}^2 \leq C_2 \biggl(\frac{\log n}{n}\biggr)^{2m/d}
+\end{equation*}
+for a constant $C_2$ which depends only on $\Omega,m, d$ and $P$. 
+
+\section{Extension of functions in the semi-supervised setting}
+
+We are interested in the following: if I have access only to some $g$ which approximates $f$ at the sample points $X_1,\ldots,X_n$, can I recover something akin to Proposition~\ref{prop:duchon_thin_plate_spline_approximation}? One imagines this may be known, but nevertheless I will try to prove such a fact myself. Because I am more facile with spectral graph theory than anything else, I will operate in the semi-supervised setting.
+
+\paragraph{The semi-supervised setting.}
+
+Suppose we observe labeled data $(X_1,\wh{\theta}_1),\ldots,(X_n,\wh{\theta}_n)$ and unlabeled data $X_{n + 1},\ldots,X_{n + m}$. Let $\wt{\theta}$ be the solution to
+\begin{equation*}
+\min~~\theta^{\top} L \theta,~~\textrm{s.t.}~~\theta_i = \wh{\theta}_i~~\textrm{for $i = 1,\ldots,n$.}
+\end{equation*}
+Here $L$ is the graph Laplacian matrix over all $m + n$ samples, meaning that for $u \in \Reals^{m + n}$,
+\begin{equation*}
+(Lu)_i = \sum_{j = 1}^{m + n} (u_i - u_j) K_{ij}
+\end{equation*}
+where $K_{ij} = K(\|X_i - X_j\|/r)$ is the $(i,j)$-th entry in the kernel matrix $K \in \Reals^{(n + m) \times (n + m)}$.  Writing 
+$L =
+\begin{pmatrix}
+L_{n,n} & L_{n,m} \\
+L_{m,n} & L_{m,m}
+\end{pmatrix}
+$ in block matrix notation, the estimate $\wt{\theta}$ is given by
+\begin{equation*}
+\wt{\theta}_i = 
+\begin{cases}
+\bigl(\underbrace{L_{m,m}^{-1} L_{m,n}}_{=: H} \wh{\theta}\bigr)_{i - n},~~ & i = n + 1,\ldots,n + m\\
+\wh{\theta}_i,~~ & i = 1,\ldots,n
+\end{cases}
+\end{equation*}
+
+\subsection{Analysis}
+We would like to upper bound $\|\wh{\theta} - \theta^{\ast}\|_{m}^2$. Let $\theta_{1:n}^{\ast} = (\theta_1^{\ast},\ldots,\theta_n^{\ast})$ be the restriction of $\theta^{\ast}$ to the labeled sample points. Using the triangle inequality, we have
+\begin{equation}
+\|\wt{\theta} - \theta^{\ast}\|_{m}^2 \leq 2\Bigl(\|H\theta_n^{\ast} - \theta^{\ast}\|_m^2 + \|H(\wh{\theta} - \theta_n^{\ast})\|_{m}^2\Bigr).
+\end{equation}
+The first term here is the interpolation error, and (it would seem) should be amenable to similar analysis and bounds as Proposition~\ref{prop:duchon_thin_plate_spline_approximation}. The second term here is like a blurred version of the estimation error $\|\wh{\theta} - \theta^{\ast}\|_n^2$, and in Lemma~ we show that this blurring does not substantially increase the error, under the following conditions on the kernel $K$:
+\begin{enumerate}[label=(A\arabic*)]
+	\item 
+	\label{asmp:kernel} The kernel $K: [0,\infty) \to \Reals$ has support $\mathrm{supp}(K) \subseteq [0,1]$, and $\sup_{x \in [0,1]} K(x) \leq C_K < \infty$.
+\end{enumerate}
+The Lemma will be stated with respect to the following functionals:
+\begin{align*}
+d_{\max}^{(n)} & := \max_{j = n + 1,\ldots,m + n} \sum_{i = 1}^{n} K_{ij},~~ && \wb{d}_{\max}^{(n)} := \max_{j = n + 1,\ldots,m + n} \sum_{i = 1}^{n} 1_{[0,1]}\biggl(\frac{\|X_i - X_j\|}{2r}\biggr), \\
+d_{\max}^{(m)} & := \max_{i = 1,\ldots,n} \sum_{j = n + 1}^{m + n} K_{ij},~~ && d_{\min}^{(n)} := \min_{j = n + 1,\ldots,m + n} \sum_{i = 1}^{n} K_{ij}
+\end{align*}
+\begin{lemma}
+	\label{lem:blurred_error}
+	Under assumption~\ref{asmp:kernel}, it holds that
+	\begin{equation}
+	\label{eqn:blurred_error}
+	\|H(\wh{\theta} - \theta^{\ast})\|_m^2 \leq C_K \frac{n}{m}\frac{d_{\max}^{(m)} \wb{d}_{\max}^{(n)}}{(d_{\min}^{(n)})^2}\|\wh{\theta} - \theta_{1:n}^{\ast}\|_n^2.
+	\end{equation}
+\end{lemma}
+
+Note that under standard conditions on $P$ and $r$, $d_{\max}^{(m)} = \Theta_P(mr^d)$, and $d_{\min}^{(n)}, \wb{d}_{\max}^{(n)} = \Theta_P(nr^d)$. Under such conditions~\eqref{eqn:blurred_error} implies
+\begin{equation*}
+\|H(\wh{\theta} - \theta^{\ast})\|_m^2 = O_P(1) \cdot \|\wh{\theta} - \theta_{1:n}^{\ast}\|_n^2
+\end{equation*}
+
+\begin{proof}[Proof of Lemma~\ref{lem:blurred_error}]
+	The proof will be completely independent of the properties of $\wh{\theta}$ or $\theta_{1:n}^{\ast}$. Letting $e := \wh{\theta} - \theta_{1:n}^{\ast}$, we have
+	\begin{equation*}
+	\|He\|_m^2 = \frac{1}{m} e^{\top} L_{n,m} L_{m,m}^{-2} L_{m,n} e.
+	\end{equation*}
+	Note that $L_{m,m} = L^{(m)} + D$, where $L^{(m)}$ is the graph Laplacian matrix w.r.t to the graph $G^{(m)}$, and $D \in \Reals^{m \times m}$ is a diagonal matrix with entries $D_{jj} = \sum_{i = 1}^{n}K_{i,(j + n)}$. Since $L^{(m)}$ is positive definite and $D \succeq d_{\min}^{(n)} I$, it holds that $L_{m,m} \succcurlyeq d_{\min}^{(n)} I$, or equivalently $L_{m,m}^{-1} \preccurlyeq \frac{1}{d_{\min}^{(n)}} I$. Hence,
+	\begin{equation*}
+	\frac{1}{m} e^{\top} L_{n,m} L_{m,m}^{-2} L_{m,n} e \leq \frac{1}{m}\|L_{m,n}e\|_{2}^2 \biggl(\frac{1}{d_{\min}^{(n)}}\biggr)^2.
+	\end{equation*}
+	Now, we can rewrite $\|L_{m,n}e\|_{2}^2$ as a quadratic form:
+	\begin{equation*}
+	\|L_{m,n}e\|_{2}^2 = \sum_{i = 1}^{n} \sum_{\ell = 1}^{n} e_i e_{\ell} \underbrace{\biggl\{\sum_{j = n + 1}^{n + m} K_{i,j + n} K_{\ell,j + n}\biggr\}}_{=: \eta_r^{(m)}(X_i,X_{\ell})},
+	\end{equation*}
+	and letting $\mc{E}$ be the matrix with entries $\mc{E}_{ij} = \eta_r^{(m)}(X_i,X_{\ell})$, we observe that
+	\begin{equation*}
+	\|L_{m,n}e\|_{2}^2 \leq \|e\|_2^2 \cdot \lambda_{\max}(\mc{E}) \leq \|e\|_2^2 \cdot \max_{i = 1,\ldots,n} \Bigl\{\sum_{\ell = 1}^{n} \mc{E}_{i\ell}\Bigr\}
+	\end{equation*}
+	where the latter inequality follows from the Perron-Frobenius inequality. Now, invoking our assumptions on the kernel function $K$, we see that $K_{i,j + n} K_{\ell,j + n} \leq C_K K_{i,j + n}$, and moreover by the triangle inequality $K_{i,j + n} K_{\ell,j + n} = 0$ unless $\|i - \ell\| \leq 2r$. Therefore, for any $i = 1,\ldots,n$, we deduce that
+	\begin{equation*}
+	\sum_{\ell = 1}^{n} \mc{E}_{i\ell} \leq C_k \biggl\{\sum_{\ell = 1}^{n} \1_{[0,1]}\biggl(\frac{\|X_i - X_\ell\|}{2r}\biggr) \biggr\} \cdot \max_{i = 1,\ldots,n} \biggl\{\sum_{j = n + 1}^{n + m} K_{i,j + n}\biggr\}
+	\end{equation*}
+	completing the proof.
+\end{proof}
+\end{document}

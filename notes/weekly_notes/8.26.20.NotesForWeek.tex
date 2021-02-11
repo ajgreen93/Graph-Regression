@@ -228,56 +228,61 @@ Finally, we note that for $g \in C^{s}(U)$ and $f \in H^s(U)$,
 for a constant $C$ which depends only on $s$, but which we will not bother to identify further.
 
 \subsection{First-order graph Sobolev semi-norm.}
-We begin by upper bounding $f_0^T \Lap_{n,r} f_0$ under the assumption $f_0 \in H^1(\Xset,M)$. This will be the easiest of the three Lemmas to prove, while still giving some sense of how the proofs develop in the more complicated cases. The upper bound will depend on the kernel $K$; we assume throughout that $K:[0,\infty) \to [0,\infty)$ is a $K_{\max}$-Lipschitz function supported on $[0,1]$, and without loss of generality that
+We begin by upper bounding $f_0^T \Lap_{n,r} f_0$ under the assumption $f_0 \in H^1(\Xset,M)$. This will be the easiest of the three Lemmas to prove, while still giving some sense of how the proofs develop in the more complicated cases. The upper bound will depend on the kernel $K$ through the quantity
 \begin{equation*}
-\int_{\Reals^d} K(\norm{z}) \,dz = 1.
+\sigma_K := \frac{1}{d}\int_{\Reals^d} \|z\|^2 K\bigl(\|z\|\bigr) \,dz
 \end{equation*}
+
+
 \begin{lemma}
 	\label{lem:first_order_graph_sobolev_seminorm}
-	Suppose $\Xset$ is a Lipschitz domain, and that $p(x) \leq p_{\max}$ for all $x \in \Xset$. Then, for any $f \in H^1(\Xset,M)$, there exists a constant $C > 0$ which may depend only on $\Xset$ and $d$ such that
+	For any $f \in H^1(\Xset)$, we have that
 	\begin{equation}
-	f^T \Lap_{n,r} f \leq \frac{C}{\delta} n^2 r^{d + 2} M^2
+	f^T \Lap_{n,r} f \leq \frac{p_{\max}^2 \sigma_K}{\delta} n^2 r^{d + 2} |f|_{H^1(\Xset)}^2
 	\end{equation}
 	with probability at least $1 - \delta$.
 \end{lemma}
 \begin{proof}
 	We will show that
 	\begin{equation*}
-	\Ebb\Bigl[f^T \Lap_{n,r} f\Bigr] \leq C n^2 r^{d + 2} M^2,
+	\Ebb\Bigl[f^T \Lap_{n,r} f\Bigr] \leq p_{\max}^2 \sigma_K n^2 r^{d + 2} |f|_{H^1(\Xset)}^2
 	\end{equation*}
 	whence the claim follows immediately by Markov's inequality (recall that $\Lap_{n,r}$ is positive semi-definite, and therefore $f^T \Lap_{n,r} f$ is a non-negative random variable).
 	
 	Since
 	\begin{equation*}
-	f^T \Lap_{n,r} f = \frac{1}{2}\sum_{i, j = 1}^{n} \bigl(f(X_i) - f(X_j)\bigr)^2 A_{ij},
+	f^T \Lap_{n,r} f = \frac{1}{2}\sum_{i, j = 1}^{n} \bigl(f(X_i) - f(X_j)\bigr)^2 \mathbf{W}_{ij},
 	\end{equation*}
 	it follows that
 	\begin{equation}
 	\label{pf:first_order_graph_sobolev_seminorm_1}
-	\Ebb\Bigl[f^T \Lap_{n,r} f\Bigr] = \frac{n(n - 1)}{2} \Ebb\biggl[\Bigl(f(X') - f(X)\Bigr)^2 K_r(X',X)\biggr]
+	\Ebb\Bigl[f^T \Lap_{n,r} f\Bigr] = \frac{n(n - 1)}{2} \Ebb\biggl[\Bigl(f(X') - f(X)\Bigr)^2 K\biggl(\frac{\|X' - X\|}{r}\biggr)\biggr]
 	\end{equation}
 	where $X$ and $X'$ are random variables independently drawn from $P$. 
 	
-	For the remainder of this proof, we will assume that $f \in C^{\infty}(\Xset)$, which we may do without loss of generality because $C^{\infty}(\Xset)$ is dense in $H^1(\Xset)$. Moreover, since $\Xset$ is a Lipschitz domain there exists an extension $g \in C^{\infty}(\Rd)$ of $f$ satisfying
+	For the remainder of this proof, we will assume that $f \in C^{\infty}(\Xset)$, which we may do without loss of generality because $C^{\infty}(\Xset)$ is dense in $H^1(\Xset)$ and the expectation on the right hand side of~\eqref{pf:first_order_graph_sobolev_seminorm_1} is continuous in $\Leb^2(\Xset)$. Obviously
 	\begin{equation}
-	\label{pf:first_order_graph_sobolev_seminorm_2}
-	|g|_{H^1(\Rd)} \leq C|f|_{H^1(\Xset)} \leq C M,
+	\Ebb\biggl[\bigl(f(X') - f(X)\bigr)^2K\biggl(\frac{\|X' - X\|}{r}\biggr)\biggr] \leq p_{\max}^2 \int_{\Xset} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^2 K_r(x',x) \,dx' \,dx. \label{pf:first_order_graph_sobolev_seminorm_2}
 	\end{equation}
-	for a constant $C$ which may depend on $\Xset$ and $d$, but does not depend on $M$ or $f$. Since $g(x) = f(x)$ and $p(x) \leq p_{\max}$ for all $x \in \Xset$, 
+	and it remains now to bound the integral. Taking a first-order Taylor expansion of $f$, we get
 	\begin{align}
-	\Ebb\Bigl[\bigl(f(X') - f(X)\bigr)^2K_r(X',X)\Bigr] & = \Ebb\Bigl[\bigl(g(X') - g(X)\bigr)^2K_r(X',X)\Bigr] \nonumber \\
-	& \leq p_{\max}^2 \int_{\Reals^d} \int_{\Reals^d} \bigl(g(x') - g(x)\bigr)^2 K_r(x',x) \,dx' \,dx. \label{pf:first_order_graph_sobolev_seminorm_3}
+	\int_{\Xset} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^2 K_r(x',x) \,dx' \,dx & = \int_{\Xset} \int_{\Xset} \biggl[\int_{0}^{1} \nabla f\bigl(x + t(x' - x)\bigr)^T (x' - x)\,dt\biggr]^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dx' \,dx \nonumber \\
+	& \overset{(i)}{\leq} \int_{\Xset} \int_{\Xset} \int_{0}^{1} \biggl[\nabla f\bigl(x + t(x' - x)\bigr)^T (x' - x)\biggr]^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dt\,dx' \,dx \nonumber \\
+	& \overset{(ii)}{=} r^{d + 2} \int_{\Xset} \int_{\mc{Z}_r(x)} \int_{0}^{1} \biggl[\nabla f\bigl(x + trz\bigr)^T z\biggr]^2 K\bigl(\|z\|\bigr) \,dt\,dz \,dx \\
+	&  \overset{(iii)}{\leq} r^{d + 2} \int_{\Xset} \int_{\Reals^d} \int_{0}^{1} \Bigl[\nabla f\bigl(\wt{x}\bigr)^T z\Bigr]^2 K\bigl(\|z\|\bigr) \,dt \,dz \,d\wt{x} \nonumber \\
+	& = r^{d + 2} \int_{\Xset} \int_{\Reals^d} \Bigl[\nabla f\bigl(\wt{x}\bigr)^T z\Bigr]^2 K\bigl(\|z\|\bigr) \,dz \,d\wt{x} \label{pf:first_order_graph_sobolev_seminorm_3}
 	\end{align}
-	It remains only to bound the integral. Taking a first-order Taylor expansion of $g$, we get
+	where $(i)$ follows by Jensen's inequality, $(ii)$ follows by substituting $z = (x' - x)/r$ with $\mc{Z}_r(x) := \{z: zr + x \in \Xset\}$ and $(iii)$ by substituting $\wt{x} = x + trz$ and noting that
+	\begin{equation*}
+	x \in \Xset ~~\textrm{and}~~ z \in \mc{Z}_r(x) \Longrightarrow x + trz \in \Xset ~~\textrm{and}~~ z \in \Reals^d.
+	\end{equation*}
+	Now, writing $\bigl(\nabla f(\wt{x}) ^T z\bigr)^2 = \bigl(\sum_{i = 1}^{d} f^{(e_i)}(x) z_{i}\bigr)^2$, expanding the square and integrating, we have that for any $\wt{x} \in \Xset$,
 	\begin{align*}
-	\int_{\Reals^d} \int_{\Reals^d} \bigl(g(x') - g(x)\bigr)^2 K_r(x',x) \,dx \,dx' & = \int_{\Rd} \int_{\Rd} \biggl\{\sum_{\abs{\alpha} = 1}G_{\alpha}(x,x') (x' - x)^{\alpha}\biggr\}^2 K_r(x',x) \,dx' \,dx \\ 
-	& \overset{(i)}{\leq}  \int_{\Rd} \int_{\Rd} \biggl\{\sum_{\abs{\alpha} = 1}\Bigl[G_{\alpha}(x,x')\Bigr]^2\biggr\} \norm{x' - x}^2  K_r(x',x) \,dx' \,dx \\
-	& \overset{(ii)}{\leq} \int_{\Rd} \int_{\Rd} \biggl\{\int_{0}^{1} \sum_{\abs{\alpha} = 1} \Bigl[g^{(\alpha)}\bigl(x + t(x' - x)\bigr)\Bigr]^2 \,dt \biggr\} \norm{x' - x}^2 K_r(x',x) \,dx' \,dx \\
-	& \overset{(iii)}{=} r^{2 + d} \int_{\Rd} \int_{B(0,1)} \biggl\{\int_{0}^{1} \sum_{\abs{\alpha} = 1} \Bigl[g^{(\alpha)}\bigl(x + trz\bigr)\Bigr]^2 \,dt\biggr\} \norm{z}^2 K\bigl(\norm{z}\bigr)  \,dz \,dx \\
-	& \overset{(v)}{=} r^{2 + d} \int_{B(0,1)} \int_{0}^{1} \biggl\{\int_{\Rd} \sum_{\abs{\alpha} = 1} \Bigl[g^{(\alpha)}\bigl(x + trz\bigr)\Bigr]^2 \,dx \biggr\} \norm{z}^2 K\bigl(\norm{z}\bigr) \,dt \,dz \\
-	& \leq r^{2 + d} |g|_{H^1(\Rd)}.
+	\int_{\Reals^d} \Bigl[\nabla f\bigl(\wt{x}\bigr)^T z\Bigr]^2 K\bigl(\|z\|\bigr) \,dz & = \sum_{i,j = 1}^{d} f^{(e_i)}(\wt{x}) f^{(e_j)}(\wt{x}) \int_{\Rd} z_iz_jK(\|z\|) \,dz \\
+	& = \sum_{i = 1}^{d} \bigl(f^{(e_i)}(\wt{x})\bigr)^2 \int_{\Rd} z_i^2 K\bigl(\|z\|\bigr) \,dz \\
+	& = \sigma_K \|\nabla f(\wt{x})\|^2
 	\end{align*}
-	In the above manipulations, $(i)$ follows by the Cauchy-Schwarz inequality, $(ii)$ follows by Jensen's inequality, $(iii)$ follows from the change of variables $z = (x' - x)/r$, and $(v)$ follows by Fubini's Theorem. Along with~\eqref{pf:first_order_graph_sobolev_seminorm_1}-\eqref{pf:first_order_graph_sobolev_seminorm_3}, this proves Lemma~\ref{lem:first_order_graph_sobolev_seminorm}.
+	and by plugging back into~\eqref{pf:first_order_graph_sobolev_seminorm_3}, we obtain the claimed result.
 \end{proof}
 
 A few remarks:

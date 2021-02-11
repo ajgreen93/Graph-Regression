@@ -1,0 +1,417 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{\mathcal{L}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\Unq}{\mathrm{Unq}}
+\newcommand{\rg}{\mathrm{rg}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Reference notes for the graph testing project}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+This document contains notes on papers that are potentially relevant to the graph testing project. I'm not sure what the organizational structure will be yet, as I haven't seriously attempted to keep a document like this before. Perhaps the top heading should be by subject matter.
+
+\section{Convergence of Neighborhood Graph Operators}
+
+We observe points $X = \{x_1,\ldots,x_n\}$ sampled independently from a distribution $P$ on $\Reals^d$, supported on $\Xset = [0,1]^d$. Let $K_r(x,y) = \frac{1}{r^d} K(\norm{x - y})$ be a kernel function with a given radius $r > 0$. The neighborhood graph $G_{n,r} = (V,W)$ is an undirected, weighted graph, with data points $V = X$ as vertices, and weighted edge $w_{ij} = K_r(x_i,x_j)$. The combinatorial Laplacian $L = D - W$ is an $n \times n$ matrix defined on $G_{n,r}$; here $D$ is the diagonal degree matrix with $D_{ii} = \sum_{i \neq j} W_{ij}$. The graph Laplacian operator $L_{n,r}$ is defined by the following action:
+\begin{equation*}
+L_{n,r}f(x) = \frac{1}{nr^2}\sum_{i = 1}^{n}(f(x_i) - f(x))K_r(x_i,x)
+\end{equation*}
+The nonlocal $P$-weighted Laplacian operator $L_{\Pbb,r}$ is defined by the action
+\begin{equation*}
+L_{\Pbb,r}f(x) = \int (f(y) - f(x))K_r(y,x) \,dP(x)
+\end{equation*}
+
+The normalized graph Laplacian operator $U_{n,r}$ is defined as
+\begin{equation*}
+U_{n,r} := I - T_{n,r},~~ T_{n,r}f := \int h_{n,r}(x,y)f(y)\,dP_n(y), ~~h_r(x,y) := \frac{K_r(x,y)}{\sqrt{d_n(x)d_n(y)}}
+\end{equation*}
+and the normalized $P$-weighted Laplacian operator $U_{P,r}$ is defined as
+\begin{equation*}
+U_{P,r} := I - T_{P,r},~~ T_{P,r}f := \int h_{P,r}(x,y)f(y)\,dP_n(y), ~~h_r(x,y) := \frac{K_r(x,y)}{\sqrt{d(x)d(y)}}
+\end{equation*}
+
+We denote the spectrum of any operator (matrix) $T$ by $\lambda(T)$. When $T$ is a matrix, we let $\lambda_k(T)$ denote the $k$th smallest eigenvalue of $T$.
+
+\subsection{Consistency of Spectral Clustering (vonLuxburg, Belkin, Bousquet 04)}
+
+\textit{Relevance to our work:} 
+This paper establishes, under appropriate conditions, the convergence $\lambda_k(L) \to \lambda_k(L_{P,r})$ for a fixed $k$ and fixed graph radius $r$. It also establishes the convergence of eigenvectors in $L^{\infty}$. For application to supervised learning problems where we intend to take a growing number of eigenvalues, we would like to show that both hold for some growing value of $k$.
+
+\textit{Summary:} We seek to examine the proof of the following Theorem, regarding the convergence of the eigenvalues $\lambda_k(L)$. Let $d: \Xset \to \Reals$ be the degree function,
+\begin{equation*}
+d(x) = \int K_r(x,y) \,dP(y),~~ d_n(x) = \int K_r(x,y) \,dP_n(y)
+\end{equation*}
+and write $\rg(f)$ for the range of a function $f$.
+
+
+\begin{theorem}
+	\label{thm:vonluxburg04_1}
+	Let $\lambda \neq \rg(d)$ be an eigenvalue of $L_{P,r}$ and $M \subset \mathbb{C}$ be an open neighborhood of $\lambda$ such that $\lambda(U) \cap \bar{M} = \set{\lambda}$, Then every sequence $(\lambda_n)$ with $\lambda_n \in \lambda(\frac{1}{nr^2}L) \cap M$ satisfies $\lambda_n \to \lambda$ almost surely.
+\end{theorem}
+
+The following theorem establishes that the rate of convergence of the eigenvectors of the normalized graph Laplacian is no slower than the supremum of a particular empirical process. The function class will depend on
+\begin{equation*}
+\mathcal{K} := \Bigl\{ K_r(x,\cdot): x \in \Xset \Bigr\}, ~~ \mathcal{H} := \Bigl\{h(x,\cdot): x \in \Xset\Bigr\}.
+\end{equation*}
+\begin{theorem}
+	\label{thm:vonluxburg04_2}
+	Under the gneral assumptions, let $\lambda \neq 0$ be a simple eigenvalue of $T$, with corresponding eigenfunction $u$. Let $(\lambda_n)$ be a sequence of eigenvalues of $(T_n)$ which satisfy $\lambda_n \to \lambda$, with corresponding eigenvectors $(u_n)$. Then, for $\mathcal{F} = \mathcal{K} \cup u \cdot \mathcal{ H} \cup \mathcal{H} \cdot \mathcal{H}$, there exists a constant $C$, which depends only on $K$, $r$, $\lambda$ and $\sigma(T)$, and a sequence of signs $(a_n) \subset \{+1,-1\}$, such that
+	\begin{equation*}
+	\norm{a_nu_n - u}_{\infty} \leq C \sup_{f \in \mathcal{F}} \abs{P_n(f) - P(f)}
+	\end{equation*}
+\end{theorem}
+
+\subsubsection{Proofs}
+
+\paragraph{Proof of Theorem~\ref{thm:vonluxburg04_1}:}
+
+We will show that $L_{n,r} \overset{c}{\to} L_{P,r}$. This implies Theorem~\ref{thm:vonluxburg04_1} by the following argument. Suppose $(\lambda_n)$ is a sequence of eigenvalues of $L$, such that $\lambda_n \in \bar{M}$ for every sufficiently large $n$. Since $\lambda_n \in \bar{M}$, $\lambda_n \not\in \rg(d)$. Therefore for sufficiently large $n$ $\lambda_n \not\in \rg(d_n)$, since $d_n$ converges in operator norm to $d$ and so $\rg(d_n) \to \rg(d)$. This implies $\lambda_n$ is an eigenvalue of $L_{n,r}$ for all sufficiently large $n$, as the eigenvalues of $L$ and $L_{n,r}$ are one-to-one outside of the essential spectrum of $L_{n,r}$. The Theorem then follows by reasoning along the lines of Section~\ref{sec:modes_of_convergence}.
+
+It remains to show $L_{n,r} \overset{c}{\to} L_{P,r}$. Let 
+\begin{equation*}
+M_{d_n}f(x) = f(x) d_n(x),~~T_nf(x) = \int K_r(x,y) f(y) \,dP_n(y)
+\end{equation*}
+and similarly define $M_{d_P}$ and $T_P$ with respect to the underlying measure $P$. Since $L_{n,r} = M_{d_n} - T_n$ and likewise $L_{P,r} = M_{d_P}- T_{P}$, it will suffice to show that (i) $M_{d_n} \overset{\mathrm{op}}{\to} M_{d_P}$ and (ii) $T_n \overset{\mathrm{c}}{\to} T_P$. 
+
+We show operator norm convergence of $M_{d_n}$ to $M_{d_P}$ by reducing $\norm{M_{d_n} - M_{d_P}}_{\mathrm{op}}$ to an empirical process term. Letting $\mathcal{K} = \{K(x,\cdot): x \in \Xset\}$, we have
+\begin{align}
+\norm{M_{d_n} - M_{d_P}}_{\mathrm{op}} & = \sup_{f \in B} \norm{M_{d_n}f - M_{d_P}f}_{\infty} \\
+& = \sup_{f \in B} \sup_{x \in \Xset}\bigl\{M_{d_n}f(x) - M_{d_P}f(x)\bigr\} \\
+& \leq \sup_{x \in \Xset}\bigl\{d_n(x) - d(x)\bigr\} \\
+& = \sup_{K_x \in \mathcal{K}} \abs{P_n(K_x) - P(K_x)} 
+\end{align}
+Then since $K$ is continuous, and $\Xset$ is compact, $K$ is uniformly continuous. As such, for any $\epsilon > 0$ one can construct a finite $\epsilon$-cover of $\mathcal{K}$ out of a $\delta$-cover of $\Xset$ for suitably small $\delta$. This implies $\mathcal{K}$ has a finite $\norm{\cdot}_{L_1(P)}$ covering numbers, and therefore it is Glivenko-Cantelli.
+
+Now we show compact convergence of $T_n$ to $T_P$. We begin by showing that $T_n$ converges pointwise to $T_P$ over $C(\Xset)$. This follows since
+\begin{equation*}
+\abs{T_nf - T_Pf}_{\infty} = \sup_{g \in f \cdot \mathcal{K}} \abs{P_n(g) - P(g)}
+\end{equation*}
+where $f \cdot \mathcal{K} = \set{f \cdot K_x: x \in \Xset}$ is Glivenko-Cantelli by a similar argument to the preceding paragraph.
+
+Finally, we show that $\cup T_nB$ is precompact, which implies that $T_nx_n$ is precompact for any $(x_n) \subset B$. Fix $x \in X$. First, we have that
+\begin{equation*}
+\abs{T_nf(x)} \leq \norm{K(x,\cdot)}_{\infty}
+\end{equation*}
+which is upper bounded by assumption. Second, we have that
+\begin{equation*}
+\abs{T_nf(x) - T_nf(y)} = \abs{\int f(z)\bigl(K_r(x,z) - K_r(y,z)\bigr)\,dP_n(z)} \leq \norm{K_r(x,\cdot) - K_r(y,\cdot)}_{\infty}
+\end{equation*}
+and the second is upper bounded by the uniform continuity of $K_r$. The relative compactness of $\cup T_nB$ follows from Arzela-Ascoli. 
+
+\paragraph{Proof of Theorem~\ref{thm:vonluxburg04_2}:}
+We start with a result from \textcolor{red}{Atkinson}.
+\begin{theorem}
+	\label{thm:atkinson_spectral_perturbation}
+	Let $(E,\norm{\cdot}_E)$ be an arbitrary Banach space and $B$ its unit ball. Let $(K_n)$ and $K$ be compact linear operators such that $K_n \overset{cc}{\to} K$. For a nonzero eigenvalue $\lambda \in \sigma(K)$, denote the corresponding spectral projection by $\mathrm{Pr}$. Let $M \subset \mathbb{C}$ be an open neighborhood of $\lambda$ such that $\sigma(K) \cap M = \set{\lambda}$. Then there exists a constant $C > 0$ such that for every $x \in \mathrm{Pr}E$, 
+	\begin{equation*}
+	\norm{x - \mathrm{Pr}_nx}_{E} \leq C\Bigl( \norm{(K_n - K)x}_{E} + \norm{x}_E \cdot \norm{(K - K_n)K_n} \Bigr)
+	\end{equation*}
+	where $C$ is independent of $x$, but depends on $\lambda$ and $\sigma(K)$.
+\end{theorem}
+To apply the result of Atkinson, we make use of the following proposition.
+\begin{proposition}
+	Let $v \in E$ be a unit norm vector. Let $(v_n)$ with $v_n \in E$ be a sequence of vectors with $\norm{v_n} = 1$, and let $\Pr_n$ be the corresponding spectral projections. Then there exists some $(a_n) \subset \{+1,-1\}$ such that
+	\begin{equation*}
+	\norm{a_nv_n - v}_E \leq 2\norm{\Pr_nv - v}
+	\end{equation*}
+	for each $n$.
+\end{proposition}
+\begin{proof}
+	By the triangle inequality,
+	\begin{equation*}
+	\norm{a_nv_n - v} \leq \norm{a_nv_n - \Pr_nv} + \norm{\Pr_nv - v}
+	\end{equation*}
+	Then, there exists $a_n \in \{+1,-1\}$ such that
+	\begin{align*}
+	\norm{a_nv_n - \Pr_nv} & = 1 - \norm{\Pr_nv} \\
+	& = 1 - \norm{v - (v - \Pr_nv)} \\
+	& \leq 1 - \abs{\norm{v} - \norm{v - \Pr_nv}} \\
+	& = \norm{v - \Pr_nv}
+	\end{align*}
+	and by the reverse triangle inequality $\norm{\Pr_nv} = \norm{v - (v - \Pr_nv)} \geq \abs{\norm{v} - \norm{v - \Pr_nv}} = 1 - \norm{v - \Pr_nv}$. 
+\end{proof}
+
+
+
+\section{Modes of Convergence}
+\label{sec:modes_of_convergence}
+
+Where I play with mathematical notions currently beyond my limits. 
+
+Let $(T_n)$ and $T$ be closed operators on a Banach space $(E,\norm{\cdot}_E)$. Denote the unit ball of $E$ by $B$. We say 
+\begin{itemize}
+	\item $T_n \overset{p}{\to} T$ if $\norm{(T_n - T)x}_E \to 0$ for every $x \in E$. 
+	\item $T_n \overset{c}{\to} T$ if (i) $T_n \overset{p}{\to} T$ and (ii) for every $(x_n) \subset B$, the sequence $(T - T_n)x_n$ is precompact.
+	\item $T_n \overset{c}{\to} T$ if (i) $T_n \overset{p}{\to} T$ and (ii) the set $\bigcup_{n} (T_n - T)B$ is precompact.
+	\item $T_n \overset{r}{\to} T$ if (i) $T_n \overset{p}{\to} T$ and (ii) for every $(x_n) \subset B$ such that $T_nx_{n} \to y$, the sequence $(x_{n})$ has a limit point $x$.
+	\item $T_n \overset{s}{\to} T$ if (i) $T_n \overset{p}{\to} T$ and (ii) there exists $M > 0, N$ such that for all $n \geq N$, $\norm{T_n^{-1}} \leq M$. 
+\end{itemize}
+
+\textbf{Claim 1: $T_n \overset{c}{\to} T$ implies $T_n - z \overset{r}{\to} T - z$ for any $z$ in the resolvent of $T$.}
+
+Suppose $(x_n) \subset B$ is a sequence satisfying $(T_n - z)x_n \to y$. Then, $(T - z)x_n = (T - T_n)x_n + (T_n - z)x_n$. The first converges along a subsequence to some $u$ by hypothesis. The second converges to some $y$ by the previous assumption. Therefore, $(T - z)x_n$ converges along a subsequence to $y + u$. Since $z$ is in the resolvent of $T$, this implies $(T - z)^{-1}$ exists, and therefore $x_n$ converges along a subsequence to $x = (T - z)^{-1}(y + u)$. Then $(T - T_n)x_n = (T - T_n)x + (T-T_n)(x - x_n)$, with the former converging to $0$ by the pointwise convergence of $T_n$ to $T$, and the latter converging to $0$ along a subsequence as $T$ and $T_n$ are bounded. Therefore $u = 0$, and $(T - z)x = y$.
+
+\textbf{Claim 2: $T_n - z \overset{r}{\to} T - z$ implies $T_n - z \overset{s}{\to} T - z$ for all $z$ in the resolvent of $T$.}
+
+Fix $z \in \rho(T)$. It suffices to show that there exists $M > 0, N$ such that for all $(x_n)$, $\norm{(T_n - z)x_n}_{E} \geq M^{-1} \norm{x_n}_E$. Suppose this were not true. Then there would exist a sequence $(x_n), \norm{x_n}_E = 1$ such that $\norm{(T_n - z)x_n}_{E} \to 0$. Then by assumption, there exists some limit point $x$ of $(x_n)$ such that $(T - z)x = 0$. However since $z \in \rho(T)$, this implies $x = 0$. As $0$ cannot be the limit point of $(x_n)$, this is a contradiction, proving the claim.
+
+\textbf{Claim 3: Suppose $\lambda$ is an eigenvalue of $T$ such that $\sigma(T) \cap M = \set{\lambda}$ for some $M \subset \mathbb{C}$. Then, $T_n - z \overset{s}{\to} T - z$ for all $z \in M - \set{\lambda}$ implies that any $(\lambda_n) \in \sigma(T_n) \cap M$ satisfies $\lim \lambda_n = \lambda$.}
+	
+Suppose otherwise; then there exists $(\lambda_n') \in \sigma(T_n) \cap M$ which converges along a subsequence to some $\lambda' \in \sigma(T) \cap M, \lambda' \neq \lambda$. Without loss of generality assume $\lim \lambda_n' = \lambda'$. Therefore there exists $(x_n'), \norm{x_n'}_E = 1$ such that
+\begin{equation*}
+\lim_{n \to \infty} (T_n - \lambda')x_n' = 0
+\end{equation*}
+which by regular convergence implies $x_n'$ has some limit point $x$, such that $(T - \lambda')x = 0$. Then since $\lambda'$ is in the resolvent of $T$, this implies $x = 0$, which is a contradiction.
+
+Since $T_n \to T$, we also have that if $Tx = \lambda x$, $T_nx \to \lambda x$.
+
+\section{Continuum and Discrete Norms}
+This section is devoted to a better understanding of couplings between continuum and discrete norms. For example, under what conditions does a continuum Sobolev space embed nicely into a discrete Sobolev space?
+
+\subsection{Asymptotic Optimality of the $C_p$-Test \textcolor{red}{(Polyak and Tsybakov 90)}}
+
+\textit{Relevance to our work:} We would like to show that the discretization error due to using sums instead of integrals to compute Fourier coefficients is negligible relative to the bias-variance tradeoff, for as wide a class of functions $f$ as possible.
+
+Let $x_i = i/n$ for $i = 1,\ldots,n$, and suppose we observe responses according to the fixed design regression model
+\begin{equation*}
+y_i = f(x_i) + \xi_i,~~ \Ebb(\xi_i) = 0, \Ebb(\xi_i\xi_j) = \delta_{ij} \sigma^2.
+\end{equation*}
+where we assume that $f$ can be represented as a series converging in $L_2[0,1]$,
+\begin{equation}
+f(x) = \sum_{j = 1}^{\infty} c_j \varphi_j(x),~~ x \in [0,1].
+\end{equation}
+We take $f_{nN}$ to be an orthogonal series estimator of $f$,
+\begin{equation*}
+f_{nN}(x) = \sum_{j = 1}^{N} \wh{c}_{jn} \varphi_j(x)
+\end{equation*}
+where $\psi_j$ is the orthonormal trigonometric system on $[0,1]$, given by
+\begin{align*}
+\varphi_1(x) & \equiv 1 \\
+\varphi_k(x) & = \sqrt{2}\cos(2\pi k x),~~k \in \mathbb{N} \\
+\varphi_k(x) & = \sqrt{2}\sin(2\pi k x),~~k \in \mathbb{N}
+\end{align*}
+and $\wh{c}_{jn} = \frac{1}{n}\sum_{i = 1}^{n} f(x_i) \varphi_j(x_i)$. 
+
+Let $R_{nN}^{(3)}$ be the risk of estimator $f_nN$, given by
+\begin{equation*}
+R_{nN}^{(3)} = \frac{1}{n} \mathbb{E}\Bigl[\sum_{i = 1}^{n} (f_nN(x_i) - f(x_i))^2\Bigr].
+\end{equation*}
+(We will not concern ourselves with the other notions of risk laid out in this paper.)
+Suppose additionally that $c_j \in \ell^1(\mathbb{N})$, i.e. that there exists a sequence of non-negative numbers $\varepsilon_j$ such that $j\varepsilon_j$ is monotone non-increasing in $j$ and 
+\begin{equation}
+\label{asmp:polyak_1}
+\abs{c_j} \leq \varepsilon_j,~~ \sum_{j = 1}^{\infty} \varepsilon_j = C < \infty.
+\end{equation}
+(Actually, this is just a tad stronger than $c_j \in \ell^1(\mathbb{N})$.)
+\begin{theorem}[Theorem 1, (1.3)]
+	Let $A_nN = \rho_N + \sigma^2 N / n$, where $\rho_N = \sum_{j = N + 1}^{\infty} c_j^2$. If~\eqref{asmp:polyak_1} holds, then,
+	\begin{equation*}
+	\frac{\max_{N \leq n}\abs{R_{nN}^{(3)} - A_{nN}}}{\min_{N}A_{nN}} \to 0,~~ \textrm{as $n \to \infty$.}
+	\end{equation*}
+\end{theorem}
+
+Actually the only part I care about are the following Lemmas.
+\begin{lemma}[Lemma 1 \textcolor{red}{(Polyak and Tsybakov)}]
+	For $n \geq 1$, 
+	\begin{equation*}
+	\frac{1}{n} \sum_{m = 1}^{n} \varphi_l(x_m) \varphi_j(x_m) = \delta_{lj} + \Delta_{lj}
+	\end{equation*}
+	where $\Delta_{lj} = 0$ if $l,j \leq n$ or if $l$ and $j$ are of different parity, and otherwise
+	\begin{equation*}
+	\abs{\Delta_{lj}} \leq \sum_{k = 1}^{\infty} \Bigl(\delta_{\abs{l_1 - j_1} = kn} + \delta_{l_1 + j_1 = kn}\Bigr)
+	\end{equation*}
+	where $l_1 = [l/2], j_1 = [j/2]$.
+\end{lemma}
+
+\begin{lemma}[Lemma 2 \textcolor{red}{Polyak and Tsybakov}]
+	\label{lem:polyak90_2}
+	Suppose condition~\eqref{asmp:polyak_1} is satisfied. Then there exists a constant $K_1$ depending only on $C$ such that
+	\begin{equation*}
+	\max_{1 \leq j \leq n} \biggl(\sum_{k = n + 1}^{\infty} c_k \Delta_{jk}\biggr)^2 \leq \frac{K_1}{n^2}.
+	\end{equation*}
+\end{lemma}
+\subsubsection{Proofs}
+\paragraph{Proof of Lemma~\ref{lem:polyak90_2}.}
+Let $j$ and $n$ be even. Then,
+\begin{align*}
+\abs{\sum_{k = n + 1} c_k \varDelta_k} & = \abs{\sum_{k = n + 2, k~\textrm{even}} c_k \varDelta_k} \\
+& \leq \sum_{k_1 = n/2 + 1} \abs{c_{2k_1}} \sum_{m = 1}^{\infty} \Bigl(\delta_{\abs{k_1 - j_1} = mn} + \delta_{k_1 + j_1 = mn}\Bigr) \\
+& = \sum_{m = 1}^{\infty} \abs{c_{2j_1 + 2mn}} + \abs{c_{2mn - 2j_1}} \\
+& \leq \sum_{m = 1}^{\infty} \varepsilon_{2j_1 + 2mn} + \varepsilon_{2mn - 2j_1}
+\end{align*}
+Since $j_1 > n/2$, we have $2j_1 + 2mn,2mn - 2j_1 \geq m n$ for each $m \in \mathbb{N}$. Therefore by assumption, $\varepsilon_{2j_1 + 2mn}, \varepsilon_{2mn - 2j_1} \leq \varepsilon_{mn} \leq (1/n) \varepsilon_{m}$. Along with condition~\eqref{asmp:polyak_1}, this implies Lemma~\ref{lem:polyak90_2}.
+
+\section{Random Design Regression}
+In the random design regression model, we observe
+\begin{equation*}
+Y_i = f_0(X_i) + \varepsilon_i
+\end{equation*}
+where $X_i \sim P_i$ take values in space $\Xset$, $f_0$ is an unknown map from $\Xset \to \Reals$, and $\varepsilon_i$ come from a common error distribution $N$. 
+
+This section is devoted to a review of results regarding estimation risk in the random design setting. The emphasis is on papers which place as few restrictions on the distributions $P_i$ as possible. 
+
+\subsection{A New Method For Estimation and Model Selection: $\rho$-Estimation \textcolor{red}{(Baraud, Birge, and Sart 16)} }
+
+\subsection{}
+\clearpage
+
+
+
+
+\end{document}
