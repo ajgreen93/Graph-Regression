@@ -4,7 +4,7 @@
 
 ### General configs. ###
 d <- 3
-ns <- round( 10^seq(2.5,3.5,length.out = 10) )
+ns <- round( 10^seq(3,4,length.out = 10) )
 iters <- 5
 
 ### Configs for sampling. ###

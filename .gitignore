@@ -8,3 +8,9 @@
 *.txt
 *.log
 *.pdf
+
+# DIRECTORIES #
+##################
+code/archive/*
+code/data/*
+notes/archive/*

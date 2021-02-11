@@ -4,12 +4,12 @@
 
 ### General configs. ###
 d <- 1
-ns <- round( 10^seq(2.5,3.5,length.out = 10) )
+ns <- c(200,1000)
 iters <- 5
 
 ### Configs for sampling. ###
 sample_X <- make_sample_uniform(d)
-make_f0 <- make_cosine_f0
+make_f0 <- make_linear_f0
 
 
 ### Methods. ###

@@ -1,10 +1,10 @@
 #------------------------------------------------#
-# Configs for second estimation MSE experiment.
+# Configs for fifth estimation MSE experiment.
 #------------------------------------------------#
 
 ### General configs. ###
-d <- 1
-ns <- round( 10^seq(2.5,3.5,length.out = 10) )
+d <- 5
+ns <- round( 2*10^seq(2.5,3.5,length.out = 10) )
 iters <- 5
 
 ### Configs for sampling. ###
