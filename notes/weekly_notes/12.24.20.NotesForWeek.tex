@@ -1,0 +1,488 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue
+}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+% Make a widecheck symbol (thanks, Stack Exchange!)
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+	<5> <6> <7> <8> <9> <10>
+	<10.95> <12> <14.4> <17.28> <20.74> <24.88>
+	mathx10
+}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+% widecheck made
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Note on: Out-of-Sample Error for Laplacian Eigenmaps}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+The graph Laplacian eigenmaps estimator $\wh{\theta}_{\LE}$ is a least-squares estimator, where a response vector $Y = (Y_1,\ldots,Y_n)$ is projected onto the span of the first $K$ eigenvectors of a graph Laplacian matrix. It is defined only in-sample, whereas out-of-sample error is more interesting in many applications. There is no commonly agreed upon way in the literature to extend $\wh{\theta}_{\LE}$, or indeed any type of Laplacian estimator. In this note, I discuss three methods for doing so: least-squares regression of $\wh{\theta}_{\LE}$ onto an a priori defined set of features, Nadaraya-Watson kernel smoothing, treating $\wh{\theta}_{\LE}$ as the response, and Nystr\"{o}m extension of Laplacian eigenvectors. These methods are roughly ordered from least to most preferable, but also (as these things go) easiest to hardest to analyze. I begin in Section~\ref{sec:least_squares_arbitrary_design_and_features} by reviewing known bounds on the out-of-sample error of a (generic) least-squares estimator; these bounds will be useful for the analysis of both the first and third methods.
+
+\section{Out-of-sample error for least-squares estimators: arbitrary design and features}
+\label{sec:least_squares_arbitrary_design_and_features}
+This section largely summarizes results from a paper by Daniel Hsu on random design regression. We start with some general setup that will apply to everything that follows.
+
+Suppose we observe $(X_1,\wh{\theta}_1),\ldots,(X_n,\wh{\theta}_n)$, where $X_1,\ldots,X_n \in \Reals^d$ and $\wh{\theta}_{1:n} = (\wh{\theta}_1,\ldots,\wh{\theta}_n) \in \Reals^n$. Our goal is to use this observed data to construct an estimator $\wh{f}$ which is on average close to $f^{\ast}: \Omega \to \Reals$ on the domain $\Omega$ (for instance, $\Omega = [0,1]^d$.) Specifically, we will consider the following least-squares estimator,
+\begin{equation*}
+\wh{\beta} = \argmin \| \wh{\theta}_{1:n} - \Phi_n^{\top} \beta \|_n^2 = (\Phi_n^\top \Phi_n)^{-1}\Phi_n^{\top} \wh{\theta}_{1:n},~~ \wh{f} = \sum_{k = 1}^{\kappa} \wh{\beta}_k \varphi_k
+\end{equation*}
+where $\varphi_1,\ldots,\varphi_{K}$ are each elements of $\Leb^2(\Omega)$, and $\Phi_n \in \Reals^{n \times K}$ has entries $(\Phi_{n})_{ik} = \varphi_k(X_i)$. If $\wh{\theta}_{1:n}$ lies in the span of the columns of $\Phi_n$, then $\wh{f}$ is a interpolant of $\wh{\theta}_{1:n}$; this applies to our third method, Nystr\"{o}m extension of Laplacian eigenvectors, but not to our first method. We will measure error in the $\Leb^2(P)$ norm $\norm{\wh{f} - f^{\ast}}_P^2 = \int_{\Omega} (\wh{f}(x) - f^{\ast}(x))^2 \,dP(x)$, where $P$ is a probability measure supported on domain $\Omega$. For this section, we assume no relationship between $P$ and $X_1,\ldots,X_n$.
+
+We begin by decomposing this norm into several modular terms, which capture the different types of error intrinsic to the problem. To this end, let
+\begin{align*}
+\wt{\beta} & = \argmin_{\beta \in \Reals^K} \|f^{\ast}_{1:n} - \Phi_n^{\top} \beta \|_n^2 = (\Phi_n^\top \Phi_n)^{-1}\Phi_n^{\top} {f}^{\ast}_{1:n},&& \wt{f}_K = \sum_{k = 1}^{K} \wt{\beta}_k \varphi_k \\ 
+\beta^{\star} & = \argmin_{\beta \in \Reals^K} \|f^{\ast} - \sum_{k = 1}^{K} \beta_k \varphi_k \|_P^2,&& f_K^{\ast} = \sum_{k = 1}^{K} \beta_k^{\ast} \varphi_k
+\end{align*}
+and let $f_{\perp}^{\ast} = f^{\ast} - f_{K}^{\ast}$. We decompose $\norm{\wh{f} - f^{\ast}}_P^2$ as follows:
+\begin{equation*}
+\norm{\wh{f} - f^{\ast}}_P^2 \leq 3\Bigl(\underbrace{\norm{\wh{f} - \wt{f}_K}_P^2}_{\textrm{estimation error}} + \underbrace{\norm{\wt{f}_K - f_K^{\ast}}_P^2}_{\textrm{sampling error}} + \underbrace{\norm{f_K^{\ast} - f^{\ast}}_P^2}_{\textrm{truncation error}}\Bigr)
+\end{equation*}
+This leaves us with three separate kinds of error, and we now upper bound the first two.
+
+\paragraph{Notation.} Let $e_{1:n} = \wh{\theta}_{1:n} - {f}^{\ast}_{1:n}$. Let~$\Sigma \in \Reals^{K \times K}$ be the second moment matrix of $\varphi_1,\ldots,\varphi_K$ with $(k,\ell)$-th entry $\Sigma_{k\ell} = \Ebb_{X \sim P}\bigl[\varphi_k(X) \varphi_{\ell}(X)\bigr]$. Likewise let $\wh{\Sigma} = \Phi_n^{\top} \Phi_n/n$ be the empirical second moment matrix. For a matrix $A \in \Reals^{K \times K}$, let $\|A\|$ denote the operator norm of $A$.  For a probability distribution $Q$ on $\Omega$, let $d_{\min}(Q) = \inf_{x \in \Omega} \int K(\|z - x\|/r) \,dQ(z)$ be the minimum degree of $Q$.
+
+\paragraph{Estimation error.}
+Noting that
+\begin{equation*}
+~~\wh{\beta} - \wt{\beta} = \frac{1}{n}\wh{\Sigma}^{-1} \Phi_n^{\top} e_{1:n},
+\end{equation*}
+the estimation error satisfies the inequality,
+\begin{align*}
+\norm{\wh{f} - \wt{f}_K}_P^2 & = (\wh{\beta} - \wt{\beta})^{\top} \Sigma (\wh{\beta} - \wt{\beta}) \\
+& = \frac{1}{n^2} e_{1:n}^{\top} \Phi_n \wh{\Sigma}^{-1} \Sigma \wh{\Sigma}^{-1} \Phi_n^{\top} e_{1:n} \\
+& \leq \|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\| \cdot \|e_{1:n}\|_n^2.
+\end{align*}
+with the inequality following since $\|AB\| = \|BA\|$. 
+
+\paragraph{Sampling error.}
+Multiplying $\wt{\beta} - \beta^{\star}$ on the left by $\Sigma^{1/2}$, we have
+\begin{equation*}
+\Sigma^{1/2}(\wt{\beta} - \beta^{\ast}) =  \Sigma^{1/2} \wh{\Sigma}^{-1} \bigl( \frac{1}{n} \Phi_n^{\top} f_{1:n}^{\ast} - \frac{1}{n} \Phi_n^{\top} \Phi_n \beta^{\ast} \bigr) = \Sigma^{1/2} \wh{\Sigma}^{-1} \frac{1}{n} \Phi_n^{\top}  \bigl(\underbrace{f_{1:n}^{\ast} - \Phi_n \beta^{\ast}}_{ = (f_{\perp}^{\ast})_{1:n}} \bigr) = \frac{1}{n}\Sigma^{1/2} \wh{\Sigma}^{-1} \Phi_n^{\top} (f_{\perp}^{\ast})_{1:n}.
+\end{equation*}
+Therefore
+\begin{equation*}
+\|\wt{f}_K - f_K^{\ast}\|_P^2  = \|\wt{\beta} - \beta^{\ast}\|_{\Sigma}^2 \leq \|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\| \cdot \Bigl\|f_{\perp}^{\ast}\|_n^2
+\end{equation*}
+
+The results of this section are summarized by Lemma~\ref{lem:l2p_error_fixed_design}. 
+\begin{lemma}
+	\label{lem:l2p_error_fixed_design}
+	Suppose $\wh{\Sigma} \succeq 0$. Then the $\Leb^2(P)$ error $\|\wh{f} - f^{\ast}\|_P^2$ is upper bounded as follows:
+	\begin{equation}
+	\label{eqn:l2p_error_fixed_design}
+	\|\wh{f} - f^{\ast}\|_P^2 \leq 3\Bigl(\|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\| \cdot \|\wh{\theta}_{1:n} - {f}^{\ast}_{1:n}\|_n^2 + \|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\| \cdot \|f_{\perp}^{\ast}\|_n^2 + \|f_{\perp}^{\ast}\|_P^2\Bigr).
+	\end{equation}
+	If $\wh{\Sigma} = I$ then
+	\begin{equation}
+	\label{eqn:l2p_error_fixed_design_identity}
+	\|\wh{f} - f^{\ast}\|_P^2 \leq 3\Bigl(\|\Sigma\| \cdot \|\wh{\theta}_{1:n} - {f}^{\ast}_{1:n}\|_n^2 + \|\Sigma\| \cdot \|f_{\perp}^{\ast}\|_n^2 + \|f_{\perp}^{\ast}\|_P^2\Bigr).
+	\end{equation}
+\end{lemma}
+(Basically) no assumptions so far have been made on $X_1,\ldots,X_n$ or $\varphi_1,\ldots,\varphi_K$. In the standard setup $X_1,\ldots,X_n$ are randomly sampled from $P$, and $\varphi_1,\ldots,\varphi_K$ are a priori determined. Then matrix Bernstein's inequality gives an upper bound on $\|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\|$, standard Bernstein's inequality gives an upper bound on $\|f_{\perp}^{\ast}\|_n^2 - \|f_{\perp}^{\ast}\|_P^2$, and we obtain from~\eqref{eqn:l2p_error_fixed_design} an upper bound that depends on $\|e_{1:n}\|_n^2$ and $\|f_{\perp}^{\ast}\|_P^2$.  
+
+If $\varphi_1,\ldots,\varphi_{K}$ are chosen in a data-dependent manner, then the analysis is plainly quite different. Each of $\|\Sigma\|$, $\|f_{\perp}^{\ast}\|_n^2$ and $\|f_{\perp}^{\ast}\|_P^2$ are random variables which depend on $\varphi_1,\ldots,\varphi_K$. We also do not have concentration of $\|f_{\perp}^{\ast}\|_n^2$ around $\|f_{\perp}^{\ast}\|_P^2$. 
+
+\section{Kernel smoothing}
+Suppose we observe $(X_1,\wh{\theta}_1),\ldots,(X_n,\wh{\theta}_n)$, where $X_1,\ldots,X_n \in \Reals^d$ are sampled i.i.d from an unknown distribution $P$ on domain $\Omega$, and $\wh{\theta}_{1:n} = (\wh{\theta}_1,\ldots,\wh{\theta}_n) \in \Reals^n$. Our goal is to construct an estimator $\wh{f}$ such that the error $\|\wh{f} - f^{\ast}\|_P^2$ is as small as possible relative to $\|\wh{\theta}_{1:n} - f^{\ast}_{1:n}\|_n^2$.
+
+For a kernel function $\eta(\cdot): [0,\infty) \to (-\infty,+\infty)$, bandwidth $\varepsilon > 0$, and a distribution $Q$, the \emph{Nadaraya-Watson kernel smoother} $T_{\varepsilon,Q}$ is given by
+\begin{equation*}
+\bigl(T_{\varepsilon,Q}f)(x) := \frac{1}{d_Q(x)} \int_{\Omega} f(z)\eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dQ(z)
+\end{equation*}
+where $d_Q(x) = \int_{\Omega} \eta\bigl(\|z - x\|/\varepsilon\bigr) \,dQ(z)$. We denote $T_{\varepsilon,P_n}$ by $T_{\varepsilon,n}$, and $d_{P_n}$ by $d_n$. For convenience, we will assume that $\eta$ is normalized, $\int_{0}^{\infty} \eta(\|z\|) \,dz = 1$, and we will denote $K(\cdot) = (\eta(\cdot))^2$.
+
+The estimate we will consider is a kernel smoother passed over $\wh{\theta}$,
+\begin{equation*}
+\wh{f}(x) := T_{\varepsilon,n}\wh{\theta}_{1:n}(x).
+\end{equation*}
+In order to relate the out-of-sample error $\|\wh{f} - f^{\ast}\|_P$ to the in-sample error $\|\wh{\theta}_{1:n} - f^{\ast}_{1:n}\|_n$, we will assume the following.
+\begin{enumerate}[label=(A\arabic*)]
+	\item
+	\label{asmp:kernel}
+	The kernel function $\eta$ is supported on a subset of $[0,1]$, with $\eta(1/2) > 0$. Additionally, $\eta$ is \textcolor{red}{Lipschitz} on its support.
+	\item 
+	\label{asmp:domain} There exists $\alpha > 0$ such that for every $x \in \mc{X}$, $d_{\nu}(x) \geq \alpha \cdot \varepsilon^d$.
+	\item 
+	\label{asmp:density}The distribution $P$ admits a density $p$ with respect to Lebesgue measure. The density $p \in C^1(\mc{X})$, and is bounded away from $0$ and $\infty$ for all $x \in \mc{X}$,
+	\begin{equation*}
+	0 < p_{\min} \leq p(x) < p_{\max} < \infty.
+	\end{equation*}
+\end{enumerate}
+Under Assumption~\ref{asmp:kernel}, we automatically have that $d_\nu(x) = \varepsilon^d$ for all $x \in \mc{X}_{\varepsilon}$. Assumption~\ref{asmp:domain} is thus a condition on the boundary $\partial \Omega$, and is implied for all sufficiently small $\varepsilon$ if the boundary is Lipschitz. 
+\begin{lemma}
+	\label{lem:kernel_smoothing_laplacian_eigenmaps}
+	Suppose $f^{\ast} \in H^1(\mc{X})$ and $p \in C^1(\mc{X})$. Then with probability at least $1 - \delta - C\varepsilon^d\exp\{-Cn\varepsilon^d\}$, it holds that
+	\begin{equation*}
+	\|\wh{f} - f^{\ast}\|_P^2 \leq C\biggl(\|\wh{\theta}_{1:n} - f^{\ast}_{1:n}\|_n^2 + \frac{1}{\delta} \cdot \frac{\varepsilon^2}{n\varepsilon^d} |f|_{H^1(\mc{X})}^2 + \frac{1}{\delta}\|T_{\varepsilon,P}f^{\ast} - f^{\ast}\|_P^2\biggr)
+	\end{equation*}
+\end{lemma}
+Notice that the variance term in the above is smaller than the typical variance term for kernel smoothing of noisy data (on the order of $1/(n\varepsilon^d)$) by a factor of $\varepsilon^2$. The bias term, on the other hand, is standard, and in particular the following estimate of the bias can be obtained. 
+\begin{lemma}
+	Suppose $f^{\ast} \in H_0^{s}(\Omega)$, $p \in C^{\beta}(\Omega)$ for $\beta = s - 1$, and that $\eta$ is an order-$s$ kernel. Then
+	\begin{equation*}
+	\|T_{P,\varepsilon}f^{\ast} - f^{\ast}\|_P^2 \leq C \varepsilon^{2s}.
+	\end{equation*}
+\end{lemma}
+
+Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp n^{-1/(2\beta + d)}$) than is typical for kernel smoothing with noisy data, leads to an asymptotically negligible error ($n^{-2s/(2\beta + d)}$) compared to the minimax rate for estimating Sobolev functions. 
+
+\begin{proof}[Proof of Lemma~\ref{lem:kernel_smoothing_laplacian_eigenmaps}]
+	By the triangle inequality, 
+	\begin{equation*}
+	\|\wh{f} - f^{\ast}\|_P \leq \|\wh{f} - T_{\varepsilon,n}f^{\ast}_{1:n}\|_P + \|T_{\varepsilon,n}f^{\ast}_{1:n} - f^{\ast}\|_P.
+	\end{equation*}
+	We analyze each of the two terms in the above expression separately. We will show that
+	\begin{equation}
+	\label{pf:kernel_smoothing_laplacian_eigenmaps_0}
+	\|\wh{f} - T_{\varepsilon,n}f^{\ast}_{1:n}\|_P \leq \frac{1}{\alpha}\bigl(1 + o_P(1)\bigr) \cdot \|\wh{\theta}_{1:n} - f^{\ast}_{1:n}\|_n
+	\end{equation}
+	and 
+	\begin{equation}
+	\label{pf:kernel_smoothing_laplacian_eigenmaps_0.5}
+	\|T_{\varepsilon,n}f^{\ast}_{1:n} - f^{\ast}\|_P^2 \leq \frac{1}{\delta}\frac{\varepsilon^2}{n\varepsilon^d} |f|_{H^1(\mc{X})}^2 + \frac{1}{\delta}\|T_{\varepsilon,P}f^{\ast} - f^{\ast}\|_P^2,
+	\end{equation}
+	the latter inequality holding with probability $1 - \delta$.
+	
+	\textit{Proof of \eqref{pf:kernel_smoothing_laplacian_eigenmaps_0}.} We will begin by assuming that $\eta(z) \geq 0$ for all $z$, and return to prove the claim in its full generality at the end.
+	
+	The left hand side of~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0} is equal to $\|T_{\varepsilon,n}(\wh{\theta}_{1:n} - f^{\ast}_{1:n})\|_P$, and~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0} is implied by showing that the operator $T_{\varepsilon,n}: L^2(X) \to L^2(\Omega)$ is (up to constant) a contraction, meaning that for any $u \in L^2(X)$,
+	\begin{equation}
+	\label{pf:kernel_smoothing_laplacian_eigenmaps_1}
+	\|T_{\varepsilon,n}u\|_P^2 \leq \frac{1}{\alpha}\bigl(1 + o_P(1)\bigr) \|u\|_n^2.
+	\end{equation}
+	We begin with a pointwise estimate, which follows from Jensen's inequality:
+	\begin{equation*}
+	\Bigl(\bigl(T_{n,\varepsilon}u\bigr)(x)\Bigr)^2 \leq \frac{1}{d_n(x) n} \sum_{i = 1}^{n} u_i^2 \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
+	\end{equation*}
+	(Note that it is here that we have used the positivity of $\eta(\cdot)$.) Integrating with respect to $P$ and exchanging sum with integral yields an upper bound on the $L^2(P)$ norm of $T_{n,\varepsilon}u$,
+	\begin{equation}
+	\label{pf:kernel_smoothing_laplacian_eigenmaps_2}
+	\|T_{n,\varepsilon}u\|_P^2 \leq \sum_{i = 1}^{n} u_i^2 \Bigl(\int_{\Omega} \frac{\eta(\|X_i - x\|/\varepsilon)}{n d_n(x)} p(x) \,dx \Bigr)
+	\end{equation}
+	The degree estimate $d_n(x)$ is quite close to $p(x)$. As we show in Lemma~\ref{lem:measure_of_ball_estimate}, if $\varepsilon = \omega((\log n/n)^{1/d})$ then the empirical measure $d_n(x)$ concentrates around $d_P(x)$ uniformly over $x \in \Omega$, 
+	\begin{equation*}
+	\sup_{x \in \Omega}|d_n(x) - d_P(x)| = o_P(\varepsilon^d);
+	\end{equation*}
+	moreover, it follows from Lipschitz continuity of $p$ that for any $x \in \Omega$,
+	\begin{equation*}
+	d_P(x) = \int_{\Omega} \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) p(x') \,dx' = p(x) d_{\nu}(x) + O(\varepsilon^{d + 1});
+	\end{equation*}
+	and thus by the triangle inequality $\sup_{x \in \Omega}|d_n(x) - d_\nu(x) p(x)| = o_P(\varepsilon^d)$.
+	
+	As pointed out previously, if $x' \in \Omega_{\varepsilon}$ then $d_{\nu}(x') = \varepsilon^d$. On the other hand by assumption~\ref{asmp:domain} for any $x' \in \Omega, d_{\nu}(x') \geq \varepsilon^d/\alpha$. Thus 
+	\begin{equation*}
+	\int_{\Omega} \frac{\eta(\|x' - x\|/\varepsilon)}{d_n(x')} p(x') \,dx' = \int_{\Omega} \frac{\eta(\|x' - x\|/\varepsilon)}{d_{\nu}(x') - o_P(\varepsilon^d)} \,dx' \leq 
+	\begin{dcases*}
+	\frac{1}{1 - o_P(1)}, & \textrm{if $x \in \Omega_{2\varepsilon}$} \\
+	\frac{1}{\alpha} \cdot \frac{1}{1 - o_P(1)}, & \textrm{otherwise.}
+	\end{dcases*}
+	\end{equation*}
+	Plugging back in to~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_2}, we deduce that
+	\begin{equation*}
+	\|T_{n,\varepsilon}u\|_P^2 \leq \sum_{i = 1}^{n} u_i^2 \biggl(\1\Bigl\{x \in \Omega_{2\varepsilon}\Bigr\} \frac{1}{1 - o_P(1)} + \1\Bigl\{x \in (\partial\Omega)_{2\varepsilon}\Bigr\} \frac{1}{\alpha} \frac{1}{1 - o_P(1)}\biggr).
+	\end{equation*}
+	This establishes~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_1}, and in turn~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0}.
+	
+	Now, suppose $\eta(\cdot)$ can take on negative values. In this case, we have $\eta(\cdot) = \mathrm{sgn}(\eta(\cdot))K^{1/2}(\cdot)$. Let $d_n(x;K^{1/2})$ be the empirical degree with respect to kernel function $K^{1/2}$. Then
+	\begin{align*}
+	T_{n,\varepsilon}(\wh{\theta} - \varepsilon)(x) & = \frac{1}{d_n(x)n} \sum_{i = 1}^{n} \bigl(\wh{\theta}_i - f^{\ast}(X_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr) \\
+	& = \frac{d_n(x;K^{1/2})}{d_n(x)}\frac{1}{d_n(x;K^{1/2})n} \sum_{i = 1}^{n} \bigl(\wh{\theta}_i - f^{\ast}(X_i)\bigr) \mathrm{sgn}\biggl(\eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr)\biggr) K^{1/2}\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
+	\end{align*}
+	Taking the square and applying Jensen's inequality, we deduce that
+	\begin{align*}
+	\bigl(T_{n,\varepsilon}(\wh{\theta} - \varepsilon)(x)\bigr)^2 & \leq \biggl(\frac{d_n(x;K^{1/2})}{d_n(x)}\biggr)^2 \cdot \frac{1}{d_n(x;K^{1/2})n}\sum_{i = 1}^{n} \bigl(\wh{\theta}_i - f^{\ast}(X_i)\bigr)^2 K^{1/2}\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr) \\
+	& \leq \frac{(1 + o_P(1))\|\eta\|_{\infty}}{\alpha} \cdot \frac{1}{d_n(x;K^{1/2})n}\sum_{i = 1}^{n} \bigl(\wh{\theta}_i - f^{\ast}(X_i)\bigr)^2 K^{1/2}\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr),
+	\end{align*}
+	with the latter inequality following by Lemma~\ref{lem:measure_of_ball_estimate}. From here the proof proceeds along similar lines to the case where $\eta$ is non-negative.
+	
+	\textit{Proof of~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0.5}.}  
+	We will begin by introducing some notation. For a function $u \in L^2(\Omega)$, let
+	\begin{equation*}
+	L_{\varepsilon,n}u(x) := T_{\varepsilon,n}u(x) - u(x) = \frac{1}{d_n(x)n} \sum_{i = 1}^{n} \bigl(u(x) - u(x_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr)
+	\end{equation*}
+	and let
+	\begin{equation*}
+	\wt{L}_{\varepsilon,n}u(x) := \frac{d_n(x)}{d_P(x)}L_{\varepsilon,n}u(x) = \frac{1}{d_P(x)n} \sum_{i = 1}^{n} \bigl(u(x) - u(x_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
+	\end{equation*}
+	We have already shown that $d_n(x)/d_p(x) = (1 + o_P(1))$, and so we will focus our analysis on upper bounding $\Ebb[\|\wt{L}_{\varepsilon,n}f^{\ast}\|_P^2]$. We begin by providing expressions for the pointwise mean and variance of $\wt{L}_{\varepsilon,n}f^{\ast}(x)$:
+	\begin{equation*}
+	\Ebb\bigl[\wt{L}_{\varepsilon,n}f^{\ast}(x)\bigr] = T_{P,\varepsilon}f^{\ast}(x) - f^{\ast}(x)
+	\end{equation*}
+	and
+	\begin{align*}
+	\mathbb{V}\bigl[\wt{L}_{\varepsilon,n}f^{\ast}(x)\bigr] & = \frac{1}{(d_P(x))^2 n} \mathbb{V}\bigl[\bigl(f^{\ast}(X) - f^{\ast}(x)\bigr) \eta\bigl(\|X - x\|/\varepsilon\bigr)\bigr] \\
+	& \leq \frac{1}{p_{\min}^2 \alpha^2 \varepsilon^{2d}} \mathbb{E}\bigl[\bigl(f^{\ast}(X) - f^{\ast}(x)\bigr)^2 K\bigl(\|X - x\|/\varepsilon\bigr)\bigr] \\
+	& = \frac{1}{p_{\min}^2 \alpha^2 \varepsilon^{2d}} \int_{\Omega} \bigl(f^{\ast}(x') - f^{\ast}(x)\bigr)^2 K(\|x' - x\|/\varepsilon) p(x) \,dx.
+	\end{align*}
+	Then, integrating with respect to $P$ over $\Omega$, we obtain
+	\begin{align*}
+	\Ebb\bigl[\|\wt{L}_{\varepsilon,n}f^{\ast}\|_P^2\bigr]  & \leq \|T_{P,\varepsilon}f^{\star} - f^{\star}\|_{P}^2 + \frac{1}{p_{\min}^2 \alpha^2 \varepsilon^{2d}} E_{\varepsilon}(f^{\ast}) \\
+	& \leq \|T_{P,\varepsilon}f^{\star} - f^{\star}\|_{P}^2 + \frac{C\varepsilon^2}{p_{\min}^2 \alpha^2 \varepsilon^{d}} |f|_{H^1(\Omega)}^2
+	\end{align*}
+	where $E_{\varepsilon}(f^{\ast}) := \int_{\Omega} \int_{\Omega} (f^{\ast}(x') - f^{\ast}(x))^2 K(\|x' - x\|/\varepsilon) p(x') p(x) ,\dx' \,dx$, and we have shown in our AISTATS paper that $E_{\varepsilon}(f^{\ast}) \leq C \varepsilon^{d + 2} \|f\|_{H^1(\Omega)}^2$, justifying the second inequality.
+\end{proof}
+
+\begin{lemma}
+	\label{lem:measure_of_ball_estimate}
+	With probability at least $1 - C \varepsilon^{-d}\exp\{-Cn\varepsilon^d\}$, it holds that
+	\begin{equation*}
+	\sup_{x \in \Omega}|d_n(x) - d_P(x)| \leq C \sqrt{\frac{\varepsilon^d}{n}},
+	\end{equation*}
+	and
+	\begin{equation*}
+	\sup_{x \in \Omega}|d_n(x;K^{1/2}) - d_P(x;K^{1/2})| \leq C \sqrt{\frac{\varepsilon^d}{n}}
+	\end{equation*}
+\end{lemma}
+
+\begin{proof}
+	\textcolor{red}{(TODO)}
+\end{proof}
+
+\section{Nystr\"{o}m extension of Laplacian eigenvectors}
+The Nystr\"{o}m extension $\varphi_k$ of an eigenvector $v_k$ of the graph Laplacian $L$ is
+\begin{equation}
+\label{eqn:nystrom}
+\varphi_k(x) := \frac{1}{d_n(x) - \lambda_k} \sum_{i = 1}^{n} v_{k,i} K\Bigl(\frac{\|X_i - x\|}{r}\Bigr)
+\end{equation}
+where $d_n(x) := \sum_{i = 1}^{n} K(\|X_i - x\|/r)$, and we assume $d_n(x) > \lambda_k$ for all $x \in \Omega$ and $k = 1,\ldots,K$. There are certain nice properties of the Nystr\"{o}m extension. It is an interpolant---that is, for any $\theta \in \mathrm{span}\{v_1,\ldots,v_K\}$ the function $f \in \Leb^2(\Omega)$ will agree with $\theta$ at sample design points---and it requires no information on $\Omega$ to be well-defined. However it is also tricky to analyze, because it involves taking $\theta \in \Leb^2(X)$, transforming it into eigenspace, and then applying a \emph{different} smoother to each eigenvector. To build some intuition, we will warm up by analyzing piecewise constant extension, which is much easier to tackle theoretically, if suboptimal for $f^{\ast} \in H^s(\mc{X})$ when $s > 1$.
+
+\subsection{Piecewise constant extension}
+Both $\|\Sigma\|$ and $\|f_{\perp}^{\ast}\|_P^2$ are easy to analyze when $\varphi_1,\ldots,\varphi_k$ are taken to be piecewise constant extensions of eigenvectors $v_k$ of the Laplacian matrix $L$.
+Let $\{V_1,\ldots,V_n\}$ partition the domain $\Omega$ into $n$ cells, each of probability mass $\Pbb(V_j) = 1/n$, such that $x_j \in V_j$. The piecewise constant extension operator $P^{\star}: L^2(X)\to L^2(\Omega)$ is
+\begin{equation}
+\label{eqn:piecewise_extension}
+\bigl(P^{\star}\theta\bigr)(x) = \sum_{j = 1}^{n} \theta_j \1\{x \in V_j\},
+\end{equation}
+and we take $\varphi_k = P^{\star}v_k$ for $k = 1,\ldots,K$.
+
+It is clear that $\dotp{{\varphi}_k}{{\varphi}_{\ell}}_{P} = \dotp{v_k}{v_{\ell}}_{n} = \delta_{ij}$, so that $\Sigma = I$ and $\|\Sigma\| = 1$. Moreover, we have that $f_K^{\ast} = P^{\ast}\wt{f}_K$, so that
+\begin{equation*}
+\|P^{\star}f_{1:n}^{\ast} - {f}_K^{\ast}\|_P = \|f^{\ast} - \wt{f}_K\|_n = \|f^{\ast} - f_K^{\ast}\|_n;
+\end{equation*}
+the term $\|f^{\ast} - \wt{f}_K\|_n$ is an in-sample bias term that we have already analyzed. It remains to upper bound $\|P^{\star}f^{\ast} - f^{\ast}\|_P$, which we can do using crude but sufficient techniques when $f^{\ast} \in C^1(\Omega)$. 
+
+\subsection{Nystr\"{o}m extension}
+
+The analysis of the Nystr\"{o}m extension seems challenging. At present I have suitable bounds on zero out of three of the functionals in question ($\|\Sigma\|$, $\|f_{\perp}^{\ast}\|_n^2$ and $\|f_{\perp}^{\ast}\|_P^2$). 
+
+\paragraph{Energy of population-level covariance $(\|\Sigma\|)$.}
+The following representation of $\|\Sigma\|$ seems useful:
+\begin{equation}
+\label{eqn:covariance_energy}
+\|\Sigma\| = \sup_{\substack{f \in \mathrm{span}\{\varphi_1,\ldots,\varphi_K\} \\ \|f\|_n = 1}} \|f\|_P.
+\end{equation}
+The equivalence~\eqref{eqn:covariance_energy} suggests a useful intermediary step in upper bound $\|\Sigma\|$ is an upper bound on $\|\varphi_k\|_P^2$. To do so, it is useful express the Nystrom extension of $v_k$ in terms of a kernel smoother. Recall that $T_{r,n}$ is the kernel smoother,
+\begin{equation*}
+\bigl(T_{r,n}\theta\bigr)(x) := \frac{1}{d_n(x)} \sum_{i = 1}^{n} \theta_i K\biggl(\frac{\|X_i - x\|}{r}\biggr).
+\end{equation*}
+Then constructing $\varphi_k$ is equivalent to first passing a kernel smoother over $v_k$, then applying a multiplication operator, i.e
+\begin{equation}
+\label{eqn:nystrom_extension_kernel_smoother_representation}
+\varphi_k(x) = \frac{d_n(x)}{d_n(x) - \lambda_k} \bigl(T_{r,n}v_k\bigr)(x).
+\end{equation}  
+The operator $T_{r,n}$ is a contraction, in the sense that $\|T_{r,n}\theta\|_P \leq C \|\theta\|_n$, as the following derivations make clear:
+\begin{align*}
+\|T_{r,n}\theta\|_P^2 & = \int \Biggl(\frac{1}{d_n(x)} \sum_{i = 1}^{n} \theta_i K\biggl(\frac{\|X_i - x\|}{r}\biggr)\Biggr)^2 \,dP(x) \\
+& \leq \sum_{i = 1}^{n} \theta_i^2 \int \frac{1}{d_n(x)}  K\biggl(\frac{\|X_i - x\|}{r}\biggr) \,dP(x) \\
+& \leq \|\theta\|_n^2 \cdot \frac{d_{\max}(P)}{d_{\min}(P_n)}.
+\end{align*}
+(One can do better than this, actually, but this suffices for our purposes).
+
+Therefore from~\eqref{eqn:nystrom_extension_kernel_smoother_representation}, and Holder's inequality, we have that
+\begin{equation}
+\label{eqn:nystrom_extension_l2p_norm}
+\|\varphi_k\|_P \leq \sup_{x \in \Omega} \biggl\{\frac{d_n(x)}{d_n(x) - \lambda_k} \biggr\} \cdot  \|T_rv_k\|_P \leq \frac{d_{\min}(P_n)}{d_{\min}(P_n) - \lambda_k/n} \cdot \sqrt{ \frac{d_{\max}(P)}{d_{\min}(P_n)}}.
+\end{equation}
+For \textcolor{red}{typical} choices of $K$ and $r$, we have that $d_{\min}(P_n) \gg \lambda_K/n$, and therefore the upper bound~\eqref{eqn:nystrom_extension_l2p_norm} is $O(1)$, which suffices for our purposes.
+
+Unfortunately, notwithstanding my prior claim, I don't yet see the right way to leverage this into a bound on $\|\Sigma\|$. For a given $\theta = \sum_{k = 1}^{K} \beta_k v_k$, and the resulting extrapolant $f = \sum_{k = 1}^{K} \beta_k \varphi_k(x)$, we can write $f$ in terms of $T_r\theta$ and a remainder term as follows,
+\begin{equation*}
+f(x) = \bigl(T_r\theta\bigr)(x) + \sum_{k = 1}^{K} \beta_k \frac{\lambda_k}{d_n(x) - \lambda_k} \bigl(T_rv_k\bigr)(x).
+\end{equation*}
+However, my best analysis of the remainder term, which I state here, is doomed by accumulation of error:
+\begin{align*}
+\biggl\|\sum_{k = 1}^{K} \beta_k \frac{\lambda_k}{d_n(x) - \lambda_k} \bigl(T_rv_k\bigr)(x)\biggr\|_P^2 & \overset{(i)}{\leq} K \cdot \sum_{k = 1}^{K} \beta_k^2  \biggl(\frac{\lambda_k/n}{d_{\min}(P_n) - \lambda_k/n}\biggr)^2 \cdot  \|T_rv_k\|_P^2 \\
+& \overset{(ii)}{\leq} K \biggl(\frac{\lambda_K/n}{d_{\min}(P_n) - \lambda_K/n}\biggr)^2 \cdot \frac{d_{\max}(P)}{d_{\min}(P_n)} \\
+& \asymp \frac{K \lambda_K^2}{n^2d_{\min}(P_n)}.
+\end{align*}
+To see that this bound is insufficient: recall the optimal choice $K_{\star} \asymp n^{d/(d + 2s)}$, that the eigenvalue $\lambda_K \asymp nr^{d + 2}K^{2/d}$ and that $d_{\min}(P_n) \asymp r^d$. Thus the bound reduces to $n^{\gamma}$ with exponent $\gamma = 3d/(2s + d) - 4/d$, which is greater than $0$ for most values of $d$. Moreover, the looseness in inequality $(ii)$ did not kill us---replacing $\lambda_K$ by $\lambda_2$ on the right hand side of $(ii)$ still results in a bound growing with $n$. On the other hand, the inequality $(i)$ was rather gross---it is tight only when $\varphi_k \propto \varphi_{\ell}$ for all $k,\ell = 1,\ldots,K$, and it seems likely that we can do better.
+
+\paragraph{Distance between $f^{\ast}$ and subspace spanned by $\varphi_1,\ldots,\varphi_K$ $(f_{\perp}^{\ast})$.}
+
+It seems like a useful starting place would be to take $f^{\ast} \propto \psi_k$, where $\psi_k$ is the $k$th eigenvector of the continuum weighted Laplace-Beltrami operator, and show that this is close to $\mathrm{span}\{\varphi_1,\ldots,\varphi_K\}$. I do not know an upper bound on the distance between $\psi_k$ and $\mathrm{span}\{\varphi_1,\ldots,\varphi_K\}$, but I do know such a bound for a different extension of $v_1,\ldots,v_K$. 
+
+\paragraph{$(\|f_{\perp}^{\ast}\|_n)$.}
+
+This one I frankly have no thoughts on how to analyze. I don't even understand it all that well, as evidence by the fact that I can't name it.
+
+
+\clearpage
+
+\section{Prediction error for least-squares estimators: random design, fixed basis.}
+In this section, we will assume that $X_1,\ldots,X_n$ are independent samples from a distribution $P$ supported over $\Omega \subseteq \Rd$, and that $\phi_1,\ldots,\phi_k$ are deterministic functions which in particular do not depend on $X_1,\ldots,X_n$.
+
+The prediction error of $\wh{f}$ is $\mathbb{E}_{(X,Y)}[(Y - \wh{f}(X))^2]$, where $X \sim P$ and $\mathbb{E}[Y|X] = f^{\ast}(X)$ are independent of $X_1,\ldots,X_n$, and we additionally assume $Y - \mathbb{E}[Y|X]$ is independent of $X$ (i.e. homoskedastic noise). The prediction error can be decomposed into the sum of the $L^2(P)$ error and an irreducible error,
+\begin{equation}
+\mathbb{E}_{(X,Y)}[(Y - \wh{f}(X))^2] = \|\wh{f} - f^{\ast}\|_P^2 + \mathbb{E}_{(X,Y)}[(Y - f^{\ast}(X))^2],
+\end{equation}
+justifying our interest in the $\|\cdot\|_P^2$ error.
+
+We will apply Lemma~\ref{lem:l2p_error_fixed_design}, and then use our assumptions on the design points and basis functions to control the right hand side of~\eqref{eqn:l2p_error_fixed_design}. In particular, we have the following. 
+\begin{lemma}
+	content...
+\end{lemma}
+
+\end{document}

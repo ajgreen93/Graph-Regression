@@ -1,0 +1,320 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+% Make a widecheck symbol (thanks, Stack Exchange!)
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+	<5> <6> <7> <8> <9> <10>
+	<10.95> <12> <14.4> <17.28> <20.74> <24.88>
+	mathx10
+}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+% widecheck made
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Note on: Insights, Intuition, and Connections regarding Laplacian Learning}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+We use \emph{Laplacian learning} as a catch-all term for learning algorithms which leverage (possibly discrete approximations of) the Laplace operator to conduct \{unsupervised, semi-supervised, supervised\} learning tasks. In this note, I will detail various physical analogies and intuitions to explain what Laplacian learning is ``doing'', draw connections between Laplacian learning and other types of learning (e.g. kernel smoothing, RKHS regression), and hopefully provide some insight regarding when and why Laplacian learning is a reasonable idea. Much of what follows will be review of others' ideas, and I provide references where appropriate.
+
+\section{Physical analogies and intuitions} 
+One theme of the literature regarding Laplacian learning is that algorithms which use the Laplace operator are sometimes well-posed, and sometimes not. We will be particularly interested in analogies and intuition that explain when and why algorithms that use the Laplace operator succeed, and when and why they fail. The question of well-posedness often hinges on the extent to which constraints enforced on some subset of an ambient domain $\Omega$ ensure a well-posed problem: that is, a problem with a reasonable solution on $\Omega$. We will call the constraints \emph{boundary conditions}. 
+
+Suppose we observe data $(x_1,y_1),\ldots,(x_n,y_n)$ and additionally $x_{n + 1},\ldots,x_{N}$, with $\Omega_N = \{x_1,\ldots,x_N\} \subset \Rd$. For a given kernel $\eta(\cdot): [0,\infty) \to [0,\infty)$, and length scale (or bandwidth) $\varepsilon$, the Laplace operator $L_{N,\varepsilon}: H^2(\Omega_N) \to L^2(\Omega_N)$ is defined according to, 
+\begin{equation*}
+L_{N,\varepsilon}u(x) = \frac{1}{N\epsilon^{d + 2}}\sum_{j = 1}^{N} \bigl(u(x) - u(x_j)\bigr)\eta\biggl(\frac{|x - x_i|}{\varepsilon}\biggr).
+\end{equation*}
+The operator $L_{N,\varepsilon}$ is associated with a \emph{Dirichlet energy} $b_{N,\varepsilon}: H^1(\Omega_N) \to [0,\infty)$, defined as 
+\begin{equation*}
+b_{N,\varepsilon}(u) = \sum_{i,j = 1}^{N} \bigl(u(x_i) - u(x_j)\bigr)^2 \eta\biggl(\frac{|x - x_i|}{\varepsilon}\biggr),
+\end{equation*}
+the connection being that $b_{N,\varepsilon}(u) = \dotp{u}{L_{N,\varepsilon}u}_{N}$ for any $u \in H^2(\Omega_N)$. Our goal is to learn a function $u$ on $x_{n + 1},\ldots,x_{N}$ using the labels $Y = \{y_1,\ldots,y_n\}$ and the Laplace operator $L_{N,\varepsilon}$. 
+
+\paragraph{Mininum energy interpolation, and a connection with random walks.}
+
+A natural Laplace learning algorithm for semi-supervised learning is the minimum (Dirichlet) energy interpolant of $y_1,\ldots,y_n$, originally considered in the semi-supervised learning literature by \textcolor{red}{Zhu}, (and in the supervised learning case by \textcolor{red}{Duchon}) and defined as 
+\begin{equation}
+\label{eqn:min_energy_interpolant}
+\begin{aligned}
+& \wh{u} := \min \|b_r(u)\|^2, \\
+~~\textrm{such that}~~ &\wh{u}(x_i) = y_i ~\textrm{for}~ i = 1,\ldots,n.
+\end{aligned}
+\end{equation}
+Some basic algebra shows that ${u}$ satisfies the \emph{Laplace equation with Dirichlet boundary conditions}, i.e. 
+\begin{equation}
+\label{eqn:laplace_equation}
+\begin{cases}
+L_{N,\varepsilon}{\wh{u}}(x_i) = 0,& ~~\textrm{$x_i \in \Omega_N \setminus \{x_1,\ldots,x_n\}$} \\
+\wh{u}(x_i) = y_i,&~~\textrm{$x_i \in \{x_1,\ldots,x_n\}$.}
+\end{cases}
+\end{equation}
+and takes the explicit form $\wh{u} = L^{\dagger} A y$. Here $A \in \Reals^{N \times n}$ is the kernel smoothing matrix with entries $A_{ij} = \eta(\|x_i - x_j\| / \varepsilon)$.
+
+The solution to the Laplace equation admits a probabilistic interpretation in terms of random walks. Let $X_0,X_1,\ldots$ be a random walk over $x_1,\ldots,x_N$, where at each step the walk moves from its current position $x_i$ to a neighboring point $x_j$ with probability $p(x_i,x_j) = A_{ij}/d(x_i)$, where $d(x_i) = \sum_{j = 1}^{n} A_{ij}$. The generator of this walk is the random walk Laplacian $L_{\mathrm{rw}} := (1/d) L_{N,\varepsilon}$. Suppose we stop this walk the first time it reaches a labeled point, i.e let the stopping time $\tau := \inf\{t: X_t \in \{x_1,\ldots,x_n\}\}$. Denote the resulting label by $y_{\tau}$. The solution $\wh{u}$ to~\eqref{eqn:min_energy_interpolant} is then the expected value of the response when the random walk stops,
+\begin{equation}
+\label{eqn:random_walk_interpretation_laplace_learning}
+\wh{u}(x) := \Ebb[y_{\tau}|X_0 = x].
+\end{equation}
+
+\paragraph{Resistance distance, a connection with random walks, and two connections with Laplacian learning.}
+Another way we can use the Laplacian is to define a metric between points $x_i$ and $x_j$. The metric we will use is the \emph{resistance distance}, defined as 
+\begin{equation*}
+R_{ij} = R(x_i,x_j) = \bigl \langle L_{N,\varepsilon}^{\dagger}(e_i - e_j),(e_i - e_j)\bigr \rangle_N
+\end{equation*}
+The resistance distance arises from two different (and therefore equivalent) physical interpretations. The first treats the graph $G$ corresponding to adjacency matrix $A$ as a resistor network. Placing an external current $c_{ext} := e_i - e_j$ then induces a potential difference between points $x_i$ and $x_j$, and it follows from Ohm's Law and Kirchoff's Laws that this potential difference is precisely $R(i,j)$. The second interpretation concerns the random walk $X_0,X_1,\ldots$ with starting point $X_0 = x_i$. The resistance distance $R_{ij}$ is (up to a rescaling) the \emph{commute time} of this random walk. The commute time $C_{ij} = C(x_i,x_j)$ is the sum  of two \emph{hitting times}
+---$H(x_i,x_j)$, the expected time before the walk hits point $x_j$, plus $H(x_j,x_i)$, the expected time it takes for the random walk to return to point $x_i$. 
+
+The first connection between resistance distance and Laplace learning is simply that both can be interpreted in terms of these hitting times. We have just seen that the effective resistance between points $x_i$ and $x_j$ can be written as $R(i,j) \propto H(i,j) + H(j,i)$. On the other hand,~\eqref{eqn:min_energy_interpolant} provides a way to relate $\wh{u}$ to the expected hitting time. Concretely, supposing at the labeled points $y_i = g(x_i)$ for some Lipschitz function $g$ with Lipschitz constant $L$, then at an unlabeled point $x \in \Omega_N$ a martingale argument shows that
+\begin{equation*}
+\bigl|\wh{u}(x) - g(x)\bigr|^2 \lesssim \Ebb[\tau] \cdot \Ebb[|X_{\tau} - x|^2]  \cdot L,
+\end{equation*}
+where $\Ebb[\tau] = H\bigl(x,\{x_1,\ldots,x_n\}\bigr)$. \textcolor{red}{TODO: Calder2020a makes a lower bound argument, which also belongs here.}
+
+The second connection between effective resistance and Laplace learning is an exact coupling between the two. Suppose we solve the minimum energy interpolation problem with $n = 2$, $y_1 = 1$ and $y_2 = -1$. Then the effective resistance is exactly one over the energy of $\wh{u}$,
+\begin{equation*}
+b_{\varepsilon}(\wh{u}) \cdot R(1,2) = 1.
+\end{equation*}
+
+\paragraph{Connections between resistance distance and Laplace learning: ill-posed regime.}
+We know that, when dimension $d \geq 2$, both the resistance distance and the minimum-energy interpolant are ill-posed, meaning they converge to degenerate solutions as the number of unlabeled points $N \to \infty$, and the radius $\varepsilon \to 0$. The resistance distance, which for finite $N$ is a measure of some mixture of global and local information, in the limit contains only global information:
+\begin{equation}
+\label{eqn:resistance_distance_illposed}
+\lim_{\substack{N \to \infty \\ \varepsilon \to 0}}H(x_i,x_j) \propto \frac{1}{p(x_j)} \Longrightarrow \lim_{\substack{N \to \infty \\ \varepsilon \to 0}} R(x_i,x_j) \propto \frac{1}{p(x_i)} + \frac{1}{p(x_j)}.
+\end{equation}
+The minimum-energy interpolant $\wh{u}$, which for finite $N$ propagates the labels $Y$ in some way that weights both local and global information, in the limit interpolates $Y$ with a constant trend function: for \emph{a constant value of $n$}, 
+\begin{equation}
+\label{eqn:min_energy_interpolant_illposed}
+\lim_{\substack{N \to \infty \\ \varepsilon \to 0}} \wh{u}(x_i) = 
+\begin{cases*}
+\wb{y},& ~~\textrm{if $x_i \in \Omega_N\setminus\{x_1,\ldots,x_n\}$},\\
+y_i,& ~~\textrm{if $x_i \in \{x_1,\ldots,x_n\}$}
+\end{cases*}
+\end{equation}
+
+A natural question: can we use the connections of the previous section to relate the ill-posedness of Laplacian learning and resistance distance? The answer is yes. The second connection shows \emph{that} the ill-posedness of Laplacian learning implies the ill-posedness of resistance distance, and vice versa. The first connection allows us to use the ill-posedness of resistance distance to shed light on \emph{why} Laplace learning is ill-posed. 
+\begin{itemize}
+	\item \textbf{Second connection.} The convergence of the resistance distance in~\eqref{eqn:resistance_distance_illposed} implies that a constant function plus spikes is a minimum-energy interpolant, i.e. that $\wh{u}$ must satisfy~\eqref{eqn:min_energy_interpolant_illposed}. Conversely, the structure of the minimum-energy interpolant as stated in~\eqref{eqn:min_energy_interpolant_illposed} implies that the resistance distance must converge to the degenerate limit~\eqref{eqn:resistance_distance_illposed}.
+	\item \textbf{First connection.} The random walk has mixed before it has a probability of hitting any labeled node.
+	\item Explain why increasing the radius actually exacerbates the problem---it simply decreases the mixing time. In fact, as \textcolor{red}{(Nadler09)} point out, if we take $N \to \infty$ and hold $\varepsilon$ constant, then estimator $\wh{u}$ will be degenerate even when $d = 1$.
+\end{itemize}
+
+\paragraph{Connections between resistance distance and Laplace learning: well-posed regime.}
+
+\begin{itemize}
+	\item Explain what the well-posed regime is: when limits are taken simultaneously as $n,N \to \infty$, with $n$ satisfying a certain scaling $n = a(N)$. For instance, the linear scaling $n = \Theta(N)$. 
+	\item Consider a kernel smoother which makes explicit use of resistance distance, e.g.
+	\begin{equation*}
+	\wt{u}(x_i) = \frac{\sum_{j = 1}^{n} K(R(i,j)) u(x_j)}{\sum_{j = 1}^{n} K(R(i,j))}
+	\end{equation*}
+	for some kernel function $K(\cdot)$.
+	
+	Make the banal mathematical point that even if $R(x_i,x_j)$ are all within $\epsilon$ of $1/d(x_j) + 1/d(x_i)$, if there are an increasing number of labeled points, this does not imply anything about the distance between $\wt{u}$ and $\wb{y}$.
+	\item Conclude that the crucial point is the ratio of labeled to unlabeled points, as this determines whether the walk will have mixed before it arrives at a labeled point.
+	\item Discuss other fixes---three of which are ``smearing the labels''---I have not seen anyone mention this, to the best of my knowledge---changing the graph \textcolor{red}{(Shi, Calder)}, and changing the norm \textcolor{red}{(El-Alaoui, Thorpe)}. 
+\end{itemize}
+
+
+\paragraph{Future directions.}
+
+To be clear, by future directions I mean only things for me to track down in the future, rather than any claim of novelty. A tremendous amount of work has been done regarding Laplace learning and I have certainly only scratched the surface of it in this summary.
+\begin{itemize}
+	\item In practice, people often solve the penalized version of~\eqref{eqn:min_energy_interpolant}. This is thought to better handle the common situation of noisy responses. We refer to this as Laplacian smoothing. It would be interesting to find similar insights regarding Laplacian smoothing.
+	\item There are other relevant diffusion-based perspectives on Laplacian learning, i.e. tying Laplacian learning to walks or diffusions over graphs. This notably includes the \emph{diffusion maps} perspective of \textcolor{red}{Coifman and Lafon}. These perspectives should be reviewed as well. 
+	\item As indicated by the discussion in the ill-posed section, the failure of Laplace learning when $d \geq 2$ is due to the fact that the walk $X_0,X_1,\ldots$ mixes before a labeled node is ever reached. A natural fix, then, is to simply prevent the random walk from mixing. For instance, we could pick a threshold $T$; if after $T$ steps the random walk has not arrived at a labeled point, restart. Alternatively, we might consider the random walk $\wt{X}_0,\wt{X}_1,\ldots$, which at each step has probability $(1 - \alpha)$ of moving to an adjacent point, and probability $\alpha$ of returning to the seed node $\wt{X}_0$. In other words, run PPR.
+	\item It has been observed \textcolor{red}{(Nadler09, Calder2020)} that even in the ill-posed regime---concretely, when $N$ is finite but extremely large compared to $n$---although $\wh{u}$ is quite obviously a bad estimator, once appropriately re-centered it performs quite well at classification tasks. This phenomenon has not been theoretically explained. 
+\end{itemize}
+
+\section{Laplacian learning as Reproducing Kernel Hilbert Space regression}
+We refer to the penalized analog of~\eqref{eqn:min_energy_interpolant} as \emph{Laplacian smoothing}, defined for a given value of $\lambda$ as
+\begin{equation*}
+\wt{u} := \argmin \|y - u\|_n^2 + \lambda b_r(u)
+\end{equation*}
+When the response is zero-mean, Laplacian smoothing is equivalent to ridge regression in the Reproducing Kernel Hilbert Space (RKHS) defined by the kernel $K = L^{\dagger}$. It is immediate that the kernel $K$ defines an RKHS $H_0^1(\Omega_N)$: $L^{\dagger}$ is a positive semi-definite (psd) bilinear form, and it is automatically trace-class because $L^2(\Omega_N)$ is finite-dimensional. The feature map is $\phi: x \mapsto \bigl(\lambda_2^{1/2} v_2(x),\lambda_3^{1/2} v_3(x),\ldots,\lambda_N^{1/2} v_N(x)\bigr)$. The norm is $\|u\|_{H_0^1(\Omega_N)} = \sqrt{b_{\varepsilon}(u)}$. 
+
+\paragraph{Laplacian smoothing as RKHS regression: ill-posed regime.}
+When $d \geq 2$, as $N \to \infty$ and $\varepsilon \to 0$ (second condition optional), and $\lambda$ remains fixed, $\wt{u}$ will converge to the ill-posed limit~\eqref{eqn:min_energy_interpolant_illposed}. This can be explained by the fact that while for any finite $N$, $L^{\dagger}$ is trace-class, when $d \geq 2$ asymptotically the trace explodes, meaning
+\begin{equation*}
+\lim_{\substack{N \to \infty \\ \varepsilon \to 0}} tr(L^{\dagger}) \to \infty.
+\end{equation*}
+This will not be true when $d = 1$. 
+
+Equivalently, while it is the case that the evaluation functional $L_x: f \mapsto f(x)$ is bounded for any finite $N$,
+\begin{equation*}
+|L_x(f)| \leq C(N) \cdot \|f\|_{H_0^1(\Omega_N)},
+\end{equation*}
+asymptotically the statement is not true: $\lim_{N \to \infty} C(N) = \infty$.
+
+\paragraph{Laplacian learning and RKHS regression: well-posed regime.}
+We now give a simple example showing that when $n/N \gg \varepsilon^2$, the representation cost (in $H_0^1(\Omega_N)$) of a spiky interpolant such as~\eqref{eqn:min_energy_interpolant_illposed} explodes. This is known to be exactly the minimum labeling rate at which minimum Dirichlet energy interpolation converges to a sensible continuum limit. 
+
+Suppose $y_i = g(x_i)$ for some function $g$, and suppose (for convenience only) that $\wb{y} = 0$. Then $u_N = (y_1,\ldots,y_n, 0,\ldots,0)$ belongs to $H_0^1(\Omega_n)$ and has squared-norm $\|u_N\|_{H_0^1(\Omega_N)}^2 = b_r(u_N)$ of at least
+\begin{equation*}
+b_{\varepsilon}(u_N) \geq \frac{1}{N^2 \varepsilon^{d + 2}} \sum_{i = 1}^{n} \sum_{j = n + 1}^{N} g(x_i)^2 \geq \frac{n}{N^2 \varepsilon^{d + 2}} d_{\min}(G) \|g\|_n^2.
+\end{equation*} 
+In the above $d_{\min}(G) = \min\bigl\{\sum_{j = n + 1}^{N} A_{ij}: i = 1,\ldots,n\bigr\}$. Under standard \{random, fixed\} design conditions on $\Omega_N$, asymptotically $d_{\min}(G) \asymp N\varepsilon^d$ and $\|g\|_n^2 \to \|g\|_{\Leb^2(\Omega)} > 0$. Thus
+\begin{equation*}
+\lim_{N \to \infty} b_{\varepsilon}(u_N) \geq c \cdot \lim_{N \to \infty} \frac{n}{N \varepsilon^2}.
+\end{equation*}
+This is to be contrasted with the interpolator $u = \bigl(g(x_1),\ldots,g(x_n), g(x_{n + 1}),\ldots,g(x_N)\bigr)$, which has finite representational cost in the limit as $n \to \infty, N \to \infty$, regardless of the scaling of $n$ with respect to $N$.
+
+\paragraph{Future directions.}
+\begin{itemize}
+	\item Relate the minimum Dirichlet interpolant to overparameterized minimum-norm linear regression. 
+\end{itemize}
+
+
+
+\section{Laplacian learning as kernel smoothing}
+
+
+
+\end{document}
