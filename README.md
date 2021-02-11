@@ -1,4 +1,4 @@
-# graph_regression
+# Graph Regression
 Graph regression project with Ryan and Siva.
 
 - manuscripts/laplacian_smoothing/AISTATS/minimax_optimal_laplacian_smoothing.tex: tex file for our AISTATS paper
