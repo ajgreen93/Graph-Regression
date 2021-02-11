@@ -1,0 +1,42 @@
+\documentclass{article}
+
+\usepackage{aistats2021_author_response}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % define colors in text
+\usepackage{xspace}         % fix spacing around commands
+
+
+\begin{document}
+
+First of all, we would like to thank all the reviewers for their comments and helpful suggestions. We will begin with a general response that is relevant to multiple reviewers, and then give some specific responses to each reviewer.
+
+\underline{General response} (\textit{``...limited experiment.''}) We agree that the theory would be better complemented by stronger empirical evidence. For a final version, we will extend our experiments to include different regression functions, higher dimensions, the power of our proposed test, and comparisons with other methods for nonparametric regression, especially with the thin-plate spline as suggested by Reviewer 4. We will also improve the presentation of our experimental results, as suggested by Reviewer 6. 
+
+\underline{Reviewer 1}
+We are glad the reviewer enjoyed the paper.
+
+\underline{Reviewer 2} (\textit{``...how large is d in practice?''}) In practice $d$ is often much larger than 4, while the intrinsic dimension $m$ is usually unknown. However, it is hypothesized (e.g in [Belkin 2006]) that $m$ is often small in real-world problems. 
+
+\underline{Reviewer 4}
+(\textit{``...intuition behind the difference} [between Laplacian smoothing and thin-plate splines]...'') Laplacian smoothing penalizes the average size of the differences of the function evaluated at the design points, and thus insists on the estimate being on average ``smooth’’ across the design points. Thin-plate splines penalize the average size of the derivative across the domain, and thus are perfectly willing to accept estimates which are very ``wiggly'' near the design points, as long as the wiggliness is sufficiently localized. The key is that for sufficiently wiggly functions, derivatives and differences stop being coupled in high enough dimensions.
+
+\underline{Reviewer 6} (\textit{``...this paper needs to make a more precise point as to its contributions to} [nonparametric regression] \textit{in particular...}) We study the method of Laplacian smoothing, which despite its long history has resisted analysis in the classical statistical setup. We show that although Laplacian smoothing is similar in spirit to first-order smoothing splines when $d = 1$, somewhat surprisingly it avoids the pathological failure of first-order thin-plate splines when $d \geq 2$. Furthermore, we establish that Laplacian smoothing adapts to the manifold hypothesis. Finally, we also show that Laplacian smoothing allows one to make only weak assumptions on “knowing the domain $\mathcal{X}$ and density $p$” while still obtaining minimax rates for Sobolev classes. We will make these points explicitly in our final version.
+
+
+(\textit{“...a more precise comparison with other methods...”}) While it is possible to derive other minimax optimal regressors in our setup---e.g. by tuning kernel smoothing---our goal is somewhat different: to consider Laplacian smoothing, a widely used method with a strong empirical track record, and show that it specifically has optimal statistical properties. However, we agree with the reviewer that a more detailed comparison could be useful and will include this in the final version. Our analysis differs substantially from standard analyses of classical non-parametric methods (kernel smoothing, RKHS regression and truncated series estimators), and we note some important distinctions. \textit{Kernel smoothing}: the bias and variance terms we derive for Laplacian smoothing are quite different from those typical to kernel smoothing (even if the worst-case rates match), and indicate conditions under which Laplacian smoothing will outperform kernel smoothing. \textit{RKHS regression}: analyses of variational methods similar in spirit to Laplacian smoothing---i.e. thin-plate splines, but also more generally kernel ridge regression---typically assume that $f_0$ lies close to an RKHS; when $d \geq 2$ the first-order Sobolev space $H^{1}(\mathcal{X})$ is not an RKHS, and most standard analyses do not apply without careful modifications. \textit{Truncated series estimators}: the analyses of least squares over a subspace of $L^2(\mathcal{X})$ typically rely on an \textit{a priori} bound on the approximation error---which is hard to obtain in the manifold case without “knowing” the manifold in a strong sense.  In contrast, for Laplacian smoothing we derive a data-dependent bound on the approximation error, and upper bound this by a population-level quantity with high probability.  
+
+(\textit{“...practical implementation of the threshold.”}) In the final paper, we will make clear that the level-$\alpha$ permutation threshold is computed as follows: (1) randomly draw $M$ permutations $\pi_1,...,\pi_M$ of the indices $\{1,...,n\}$; (2) for each $m = 1,...,M$, compute the test statistic $T_m$ with respect to the permuted responses $(Y_{\pi_m(1)},X_1),...,(Y_{\pi_m(n)},X_n)$; (3) set the threshold to be the $(1 - \alpha)$-quantile of the empirical distribution of $\{T_1,...,T_M\}$.
+
+(\textit{“...adaptivity to the intrinsic dimension m...”}) In our Theorems 3 and 4 the choice of radius $r$ depends on $m$. Typically, $m$ is unknown: although it can be estimated, practically we would recommend to choose $r$ by cross-validation. We believe, arguing along the lines of [Gyorfi 2006], that such a choice will achieve the same rates adaptively.
+
+(\textit{“... intuition as to how your assumptions are used in your proofs?”}) In our final paper, we will include the following comments on assumptions. The Lipschitz assumptions, on the density and kernel, allow us to relate nonlocal approximations of the Sobolev semi-norm to the Sobolev semi-norm. The assumption that $K(c) > 0$ for some fixed $c > 0$ is fundamental---otherwise the radius $r$ does not truly reflect the scale of connectivity; on the other hand the requirement that the kernel be compactly supported on $[0,1]$ is for technical convenience. The lower bound on the density is used for comparing sample- and population-level eigenvalues; we make use of upper bounds on the optimal-transport distance in infinity norm between $P_n$ and $P$,  and such distance can be very large when the tails of $p(x)$ are close to $0$. Finally, the lower and upper bounds on the density are required for the lower and upper bounds in (16)---Weyl’s Law---to hold.
+
+\end{document}
