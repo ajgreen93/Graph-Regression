@@ -6,7 +6,6 @@ make_sample_uniform <- function(d)
   }
 }
 
-
 make_cosine_f0 <- function(d,n)
 {
   # Choose m such that the first-order regression error dominates.
@@ -21,6 +20,33 @@ make_cosine_f0 <- function(d,n)
   return(f0)
 }
 
+make_linear_f0 <- function(d,n)
+{
+  #f_0 = b*(X_1 + ... + X_d)
+  
+  # Choose slope
+  b <- choose_linear_f0_slope(d)
+  
+  f0 <- function(x){
+    return(b * sum(x))
+  }
+  return(f0)
+}
+
+choose_linear_f0_slope <- function(d)
+{
+  m <- choose_f0_frequency(d)
+  a <- choose_f0_amplitude(d,m)
+  b <- a*m*pi
+  if(d == 3)
+  {
+    b <- b / 3
+  } else if(d == 4)
+  {
+    b <- b / 4
+  }
+  return(b)
+}
 choose_f0_frequency <- function(d)
 {
   if(d == 1)
@@ -42,8 +68,10 @@ choose_f0_amplitude <- function(d,m)
   if (d <= 3) 
   {
     a <- 3
-  } else {
+  } else if (d == 4){
     a <- 4
+  } else if (d == 5){
+    a <- 6
   }
     
   return(a)

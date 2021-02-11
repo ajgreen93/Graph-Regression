@@ -89,7 +89,7 @@ initialize_laplacian_smoothing_knn_thetas <- function(sample_X,n){
   thetas <- data.frame(k = numeric(), rho = numeric())
   
   # Choose a range of connectivity parameters.
-  ks <- seq(2, 17, by = 3)
+  ks <- seq(2, 8, by = 2)
   
   # Choose a range of penalty parameters.
   m <- choose_f0_frequency(d)
@@ -113,11 +113,11 @@ initialize_laplacian_smoothing_knn_thetas <- function(sample_X,n){
 }
 
 initialize_knn_thetas <- function(sample_X,n){
-  m <- choose_f0_frequency(d)
-  a <- choose_f0_amplitude(d,m)
-  k_min <- 2
-  k_max <- min(max(round(5 * (d * (a^2/2^d) * m^2 * pi^2)^{-d/(2+d)} * n^{2/(d + 2)}), 50), n/4)
-  ks <- c(2:12, seq(13,k_max,by = 2))
+  # m <- choose_f0_frequency(d)
+  # a <- choose_f0_amplitude(d,m)
+  # k_min <- 2
+  # k_max <- min(max(round(5 * (d * (a^2/2^d) * m^2 * pi^2)^{-d/(2+d)} * n^{2/(d + 2)}), 50), n/4)
+  ks <- c(2:13, seq(14,30,by = 2))
   
   thetas <- data.frame(k = ks)
 }

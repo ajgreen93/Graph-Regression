@@ -2,13 +2,12 @@ library(RANN)
 library(dplyr)
 library(Matrix)
 library(reshape2)
-library(gridExtra)
 source("sample.R")
 source("graph.R")
 source("estimators.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/estimation_mse_config5.R")
+source("configs/estimation_mse_config3.R")
 
 #----------------------------------------------------#
 # This is the pipeline for running regression estimation experiments.
