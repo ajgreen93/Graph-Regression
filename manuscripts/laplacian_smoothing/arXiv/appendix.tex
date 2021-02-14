@@ -1,0 +1,1361 @@
+\noindent In this appendix, we provide proofs of all results found in the main text. Our main theorems (Theorems~\ref{thm:laplacian_smoothing_estimation1}-\ref{thm:laplacian_smoothing_testing_manifold}) all follow the same general proof strategy, centered on conditioning. In Section~\ref{sec:fixed_graph_error_bounds}, we establish (estimation or testing) error bounds which hold for any graph $G$; these bounds are stated with respect to (functionals of) the graph $G$, and allow us to upper bound the error of $\wh{f}$ and $\wh{\varphi}$ conditional on the design $\mathbf{X} = x$. In Sections~\ref{sec:graph_sobolev_seminorm}, \ref{sec:graph_eigenvalues}, \ref{sec:empirical_norm}, and \ref{sec:manifold} we give all our necessary probabilistic estimates on these functionals, for the particular random neighborhood graph $G = G_{n,r}$. It is in these sections where we invoke our various assumptions on the distribution $P$ and regression function $f_0$. In Section~\ref{sec:main_results}, we prove our main theorems and some other results. In Section~\ref{sec:concentration}, we state a few concentration bounds that we use repeatedly in our proofs.
+
+\section{Graph-dependent error bounds}
+\label{sec:fixed_graph_error_bounds}
+In this section, we adopt the fixed design perspective; or equivalently, condition on $X_i = x_i$ for $i = 1,\ldots,n$. Let $G = \bigl([n],W\bigr)$ be a fixed graph on $\{1,\ldots,n\}$ with Laplacian matrix $\Lap = D - W$. The randomness thus all comes from the responses 
+\begin{equation}
+\label{eqn:fixed_graph_regression_model}
+Y_i = f_{0}(x_i) + \varepsilon_i
+\end{equation}
+where the noise variables $\varepsilon_i$ are independent $N(0,1)$. In the rest of this section, we will mildly abuse notation and write $f_0 = (f_0(x_1),\ldots,f_0(x_n)) \in \Reals^n$. We will also write ${\bf Y} = (Y_1,\ldots,Y_n)$.
+
+Recall~\eqref{eqn:laplacian_smoothing} and~\eqref{eqn:laplacian_smoothing_test}: the Laplacian smoothing estimator of $f_0$ on $G$ is
+\begin{equation*}
+\label{eqn:ls_G}
+\wh{f} := \argmin_{f \in \Reals^n} \biggl\{ \sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^{\top} \Lap f \biggr\} = (\rho \Lap + \Id)^{-1}{\bf Y}.
+\end{equation*}
+and the Laplacian smoothing test statistic is 
+\begin{equation*}
+\label{eqn:ls_ts_G}
+\wh{T} := \frac{1}{n} \Bigl\|\wh{f}\Bigr\|_2^2.
+\end{equation*}
+We note that in this section, many of the derivations involved in upper bounding the estimation error of $\wh{f}$ are similar to those of \cite{sadhanala16}, with the difference being that we seek bounds in high probability rather than in expectation. We keep the work here self-contained for purposes of completeness.
+
+\subsection{Error bounds for linear smoothers}
+Let $S \in \Reals^{n \times n}$ be a square, symmetric matrix, and let 
+\begin{equation*}
+\wc{f} := SY
+\end{equation*}
+be a linear estimator of $f_0$. In  Lemma~\ref{lem:linear_smoother_fixed_graph_estimation} we upper bound the error $\frac{1}{n}\|\wc{f} - f_0\|_2^2$ as a function of the eigenvalues of $S$. Let $\lambdavec(S) = (\lambda_1(S),\ldots,\lambda_n(S)) \in \Reals^n$ denote these eigenvalues, and let $v_k(S)$ denote the corresponding unit-norm eigenvectors, so that $S = \sum_{k = 1}^{n} \lambda_k(S) \cdot v_k(S) v_k(S)^{\top}$. Denote $Z_k = v_k(S)^{\top} \varepsilon$, and observe that ${\bf Z} = (Z_1,\ldots,Z_n) \sim N(0,\Id)$. 
+
+\begin{lemma}
+	\label{lem:linear_smoother_fixed_graph_estimation}
+	Let $\wc{f} = SY$ for a square, symmetric matrix, $S \in \Reals^{n \times n}$. Then
+	\begin{equation*}
+	\Pbb_{f_0}\biggl(\frac{1}{n}\bigl\|\wc{f} - f_0\bigr\|_2^2 \geq \frac{10}{n} \bigl\|\lambdavec(S)\bigr\|_2^2 + \frac{2}{n}\bigl\|(S - I)f_0\bigr\|_2^2\biggr) \leq 1 - \exp\Bigl(-\bigl\|\lambdavec(S)\bigr\|_2^2\Bigr)
+	\end{equation*}
+\end{lemma}
+Here we have written $\Pbb_{f_0}(\cdot)$ for the probability law under the regression ``function'' $f_0 \in \Reals^n$. 
+
+In Lemma~\ref{lem:linear_smoother_fixed_graph_testing}, we upper bound the error of a test involving the statistic $\|\wc{f}\|_2^2 = {\bf Y}^{\top} S^2 {\bf Y}$.
+\begin{lemma}
+	\label{lem:linear_smoother_fixed_graph_testing}
+	Let $\wc{T} = Y^{\top} S^2 Y$ for a square, symmetric matrix $S \in \Reals^{n \times n}$. Define the threshold $\wc{t}_b$ to be 
+	\begin{equation}
+	\wc{t}_{b} := \norm{\lambdavec(S)}_2^2 + 2b \norm{\lambdavec(S)}_4^2
+	\end{equation}
+	It holds that:
+	\begin{itemize}
+		\item \textbf{Type I error.}
+		\begin{equation}
+		\label{eqn:linear_smoother_fixed_graph_testing_typeI}
+		\Pbb_0\bigl(\wc{T} > \wc{t}_b\bigr) \leq \frac{1}{b^2}
+		\end{equation}
+		\item \textbf{Type II error.} Under the further assumption
+		\begin{equation}
+		\label{eqn:linear_smoother_fixed_graph_testing_critical_radius}
+		f_0^{\top} S^2 f_0 \geq 4b \norm{\lambdavec(S)}_4^2,
+		\end{equation}
+		then
+		\begin{equation}
+		\label{eqn:linear_smoother_fixed_graph_testing_typeII}
+		\Pbb_{f_0}\bigl(\wc{T} \leq \wc{t}_b\bigr) \leq \frac{4}{b^2} + \frac{8}{b \norm{\lambdavec(S)}_4^{2}}.
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+
+\paragraph{Proof of Lemma~\ref{lem:linear_smoother_fixed_graph_estimation}.}
+The expectation $\Ebb_{f_0}[\wc{f}] = Sf_0$, and by the triangle inequality,
+\begin{align*}
+\frac{1}{n}\bigl\|\wc{f} - f_0\bigr\|_2^2 & \leq \frac{2}{n}\Bigl(\bigl\|\wc{f} - \Ebb_{f_0}[\wc{f}]\bigr\|_2^2 + \bigl\|\Ebb_{f_0}[\wc{f}] - f_0\bigr\|_2^2\Bigr) \\ 
+& = \frac{2}{n}\Bigl(\bigl\|S\varepsilon\bigr\|_2^2 + \bigl\|(S - I)f_0\bigr\|_2^2\Bigr)
+\end{align*}
+Writing $\norm{S\varepsilon}_2^2 = \sum_{k = 1}^{n} \lambda_k(S)^2 Z_k^2$, the claim follows from the result of \citet{laurent00} on concentration of $\chi^2$-random variables, which for completeness we restate in Lemma~\ref{lem:chi_square_bound}. To be explicit, taking $t = \norm{\lambdavec(S)}_2^2$ in Lemma~\ref{lem:chi_square_bound} completes the proof of Lemma~\ref{lem:linear_smoother_fixed_graph_estimation}. 
+
+\paragraph{Proof of Lemma~\ref{lem:linear_smoother_fixed_graph_testing}.}
+We compute the mean and variance of $T$ as a function of $f_0$, then apply Chebyshev's inequality.
+
+\textit{Mean.} We make use of the eigendecomposition $S = \sum_{k = 1}^{n} \lambda_k(S) \cdot v_k(S) v_k(S)^{\top}$ to obtain
+\begin{equation}
+\label{pf:linear_smoother_fixed_graph_testing1}
+\begin{aligned}
+\wc{T} & = f_0^{\top} S^2 f_0 + 2 f_0^{\top} S^2 \varepsilon + \varepsilon^{\top} S^2 \varepsilon \\
+& = f_0^{\top} S^2 f_0 + 2 f_0^{\top} S^2 \varepsilon + \sum_{k = 1}^{n}  \bigl(\lambda_k(S)\bigr)^2 (\varepsilon^{\top} v_k(S))^2 \\
+& = f_0^{\top} S^2 f_0 + 2 f_0^{\top} S^2 \varepsilon + \sum_{k = 1}^{n}  \bigl(\lambda_k(S)\bigr)^2 Z_k^2,
+\end{aligned}
+\end{equation}
+implying
+\begin{equation}
+\label{pf:linear_smoother_fixed_graph_testing_mean}
+\Ebb_{f_0}\bigl[\wc{T}\bigr] = f_0^{\top} S^2 f_0 + \sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^2.
+\end{equation}
+
+\textit{Variance.} Starting from~\eqref{pf:linear_smoother_fixed_graph_testing1} and recalling $\Var(Z_k^2) = 2$, we derive
+\begin{equation}
+\label{pf:linear_smoother_fixed_graph_testing_var}
+\Var_{f_0}\bigl[\wc{T}\bigr] \leq 8 f_0^{\top} S^4 f_0 + 4 \sum_{k = 1}^{n} \bigl(\lambda_k(S)\bigr)^4.
+\end{equation}
+
+\textit{Bounding Type I and Type II error.} The upper bound~\eqref{eqn:linear_smoother_fixed_graph_testing_typeI} follows immediately from~\eqref{pf:linear_smoother_fixed_graph_testing_mean}, ~\eqref{pf:linear_smoother_fixed_graph_testing_var}, and Chebyshev's inequality.
+
+The bound~\eqref{eqn:linear_smoother_fixed_graph_testing_typeII} also follows from Chebyshev's inequality, as can be seen by the following manipulations,
+\begin{equation*}
+\begin{aligned}
+\Pbb_{f_0}\Bigl(\wc{T} \leq \wc{t}_b\Bigr) & = \Pbb_{f_0}\Bigl(\wc{T} - \Ebb_{f_0}\bigl[\wc{T}\bigr] \leq \wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr) \\
+& \overset{(i)}{\leq} \Pbb_{f_0}\Bigl(\Bigl|\wc{T} - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr| \geq \Bigl|\wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr|\Bigr) \leq \frac{Var_{f_0}\bigl[\wc{T}\bigr]}{\bigl(\wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\bigr)^2} \\ 
+& \overset{(ii)}{\leq} 4 \frac{\Var_{f_0}\bigl[\wc{T}\bigr]}{(f_0^{\top} S^2 f_0)^2} \\
+& \overset{(iii)}{\leq} \frac{32}{f_0^{\top} S^2 f_0} + \frac{4}{b^2} \\
+& \overset{(iv)}{\leq} \frac{8}{b} \Biggl(\sum_{k = 1}^{n}\bigl(\lambda_k(S)\bigr)^4\Biggr)^{-1/2} + \frac{4}{b^2}
+\end{aligned}
+\end{equation*}
+In the previous expression, $(i)$ and $(ii)$ follow since assumption~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius} and equation~\eqref{pf:linear_smoother_fixed_graph_testing_mean} together imply 
+\begin{equation*}
+\wc{t}_b - \Ebb_{f_0}[\wc{T}] = f_0^{\top} S^2 f_0 - 2b\|{\bf \lambda}(S)\|_4^2 \geq \frac{1}{2}f_0^{\top} S^2 f_0
+\end{equation*}
+$(iii)$ follows from assumption~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius} and the inequality~\eqref{pf:linear_smoother_fixed_graph_testing_var}, and $(iv)$ follows from~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius}. 
+
+\subsection{Analysis of Laplacian Smoothing}
+Upper bounds on the mean squared error of $\wh{f}$, and Type I and Type II error of $\wh{T}$, follow from setting $S = (\rho L + I)^{-1}$ in Lemmas~\ref{lem:linear_smoother_fixed_graph_estimation} and~\ref{lem:linear_smoother_fixed_graph_testing}. We give these results in Lemma~\ref{lem:ls_fixed_graph_estimation} and~\ref{lem:ls_fixed_graph_testing}, and prove them immediately. Recall that $\lambda_1,\ldots,\lambda_n$ are the $n$ eigenvalues of $\Lap$ (sorted in ascending order).
+\begin{lemma}
+	\label{lem:ls_fixed_graph_estimation}
+	For any $\rho > 0$,
+	\begin{equation}
+	\label{eqn:ls_fixed_graph_estimation_prob}
+	\frac{1}{n}\bigl\|\wh{f} - f_0\bigr\|_2^2 \leq \frac{2\rho}{n} \bigl(f_0^{\top} \Lap f_0\bigr) + \frac{10}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_{k} + 1\bigr)^2}
+	\end{equation}
+	with probability at least $1 - \exp\Bigl(-\sum_{k = 1}^{n}\bigl(\rho \lambda_k + 1\bigr)^{-2}\Bigr)$.
+\end{lemma}
+Recall that 
+\begin{equation*}
+\wh{t}_b := \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k + 1\bigr)^2} + \frac{2b}{n}\sqrt{\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k + 1\bigr)^4}}.
+\end{equation*}
+\begin{lemma}
+	\label{lem:ls_fixed_graph_testing}
+	For any $\rho > 0$ and any $b \geq 1$, it holds that:
+	\begin{itemize}
+		\item \textbf{Type I error.}
+		\begin{equation}
+		\label{eqn:ls_fixed_graph_testing_typeI}
+		\Pbb_0\Bigl(\wh{T} > \wh{t}_b\Bigr) \leq \frac{1}{b^2}
+		\end{equation}
+		\item \textbf{Type II error.} If
+		\begin{equation}
+		\label{eqn:ls_fixed_graph_testing_critical_radius}
+		\frac{1}{n}\norm{f_0}_2^2 \geq \frac{2 \rho}{n} \bigl(f_0^{\top} \Lap f_0\bigr) + \frac{4b}{n} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{1/2}
+		\end{equation}
+		then
+		\begin{equation}
+		\label{eqn:ls_fixed_graph_testing_typeII}
+		\Pbb_{f_0}\Bigl(\wh{T}(G) \leq \wh{t}_b\Bigr) \leq \frac{4}{b^2} + \frac{8}{b} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{-1/2}
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+\paragraph{Proof of Lemma~\ref{lem:ls_fixed_graph_estimation}.}
+Let $\wh{S} = (\Id + \rho \Lap)^{-1}$, the estimator $\wh{f} = \wh{S}Y$, and
+\begin{equation*}
+\bigl\|\lambdavec(\wh{S})\bigr\|_2^2 = \sum_{k = 1}^{n} \frac{1}{\bigl(1 + \rho \lambda_k\bigr)^2}.
+\end{equation*} 
+We deduce the following upper bound on the bias term,
+\begin{equation*}
+\begin{aligned}
+\bigl\|(\wh{S} - I)f_0\bigr\|_2^2 & = f_0^{\top} \Lap^{1/2} \Lap^{-1/2}\bigl(\wh{S} - \Id\bigr) \Lap^{-1/2} \Lap^{1/2} f_0 \\
+& \leq f_0^{\top} \Lap f_0 \cdot \lambda_n\Bigl(\Lap^{-1/2}\bigl(\wh{S} - \Id\bigr)\Lap^{-1/2}\Bigr) \\
+& = f_0^{\top} \Lap f_0 \cdot \max_{k \in [n]} \biggl\{\frac{1}{\lambda_k} \Bigl(1 - \frac{1}{\rho\lambda_k + 1}\Bigr) \biggr\} \\
+& = f_0^{\top} \Lap f_0 \cdot \rho.
+\end{aligned}
+\end{equation*} 
+In the above, we have written $\Lap^{-1/2}$ for the square root of the pseudoinverse of $\Lap$, and the maximum is over all indices $k$ such that $\lambda_k > 0$. The claim of the Lemma then follows from Lemma~\ref{lem:linear_smoother_fixed_graph_estimation}.
+
+\paragraph{Proof of Lemma~\ref{lem:ls_fixed_graph_testing}.}
+Let $\wh{S} := (\rho \Lap + \Id)^{-1}$, and note that $\wh{T} = \frac{1}{n}{\bf Y}^{\top} \wh{S}^2 {\bf Y}$. The bound on Type I error~\eqref{eqn:ls_fixed_graph_testing_typeI} follows immediately from \eqref{eqn:linear_smoother_fixed_graph_testing_typeI}. 
+To establish the bound on Type II error, we must lower bound $f_0^{\top} \wh{S}^2 f_0$. We first note that by assumption~\eqref{eqn:ls_fixed_graph_testing_critical_radius},
+\begin{align*}
+f_0^{\top} \wh{S}^2 f_0 & = \bigl\|f_0\bigr\|_2^2 - f_0^{\top}(I - \wh{S}^2)f_0 \\
+& \geq 2 \rho \bigl(f_0^{\top} \Lap f_0\bigr) - f_0^{\top}\bigl(I - \wh{S}^2\bigr)f_0 + 4b \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{-1/2}.
+\end{align*}
+Upper bounding $f_0^{\top}\bigl(I - \wh{S}^2\bigr)f_0$ as follows:
+\begin{equation*}
+\begin{aligned}
+f_0^{\top} \Bigl(\Id - \wh{S}^2\Bigr) f_0  & = f_0^{\top} \Lap^{1/2} \Lap^{-1/2}\Bigl(\Id - \wh{S}^2\Bigr) \Lap^{-1/2} \Lap^{1/2} f_0 \\ 
+& \leq f_0^{\top} \Lap f_0 \cdot  \lambda_{n}\biggl(\Lap^{-1/2}\Bigl(\Id - \wh{S}^2\Bigr) \Lap^{-1/2}\biggr) \\ 
+& \overset{(i)}{=}  f_0^{\top} \Lap f_0 \cdot \max_{k} \biggl\{ \frac{1}{\lambda_k} \Bigl(1 - \frac{1}{(\rho \lambda_k + 1)^2}\Bigr) \biggr\} \\
+& \overset{(ii)}{\leq} f_0^{\top} \Lap f_0 \cdot 2\rho,
+\end{aligned}
+\end{equation*}
+---where in the above the maximum is over all indices $k$ such that $\lambda_k > 0$, and the last inequality follows from the basic algebraic identity $1 - 1/(1 + x)^2 \leq 2 x$ for any $x > 0$---we deduce that
+\begin{equation*}
+f_0^{\top} \wh{S}^2 f_0 \geq 2b \biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \biggr)^{-1/2}.
+\end{equation*} 
+The upper bound on Type II error~\eqref{eqn:ls_fixed_graph_testing_typeII} then follows from Lemma~\ref{lem:linear_smoother_fixed_graph_testing}.
+
+\section{Neighborhood graph Sobolev semi-norm}
+\label{sec:graph_sobolev_seminorm}
+In this section, we prove Lemma~\ref{lem:graph_sobolev_seminorm}, which states an upper bound on $f^{\top} \Lap_{n,r} f$ that holds when $f$ is bounded in Sobolev norm. We also establish stronger bounds in the case when $f$ has a bounded Lipschitz constant; this latter result justifies one of our remarks after Theorem~\ref{thm:laplacian_smoothing_estimation1}. 
+
+To prove Lemma~\ref{lem:graph_sobolev_seminorm}, we will show that for any $f \in H^1(\Xset)$,
+\begin{equation*}
+\Ebb\Bigl[f^{\top} \Lap_{n,r} f\Bigr] \leq C_2 n^2 r^{d + 2} \|f\|_{H^1(\Xset)}^2,
+\end{equation*}
+whence the claim follows immediately by Markov's inequality (recall that $\Lap_{n,r}$ is positive semi-definite, and therefore $f^{\top} \Lap_{n,r} f$ is a non-negative random variable).
+
+Since
+\begin{equation*}
+f^{\top} \Lap_{n,r} f = \frac{1}{2}\sum_{i, j = 1}^{n} \bigl(f(X_i) - f(X_j)\bigr)^2 W_{ij},
+\end{equation*}
+it follows that
+\begin{equation}
+\label{pf:first_order_graph_sobolev_seminorm_1}
+\Ebb\Bigl[f^{\top} \Lap_{n,r} f\Bigr] = \frac{n(n - 1)}{2} \Ebb\biggl[\Bigl(f(X') - f(X)\Bigr)^2 K\biggl(\frac{\|X' - X\|}{r}\biggr)\biggr]
+\end{equation}
+where $X$ and $X'$ are random variables independently drawn from $P$.
+
+Take $\Omega$ to be an arbitrary bounded open set such that $B(x,r) \subset \Omega$ for all $x \in \mc{X}$. For the remainder of this proof, we will assume that (i) $f \in H^1(\Omega)$ and additionally (ii) $\|f\|_{H^1(\Omega)} \leq C_5 \|f\|_{H^1(\mc{X})}$ for a constant $C_5$ that does not depend on $f$. This is without loss of generality, since by Theorem~1 of~\citet{evans10} there exists an extension operator $E: H^1(\mc{X}) \to H^1(\Omega)$ for which the extension $Ef$ satisfies both (i) and (ii). Additionally, we will assume $f \in C^{\infty}(\Omega)$. Again, this is without loss of generality, as $C^{\infty}(\Omega)$ is dense in $H^1(\Omega)$ and the expectation on the right hand side of~\eqref{pf:first_order_graph_sobolev_seminorm_1} is continuous in $H^1(\Omega)$. The reason for dealing with a smooth extension $f \in C^{\infty}(\Omega)$ is so that we can make sense of the following equality for any $x$ and $x'$ in $\mc{X}$:
+\begin{equation}
+\label{pf:first_order_graph_sobolev_seminorm_1.5}
+f(x') - f(x) = \int_{0}^{1} \nabla f\bigl(x + t(x' - x)\bigr)^{\top} (x' - x) \,dt.
+\end{equation}
+
+Obviously
+\begin{equation}
+\Ebb\biggl[\bigl(f(X') - f(X)\bigr)^2K\biggl(\frac{\|X' - X\|}{r}\biggr)\biggr] \leq p_{\max}^2 \int_{\Xset} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dx' \,dx, \label{pf:first_order_graph_sobolev_seminorm_2}
+\end{equation}
+so that it remains now to bound the double integral. Replacing difference by integrated derivative as in~\eqref{pf:first_order_graph_sobolev_seminorm_1.5}, we obtain
+\begin{align}
+\int_{\Xset} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dx' \,dx & = \int_{\Xset} \int_{\Xset} \biggl[\int_{0}^{1} \nabla f\bigl(x + t(x' - x)\bigr)^{\top} (x' - x)\,dt\biggr]^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dx' \,dx \nonumber \\
+& \overset{(i)}{\leq} \int_{\Xset} \int_{\Xset} \int_{0}^{1} \biggl[\nabla f\bigl(x + t(x' - x)\bigr)^{\top} (x' - x)\biggr]^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dt\,dx' \,dx \nonumber \\
+& \overset{(ii)}{\leq} r^{d + 2} \int_{\Xset} \int_{B(0,1)} \int_{0}^{1} \biggl[\nabla f\bigl(x + trz\bigr)^{\top} z\biggr]^2 K\bigl(\|z\|\bigr) \,dt\,dz \,dx \nonumber \\
+&  \overset{(iii)}{\leq} r^{d + 2} \int_{\Omega} \int_{B(0,1)} \int_{0}^{1} \Bigl[\nabla f\bigl(\wt{x}\bigr)^{\top} z\Bigr]^2 K\bigl(\|z\|\bigr) \,dt \,dz \,d\wt{x} \label{pf:first_order_graph_sobolev_seminorm_3} 
+\end{align}
+where $(i)$ follows by Jensen's inequality, $(ii)$ follows by substituting $z = (x' - x)/r$ and~\ref{asmp:kernel}, and $(iii)$ by exchanging integrals, substituting $\wt{x} = x + trz$, and noting that $x \in \mc{X}$ implies that $\wt{x} \in \Omega$.
+
+Now, writing $\bigl(\nabla f(\wt{x}) ^{\top} z\bigr)^2 = \bigl(\sum_{i = 1}^{d} z_{i} f^{(e_i)}(x) \bigr)^2$, expanding the square and integrating, we have that for any $\wt{x} \in \Xset$,
+\begin{align*}
+\int_{B(0,1)} \Bigl[\nabla f\bigl(\wt{x}\bigr)^{\top} z\Bigr]^2 K\bigl(\|z\|\bigr) \,dz & = \sum_{i,j = 1}^{d} f^{(e_i)}(\wt{x}) f^{(e_j)}(\wt{x}) \int_{\Rd} z_iz_jK(\|z\|) \,dz \\
+& = \sum_{i = 1}^{d} \bigl(f^{(e_i)}(\wt{x})\bigr)^2 \int_{B(0,1)} z_i^2 K\bigl(\|z\|\bigr) \,dz \\
+& = \sigma_K \|\nabla f(\wt{x})\|^2,
+\end{align*}
+where the last equality follows from the rotational symmetry of $K(\|z\|)$. Plugging back into~\eqref{pf:first_order_graph_sobolev_seminorm_3}, we obtain
+\begin{equation*}
+\int_{\Xset} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dx' \,dx \leq r^{d + 2} \sigma_K \|f\|_{H^1(\Omega)}^2 \leq C_5 r^{d + 2} \sigma_K \|f\|_{H^1(\mc{X})}^2,
+\end{equation*}
+proving the claim of Lemma~\ref{lem:graph_sobolev_seminorm} upon taking $C_2 := C_5 \sigma_K p_{\max}^2$ in the statement of the lemma.
+
+\subsection{Stronger bounds under Lipschitz assumption}
+Suppose $f$ satisfies $|f(x') - f(x)| \leq M \|x - x\|$ for all $x,x' \in \mc{X}$. Then we can strengthen the high probability bound in Lemma~\ref{lem:graph_sobolev_seminorm} from $1 - \delta$ to $1 - \delta^2/n$, at the cost of only a constant factor in the upper bound on $f^{\top} \Lap_{n,r} f$.
+\begin{proposition}
+	\label{prop:graph_sobolev_seminorm_lipschitz}
+	Let $r \geq C_0(\log n/n)^{1/d}$. For any $f$ such that $|f(x') - f(x)| \leq M \|x - x\|$ for all $x,x' \in \mc{X}$, with probability at least $1 - C\delta^2/n$ it holds that
+	\begin{equation*}
+	f^{\top} \Lap_{n,r} f \leq \biggl(\frac{1}{\delta} + C_2\biggr) n^2 r^{d + 2} M^2
+	\end{equation*}
+\end{proposition}
+\paragraph{Proof of Proposition~\ref{prop:graph_sobolev_seminorm_lipschitz}.}
+We will prove Proposition~\ref{prop:graph_sobolev_seminorm_lipschitz} using Chebyshev's inequality, so the key step is to upper bound the variance of $f^{\top}\Lap_{n,r}f$. Putting $\varDelta_{ij} := K(\|X_i - X_j\|/r) \cdot (f(X_i) - f(X_j))^2$, we can write the variance of $f^{\top} \Lap_{n,r} f$ as a sum of covariances,
+\begin{equation*}
+\Var\bigl[f^{\top} \Lap_{n,r} f\bigr] = \frac{1}{4} \sum_{i, j = 1}^{n} \sum_{\ell,m = 1}^{n} \Cov\bigl[\varDelta_{ij},\varDelta_{\ell m}\bigr].
+\end{equation*}
+Clearly $\Cov\bigl[\varDelta_{ij},\varDelta_{\ell m}\bigr]$ depends on the cardinality of $I := \{i,j,k,\ell\}$; we divide into cases, and upper bound the covariance in each case.
+\begin{enumerate}
+	\item[$\bigl|I\bigr| = 4$.] In this case $\varDelta_{ij}$ and $\varDelta_{\ell m}$ are independent, and $\Cov\bigl[\varDelta_{ij},\varDelta_{\ell m}\bigr] = 0$.
+	\item[$\bigl|I\bigr| = 3$.] Taking $i = \ell$ without loss of generality, and noting that the expectation of $\Delta_{ij}$ and $\Delta_{im}$ is non-negative, we have
+	\begin{align*}
+	\Cov\bigl[\varDelta_{ij},\varDelta_{i m}\bigr] & \leq \Ebb\bigl[\varDelta_{ij} \varDelta_{i m} \bigr] \\
+	& = \int_{\Xset} \int_{\Xset} \int_{\Xset} \bigl(f(z) - f(x)\bigr)^2 \bigl(f(x') - f(x)\bigr)^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) K\biggl(\frac{\|z - x\|}{r}\biggr) p(z) p(x') p(x) \,dz \,dx' \,dx \\
+	& \leq p_{\max}^3 M^4 r^4 \int_{\Xset} \int_{\Xset} \int_{\Xset} K\biggl(\frac{\|x' - x\|}{r}\biggr) K\biggl(\frac{\|z - x\|}{r}\biggr) \,dz \,dx' \,dx \\
+	& \leq p_{\max}^3 M^4 r^{4 + 2d}.
+	\end{align*}
+	\item[$\bigl|I\bigr| = 2$.] Taking $i = \ell$ and $j = m$ without loss of generality, we have
+	\begin{align*}
+	\Var\bigl[\varDelta_{ij}\bigr] & \leq \Ebb\bigl[\varDelta_{ij}^2\bigr] \\
+	& \leq \int_{\Xset} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^4 \biggl[K\biggl(\frac{\|x' - x\|}{r}\biggr)\biggr]^2 p(x') p(x) \,dx' \,dx \\
+	& \leq p_{\max}^2 M^4 r^4 K(0) \int_{\Xset} \int_{\Xset} K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dx' \,dx \\
+	& \leq p_{\max}^2 M^4 r^{4 + d} K(0)
+	\end{align*}
+	\item[$\bigl|I\bigr| = 1$.] In this case $\varDelta_{i j} = \varDelta_{\ell m} = 0$.
+\end{enumerate}
+Therefore
+\begin{equation*}
+\Var\bigl[f^{\top} \Lap_{n,r} f\bigr] \leq n^3 p_{\max}^3 M^4 r^{4 + 2d} + n^2 p_{\max}^2 M^4 r^{4 + d} K(0) \leq C M^4 n^3r^{4 + 2d},
+\end{equation*}
+where the latter inequality follows since $nr^d \gg 1$. For any $\delta > 0$, it follows from Chebyshev's inequality that
+\begin{equation*}
+\Pbb\biggl(\Bigl|f^{\top} \Lap_{n,r} f - \Ebb\bigl[f^{\top} \Lap_{n,r} f\bigr]\Bigr| \geq \frac{M^2}{\delta}n^2 r^{d + 2}\biggr) \leq C\frac{\delta^2}{n}
+\end{equation*}
+and since we have already upper bounded $\Ebb\bigl[f^{\top} \Lap_{n,r} f\bigr] \leq C_2 M^2 n^2 r^{d + 2}$, the proposition follows. 
+
+Note that the bound on $\Var[\varDelta_{i j}]$ follows as long as we can control $\|\nabla f\|_{\Leb^4(\Xset)}$; this implies the Lipschitz assumption---which gives us control of $\|\nabla f\|_{\Leb^{\infty}(\Xset)}$---can be weakened. However, the Sobolev assumption---which gives us control only over $\|\nabla f\|_{\Leb^2(\Xset)}$---will not do the job. 
+\section{Bounds on neighborhood graph eigenvalues}
+\label{sec:graph_eigenvalues}
+In this section, we prove Lemma~\ref{lem:neighborhood_eigenvalue}, following the lead of~\citet{burago2014,trillos2019,calder2019}, who establish similar results with respect to a manifold without boundary. To prove this lemma, in  Theorem~\ref{thm:neighborhood_eigenvalue} we give estimates on the difference between eigenvalues of the graph Laplacian $L_{n,r}$ and eigenvalues of the weighted Laplace-Beltrami operator $\Delta_P$. We recall $\Delta_P$ is defined as
+\begin{equation*}
+\Delta_Pf(x) := -\frac{1}{p(x)} \dive\bigl(p^2\nabla f\bigr)(x)
+\end{equation*}
+To avoid confusion, in this section we write $\lambda_k(G_{n,r})$ for the $k$th smallest eigenvalue of the graph Laplacian matrix $\Lap_{n,r}$ and $\lambda_k(\Delta_P)$ for the $k$th smallest eigenvalue of $\Delta_P$ \footnote{Under the assumptions~\ref{asmp:domain} and~\ref{asmp:bounded_lipschitz_density}, the operator $\Delta_P$ has a discrete spectrum; see \citet{garciatrillos18} for more details.}. Some other notation: throughout this section, we will write $A, A_0, A_1,\ldots$ and $a,a_0,a_1,\ldots$ for constants which may depend on $\Xset$, $d$, $K$, and $p$, but do not depend on $n$; we keep track of all such constants explicitly in our proofs. We let $L_K$ denote the Lipschitz constant of the kernel $K$. Finally, for notational ease we set $\theta$ and $\wt{\delta}$ to be the following (small) positive constants.
+\begin{equation}
+\label{asmp:smallness}
+\wt{\delta} := \max\Biggl\{n^{-1/d}, \min\biggl\{\frac{1}{2^{d + 3}A_0}, \frac{1}{A_3}, \frac{K(1)}{8L_KA_0}, \frac{1}{8\max\{A_1,A\}c_0}\biggr\}r\Biggr\},~~\textrm{and}~~
+\theta := \frac{1}{8\max\{A_1,A\}}.
+\end{equation} 
+We note that each of $\wt{\delta}, \theta$ and $\wt{\delta}/r$ are of at most constant order. 
+
+\begin{theorem}
+	\label{thm:neighborhood_eigenvalue}
+	For any $\ell \in \mathbb{N}$ such that
+	\begin{equation}
+	\label{eqn:neighborhood_eigenvalue_1}
+	1 - A\Biggl(r \sqrt{\lambda_{\ell}(\Delta_P)} + \theta + \wt{\delta}\Biggr)\geq \frac{1}{2}
+	\end{equation}
+	with probability at least $1 - A_0n\exp(-a_0n\theta^2\wt{\delta}^{d})$, it holds that
+	\begin{equation}
+	\label{eqn:eigenvalue_bound}
+	a \lambda_k(G_{n,r}) \leq nr^{d+2} \lambda_k(\Delta_P) \leq A \lambda_k(G_{n,r}),~~\textrm{for all $1 \leq k \leq \ell$}
+	\end{equation}
+\end{theorem}
+We note that Theorem~\ref{thm:neighborhood_eigenvalue} is not a strong enough result to imply that $\lambda_{k}(G_{n,r})$ is a consistent estimate of $\lambda_k(\Delta_P)$, i.e. it does not imply that $|(nr^{d + 2})^{-1}\lambda_{k}(G_{n,r}) - \lambda_k(\Delta_P)| \to 0$ as $n \to \infty, r \to 0$. This is contrast to the results of~\citet{burago2014,trillos2019,calder2019}, whose results do imply consistency when the domain is assumed to be a manifold without boundary. While a more subtle analysis might imply consistency in our setting, the conclusion of Theorem~\ref{thm:neighborhood_eigenvalue}---that $\lambda_k(G_{n,r})/(nr^{d + 2}\lambda_k(\Delta_P))$ is bounded above and below by constants---suffices for our purposes.  
+
+The bulk of this section is devoted to the proof of Theorem~\ref{thm:neighborhood_eigenvalue}. First, however, we show that our regularity under our conditions on $p$ and $\Xset$, Lemma~\ref{lem:neighborhood_eigenvalue} is a simple consequence of Theorem~\ref{thm:neighborhood_eigenvalue}. The link between the two is Weyl's Law.
+\begin{proposition}[Weyl's Law]
+	\label{prop:weyl}
+	Suppose the density $p$ and the domain $\Xset$ satisfy~\ref{asmp:domain} and~\ref{asmp:bounded_lipschitz_density}. Then there exist constants $a_2$ and $A_2$ such that
+	\begin{equation}
+	\label{eqn:weyls_law}
+	a_2k^{2/d} \leq \lambda_k(\Delta_P) \leq A_2k^{2/d}~~\textrm{for all $k \in \mathbb{N}, k > 1$}.
+	\end{equation}
+\end{proposition}
+See Lemma 28 of~\citet{dunlop2020} for a proof that~\ref{asmp:domain} and~\ref{asmp:bounded_lipschitz_density} imply Weyl's Law.
+\paragraph{Proof of Lemma~\ref{lem:neighborhood_eigenvalue}.}
+Put
+\begin{equation*}
+\ell_{\star} = \floor{\biggl(\frac{\bigl(1/(2A) - (\theta + \wt{\delta})\bigr)}{rA_2^{1/2}}\biggr)^d}.
+\end{equation*}
+Let us verify that $\lambda_{\ell_{\star}}(\Delta_P)$ satisfies the condition~\ref{eqn:neighborhood_eigenvalue_1} of Theorem~\ref{thm:neighborhood_eigenvalue}. Setting $c_0 := 1/(2^{1/d}4A_2^{1/2})$, the assumed upper bound on the radius $r < c_0$ in \ref{asmp:radius1} guarantees that $\ell_{\star} \geq 2$. Therefore, by Proposition~\ref{prop:weyl} we have that
+\begin{align*}
+\sqrt{\lambda_{\ell_{\star}}(\Delta_P)} \leq A_2^{1/2}\ell_{\star}^{1/d} \leq  \frac{1}{r}\biggl(\frac{1}{2A} - (\theta + \wt{\delta})\biggr).
+\end{align*}
+Rearranging the above inequality shows that condition~\eqref{eqn:neighborhood_eigenvalue_1} is satisfied. 
+
+It is therefore the case that the inequalities in~\eqref{eqn:eigenvalue_bound} hold with probability at least $1 - A_0n\exp(-a_0n\theta^2\wt{\delta}^{m})$. Together, \eqref{eqn:eigenvalue_bound} and \eqref{eqn:weyls_law} imply the following bounds on the graph Laplacian eigenvalues:
+\begin{equation*}
+\frac{a}{A_2} nr^{d + 2} k^{2/d} \leq \lambda_k(G_{n,r}) \leq \frac{A}{a_2} nr^{d + 2} k^{2/d}~~\textrm{for all $2 \leq k \leq \ell_{\star}$}.
+\end{equation*}
+It remains to bound $\lambda_k(G_{n,r})$ for those indices $k$ which are greater than $\ell_{\star}$. On the one hand, since the eigenvalues are sorted in ascending order, we can use the lower bound on $\lambda_{\ell_{\star}}(G_{n,r})$ that we have just derived:
+\begin{equation*}
+\lambda_k(G_{n,r}) \geq \lambda_{\ell_{\star}}(G_{n,r}) \geq \frac{a_2}{A}nr^{d + 2}\ell_{\star}^{2/d} \geq \frac{a_2}{64A^3 A_2} nr^{d}.
+\end{equation*}
+On the other hand, for any graph $G$ the maximum eigenvalue of the Laplacian is upper bounded by twice the maximum degree \citep{chung97}. Writing $D_{\max}(G_{n,r})$ for the maximum degree of $G_{n,r}$, it is thus a consequence of Lemma~\ref{lem:max_degree} that
+\begin{equation*}
+\lambda_k(G_{n,r}) \leq 2D_{\max}(G_{n,r}) \leq 4p_{\max}nr^d 
+\end{equation*}
+with probability at least $1 - 2n\exp\Bigl(-nr^dp_{\min}/(3K(0)^2)\Bigr)$. In sum, we have shown that with probability at least $1 - A_0n\exp(-a_0n\theta^2\wt{\delta}^{d}) - 2n\exp\Bigl(-nr^dp_{\min}/(3K(0)^2)\Bigr)$,
+\begin{equation*}
+\min\biggl\{\frac{a_2}{A}nr^{d + 2}k^{2/d}, \frac{a_2}{A^3 64 A_3} nr^d\biggr\} \leq \lambda_k(G_{n,r}) \leq \min\biggl\{\frac{A_2}{a}nr^{2 + d}k^{2/d}, 4p_{\max}nr^d\biggr\}~~\textrm{for all $2 \leq k \leq n$.}
+\end{equation*}
+Lemma~\ref{lem:neighborhood_eigenvalue} then follows upon setting
+\begin{align*}
+C_1 & := \max\{2A_0,4\},~~ && c_1 := \min\Biggl\{\frac{p_{\min}}{3K(0)^2}, \frac{\theta^2\wt{\delta}}{r}\Biggr\} \\
+C_3 & := \max\biggl\{\frac{A_2}{a}, 4p_{\max}\biggr\},~~ && c_3 := \min\biggl\{\frac{a_2}{A}, \frac{a_2}{A^3 64 A_3} \biggr\}.
+\end{align*}
+in the statement of that Lemma.
+
+\subsection{Proof of Theorem~\ref{thm:neighborhood_eigenvalue}}
+
+In this section we prove Theorem~\ref{thm:neighborhood_eigenvalue}, following closely the approach of \citet{burago2014,trillos2019,calder2019}. As in these works, we relate $\lambda_k(\Delta_P)$ and $\lambda_k(G_{n,r})$ by means of the Dirichlet energies
+\begin{equation*}
+b_r(u) := \frac{1}{n^2 r^{d+ 2}}u^{\top} \Lap_{n,r} u 
+\end{equation*}
+and
+\begin{equation*}
+D_2(f) :=
+\begin{cases*}
+\int_{\Xset} \|\nabla f(x)\|^2 p^2(x) \,dx~~ &\textrm{if $f \in H^1(\Xset)$} \\
+\infty~~ & \textrm{otherwise,}
+\end{cases*}
+\end{equation*}
+Let us pause briefly to motivate the relevance of $b_r(u)$ and $D_2(f)$. In the following discussion, recall that for a function $u: \{X_1,\ldots,X_n\} \to \Reals$, the empirical norm is defined as $\|u\|_n^2 := \frac{1}{n} \sum_{i = 1}^{n} (u(X_i))^2$, and the class $\Leb^2(P_n)$ consists of those $u \in \Reals^n$ for which $\|u\|_{n} < \infty$. Similarly, for a function $f: \Xset \to \Reals$, the $L^2(P)$ norm of $f$ is
+\begin{equation*}
+\|f\|_{P}^2 := \int_{\Xset} \bigl|f(x)\bigr|^2 p(x) \,dx,
+\end{equation*} 
+and the class $\Leb^2(P)$ consists of those $f$ for which $\|f\|_P < \infty$. Now, suppose one could show the following two results: 
+\begin{enumerate}[(1)]
+	\item an upper bound of $b_r(u)$ by $D_2\bigl(\mc{I}(u)\bigr)$ for an appropriate choice of interpolating map $\mc{I}: \Leb^2(P_n) \to \Leb^2(\mc{X})$, and vice versa an upper bound of $D_2(f)$ by $b_r(\mc{P}(f))$ for an appropriate choice of discretization map $\mc{P}: \Leb^2(\mc{X}) \to \Leb^2(P_n)$,
+	\item that $\mc{I}$ and $\mc{P}$ were near-isometries, meaning $\|\mc{I}(u)\|_{P} \approx \|u\|_{n}$ and $\|\mc{P}(f)\|_{P} \approx \|f\|_{n}$.
+\end{enumerate}
+Then, by using the variational characterization of eigenvalues $\lambda_k(\Delta_P)$ and $\lambda_k(G_{n,r})$---i.e. the Courant-Fischer Theorem---one could obtain estimates on the error $\bigl|nr^{d + 2}\lambda_k(\Delta_P) - \lambda_k(G_{n,r})\bigr|$.
+
+We will momentarily define particular maps $\wt{\mc{I}}$ and $\wt{\mc{P}}$, and establish that they satisfy both (1) and (2). In order to define these maps, we must first introduce a particular probability measure $\wt{P}_n$ that, with high probability, is close in transportation distance to both $P_n$ and $P$. This estimate on the transportation distance---which we now give---will be the workhorse that allows us to relate $b_r$ to $D_2$, and $\|\cdot\|_n$ to $\|\cdot\|_P$.
+
+\paragraph{Transportation distance between $P_n$ and $P$.}
+For a measure $\mu$ defined on $\Xset$ and map $T: \Xset \to \Xset$, let $T_{\sharp}\mu$ denote the \emph{push-forward} of $\mu$ by $T$, i.e the measure for which
+\begin{equation*}
+\bigl(T_{\sharp}\mu\bigr)(U) := \mu\bigl(T^{-1}(U)\bigr)
+\end{equation*}
+for any Borel subset $U \subseteq \Xset$. Suppose $T_{\sharp}\mu = P_n$; then the map $T$ is referred to as transportation map between $\mu$ and $P_n$. The  $\infty$-transportation distance between $\mu$ and $P_n$ is then
+\begin{equation}
+\label{eqn:optimal_transport}
+d_{\infty}(\mu,P_n) := \inf_{T: T_{\sharp} \mu = P_n} \|T - \mathrm{Id}\|_{L^{\infty}(\mu)}
+\end{equation}
+where $\mathrm{Id}(x) = x$ is the identity mapping.
+
+\citet{calder2019} take $\Xset$ to be a smooth submanifold of $\Rd$ without boundary, i.e. they assume $\Xset$ satisfies~\ref{asmp:domain_manifold}. In this setting, they exhibit an absolutely continuous measure $\wt{P}_n$ with density $\wt{p}_n$ that with high probability is close to $P_n$ in transportation distance, and for which $\|p - \wt{p}_n\|_{\Leb^\infty}$ is also small. In Proposition~\ref{prop:optimal_transport}, we adapt this result to the setting of full-dimensional manifolds with boundary.  
+\begin{proposition}
+	\label{prop:optimal_transport}
+	Suppose $\Xset$ satisfies~\ref{asmp:domain} and $p$ satisfies~\ref{asmp:bounded_lipschitz_density}. Then with probability at least $1 - A_0 n \exp\bigl\{-a_0 n\theta^2\wt{\delta}^d\bigr\}$, the following statement holds: there exists a probability measure $\wt{P}_n$ with density $\wt{p}_n$ such that:
+	\begin{equation}
+	\label{eqn:optimal_transport_1}
+	d_{\infty}(\wt{P}_n, P_n) \leq A_0 \wt{\delta}
+	\end{equation}
+	and
+	\begin{equation}
+	\label{eqn:optimal_transport_2}
+	\|\wt{p}_n - p\|_{\infty} \leq A_0\bigl(\wt{\delta} + \theta\bigr)
+	\end{equation}
+\end{proposition}
+For the rest of this section, we let $\wt{P}_n$ be a probability measure with density $\wt{p}_n$, that satisfies the conclusions of Proposition~\ref{prop:optimal_transport}. Additionally we denote by $\wt{T}_n$ an \emph{optimal transport map} between $\wt{P}_n$ and $P_n$, meaning a transportation map which achieves the infimum in~\eqref{eqn:optimal_transport}. Finally, we write $U_1,\ldots,U_n$ for the preimages of $X_1,\ldots,X_n$ under $\wt{T}_n$, meaning $U_i = \wt{T}_n^{-1}(X_i)$. 
+
+\paragraph{Interpolation and discretization maps.}
+The discretization map  $\wt{\mathcal{P}}: \Leb^2(\Xset) \to \Leb^2(P_n)$ is given by averaging over the cells $U_1,\ldots,U_n$, 
+\begin{equation*}
+\bigl(\wt{\mathcal{P}}f\bigr)(X_i) := n \cdot \int_{U_i} f(x) \wt{p}_n(x) \,dx.
+\end{equation*}
+On the other hand, the interpolation map $\wt{\mc{I}}: \Leb^2(P_n) \to \Leb^2(\Xset)$ is defined as $\wt{\mc{I}}u := \Lambda_{r - 2A_0\wt{\delta}}(\wt{\mc{P}}^{\star}u)$. Here, $\wt{\mc{P}}^{\star} = u \circ \wt{T}$ is the adjoint of $\wt{\mc{P}}$, i.e.
+\begin{equation*}
+\bigl(\wt{\mc{P}}^{\star}u\bigr)(x) = \sum_{j = 1}^{n} u(x_i) \1\{x \in U_i\} 
+\end{equation*} 
+and $\Lambda_{r - 2A_0\wt{\delta}}$ is a kernel smoothing operator, defined with respect to a carefully chosen kernel $\psi$. To be precise, for any $h > 0$,
+\begin{equation*}
+\Lambda_h(f) := \frac{1}{h^d\tau_h(x)}\int_{\Xset} \eta_h(x',x) f(x') \,dx',~~ \eta_h(x',x) := \psi\biggl(\frac{\|x' - x\|}{r}\biggr)
+\end{equation*}
+where $\psi(t) := (1/\sigma_K)\int_{t}^{\infty} s K(s) \,ds$ and $\tau_h(x) := (1/h^d)\int_{\Xset} \eta_h(x',x) \,dx'$ is a normalizing constant.
+
+Propositions~\ref{prop:dirichlet_energies} and~\ref{prop:isometry} establish our claims regarding $\wt{\mc{P}}$ and $\wt{\mc{I}}$: first, that they approximately preserve the Dirichlet energies $b_r$ and $D_2$, and second that they are near-isometries for functions $u \in \Leb^2(P_n)$ (or $f \in \Leb^2(P)$) of small Dirichlet energy $b_r(u)$ (or $D_2(f)$).
+
+\begin{proposition}[\textbf{c.f. Proposition 4.1 of \citet{calder2019}}]
+	\label{prop:dirichlet_energies}
+	With probability at least $1 - A_0n\exp(-a_0n\theta^2\wt{\delta}^{m})$, we have the following.
+	\begin{enumerate}[(1)]
+		\item For every $u \in \Leb^2(P_n)$,
+		\begin{equation}
+		\label{eqn:dirichlet_energies_1}
+		\sigma_{K} D_2(\wt{\mc{I}}u) \leq A_8 \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \biggl(1 + A_3\frac{\wt{\delta}}{r}\biggr) b_r(u)
+		\end{equation}
+		\item For every $f \in \Leb^2(\Xset)$,
+		\begin{equation}
+		\label{eqn:dirichlet_energies_2}
+		b_r(\wt{\mc{P}}f) \leq \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \Bigl(1 + A_9\frac{\wt{\delta}}{r}\Bigr) \cdot \Bigl(\frac{C_5 p_{\max}^2}{p_{\min}^2}\Bigr) \cdot \sigma_{K} D_2(f)
+		\end{equation}
+	\end{enumerate}
+\end{proposition}
+
+\begin{proposition}[\textbf{c.f. Proposition 4.2 of \citet{calder2019}}]
+	\label{prop:isometry}
+	With probability at least $1 - A_0n\exp(-a_0n\theta^2\wt{\delta}^{m})$, we have the following.
+	\begin{enumerate}[(1)]
+		\item For every $f \in \Leb^2(\Xset)$,
+		\begin{equation}
+		\label{eqn:isometry_1}
+		\Bigl|\|f\|_{P}^2 - \|\wt{\mc{P}}f\|_{n}^2\Bigr| \leq A_5 r \|f\|_{P} \sqrt{D_2(f)} + A_1\bigl(\theta + \wt{\delta}\bigr)\|f\|_{P}^2
+		\end{equation}
+		\item For every $u \in \Leb^2(P_n)$,
+		\begin{equation}
+		\label{eqn:isometry_2}
+		\Bigl|\|\wt{\mc{I}}u\|_{P}^2 - \|u\|_{n}^2\Bigr| \leq A_6 r \|u\|_{n} \sqrt{b_r(u)} + A_7\bigl(\theta + \wt{\delta}\bigr) \|u\|_{n}^2
+		\end{equation}
+	\end{enumerate}
+\end{proposition}
+
+We will devote most of the rest of this section to the proofs of Propositions~\ref{prop:optimal_transport},~\ref{prop:dirichlet_energies}, and~\ref{prop:isometry}. First, however, we use these propositions to prove Theorem~\ref{thm:neighborhood_eigenvalue}.
+
+\paragraph{Proof of Theorem~\ref{thm:neighborhood_eigenvalue}.}
+Throughout this proof, we assume that inequalities~\eqref{eqn:dirichlet_energies_1}-\eqref{eqn:isometry_2} are satisfied. We take $A$ and $a$ to be positive constants such that
+\begin{align*}
+\frac{1}{a} & \geq 2\Bigl(1 + A_1(\theta + \wt{\delta})\Bigr)\Bigl(1 + A_9\frac{\wt{\delta}}{r}\Bigr)\Bigl(\frac{C_5 p_{\max}^2}{p_{\min}^2}\Bigr) ,~~\textrm{and}~~A \geq \max\Biggl\{A_1,A_5, \frac{1}{\sqrt{a}}A_6, A_7, 2A_8\biggl(1 + A_1(\theta + \wt{\delta})\biggr) \biggl(1 + A_3\frac{\wt{\delta}}{r}\biggr) \Biggr\}.
+\end{align*}
+
+Let $k$ be any number in $1,\ldots,\ell$. We start with the upper bound in~\eqref{eqn:eigenvalue_bound}, proceeding as in Proposition 4.4 of \citet{burago2014}. Let $f_1,\ldots,f_{k}$ denote the first $k$ eigenfunctions of $\Delta_P$ and set $W := \mathrm{span}\{f_1,\ldots,f_k\}$, so that by the Courant-Fischer principle $D_2(f) \leq \lambda_k(\Delta_P) \|f\|_{P}^2$ for every $f \in W$. As a result, by Part (1) of Proposition~\ref{prop:isometry} we have that for any $f \in W$,
+\begin{equation*}
+\bigl\|\wt{\mc{P}}f\bigr\|_{n}^2 \geq \biggl(1 - A_5r \sqrt{\lambda_{k}(\Delta_P)} - A_1(\theta + \wt{\delta})\biggr)\|f\|_{P}^2  \geq \frac{1}{2} \|f\|_{P}^2,
+\end{equation*}
+where the second inequality follows by assumption~\eqref{eqn:neighborhood_eigenvalue_1}. 
+
+Therefore $\wt{\mc{P}}$ is injective over $W$, and $\wt{\mc{P}}W$ has dimension $\ell$. This means we can invoke the Courant-Fischer Theorem, along with Proposition \ref{prop:dirichlet_energies}, and conclude that
+\begin{align*}
+\frac{\lambda_k(G_{n,r})}{nr^{d + 2}} & \leq \max_{\substack{u \in \wt{\mc{P}}W \\ u \neq 0} } \frac{b_r(u)}{\|u\|_{n}^2} \\
+& = \max_{\substack{f \in W \\ f \neq 0} } \frac{b_r(\wt{\mc{P}}f)}{\bigl\|\wt{\mc{P}}f\bigr\|_{n}^2} \\
+& \leq 2\Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \Bigl(1 + A_9\frac{\wt{\delta}}{r}\Bigr) \cdot \Bigl(\frac{C_5 p_{\max}^2}{p_{\min}^2}\Bigr) \sigma_K \lambda_{k}(\Delta_P),
+\end{align*}
+establishing the lower bound in~\eqref{eqn:eigenvalue_bound}.
+
+The upper bound follows from essentially parallel reasoning. Recalling that $v_1,\ldots,v_k$ denote the first $k$ eigenvectors of $\Lap_{n,r}$, set $U := \mathrm{span}\{v_1,\ldots,v_k\}$, so that $nr^{d + 2} b_r(u) \leq \lambda_k(G_{n,r}) \|u\|_n^2$. By Proposition~\ref{prop:isometry}, Part (2), we have that for every $u \in U$,
+\begin{align*}
+\bigl\|\wt{\mc{I}}u\bigr\|_{P}^2 & \geq \|u\|_n^2 - A_6 r \|u\|_n \sqrt{b_r(u)} - A_7\bigl(\theta + \wt{\delta}\bigr)\|u\|_n^2 \\
+& \geq \|u\|_n^2 - A_6 r \|u\|_n^2 \sqrt{\frac{\lambda_{k}(G_{n,r})}{nr^{d + 2}}} - A_7\bigl(\theta + \wt{\delta}\bigr)\|u\|_n^2 \\
+& \geq \|u\|_n^2 - A_6 r \|u\|_n^2 \sqrt{\frac{1}{a}\lambda_k(\Delta_P)} - A_7\bigl(\theta + \wt{\delta}\bigr)\|u\|_n^2 \\
+& \geq \frac{1}{2}\|u\|_n^2
+\end{align*}
+where the second to last inequality follows from the lower bound $a \lambda_k(G_{n,r}) \leq nr^{d + 2}\lambda_k(\Delta_P)$ that we just derived, and the last inequality from assumption~\eqref{eqn:neighborhood_eigenvalue_1}.
+
+Therefore $\wt{\mc{I}}$ is injective over $U$, $\wt{\mc{I}}U$ has dimension $k$, and by Proposition~\ref{prop:dirichlet_energies} we conclude that
+\begin{align*}
+\lambda_k(\Delta_P) & \leq \max_{u \in U} \frac{D_2(\wt{\mc{I}}u)}{\|u\|_P^2} \\
+& \leq 2A_8\biggl(1 + A_1(\theta + \wt{\delta})\biggr) \biggl(1 + A_3 \frac{\wt{\delta}}{r}\biggr)\max_{u \in U} \frac{b_r(u)}{\|u\|_n^2} \\
+& \leq 2A_8\biggl(1 + A_1(\theta + \wt{\delta})\biggr) \biggl(1 + A_3\frac{\wt{\delta}}{r}\biggr) \frac{\lambda_k(G_{n,r})}{nr^{d + 2}}
+\end{align*}
+establishing the upper bound in~\eqref{eqn:eigenvalue_bound}.
+
+
+
+\paragraph{Organization of this section.}
+The rest of this section will be devoted to proving Propositions~\ref{prop:optimal_transport},~\ref{prop:dirichlet_energies} and~\ref{prop:isometry}. To prove the latter two propositions, it will help to introduce the intermediate energies
+\begin{equation*}
+\wt{E}_r(f,\eta,V) := \frac{1}{r^{d + 2}}\int_{V} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{r}\biggr) \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx
+\end{equation*}
+and
+\begin{equation*}
+{E}_r(f,\eta,V) := \frac{1}{r^{d + 2}}\int_{V} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{r}\biggr) p(x') p(x) \,dx' \,dx
+\end{equation*}
+where $\eta: [0,\infty) \to [0,\infty)$ is an arbitrary kernel, and $V \subseteq \Xset$ is a measurable set. We will abbreviate $\wt{E}_r(f,\eta,\Xset)$ as $\wt{E}_r(f,\eta)$ and $\wt{E}_r(f,K) = \wt{E}_r(f)$ (and likewise with $E_r$.)
+
+The proof of Proposition~\ref{prop:optimal_transport} is given in Section~\ref{subsec:proof_proposition_optimal_transport}. In Section~\ref{subsec:integrals}, we establish relationships between the (non-random) functionals $E_r(f)$ and $D_2(f)$, as well as providing estimates on some assorted integrals. In Section~\ref{subsec:random_functionals}, we establish relationships between the stochastic functionals $\wt{E}_r(f)$ and $E_r(f)$,  between $\wt{E}_r\bigl(\wt{\mc{I}}(u)\bigr)$ and $b_r\bigl(u\bigr)$, and between $\wt{E}_r\bigl(f\bigr)$ and $b_r\bigl(\wt{\mc{P}}f\bigr)$. Finally, in Section~\ref{subsec:proof_of_prop_dirichlet_energies_and_isometry} we use these various relationships to prove Propositions~\ref{prop:dirichlet_energies} and~\ref{prop:isometry}.
+
+\subsection{Proof of Proposition~\ref{prop:optimal_transport}}
+\label{subsec:proof_proposition_optimal_transport}
+
+We start by defining the density $\wt{p}_n$, which will be piecewise constant over a particular partition $\mc{Q}$ of $\Xset$. Specifically, for each $Q$ in $\mc{Q}$ and every $x \in Q$, we set
+\begin{equation}
+\label{pf:prop_optimal_transport_0}
+\wt{p}_n(x) := \frac{P_n(Q)}{\vol(Q)}
+\end{equation}
+where $\vol(\cdot)$ denotes the Lebesgue measure. Then $\wt{P}_n(U) = \int_{U} \wt{p}_n(x) \dx$.
+
+We now construct the partition $\mc{Q}$, in progressive degrees of generality on the domain $\Xset.$
+\begin{itemize}
+	\item In the special case of the unit cube $\Xset = (0,1)^d$, the partition will simply be the collection of cubes
+	\begin{equation*}
+	\set{Q_k: k \in [\wt{\delta}^{-1}]^d} 
+	\end{equation*}
+	where $Q_k = \wt{\delta}\Bigl([k_1 - 1,k_1] \otimes \cdots \otimes [k_d - 1,k_d]\Bigr)$ and we assume without loss of generality that $\wt{\delta}^{-1} \in \mathbb{N}$.
+	\item If $\mc{\Xset}$ is an open, connected set with smooth boundary, then by Proposition 3.2 of \citet{trillos2015}, there exist a finite number $N(\Xset) \in \mathbb{N}$ of disjoint polytopes which cover $\Xset$. Moreover, letting $U_j$ denote the intersection of the $j$th of these polytopes with $\wb{\Xset}$, this proposition establishes that for each $j$ there exists a bi-Lipschitz homeomorphism $\Phi_j: U_j \to [0,1]^d$. We take the collection of
+	\begin{equation*}
+	\mc{Q} = \biggl\{\Phi_j^{-1}(Q_k): j = 1,\ldots,N(\Xset)~~\textrm{and}~~k \in [\wt{\delta}^{-1}]^d\biggr\}
+	\end{equation*}
+	to be our partition. Denote by $L_{\Phi}$ the maximum of the bi-Lipschitz constants of $\Phi_1,\ldots,\Phi_{N(\Xset)}$.
+	\item Finally, in the general case where $\Xset$ is an open, connected set with Lipschitz boundary, then there exists a bi-Lipschitz homeomorphism $\Psi$ between $\Xset$ and a smooth, open, connected set with Lipschitz boundary. Letting $\Phi_j$ and $\wt{Q}_{j,k}$ be as before, we take the collection
+	\begin{equation*}
+	\mc{Q} = \biggl\{\wt{Q}_{j,k} = \Bigl(\Psi^{-1} \circ \Phi_j^{-1}\Bigr)(Q_k): j = 1,\ldots,N(\Xset)~~\textrm{and}~~k \in [\wt{\delta}^{-1}]^d\biggr\}
+	\end{equation*}
+	to be our partition. Denote by $L_{\Psi}$ the bi-Lipschitz constant of $\Psi$.
+\end{itemize}
+Let us record a few facts which hold for all $\wt{Q}_{j,k} \in \mc{Q}$, and which follow from the bi-Lipschitz properties of $\Phi_j$ and $\Psi$: first that
+\begin{equation}
+\label{pf:prop_optimal_transport_1}
+\diam(\wt{Q}_{j,k}) \leq L_{\Psi} \L_{\Phi} \wt{\delta}
+\end{equation}
+and second that
+\begin{equation}
+\label{pf:prop_optimal_transport_2}
+\vol(\wt{Q}_{j,k}) \geq \biggl(\frac{1}{L_{\Psi} L_{\Phi}}\biggr)^d \wt{\delta}^d.
+\end{equation}
+We now use these facts to show that $\wt{P}_n$ satisfies the claims of Proposition~\ref{prop:optimal_transport}. On the one hand for every $Q \in \mc{Q}$, letting $N(Q)$ denote the number of design points $\{X_1,\ldots,X_k\}$ which fall in $Q$, we have
+\begin{equation*}
+\wt{P}_n(Q) = \int_{Q} \wt{p}_n(x) \,dx = P_n(Q) = \frac{N(Q)}{n}.
+\end{equation*}
+Moreover, ignoring those cells for which $N(Q) = 0$ (since $\wt{P}_n(Q) = 0$ for such $Q$, and so they do not contribute to the essential supremum in~\eqref{eqn:optimal_transport}), appropriately dividing each remaining cell $Q \in \mc{Q}$ into $N(Q)$ subsets $S_1,\ldots,S_{N(Q)}$ of equal volume, and mapping each $S_{\ell}$ to a different design point $X_i \in Q$, we can exhibit a transport map $T$ from $\wt{P}_n$ to $P_n$ for which
+\begin{equation*}
+\|T - \mathrm{Id}\|_{L^{\infty}(\wt{P}_n)} \leq \max_{Q \in \mc{Q}} \diam(Q) \leq   L_{\Psi} \L_{\Phi} \wt{\delta}.
+\end{equation*}
+On the other hand, applying the triangle inequality we have that for $x \in \wt{Q}_{j,k}$
+\begin{align*}
+|\wt{p}_n(x) - p(x)| \leq \biggl|\frac{P_n(\wt{Q}_{j,k}) - P(\wt{Q}_{j,k})}{\vol(\wt{Q}_{j,k})}\biggr| + \frac{1}{\vol(\wt{Q}_{j,k})} \int_{\wt{Q}_{j,k}} |p(x') - p(x)| \,dx 
+\end{align*}
+and using the Lipschitz property of $p$ we find that 
+\begin{equation}
+\label{pf:prop_optimal_transport_3}
+\|\wt{p}_n - p\|_{\Leb^{\infty}} \leq \max_{j,k} \biggl|\frac{P_n(\wt{Q}_{j,k}) - P(\wt{Q}_{j,k})}{\vol(\wt{Q}_{j,k})}\biggr| + L_p L_{\Phi} L_{\Psi} \wt{\delta}
+\end{equation}
+From Hoeffding's inequality and a union bound, we obtain that 
+\begin{align*}
+\mathbb{P}\biggl( \bigl|P_n(\wt{Q}) - P(\wt{Q})\bigr| & \leq \theta P(\wt{Q}) \quad \forall \wt{Q} \in \mc{Q} \biggr) \geq 1 - 2 \sharp(\mc{Q}) \cdot \exp\biggl\{-\frac{\theta^2 n \min \{P(\wt{Q})\}}{3}\biggr\} \\
+& \geq 1 - \frac{2 N(\Xset)}{\wt{\delta}^d} \cdot \exp\biggl\{-\frac{\theta^2 n p_{\min} \wt{\delta}^d }{3\bigl(L_{\Psi} L_{\Phi}\bigr)^d}\biggr\}.
+\end{align*}
+Noting that by assumption $P(\wt{Q}) \leq p_{\max} \vol(\wt{Q})$ and $\wt{\delta}^{-d} \leq n$, the claim follows upon plugging back into~\eqref{pf:prop_optimal_transport_3}, and setting
+\begin{equation*}
+a_0 := \frac{1}{3\bigl(L_{\Psi} L_{\Phi}\bigr)^d}~~\textrm{and}~~A_0 := \max \Bigl\{2N(\Xset),L_p L_{\Psi} L_{\Phi}, L_{\Psi} L_{\Phi}\Bigr\}
+\end{equation*}
+in the statement of the proposition.
+
+
+\subsection{Non-random functionals and integrals}
+\label{subsec:integrals}
+Let us start by making the following observation, which we make use of repeatedly in this section. Let $\eta: [0,\infty) \to [0,\infty)$ be an otherwise arbitrary function. As a consequence of ~\ref{asmp:domain}, there exist constants $c_0$ and $a_3$ which depend on $\Xset$, such that for any $0 < \varepsilon \leq c_0$ it holds that 
+\begin{equation}
+\label{eqn:integral_boundary}
+\int_{B(x,\varepsilon) \cap \Xset} \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \geq a_3 \cdot \int_{B(x,\varepsilon)} \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx'
+\end{equation}
+As a special case: when $\eta(x) = 1$, this implies $\vol\bigl(B(x,\varepsilon) \cap \Xset\bigr) \geq a_3 \nu_d \varepsilon^d$ for any $0 < \varepsilon \leq c_0$.
+
+We have already upper bounded $E_r(f)$ by (a constant times) $D_2(f)$ in the proof of Lemma~\ref{lem:graph_sobolev_seminorm}. In Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}, we establish the reverse inequality.
+\begin{lemma}[\textbf{c.f. Lemma 9 of \citet{trillos2019}, Lemma 5.5 of \citet{burago2014}}]
+	\label{lem:first_order_graph_sobolev_seminorm_expected_lb}
+	For any $f \in \Leb^2(\Xset)$, and any $0 < h \leq c_0$, it holds that
+	\begin{equation*}
+	\sigma_KD_2(\Lambda_hf) \leq A_8 E_h(f).
+	\end{equation*}
+\end{lemma}
+
+To prove Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}, we require upper and lower bounds on $\tau_h(x)$, as well as an upper bound on the gradient of $\tau_h$. The lower bound here---$\tau_h(x) \geq a_3$---is quite a bit a looser than what can be shown when $\Xset$ has no boundary. The same is the case regarding the upper bound of the size of the gradient $\|\nabla \tau_h(x)\|$. However, the bounds as stated here will be sufficient for our purposes.
+\begin{lemma}
+	\label{lem:tau_bound}
+	For any $0 < h \leq c_0$, for all $x \in \Xset$ it holds that
+	\begin{equation*}
+	a_3 \leq \tau_h(x) \leq 1.
+	\end{equation*}
+	and 
+	\begin{equation*}
+	\|\nabla \tau_h(x)\| \leq \frac{1}{\sqrt{d\sigma_K} h}.
+	\end{equation*}
+\end{lemma}
+
+Finally, to prove part (2) of Proposition~\ref{prop:isometry}, we require Lemma~\ref{lem:smoothening_error}, which gives an estimate on the error $\Lambda_h f - f$ in $\|\cdot\|_P^2$ norm.
+\begin{lemma}[\textbf{c.f Lemma 8 of \citet{trillos2019}, Lemma 5.4 of \citet{burago2014}}]
+	\label{lem:smoothening_error}
+	For any $0 < h \leq c_0$, 
+	\begin{equation}
+	\label{eqn:smoothening_error_norm}
+	\bigl\|\Lambda_hf\bigr\|_{P}^2 \leq \frac{p_{\max}}{a_3p_{\min}} \bigl\|f\bigr\|_{P}^2
+	\end{equation}
+	and
+	\begin{equation}
+	\label{eqn:smoothening_error_energy}
+	\bigl\|\Lambda_hf - f\bigr\|_{P}^2 \leq \frac{1}{a_3\sigma_Kp_{\min}} h^2 E_h(f)
+	\end{equation}
+	for all $f \in \Leb^2(\Xset)$.
+\end{lemma}
+
+\paragraph{Proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}.}
+For any $a \in \Reals$, $\Lambda_hf$ satisfies the identity
+\begin{equation*}
+\Lambda_hf(x) = a + \frac{1}{h^d\tau_h(x)}\int_{\Xset} \eta_h(x',x)\bigl(f(x') - a\bigr)\,dx'
+\end{equation*}
+and by differentiating with respect to $x$,  we obtain
+\begin{equation*}
+\bigl(\nabla \Lambda_hf\bigr)(x)= \frac{1}{h^d\tau_h(x)}\int_{\Xset} \bigl(\nabla \eta_h(x',\cdot)\bigr)(x)\bigl(f(x') - a\bigr)\,dx' + \nabla\biggl(\frac{1}{\tau_h}\biggr)(x)\cdot \frac{1}{h^d}\int_{\Xset} \eta_h(x',x)\bigl(f(x') - a\bigr)\,dx'
+\end{equation*} 
+Plugging in $a = f(x)$, we get $\nabla\Lambda_hf(x) = J_1(x)/\tau_h(x) + J_2(x)$ for
+\begin{equation*}
+J_1(x) := \frac{1}{h^d}\int_{\Xset} \bigl(\nabla \eta_h(x',\cdot)\bigr)(x)\bigl(f(x') - f(x)\bigr)\,dx',~~ J_2(x) := \nabla\biggl(\frac{1}{\tau_h}\biggr)(x)\cdot \frac{1}{h^d}\int_{\Xset} \eta_h(x',x)\bigl(f(x') - f(x)\bigr)\,dx'.
+\end{equation*}
+To upper bound $\bigl\|J_1(x)\bigr\|^2$, we first compute the gradient of $\eta_h(x',\cdot)$,
+\begin{align*}
+\bigl(\nabla\eta_h(x',\cdot)\bigr)(x) & = \frac{1}{h} \psi'\biggl(\frac{\|x'  - x\|}{h}\biggr) \frac{(x - x')}{\|x' - x\|} \\
+& = \frac{1}{\sigma_Kh^{2}} K\biggl(\frac{\|x' - x\|}{h}\biggr) (x' - x),
+\end{align*}
+and additionally note that $\|J_1(x)\|^2 = \sup_{w}\bigl(\langle J_1(x), w \rangle\bigr)^2$ where the supremum is over unit norm vector. Taking $w$ to be a unit norm vector which achieves this supremum, we have that
+\begin{align*}
+\bigl\|J_1(x)\bigr\|^2 & = \frac{1}{\sigma_K^2 h^{4 + 2d}} \Biggl[\int_{\Xset} \bigl(f(x') - f(x)\bigr)K\biggl(\frac{\|x' - x\|}{h}\biggr)(x' - x)^{\top}w\,dx'\Biggr]^2 \\
+& \leq \frac{1}{\sigma_K^2 h^{4 + 2d}} \biggl[\int_{\Xset}K\biggl(\frac{\|x' - x\|}{h}\biggr)\bigl((x' - x)^{\top} w\bigr)^2\,dx'\biggr] \biggl[\int_{\Xset}K\biggl(\frac{\|x' - x\|}{h}\biggr)\bigl(f(x') - f(x)\bigr)^2\,dx'\biggr].
+\end{align*}
+By a change of variables, we obtain
+\begin{align*}
+\int_{\Xset}K\biggl(\frac{\|x' - x\|}{h}\biggr)\bigl((x' - x)^{\top} w\bigr)^2\,dx' & \leq h^{d + 2} \int_{\Xset} K\bigl(\|z\|\bigr) \bigl(z^{\top} w\bigr)^2 \,dz \leq \sigma_K h^{d + 2},
+\end{align*}
+with the resulting upper bound
+\begin{equation*}
+\bigl\|J_1(x)\bigr\|^2 \leq \frac{1}{\sigma_K h^{2 + d}} \int_{\Xset}K\biggl(\frac{\|x' - x\|}{h}\biggr)\bigl(f(x') - f(x)\bigr)^2\,dx'.
+\end{equation*}
+To upper bound $\bigl\|J_2(x)\bigr\|^2$, we use the Cauchy-Schwarz inequality along with the observation $\eta_h(x',x) \leq \frac{1}{\sigma_K} K\bigl(\|x' - x\|/h\bigr)$ to deduce
+\begin{align*}
+\bigl\|J_2(x)\bigr\|^2 & \leq \Bigl\|\nabla\biggl(\frac{1}{\tau_h}\biggr)(x)\Bigr\|^2\frac{1}{h^{2d}} \biggl[\int_{\Xset}\eta_h(x',x) \,dx'\biggr] \cdot \biggl[\int_{\Xset} \eta_h(x',x)\bigl(f(x') - f(x)\bigr)^2 \,dx' \biggr] \\
+& = \Bigl\|\nabla\biggl(\frac{1}{\tau_h}\biggr)(x)\Bigr\|^2\frac{\tau_h(x)}{h^d} \int_{\Xset} \eta_h(x',x)\bigl(f(x') - f(x)\bigr)^2 \,dx'\\ 
+& \leq \Bigl\|\nabla\biggl(\frac{1}{\tau_h}\biggr)(x)\Bigr\|^2\frac{\tau_h(x)}{\sigma_K h^d}\int_{\Xset} K\biggl(\frac{\|x' - x\|}{h}\biggr)\bigl(f(x') - f(x)\bigr)^2 \,dx' \\
+& \leq \frac{1}{da_3^2\sigma_K^2h^{2 + d}} \int_{\Xset} K\biggl(\frac{\|x' - x\|}{h}\biggr)\bigl(f(x') - f(x)\bigr)^2 \,dx',
+\end{align*}
+where the last inequality follows from the estimates on $\tau_h$ and $\nabla \tau_h$ provided in Lemma~\ref{lem:tau_bound}. Combining our bounds on $\bigl\|J_1(x)\bigr\|^2$ and $\bigl\|J_2(x)\bigr\|^2$ along with the lower bound on $\tau_h(x)$ in Lemma~\ref{lem:tau_bound} and integrating over $\Xset$, we have
+\begin{align*}
+\sigma_K D_2(\Lambda_h f) & = \sigma_K\int_{\Xset} \biggl\|\Bigl(\nabla \Lambda_hf)(x)\biggr\|^2 p^2(x) \,dx \\
+& \leq 2 \sigma_K \int_{\Xset} \Biggl(\frac{\bigl\|J_1(x)\bigr\|^2}{\tau_h^2(x)} + \bigl\|J_2(x)\bigr\|^2\Biggr) p^2(x) \,dx \\
+& \leq \biggl(\frac{1}{a_3^2} + \frac{1}{da_3^2\sigma_K}\biggr)\frac{2}{h^{d + 2}} \int_{\Xset} \int_{\Xset} K\biggl(\frac{\|x' - x\|}{h}\biggr)\bigl(f(x') - f(x)\bigr)^2 p^2(x) \,dx' \,dx \\
+& \leq 2 \Bigl(1 + \frac{L_ph}{p_{\min}}\Bigr) \biggl(\frac{1}{a_3^2} + \frac{1}{da_3^2\sigma_K}\biggr) E_h(f),
+\end{align*}
+and taking $A_8 := 2 \Bigl(1 + \frac{L_pc_0}{p_{\min}}\Bigr) \biggl(\frac{1}{a_3^2} + \frac{1}{da_3^2\sigma_K}\biggr)$ completes the proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}. 
+
+\paragraph{Proof of Lemma~\ref{lem:tau_bound}.}
+We first establish our estimates of $\tau_h(x)$, and then upper bound $\|\nabla\tau_h(x)\|$. Using~\eqref{eqn:integral_boundary}, we have that
+\begin{align*}
+\tau_h(x) & = \frac{1}{h^d} \int_{\Xset \cap B(x,h)} \psi\biggl(\frac{\|x' - x\|}{h}\biggr) \,dx' \\
+& \geq \frac{a_3}{h^d} \int_{B(x,h)} \psi\biggl(\frac{\|x' - x\|}{h}\biggr) \,dx' \\
+& = a_3\int_{B(0,1)} \psi(\|z\|) \,dz,
+\end{align*}
+and it follows from similar reasoning that $\tau_h(x) \leq \int_{B(0,1)} \psi(\|z\|) \,dz$. 
+
+We will now show that $\int_{B(0,1)} \psi(\|z\|) \,dz = 1$, from which we derive the estimates $a_3 \leq \tau_h(x) \leq 1$. To see the identity, note that on the one hand, by converting to polar coordinates and integrating by parts we obtain
+\begin{align*}
+\int_{B(0,1)} \psi\bigl(\|z\|\bigr) \,dz = d \nu_d \int_{0}^{1} \psi(t) t^{d - 1} \,dt = -\nu_d \int_{0}^{1} \psi'(t) t^{d} \,dt = \frac{\nu_d}{\sigma_K} \int_{0}^{1} t^{d + 1} K(t) \,dt;
+\end{align*}
+on the other hand, again converting to polar coordinates, we have
+\begin{equation*}
+\sigma_K = \frac{1}{d} \int_{\Reals^d} \|x\|^2 K(\|x\|) \,dx = \nu_d \int_{0}^{1}t^{d + 1} K(t) \,dt,
+\end{equation*}
+and so $\int_{B(0,1)} \psi(\|z\|) \,dz = 1$.
+
+Now we upper bound $\|\nabla\tau_h(x)\|^2$. Exchanging derivative and integral, we have
+\begin{align*}
+\nabla\tau_h(x) = \frac{1}{h^d} \int_{\Xset} \bigl(\nabla \eta_h(x',\cdot)\bigr)(x) \,dx' = \frac{1}{\sigma_K h^{d + 2}} \int_{\Xset} K\biggl(\frac{\|x' - x\|}{h}\biggr)(x' - x)\,dx',
+\end{align*}
+whence by the Cauchy-Schwarz inequality,
+\begin{equation*}
+\|\nabla\tau_h(x)\|^2 \leq \frac{1}{\sigma_K^2 h^{2d + 4}} \biggl[\int_{\Xset} K\biggl(\frac{\|x' - x\|}{h}\biggr)\,dx'\biggr] \biggl[\int_{\Xset} K\biggl(\frac{\|x' - x\|}{h}\biggr)\|x' - x\|^2\,dx',\biggr] \leq \frac{1}{d\sigma_K h^{2}}
+\end{equation*}
+concluding the proof of Lemma~\ref{lem:tau_bound}. 
+
+We remark that while $\nabla\tau(x) = 0$ when $B(x,r) \in \Xset$, near the boundary the upper bound we derived by using Cauchy-Schwarz appears tight. 
+
+\paragraph{Proof of Lemma~\ref{lem:smoothening_error}.}
+By Jensen's inequality and Lemma~\ref{lem:tau_bound},
+\begin{align*}
+\Bigl|\Lambda_hf(x)\Bigr|^2 & \leq \frac{1}{h^d\tau_h(x)}\int_{\Xset} \eta_h(x',x) \bigl[f(x')\bigr]^2 \,dx' \\
+& \leq \frac{1}{a_3 h^dp_{\min}}\int_{\Xset} \eta_h(x',x) \bigl[f(x')\bigr]^2 p(x') \,dx'.
+\end{align*}
+Then, integrating over $x$, and recalling that$\int_{B(0,1)} \psi(\|z\|) = 1$ as shown in the proof of Lemma~\ref{lem:tau_bound}, we have
+\begin{align*}
+\bigl\|\Lambda_hf\bigr\|_{P}^2 & \leq \frac{1}{a_3h^d p_{\min}} \int_{\Xset} \int_{\Xset} \eta_h(x',x) \bigl[f(x')\bigr]^2 p(x') p(x) \,dx' \,dx \\ 
+& \leq \frac{p_{\max}}{a_3h^dp_{\min}} \int_{\Xset} \bigl[f(x')\bigr]^2 p(x') \biggl(\int_{\Xset} \eta_h(x',x) \,dx\biggr) \,dx' \\
+& \leq \frac{p_{\max}}{a_3p_{\min}} \int_{\Xset} \bigl[f(x')\bigr]^2 p(x') \biggl(\int_{B(0,1)} \psi(\|z\|) \,dz\biggr) \,dx' \\
+& = \frac{p_{\max}}{a_3p_{\min}} \|f\|_{P}^2.
+\end{align*}
+
+To establish~\eqref{eqn:smoothening_error_energy}, noting that $\Lambda_ha = a$ for any $a \in \Reals$, we have that
+\begin{align*}
+\bigl|\Lambda_rf(x) - f(x)\bigr|^2 & = \biggl[\frac{1}{h^d\tau_h(x)} \int_{\Xset} \eta_h(x',x) \bigl(f(x') - f(x)\bigr) \,dx'\biggr]^2 \\
+& \leq \frac{1}{h^{2d} \tau_h^2(x)} \biggl[\int_{\Xset} \eta_h(x',x) \,dx'\biggr] \cdot \biggl[\int_{\Xset} \eta_h(x',x) \bigl(f(x') - f(x)\bigr)^2 \,dx'\biggr] \\
+& = \frac{1}{h^d \tau_h(x)} \int_{\Xset} \eta_h(x',x) \bigl(f(x') - f(x)\bigr)^2 \,dx'. \\
+& \leq \frac{1}{h^d \tau_h(x) p_{\min}} \int_{\Xset} \eta_h(x',x) \bigl(f(x') - f(x)\bigr)^2 p(x') \,dx'.
+\end{align*}
+From here, we can use the lower bound $\tau_h(x) \geq a_3$ stated in Lemma~\ref{lem:tau_bound}, as well as the upper bound $\eta_h(x',x) \leq (1/\sigma_K) K(\|x' - x\|/h)$, to deduce
+\begin{equation*}
+\bigl|\Lambda_rf(x) - f(x)\bigr|^2 \leq \frac{1}{h^{d} a_3 \sigma_K p_{\min}} \int_{\Xset} K\biggl(\frac{\|x' - x\|}{h}\biggr) \bigl(f(x') - f(x)\bigr)^2 p(x') \,dx'
+\end{equation*}
+Then integrating over $\Xset$ with respect to $p$ yields~\eqref{eqn:smoothening_error_energy}.
+
+\subsection{Random functionals}
+\label{subsec:random_functionals}
+We will use Lemma~\ref{lem:poincare} in the proof of Proposition~\ref{prop:isometry}. 
+\begin{lemma}[\textbf{c.f. Lemma 3.4 of \citet{burago2014}}]
+	\label{lem:poincare}
+	Let $U \subset \Xset$ be a measurable subset such that $\mathrm{vol}(U) > 0$, and $\diam(U) \leq 2A_0\wt{\delta}$. Then, letting $a = (\wt{P}_n(U))^{-1} \cdot \int_{U} f(x) \wt{p}_n(x) \,dx$ be the average of $f$ over $U$, it holds that
+	\begin{equation*}
+	\int_{U} \Bigl|f(x)-a\Bigr|^2 \wt{p}_n(x)\,dx \leq A_3 r^2 \wt{E}_r(f,U).
+	\end{equation*}
+\end{lemma}
+
+Now we relate $\wt{E}_r(f)$ and $E_r(f)$. Some standard calculations show that for $A_1 := 3A_0/p_{\min}$,
+\begin{equation}
+\label{eqn:calder19_1}
+\bigl(1 - A_1(\theta + \wt{\delta})\bigr) E_r(f) \leq \wt{E}_r(f) \leq \bigl(1 + A_1(\theta + \wt{\delta})\bigr) E_r(f),
+\end{equation}
+as well as implying that the norms $\|f\|_{P}$ and $\|f\|_{n}$ satisfy
+\begin{equation}
+\label{eqn:calder19_2}
+\bigl(1 - A_1(\theta + \wt{\delta})\bigr) \|f\|_{P}^2 \leq \|f\|_{\wt{P}_n}^2 \leq \bigl(1 + A_1(\theta + \wt{\delta})\bigr) \|f\|_{P}^2.
+\end{equation}
+
+Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized} relates the graph Sobolev semi-norm $b_r(\wt{\mc{P}}f)$ to the non-local energy $\wt{E}_r(f)$. 
+\begin{lemma}[\textbf{c.f. Lemma 13 of \citet{trillos2019}, Lemma 4.3 of \citet{burago2014}}]
+	\label{lem:first_order_graph_sobolev_seminorm_discretized}
+	For any $f \in \Leb^2(\Xset)$,
+	\begin{equation*}
+	b_r(\wt{\mc{P}}f) \leq \Bigl(1 + A_9\frac{\wt{\delta}}{r}\Bigr) \wt{E}_{r + 2A_0\wt{\delta}}(f)
+	\end{equation*}
+\end{lemma}
+
+In Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized_lb}, we establish the reverse of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized}. 
+\begin{lemma}[\textbf{c.f. Lemma 14 of \citet{trillos2019}}]
+	\label{lem:first_order_graph_sobolev_seminorm_discretized_lb}
+	For any $u \in \Leb^2(P_n)$, 
+	\begin{equation*}
+	\wt{E}_{r - 2A_0\wt{\delta}}\bigl(\wt{\mc{P}}^{\star}u\bigr) \leq \biggl(1 + A_3\frac{\wt{\delta}}{r}\biggr) b_{r}(u)
+	\end{equation*}
+\end{lemma}
+
+\paragraph{Proof of Lemma~\ref{lem:poincare}.}
+A symmetrization argument implies that
+\begin{equation}
+\label{pf:poincare_1}
+\int_{U} \Bigl|f(x)-a\Bigr|^2 \wt{p}_n(x)\,dx = \frac{1}{2\wt{P}_n(U)} \int_{U} \int_{U} \bigl|f(x') - f(x)\bigr|^2 \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx
+\end{equation}
+Now, since $x'$ and $x$ belong to $U$, we have that $\|x' - x\| \leq 2A_0\wt{\delta}$. Set $V = B(x,r) \cap B(x',r)$, and note that $B(x,r - 2A_0\wt{\delta}) \subset V$. Moreover, $r - 2A_0\wt{\delta} \leq r \leq c_0$ by assumption. Therefore by~\eqref{eqn:integral_boundary},
+\begin{equation*}
+\vol\bigl(V \cap \Xset\bigr) \geq \vol\bigl(B(x,r - 2A_0\wt{\delta}) \cap \mc{X}\bigr) \geq a_3 \nu_d (r - 2A_0\wt{\delta})^d \geq \frac{a_3 \nu_d}{2^d}r^d 
+\end{equation*}
+where the last inequality follows since $\wt{\delta} \leq \frac{1}{4A_0}r$. Using the triangle inequality 
+\begin{equation*}
+\bigl|f(x') - f(x)\big|^2 \leq 2\bigl(\bigl|f(x') - f(z)\big|^2 + \bigl|f(z) - f(x)\big|^2\bigr)
+\end{equation*}
+we have that for any $x$ and $x'$ in $U$,
+\begin{align}
+\bigl|f(x') - f(x)\big|^2 & \leq \frac{2}{\vol(V \cap \Xset)} \int_{V \cap \Xset} \bigl|f(x') - f(z)\big|^2 + \bigl|f(z) - f(x)\big|^2 \,dz \nonumber \\
+& \leq \frac{2^{d + 1}}{a_3 \nu_d r^d} \int_{V \cap \Xset} \bigl|f(x') - f(z)\big|^2 + \bigl|f(z) - f(x)\big|^2 \,dz \nonumber \\
+& \leq \frac{2^{d + 2}}{K(1) a_3 \nu_d r^d p_{\min}} \Bigl(F(x') + F(x)\bigr) \label{pf:poincare_2}
+\end{align}
+where in the last inequality we set
+\begin{equation*}
+F(x) := \int_{\Xset} K\biggl(\frac{\|z - x\|}{r}\biggr) \bigl(f(z) - f(x)\bigr)^2 \wt{p}_n(x) \,dx,
+\end{equation*}
+and use the facts that $\wt{p}_n(x) \geq p_{\min}/2$, that $K(\|z  - x\|/r) \geq K(1)$ for all $z \in B(x,r)$. 
+
+Plugging the upper bound~\eqref{pf:poincare_2} back into~\eqref{pf:poincare_1}, we have that
+\begin{align*}
+\int_{U} \Bigl|f(x)-a\Bigr|^2 \wt{p}_n(x)\,dx & \leq \frac{2^{d + 2}}{K(1) a_3 \nu_d r^d} \int_{U} F(x)\wt{p}_n(x) \,dx \\
+& = \frac{2^{d + 2}}{K(1) a_3 \nu_d}r^2 \wt{E}_r(f,U),
+\end{align*}
+and Lemma~\ref{lem:poincare} follows by taking $A_3 := 2^{d + 2}/(K(1) a_3 \nu_d)$.
+
+\paragraph{Proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized}.}
+Recalling that $\bigl(\wt{\mc{P}}f\bigr)(X_i) = n \cdot \int_{U_i} f(x) \wt{p}_n(x) \,dx$, by Jensen's inequality,
+\begin{equation*}
+\biggl(\bigl(\wt{\mc{P}}f\bigr)(X_i) - \bigl(\wt{\mc{P}}f\bigr)(X_j)\biggr)^2 \leq n^2 \cdot \int_{U_i} \int_{U_j} \bigl(f(x') - f(x)\bigr)^2 \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx.
+\end{equation*}
+Additionally, the non-increasing and Lipschitz properties of $K$ imply that for any $x \in U_i$ and $x' \in U_j$, 
+\begin{equation*}
+K\biggl(\frac{\|X_i - X_j\|}{r}\biggr) \leq K\biggl(\frac{\bigl(\|x' - x\| - 2A_0\wt{\delta}\bigr)_{+}}{r}\biggr) \leq K\biggl(\frac{\|x' - x\|}{r + 2A_0\wt{\delta}}\biggr) + \frac{2L_KA_0\wt{\delta}}{r}\1\Bigl\{\|x' - x\| \leq r + 2A_0\wt{\delta}\Bigr\}
+\end{equation*}
+As a result, the graph Dirichlet energy is upper bounded as follows:
+\begin{align*}
+b_r(\wt{\mc{P}}f) & = \frac{1}{n^2r^{d + 2}} \sum_{i,j = 1}^n \Bigl(\bigl(\wt{\mc{P}}f\bigr)(X_i) - \bigl(\wt{P}f\bigr)(X_j)\Bigr)^2 K\biggl(\frac{\|X_i - X_j\|}{r}\biggr) \\
+& \leq \frac{1}{r^{d + 2}} \sum_{i,j = 1}^n \int_{U_i} \int_{U_j}  \bigl(f(x') - f(x)\bigr)^2 \wt{p}_n(x') \wt{p}_n(x) K\biggl(\frac{\|X_i - X_j\|}{r}\biggr) \,dx' \,dx \\
+& \leq \frac{1}{r^{d + 2}} \sum_{i,j = 1}^n \int_{U_i} \int_{U_j}  \bigl(f(x') - f(x)\bigr)^2 \wt{p}_n(x') \wt{p}_n(x) \biggl[K\biggl(\frac{\|x' - x\|}{r + 2A_0\wt{\delta}}\biggr) + \frac{2L_KA_0\wt{\delta}}{r}\1\Bigl\{\|x' - x\| \leq r + 2\wt{\delta}\Bigr\}\biggr] \,dx' \,dx \\
+& = \Bigl(1 + 2A_0\frac{\wt{\delta}}{r}\Bigr)^{d + 2}\biggl[\wt{E}_{r + 2A_0\wt{\delta}}(f) + \frac{2L_KA_0\wt{\delta}}{r}\wt{E}_{r + 2A_0\wt{\delta}}(f; \1_{[0,1]})\biggr]
+\end{align*}
+for $\1_{[0,1]}(t) = \1\{0 \leq t \leq 1\}$. But by assumption $\wt{E}_{r + 2A_0\wt\delta}(f; \1_{[0,1]}) \leq 1/(K(1))\wt{E}_{r + 2A_0\wt{\delta}}(f)$, and so we obtain
+\begin{equation*}
+b_r(\wt{\mc{P}}f) \leq \Bigl(1 + 2A_0\frac{\wt{\delta}}{r}\Bigr)^{d + 2} \Bigl(1 + \frac{2L_KA_0\wt{\delta}}{rK(1)}\Bigr) \wt{E}_{r + 2A_0\wt{\delta}}(f);
+\end{equation*}
+the Lemma follows upon choosing $A_9 := A_0(2^{d + 4} + \frac{4L_K}{K(1)})$.
+
+\paragraph{Proof of Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized_lb}.}
+For brevity, we write $\wt{r} := r - 2A_0\wt{\delta}$. We begin by expanding the energy $\wt{E}_{\wt{r}}\bigl(\wt{\mc{P}}^{\star}u\bigr)$ as a double sum of double integrals,
+\begin{align*}
+\wt{E}_{\wt{r}}\bigl(\wt{\mc{P}}^{\star}u\bigr) & = \frac{1}{\wt{r}^{d + 2}} \sum_{i = 1}^{n} \sum_{j = 1}^{n} \int_{U_i} \int_{U_j} \Bigl(u(X_i) - u(X_j)\Bigr)^2 K\biggl(\frac{\|x' - x\|}{\wt{r}}\biggr) \wt{p}_n(x') \wt{p}_n(x) \,dx' \,dx
+\end{align*}
+We next use the Lipschitz property of the kernel $K$---in particular that for $x \in U_i$ and $x' \in U_j$,
+\begin{equation*}
+K\biggl(\frac{\|x' - x\|}{\wt{r}}\biggr) \leq K\biggl(\frac{\|X_i - X_j\|}{r}\biggr) + \frac{2A_0L_K\wt{\delta}}{\wt{r}} \cdot \1\biggl\{\frac{\|x' - x\|}{\wt{r}} \leq 1\biggr\}
+\end{equation*}
+---to conclude that
+\begin{align}
+\wt{E}_{\wt{r}}\bigl(\wt{\mc{P}}^{\star}u\bigr) & \leq \frac{1}{n^2\wt{r}^{d + 2}} \sum_{i = 1}^{n} \sum_{j = 1}^{n} \Bigl(u(X_i) - u(X_j)\Bigr)^2 K\biggl(\frac{\|X_i - X_j\|}{r}\biggr) + \frac{2A_0L_K\wt{\delta}}{\wt{r}}\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) \nonumber \\
+& \leq \biggl(1 + 2^{d + 2}A_0\frac{\wt{\delta}}{r}\biggr) b_r(u) + \frac{2A_0L_K\wt{\delta}}{\wt{r}}\wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u,\1_{[0,1]}\bigr) \nonumber \\
+& \leq \biggl(1 + 2^{d + 2}A_0\frac{\wt{\delta}}{r}\biggr) b_r(u) + \frac{4A_0L_K\wt{\delta}}{K(1)r} \wt{E}_{\wt{r}}(\wt{\mc{P}}^{\star}u\bigr) \nonumber 
+\end{align}
+or in other words
+\begin{align*}
+\wt{E}_{\wt{r}}\bigl(\wt{\mc{P}}^{\star}u\bigr) & \leq \biggl(1 - \frac{4A_0L_K\wt{\delta}}{K(1)r}\biggr)^{-1}\biggl(1 + 2^{d + 2}A_0\frac{\wt{\delta}}{r}\biggr) b_r(u) \\
+& \leq \biggl(1 + \frac{\wt{\delta}}{r}\Bigl(\frac{8A_0L_K}{K(1)} + 2^{d + 3}\Bigr)\biggr) b_r(u)
+\end{align*}
+where the second inequality follows from the algebraic identities $(1 - t)^{-1} \leq (1 + 2t)$ for any $0 < t < 1/2$ and $(1 + s)(1 + t) < 1 + 2s + t$ for any $0 < t < 1$ and $s > 0$. The Lemma follows upon choosing $A_3 := \frac{8A_0L_K}{K(1)} + 2^{d + 3}$. 
+
+
+\subsection{Proof of Propositions~\ref{prop:dirichlet_energies} and~\ref{prop:isometry}}
+\label{subsec:proof_of_prop_dirichlet_energies_and_isometry}
+
+\paragraph{Proof of Proposition~\ref{prop:dirichlet_energies}.}
+Part (1) of Proposition~\ref{prop:dirichlet_energies} follows from
+\begin{align*}
+\sigma_K D_2(\Lambda_{r - 2A_0\wt{\delta}} \wt{\mc{P}}^{\star}u) & \overset{(i)}{\leq} A_8 E_{r - 2A_0\wt{\delta}}(\wt{\mc{P}}^{\star}u) \\
+& \overset{(ii)}{\leq} A_8 \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \wt{E}_{r - 2A_0\wt{\delta}}(\wt{\mc{P}}^{\star}u) \\
+& \overset{(iii)}{\leq} A_8 \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \biggl(1 + A_3\frac{\wt{\delta}}{r}\biggr) b_r(u)
+\end{align*}
+where $(i)$ follows from Lemma~\ref{lem:first_order_graph_sobolev_seminorm_expected_lb}, $(ii)$ follows from~\eqref{eqn:calder19_1}, and $(iii)$ follows from~Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized_lb}.
+
+Part (2) of Proposition~\ref{prop:dirichlet_energies} follows from
+\begin{align*}
+b_r(\wt{\mc{P}}f) & \overset{(iv)}{\leq} \Bigl(1 + A_9\frac{\wt{\delta}}{r}\Bigr)\wt{E}_{r + 2A_0\wt{\delta}}(f)\\
+& \overset{(v)}{\leq} \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \Bigl(1 + A_9\frac{\wt{\delta}}{r}\Bigr){E}_{r + 2A_0\wt{\delta}}(f) \\
+& \overset{(vi)}{\leq} \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \Bigl(1 + A_9\frac{\wt{\delta}}{r}\Bigr) \cdot \Bigl(\frac{C_5 p_{\max}^2}{p_{\min}^2}\Bigr) \cdot \sigma_{K} D_2(f)
+\end{align*}
+where $(iv)$ follows from Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized}, $(v)$ follows from~\eqref{eqn:calder19_1}, and $(vi)$ follows from the proof of Lemma~\ref{lem:graph_sobolev_seminorm}.
+
+\paragraph{Proof of Proposition~\ref{prop:isometry}.}
+\mbox{}\\
+\mbox{}\\
+\textit{Proof of (1).}
+We begin by upper bounding $\bigl\|\wt{P}f\bigr\|_{n}$. By the Cauchy-Schwarz inequality and the bound on $\|\wt{p}_n - p\|_{\infty}$ in~\eqref{eqn:optimal_transport_2},
+\begin{align*}
+\Bigl|\wt{P}f(X_i)\Bigr|^2 & = n^2 \Bigl|\int_{U_i} f(x) \wt{p}_n(x) \,dx\Bigr|^2 \\
+& \leq n \int_{U_i} \bigl|f(x)\bigr|^2 \wt{p}_n(x) \,dx \\
+& \leq n \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr)\biggl[\int_{U_i} \bigl|f(x)\bigr|^2 p(x) \,dx + A_1(\theta + \wt{\delta}) \int_{U_i} \bigl|f(x)\bigr|^2 p(x) \,dx\biggr]
+\end{align*}
+and summing over $i = 1,\ldots,n$, we obtain
+\begin{equation}
+\label{pf:prop_isometry_1}
+\bigl\|\wt{P}f\bigr\|_{n}^2 \leq \biggl(1 + A_1(\theta + \wt{\delta})\biggr) \bigl\|f\bigr\|_{P}^2.
+\end{equation}
+Now, noticing that $\bigl\|\wt{P}f\bigr\|_{n} = \bigl\|\wt{P}^{\star}\wt{P}f\bigr\|_{\wt{P}_n}$, we can use the upper bound~\eqref{pf:prop_isometry_1} to show that
+\begin{align}
+\Bigl|\bigl\|\wt{P}f\bigr\|_{n}^2 - \bigl\|f\bigr\|_{P}^2\Bigr| & \leq \Bigl|\bigl\|\wt{P}f\bigr\|_{n}^2 - \bigl\|f\bigr\|_{\wt{P}_n}^2\Bigr| + \Bigl|\bigl\|f\bigr\|_{\wt{P}_n}^2 - \bigl\|f\bigr\|_{P}^2\Bigr| \nonumber \\
+& \overset{(i)}{\leq} \Bigl|\bigl\|\wt{P}f\bigr\|_{n}^2 - \bigl\|f\bigr\|_{\wt{P}_n}^2\Bigr|  + A_1(\theta + \wt{\delta}) \bigl\|f\bigr\|_{P}^2 \\
+& \overset{(ii)}{\leq} 2 \sqrt{1 + A_1(\theta + \wt{\delta})} \Bigl|\bigl\|\wt{P}f\bigr\|_{n} - \bigl\|f\bigr\|_{\wt{P}_n}\Bigr| \cdot \bigl\|f\bigr\|_{P} + A_1(\theta + \wt{\delta}) \bigl\|f\bigr\|_{P}^2 \nonumber \\
+& \leq 2 \sqrt{1 + A_1(\theta + \wt{\delta})} \bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\wt{P}_n} \cdot \bigl\|f\bigr\|_{P} + A_1(\theta + \wt{\delta}) \bigl\|f\bigr\|_{P}^2 \label{pf:prop_isometry_2}
+\end{align}
+where $(i)$ follows from~\eqref{eqn:calder19_2} and $(ii)$ follows from~\eqref{eqn:calder19_2} and ~\eqref{pf:prop_isometry_1}. 
+
+It remains to upper bound $\bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\wt{P}_n}^2$. Noting that $\wt{P}^{\star}\wt{P}f$ is piecewise constant over the cells $U_i$, we have
+\begin{equation*}
+\bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\wt{P}_n}^2 = \sum_{i = 1}^{n} \int_{U_i} \biggl(f(x) - n\cdot\int_{U_i} f(x') \wt{p}_n(x') \,dx'\biggr)^2 \wt{p}_n(x) \,dx.
+\end{equation*}
+From Lemma~\ref{lem:poincare}, we have that
+\begin{equation*}
+\int_{U_i} \biggl(f(x) - n\cdot\int_{U_i} f(x') \wt{p}_n(x') \,dx'\biggr)^2 \wt{p}_n(x) \,dx \leq A_3r^2 \wt{E}_r(f,U_i)
+\end{equation*}
+for each $i = 1,\ldots,n$. Summing up over $i$ on both sides of the inequality
+\begin{equation*}
+\bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\wt{P}_n}^2 \leq A_3r^2 \wt{E}_r(f,\Xset) \leq  A_3 \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \Bigl(\frac{C_5 p_{\max}^2}{p_{\min}^2}\Bigr) \cdot \sigma_{K}r^2 D_2(f) 
+\end{equation*}
+where the latter inequality follows from the proof of Proposition~\ref{prop:dirichlet_energies}, Part (2). Then Proposition~\ref{prop:isometry}, Part (1) follows by plugging this inequality into~\eqref{pf:prop_isometry_2} and taking 
+\begin{equation*}
+A_5 := 2\sqrt{A_3} \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \Bigl(\frac{\sqrt{C_5} p_{\max}}{p_{\min}}\Bigr) \cdot \sqrt{\sigma_{K}}.
+\end{equation*}
+
+\textit{Proof of (2).}
+By the triangle inequality and~\eqref{eqn:calder19_2},
+\begin{align}
+\Bigl|\|\wt{\mc{I}}u\|_{P}^2 - \|u\|_{n}^2\Bigr| & \leq \Bigl|\|\wt{\mc{I}}u\|_{P}^2 - \|\wt{\mc{I}}u\|_{\wt{P}_n}^2\Bigr| + \Bigl|\|\wt{\mc{I}}u\|_{\wt{P}_n}^2 - \|u\|_{n}^2\Bigr| \nonumber \\
+& \leq A_1(\theta + \wt{\delta}) \|\wt{\mc{I}}u\|_{\wt{P}_n}^2 + \Bigl|\|\wt{\mc{I}}u\|_{\wt{P}_n}^2 - \|u\|_{n}^2\Bigr| \nonumber\\
+& = A_1(\theta + \wt{\delta}) \|\wt{\mc{I}}u\|_{\wt{P}_n}^2 + \Bigl(\|\wt{\mc{I}}u\|_{\wt{P}_n} + \|u\|_{n}\Bigr) \cdot \Bigl|\|\wt{\mc{I}}u\|_{\wt{P}_n} - \|u\|_{n}\Bigr| \label{pf:prop_isometry_4}
+\end{align}
+To upper bound the second term in the above expression, we first note that~$\|u\|_{n} = \|\wt{\mc{P}}^{\star}u\|_{\wt{P}_n}$, and thus
+\begin{align}
+\Bigl|\|\wt{\mc{I}}u\|_{\wt{P}_n} - \|u\|_{n} \Bigr| & = \Bigl|\|\wt{\mc{I}}u\|_{\wt{P}_n} - \|\wt{\mc{P}}^{\star}u\|_{\wt{P}_n}\Bigr| \nonumber \\
+& \overset{(iii)}{\leq} \|\Lambda_{\wt{r}}\wt{\mc{P}}^{\star}u - \wt{\mc{P}}^{\star}u\|_{\wt{P}_n} \nonumber \\
+& \overset{(iv)}{\leq} \wt{r} \sqrt{\frac{1}{a_3\sigma_K p_{\min}} E_{\wt{r}}(\wt{\mc{P}}^{\star}u)} \nonumber \\
+& \overset{(v)}{\leq} \wt{r} \sqrt{\frac{1 + A_1(\theta + \wt{\delta})}{a_3\sigma_K p_{\min}} \Bigl(1 + A_3\frac{\wt{\delta}}{r}\Bigr) b_r(u)} \label{pf:prop_isometry_5}
+\end{align}
+where $(iii)$ follows by the triangle inequality, $(iv)$ follows from Lemma~\ref{lem:smoothening_error}, and $(v)$ follows from~\eqref{eqn:calder19_1} and Lemma~\ref{lem:first_order_graph_sobolev_seminorm_discretized_lb}. On the other hand, by~\eqref{eqn:calder19_2} and Lemma~\ref{lem:smoothening_error},
+\begin{align*}
+\|\wt{\mc{I}}u\|_{\wt{P}_n}^2 & \leq \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \|\wt{\mc{I}}u\|_{P}^2 \\
+& \leq \frac{p_{\max}}{a_3p_{\min}} \cdot \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \|\wt{\mc{P}}^{\star}u\|_{P}^2 \\
+& \leq \frac{p_{\max}}{a_3p_{\min}} \cdot \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr)^2 \|\wt{\mc{P}}^{\star}u\|_{\wt{P}_n}^2 \\
+& = \frac{p_{\max}}{a_3p_{\min}} \cdot \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr)^2 \|u\|_{n}^2
+\end{align*}
+and plugging this estimate along with~\eqref{pf:prop_isometry_5} back into~\eqref{pf:prop_isometry_4}, upon choosing
+\begin{equation*}
+A_6 := \biggl(3\sqrt{\frac{2p_{\max}}{p_{\min}}} + 1\biggr)\sqrt{\frac{4}{a_3\sigma_Kp_{\min}}},~~A_7:=4A_1\frac{p_{\max}}{a_3p_{\min}}
+\end{equation*}
+we obtain part (2) of Proposition~\ref{prop:isometry}.
+
+\section{Bound on the empirical norm}
+\label{sec:empirical_norm}
+
+In Lemma~\ref{lem:empirical_norm_sobolev}, we lower bound $\norm{f_0}_n^2$ by (a constant times) the $\Leb^2(\Xset)$ norm of $f$.
+
+\begin{lemma}
+	\label{lem:empirical_norm_sobolev}
+	Fix $\delta \in (0,1)$ Suppose $P$ satisfies~\ref{asmp:bounded_lipschitz_density}. If $f \in H^1(\Xset,M)$ is lower bounded in $\Leb^2(\Xset)$ norm,
+	\begin{equation}
+	\label{eqn:empirical_norm_sobolev_1}
+	\norm{f}_{\Leb^2(\Xset)} \geq \frac{C_6 M}{\delta} \cdot \max\Bigl\{n^{-1/2},n^{-1/d}\Bigr\}
+	\end{equation}
+	Then with probability at least $1 - 5 \delta$,
+	\begin{equation}
+	\label{eqn:empirical_norm_sobolev}
+	\norm{f}_n^2 \geq \delta \cdot \Ebb\Bigl[\norm{f}_n^2\Bigr].
+	\end{equation}
+\end{lemma}
+
+\paragraph{Proof of Lemma~\ref{lem:empirical_norm_sobolev}.}
+To establish~\eqref{eqn:empirical_norm_sobolev}, it is sufficient to show that
+\begin{equation*}
+\mathbb{E}\bigl[\norm{f}_n^4\bigr] \leq \left(1 + \frac{1}{b^2}\right)\cdot \left(\mathbb{E}\bigl[\norm{f}_n^2\bigr]\right)^2;
+\end{equation*}
+then \eqref{eqn:empirical_norm_sobolev} follows from the Paley-Zygmund inequality (Lemma~\ref{lem:paley_zygmund}). Since $p \leq p_{\max}$ is uniformly bounded, we can relate $\mathbb{E}\bigl[\norm{f}_n^4\bigr]$ to the $\Leb^4(\Xset)$-norm,
+\begin{equation*}
+\mathbb{E}\bigl[\norm{f}_n^4\bigr] = \frac{(n-1)}{n}\left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + \frac{\mathbb{E}\Bigl[\bigl(f(x_1)\bigr)^4\Bigr]}{n} \leq \left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + p_{\max}\frac{\norm{f}_{\Leb^4(\Xset)}^4}{n}.
+\end{equation*}
+We will use the Sobolev inequalities as a tool to show that $\|f\|_{\Leb^4(\Xset)}/n \leq \bigl(\mathbb{E}[\|f\|_n^2]\bigr)^2/(b^2p_{\max})$, whence the claim of the Lemma is shown. The nature of the inequalities we use depend on the value of $d$. In particular, we will use the following relationships between norms: 
+\begin{equation*}
+\begin{rcases*}
+\sup_{x \in \mc{X}}|f(x)|,& \textrm{$d = 1$}\\
+\|f\|_{\Leb^{q}(\mc{X})},& \textrm{$d = 2$, for all $0 < q < \infty$} \\
+\|f\|_{\Leb^{q}(\mc{X})},& \textrm{$d \geq 3$, for all $0 < q \leq 2d/(d - 2)$}
+\end{rcases*}
+\leq C_7 \cdot M.
+\end{equation*}
+(See Theorem 6 in Section 5.6.3 of \citet{evans10} for a complete statement and proof of the various Sobolev inequalities.)
+
+As a result, we divide our analysis into three cases: (i) the case where $d < 2$, (ii) the case where $d > 2$, and (iii) the borderline case $d = 2$.
+
+\textit{Case 1: $d < 2$.}
+The $\Leb^4(\Xset)$-norm of $f$ can be bounded in terms of the $\Leb^2(\Xset)$ norm,
+\begin{align*}
+\norm{f}_{\Leb^4(\Xset)}^4 & \leq \left(\sup_{x \in \Xset} \abs{f(x)}\right)^2 \cdot \int_{\Xset} [f(x)]^2 \,dx \leq C_7^2 M^2 \cdot \|f\|_{\Leb^2(X)}^2.
+\end{align*}
+Since by assumption
+\begin{equation*}
+\norm{f}_{\Leb^2(\Xset)}^2 \geq C_6^2 \cdot b^2 \cdot M^2 \cdot \frac{1}{n},
+\end{equation*}
+we have
+\begin{equation*}
+p_{\max} \frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq C_7^2 M^2p_{\max} \cdot \frac{\norm{f}_{\Leb^2(\Xset)}^2}{n} \leq \frac{C_7p_{\max}}{C_6^2 b^2} \norm{f}_{\Leb^2(\Xset)}^4 \leq \frac{\Ebb\bigl[\norm{f}_n^2\bigr]}{b^2},
+\end{equation*}
+where the last inequality follows by taking $C_6 \geq C_7 \sqrt{p_{\max}/p_{\min}}$.
+
+\textit{Case 2: $d > 2$.}
+Let $\theta = 2 - d/2$ and $q = 2d/(d - 2)$. Noting that $4 = 2\theta + (1 - \theta)q$, Lyapunov's inequality implies
+\begin{equation*}
+\norm{f}_{\Leb^4(\Xset)}^4 \leq \norm{f}_{\Leb^2(\Xset)}^{2\theta} \cdot \norm{f}_{\Leb^q(\Xset)}^{(1 - \theta)q} \leq \norm{f}_{\Leb^2(\Xset)}^{4} \cdot \left(\frac{C_7\norm{f}_{H^1(\Xset)}}{\norm{f}_{\Leb^2(\Xset)}}\right)^{d}.
+\end{equation*}
+By assumption, $\norm{f}_{\Leb^2(\Xset)} \geq C_6 b \norm{f}_{H^1(\Xset)} n^{-1/d}$, and therefore
+\begin{equation*}
+p_{\max} \frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq \norm{f}_{\Leb^2(\Xset)}^4p_{\max} \cdot \left(\frac{C_7\norm{f}_{H^1(\Xset)}}{n^{1/d}\norm{f}_{\Leb^2(\Xset)}}\right)^{d} \leq \frac{C_7^dp_{\max}\norm{f}_{\Leb^2(\Xset)}^4}{C_6^db^{d}} \leq \frac{\Ebb\bigl[\norm{f}_n^2\bigr]}{b^2}.
+\end{equation*}
+where the last inequality follows by taking $C_6 \geq C_7(p_{\max}/p_{\min})^{1/d}$, and keeping in mind that $d > 2$ and $b \geq 1$. 
+
+\textit{Case 3: $d = 2$.}
+Fix $t \in (1/2,1)$, and suppose that
+\begin{equation}
+\label{pf:empirical_norm_sobolev_1}
+\|f\|_{\Leb^2(\Xset)} \geq \frac{C_6 M}{\delta} \cdot n^{-t/2}.
+\end{equation} 
+Putting $q = 2/(1 - t)$, we have that $\|f\|_{\Leb^{q}(\mc{X})} \leq C_7 \cdot M$, and it follows from derivations similar to those in Case 2 that $\|f\|_{\Leb^4(\Xset)}/n \leq \bigl(\mathbb{E}[\|f\|_n^2]\bigr)^2/(b^2p_{\max})$ when $C_6 \geq C_7 \sqrt{p_{\max}/p_{\min}}$.
+
+Now, suppose $f \in \Leb^4(\Xset)$ satisfies~\eqref{pf:empirical_norm_sobolev_1} only when $t = 1$. For each $k = 1,2,\ldots$ let $f_k := n^{1/(2k)}f$, so that each $f_k$ satisfies~\eqref{pf:empirical_norm_sobolev_1} with respect to $t = 1 - 1/k$. Clearly $\|f_k - f\|_{\Leb^4(\Xset)} \to 0$ as $k \to \infty$, and therefore
+\begin{equation*}
+\frac{1}{n}\|f\|_{\Leb^4(\Xset)} = \frac{1}{n}\lim_{k \to \infty} \|f_k\|_{\Leb^4(\Xset)} \leq \frac{1}{b^2p_{\max}} \lim_{k \to \infty} \bigl(\mathbb{E}[\|f_k\|_n^2]\bigr)^2 =  \frac{1}{b^2p_{\max}}\bigl(\mathbb{E}[\|f\|_n^2]\bigr)^2.
+\end{equation*}
+This establishes the claim when $d = 2$, and completes the proof of Lemma~\ref{lem:empirical_norm_sobolev}.
+
+\section{Graph functionals under the manifold hypothesis}
+\label{sec:manifold}
+In this section, we restate a few results of \citet{trillos2019,calder2019}, which are analogous to Lemmas~\ref{lem:graph_sobolev_seminorm} and~\ref{lem:neighborhood_eigenvalue} but cover the case where $\Xset$ is an $m$-dimensional submanifold without boundary. As such, the results in this section will hold under the assumption~\ref{asmp:domain_manifold}. We refer to~\citet{trillos2019,calder2019} for the proofs of these results.
+
+Proposition~\ref{prop:garciatrillos19_1} follows from Lemma~5 of~\citet{trillos2019} and Markov's inequality.
+\begin{proposition}
+	\label{prop:garciatrillos19_1}
+	For any $f \in H^1(\Xset)$, with probability at least $1 - \delta$,
+	\begin{equation*}
+	f^{\top} \Lap_{n,r} f \leq \frac{C}{\delta} n^2 r^{m + 2} |f|_{H^1(\Xset)}^2
+	\end{equation*}
+\end{proposition}
+
+In Proposition~\ref{prop:calder19_1}, it is assumed that $r$, $\wt{\delta}$ and $\theta$ satisfy the following smallness conditions.
+\begin{enumerate}[label=(S\arabic*)]
+	\item 
+	\setcounter{enumi}{1}
+	\begin{equation*}
+	n^{-1/m} < \wt{\delta} \leq \frac{1}{4}r~~\textrm{and}~~C(\theta + \wt{\delta}) \leq \frac{1}{2}p_{\min}~~\textrm{and}~~C_4\bigl(\log(n)/n\bigr)^{1/m}\leq r \leq\min\{c_4,1\}.
+	\end{equation*}
+\end{enumerate}
+
+\begin{proposition}[\textbf{c.f Theorem 2.4 of~\citet{calder2019}}]
+	\label{prop:calder19_1}
+	With probability at least $1 - Cn\exp(-cn\theta^2\wt{\delta}^m)$, the following statement holds. For any $k \in \mathbb{N}$ such that
+	\begin{equation*}
+	\sqrt{\lambda_k(\Delta_P)}r + C(\theta + \wt{\delta}) \leq \frac{1}{2}
+	\end{equation*} 
+	it holds that
+	\begin{equation*}
+	nr^{m+2} \lambda_k(\Delta_P) \biggl(1 - C\Bigl(r(\sqrt{\lambda_k(\Delta_P)} + 1) + \frac{\wt{\delta}}{r} + \theta\Bigr)\biggr)\leq \lambda_k(G_{n,r}) \leq nr^{m+2} \lambda_k(\Delta_P) \biggl(1 + C\Bigl(r(\sqrt{\lambda_k(\Delta_P)} + 1) + \frac{\wt{\delta}}{r} + \theta\Bigr)\biggr)
+	\end{equation*}
+\end{proposition}
+
+Proposition~\ref{prop:calder19_2} follows from Lemma 3.1 of \citet{calder2019}, along with a union bound.
+\begin{proposition}
+	\label{prop:calder19_2}
+	With probability at least $1 - 2Cn\exp(-cp_{\max}nr^m)$, it holds that
+	\begin{equation*}
+	D_{\max}(G_{n,r}) \leq Cnr^{m}.
+	\end{equation*}
+\end{proposition}
+
+Finally, we note that a Weyl's Law holds for Riemmanian manifolds without boundary, i.e.
+\begin{equation*}
+\lambda_k(\Delta_P) \asymp k^{2/m}.
+\end{equation*}
+Put $B_{n,r}(k) := \min\{nr^{m + 2}k^{2/m}, nr^m\}$. Following parallel steps to the proof of Lemma~\ref{lem:neighborhood_eigenvalue}, one can derive from Propositions~\ref{prop:calder19_1} and~\ref{prop:calder19_2}, and Weyl's Law, that with probability at least $1 - Cn\exp(-cnr^m)$, 
+\begin{equation}
+\label{eqn:neighborhood_eigenvalue_manifold}
+cB_{n,r}(k) \leq \lambda_k \leq CB_{n,r}(k),~~\textrm{for all $2 \leq k \leq n$}
+\end{equation}
+
+\section{Proofs of Main Results}
+\label{sec:main_results}
+We are now in a position to prove Theorems~\ref{thm:laplacian_smoothing_estimation1}-\ref{thm:laplacian_smoothing_testing_manifold}, as well as a few other claims from our main text. In Section~\ref{subsec:laplacian_smoothing_estimation1_pf} we prove all of our results regarding estimation and in Section~\ref{subsec:laplacian_smoothing_testing_pf} we prove all of our results regarding testing; in Section~\ref{subsec:convenient_estimate}, Lemmas~\ref{lem:variance_term_estimation} and~\ref{lem:variance_term_testing}, we provide some useful estimates on a particular pair of sums that appear repeatedly in our proofs. Throughout, it will be convenient for us to deal with the normalization $\wt{\rho} := \rho nr^{d + 2}$. We note that in each of our Theorems, the prescribed choice of $\rho$ will always result in $\wt{\rho} \leq 1$. 
+
+\subsection{Proof of estimation results}
+\label{subsec:laplacian_smoothing_estimation1_pf}
+
+\paragraph{Proof of Theorem~\ref{thm:laplacian_smoothing_estimation1}.}
+We have shown that the inequalities~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue} are satisfied with probability at least $1 - \delta - C_1n\exp(-c_1nr^d)$. From~\eqref{eqn:neighborhood_eigenvalue} and Lemma~\ref{lem:variance_term_estimation}, we have that
+\begin{equation*}
+\sum_{k = 1}^{n}\biggl(\frac{1}{\rho \lambda_k + 1}\biggr)^{2} \geq 1 + \sum_{k = 2}^{n}\biggl(\frac{1}{C_3 \wt{\rho} k^{2/d} + 1}\biggr)^{2} \geq 1 + \frac{1}{4} \min\Bigl\{\floor{\frac{\wt{\rho}^{-d/2}}{C_3^{d/2}}} - 1 \vee 0,n\Bigr\} \geq \min\Bigl\{\frac{\wt{\rho}^{-2/d}}{8C_3^{2/d}}, \frac{n}{4} \Bigr\}
+\end{equation*}
+Therefore by Lemma~\ref{lem:ls_fixed_graph_estimation} along with~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue}, with probability at least $1 - \delta - C_1n\exp(-c_1nr^d) - \exp(-\min\{\wt{\rho}^{-d/2}/C_3^{d/2},n\}/8)$ it follows that,
+\begin{align}
+\|\wh{f} - f_0\|_n^2 & \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{n}\sum_{k = 2}^{n} \Biggl(\frac{1}{c_3 \wt{\rho}\min\{k^{2/d},r^{-2}\} + 1}\Biggr)^2 \nonumber \\
+& \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{n}\sum_{k = 1}^{n} \biggl(\frac{1}{c_3 \wt{\rho}k^{2/d} + 1}\biggr)^2 + \frac{10r^4}{c_3^2 \wt{\rho}^2}. \label{pf:laplacian_smoothing_estimation1_1}
+\end{align}
+Setting $\wt{\rho} = M^{-4/(2 + d)}n^{-2/(2 + d)}$ as prescribed in Theorem~\ref{thm:laplacian_smoothing_estimation1},  we have from Lemma~\ref{lem:variance_term_estimation} that
+\begin{align*}
+\|\wh{f} - f_0\|_n^2 & \leq\frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{20\wt{\rho}^{-d/2}}{c_3^{d/2}n}  + \frac{10r^4}{c_3^2 \wt{\rho}^2} \\
+& = \biggl(\frac{C_2}{\delta} + \frac{20}{c_3^{d/2}}\biggr)M^{2d/(2+d)} n^{-2/(2 + d)} + \frac{10}{n} + \frac{10}{c_3^2}r^4M^{8/(2 + d)}n^{4/(2 + d)} \\
+& \leq \biggl(\frac{C_2}{\delta} + \frac{20}{c_3^{d/2}} + 10 + \frac{10}{c_3^2}\biggr)M^{2d/(2+d)} n^{-2/(2 + d)}
+\end{align*}
+with the last inequality following from~\ref{asmp:ls_kernel_radius_estimation} and the assumption $M \geq n^{-1/2}$. This completes the proof of Theorem~\ref{thm:laplacian_smoothing_estimation1}. When $M < n^{-1/2}$, one can set $\wt{\rho} = 1$ and trace through the previous calculations to determine that $\|\wh{f} - f_0\|_n^2 \leq C/n$ for an appropriate choice of $C$.
+
+\paragraph{Nearly-optimal rates when $d = 4$.}
+Continuing on from~\eqref{pf:laplacian_smoothing_estimation1_1}, from Lemma~\ref{lem:variance_term_estimation} we have that
+\begin{equation*}
+\|\wh{f} - f_0\|_n^2 \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} +  \frac{10}{nc_3^2\wt{\rho}^2} +  \frac{10 \log n}{nc_3^2\wt{\rho}^2} + \frac{10r^4}{c_3^2\wt{\rho}^2}
+\end{equation*}
+Setting $r = (C_0\log(n)/n)^{1/4}$, we obtain
+\begin{equation*}
+\|\wh{f} - f_0\|_n^2 \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} +  \frac{10}{nc_3^2\wt{\rho}^2} +  \frac{10 \log n}{nc_3^2\wt{\rho}^2} + \frac{10C_0\log n}{nc_3^2\wt{\rho}^2},
+\end{equation*}
+and choosing $\wt{\rho} = M^{-2/3}(\log n/n)^{1/3}$ yields
+\begin{equation*}
+\|\wh{f} - f_0\|_n^2 \leq \biggl(\frac{C_2}{\delta} + \frac{20}{c_3^2} + \frac{10C_0}{c_3^2}\biggr) M^{4/3} \biggl(\frac{\log n}{n}\biggr)^{1/3} + \frac{10}{n}.
+\end{equation*}
+
+\paragraph{Suboptimal rates when $d > 4$.}
+Once again continuing on from~\eqref{pf:laplacian_smoothing_estimation1_1}, from Lemma~\ref{lem:variance_term_estimation} we have that,
+\begin{equation*}
+\|\wh{f} - f_0\|_n^2 \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{nc_3^{d/2}\wt{\rho}^{d/2}} +  \frac{10}{n^{4/d}\wt{\rho}^2c_3^2} + \frac{10r^4}{\wt{\rho}^2c_3^2}
+\end{equation*}
+Setting $r = (C_0\log n/n)^{1/d}$, we obtain
+\begin{equation*}
+\|\wh{f} - f_0\|_n^2 \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{n\wt{\rho}^{d/2}c_3^{d/2}} +  \frac{10}{n^{4/d}\wt{\rho}^2c_3^2} + \frac{10C_0^{4/d}(\log n)^{4/d}}{n^{4/d}\wt{\rho}^2c_3^2},
+\end{equation*}
+and choosing $\wt{\rho} = M^{-2/3}n^{-4/(3d)}$ yields
+\begin{equation*}
+\|\wh{f} - f_0\|_n^2 \leq \biggl(\frac{C_2}{\delta} + \frac{10}{c_3^2} + \frac{10C_0^{4/d}}{c_3^2}\biggr)M^{4/d}\biggl(\frac{\log(n)}{n^{1/3}}\biggr)^{4/d} + \frac{10}{c_3^{d/2}}M^{d/3}n^{-1/3} + \frac{10}{n}.
+\end{equation*}
+
+\paragraph{Bounds on $\Leb^2(\Xset)$ error under Lipschitz assumption.}
+Let $V_1,\ldots,V_n$ denote the Voronoi tesselation of $\Xset$ with respect to $X_1,\ldots,X_n$. Extend $\wh{f}$ over $\Xset$ by taking it piecewise constant over the Voronoi cells, i.e.
+\begin{equation*}
+\wh{f}(x) := \sum_{i = 1}^{n} \wh{f}_i \cdot \1\{x \in V_i\}.
+\end{equation*}
+Note that we are abusing notation slightly by also using $\wh{f}$ to refer to this extension. 
+
+In Proposition~\ref{prop:out_of_sample_error}, we establish that the out-of-sample error $\|\wh{f} - f_0\|_{\Leb^2(\Xset)}$ will not be too much larger than the in-sample error $\|\wh{f} - f_0\|_n$.
+\begin{proposition}
+	\label{prop:out_of_sample_error}
+	Suppose $f_0$ satisfies $|f_0(x') - f_0(x)| \leq M \|x' - x\|$ for all $x',x \in \mc{X}$. Then for all $n$ sufficiently large, with probability at least $1 - \delta$ it holds that
+	\begin{equation*}
+	\|\wh{f} - f_0\|_{\Leb^2(\Xset)}^2 \leq C \log(1/\delta) \biggl(\log(n)\cdot \|\wh{f} - f_0\|_n^2 + M^2\Bigl(\frac{\log n}{n}\Bigr)^{2/d}\biggr).
+	\end{equation*}
+\end{proposition}
+Note that $n^{-2/d} \ll n^{-2/(2 +d)}$. Therefore Proposition~\ref{prop:out_of_sample_error} together with Theorem~\ref{thm:laplacian_smoothing_estimation1} implies that with high probability, $\wh{f}$ achieves the nearly-optimal (up to a factor of $\log n$) estimation rates out-of-sample error---that is, $\|\wh{f} - f_0\|_{\Leb^2(\Xset)}^2 \leq C \log(n) M^{2d/(2 + d)}n^{-2/(2+d)}$---as long as $M \leq Cn^{1/d}$.
+\paragraph{Proof of Proposition~\ref{prop:out_of_sample_error}.}
+Suppose $x \in V_i$, so that we can upper bound the pointwise squared error $|\wh{f}(x) - f(x)|^2$ using the triangle inequality:
+\begin{equation*}
+\bigl(\wh{f}(x) - f_0(x)\bigr)^2 = \bigl(\wh{f}(X_i) - f_0(x)\bigr)^2 \leq 2\bigl(\wh{f}(X_i) - f_0(X_i)\bigr)^2 + 2\bigl(f_0(X_i) - f_0(x)\bigr)^2
+\end{equation*}
+Integrating both sides of the inequality, we have
+\begin{align*}
+\int_{\Xset} \bigl(\wh{f}(x) - f_0(x)\bigr)^2 \,dx & \leq 2  \sum_{i = 1}^{n} \int_{V_i} \Bigl(\wh{f}(X_i) - f_0(X_i)\Bigr)^2 \,dx + 2 \sum_{i = 1}^{n} \int_{V_i} \Bigl(f_0(X_i) - f_0(x)\Bigr)^2 \dx \\
+& = 2 \sum_{i = 1}^{n} \vol(V_i) \Bigl(\wh{f}(X_i) - f_0(X_i)\Bigr)^2 + 2 \sum_{i = 1}^{n} \int_{V_i} \Bigl(f_0(X_i) - f_0(x)\Bigr)^2 \dx
+\end{align*}
+and so by invoking the Lipschitz property of $f_0$, we obtain
+\begin{equation}
+\label{pf:out_of_sample_error_0}
+\|\wh{f} - f\|_{\Leb^2(\Xset)}^2 \leq 2 \sum_{i = 1}^{n} \vol(V_i) \Bigl(\wh{f}(X_i) - f_0(X_i)\Bigr)^2 + 2 M^2 \sum_{i = 1}^{n} \Bigl(\mathrm{diam}(V_i)\Bigr)^2
+\end{equation}
+where we write $\mathrm{diam}(V)$ for the diameter of a set $V$. 
+
+Now we will use some results of \citet{chaudhuri2010} regarding uniform concentration of empirical counts, to upper bound $\diam(V_i)$ Set
+\begin{equation*}
+\varepsilon_n := \biggl(\frac{2C_{o}\log(1/\delta)d\log n}{\nu_dp_{\min}a_3n}\biggr)^{1/d},
+\end{equation*}
+where $C_{o}$ is a constant given in Lemma~16 of \citet{chaudhuri2010}. Note that for $n$ sufficiently large, $\varepsilon_n \leq c_0$, and therefore by~\eqref{eqn:integral_boundary} we have that for every $x \in \Xset$, $P(B(x,\varepsilon_n)) \geq 2C_{o}\log(1/\delta)d\frac{\log n}{n}$. Consequently, by Lemma~16 of \citet{chaudhuri2010} it holds that with probability at least $1 - \delta$,
+\begin{equation}
+\label{pf:out_of_sample_error_1}
+\textrm{for all $x \in \mc{X}$},~~ B(x,\varepsilon_n) \cap \{X_1,\ldots,X_n\} \neq \emptyset.
+\end{equation}
+But if~\eqref{pf:out_of_sample_error_1} is true, it must also be true that for each $i = 1,\ldots,n$ and for every $x \in V_i$, the distance $\|x - X_i\| \leq \varepsilon_n$. Thus by the triangle inequality, $\max_{i = 1,\ldots,n} \mathrm{diam}(V_i) \leq 2\varepsilon_n$. Plugging back in to~\eqref{pf:out_of_sample_error_0}, and using the upper bound volume $\vol(V_i) \leq \nu_d \bigl(\mathrm{diam}(V_i)\bigr)^d$, we obtain the desired upper bound on $\|\wh{f} - f\|_{\Leb^2(\Xset)}^2$.
+
+\paragraph{Proof of Theorem~\ref{thm:laplacian_smoothing_estimation_manifold}.}
+The proof of Theorem~\ref{thm:laplacian_smoothing_estimation_manifold} follows exactly the same steps as the proof of Theorem~\ref{thm:laplacian_smoothing_estimation1}, replacing the references to Lemma~\ref{lem:graph_sobolev_seminorm} and~\ref{lem:neighborhood_eigenvalue} by references to Proposition~\ref{prop:garciatrillos19_1} and~\eqref{eqn:neighborhood_eigenvalue_manifold}, and the ambient dimension $d$ by the intrinsic dimension $m$. 
+
+\subsection{Proofs of testing results}
+\label{subsec:laplacian_smoothing_testing_pf}
+
+\paragraph{Proof of Theorem~\ref{thm:laplacian_smoothing_testing}.}
+Recall that we have shown that the inequalities~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue} are satisfied with probability at least $1 - \delta - C_1n\exp(-c_1nr^d)$.
+
+Now, we would like to invoke Lemma~\ref{lem:ls_fixed_graph_testing}, and in order to do so, we must show that the inequality~\eqref{eqn:ls_fixed_graph_testing_critical_radius} is satisfied with respect to $G = G_{n,r}$. First, we upper bound the right hand side of this inequality. By~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue},
+\begin{align*}
+\frac{2 \rho}{n} \bigl(f_0^{\top} \Lap f_0\bigr) + \frac{4b}{n} \biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \biggr)^{1/2} & \leq C_2b\wt{\rho}M^2 + \frac{4b}{n}\Biggl[1 + \biggl(\sum_{k = 2}^{n} \frac{1}{(c_3\wt{\rho}k^{2/d} + 1)^4} \biggr)^{1/2} + \frac{r^4n^{1/2}}{c_3^2\wt{\rho}^2}\Biggr] \\
+& \leq C_2b\wt{\rho}M^2 + \frac{4b}{n}\biggl(1 + \frac{\sqrt{2}}{c_3^{d/4}}\wt{\rho}^{-d/4} + \frac{r^4n^{1/2}}{c_3^2\wt{\rho}^2}\biggr) \\ 
+& \leq \Bigl(C_2 + 4 + \frac{4\sqrt{2}}{c_3^{d/4}} + \frac{4}{c_3^2}\Bigr)bM^{2d/(4 + d)} n^{-4/(4 + d)}
+\end{align*}
+where the second inequality is justfied by Lemma~\ref{lem:variance_term_testing}, and in the third inequality we set $\wt{\rho} = M^{-8/(4 + d)}n^{-4/(4 + d)}$ as prescribed by Theorem~\ref{thm:laplacian_smoothing_testing}, and use both the upper bound on $r$ assumed in~\ref{asmp:ls_kernel_radius_testing} as well as the fact that $M \geq n^{-1/2}$.
+
+Next we lower bound the left hand side of the inequality~\eqref{eqn:ls_fixed_graph_testing_critical_radius}---i.e. we lower bound the empirical norm $\|f_0\|_n^2$---using Lemma~\ref{lem:empirical_norm_sobolev}. Recall that by assumption, $M \leq M_{\max}(d)$. Therefore, taking $C \geq C_6$ in~\eqref{eqn:laplacian_smoothing_testing}, we have that~\eqref{eqn:empirical_norm_sobolev_1} is satisfied, so that it follows from~\eqref{eqn:empirical_norm_sobolev} that
+\begin{equation*}
+\|f\|_n^2 \geq \frac{\|f\|_{P}^2}{b} \geq \frac{p_{\min}}{b} \|f\|_{\Leb^2(\Xset)}^2 \geq CbM^{2d/(4 + d)}n^{-4/(4 + d)},
+\end{equation*}
+with probability at least $1 - 5/b$. Taking $C \geq C_2 + 4 + (4\sqrt{2})/c_3^{d/4} + 4/c_3^2$ in~\eqref{eqn:laplacian_smoothing_testing} thus implies~\eqref{eqn:ls_fixed_graph_testing_critical_radius}, and we may therefore use Lemma~\ref{lem:ls_fixed_graph_testing} to upper bound the type II error the Laplacian smoothing test $\wh{\varphi}$. Observe that by~\eqref{eqn:neighborhood_eigenvalue} and the lower bound in Lemma~\ref{lem:variance_term_testing}, 
+\begin{equation*}
+\sum_{k = 1}^{n} \biggl(\frac{1}{\rho \lambda_k + 1}\biggr)^4 \geq 1 + \sum_{k = 2}^{n}\biggl(\frac{1}{C_3\wt{\rho}k^{2/d} + 1}\biggr)^4 \geq 1 + \frac{1}{16}\min\biggl\{\floor{\frac{\wt{\rho}^{-d/2}}{C_3^{d/2}}} - 1 \vee 0, n \biggr\} \geq \min\biggl\{\frac{\wt{\rho}^{-d/2}}{32 C_3^{d/2}}, \frac{n}{16} \biggr\}.
+\end{equation*}
+We conclude that
+\begin{align*}
+\Pbb_{f_0}\bigl(\wh{T} \leq \wh{t}_b\bigr) & \leq \frac{6}{b} + \frac{4}{b^2} + \frac{8}{b} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{-1/2} + C_1n\exp(-c_1nr^d)\\
+& \leq \frac{10}{b} + \frac{32\sqrt{2}}{b} \max\Bigl\{ C_3^{d/4}\wt{\rho}^{d/4} ,n^{-1/2}\Bigr\} + C_1n\exp(-c_1nr^d),
+\end{align*}
+establishing the claim of Theorem~\ref{thm:laplacian_smoothing_testing}.
+
+\paragraph{Proof of Theorem~\ref{thm:laplacian_smoothing_testing_manifold}.}
+The proof of Theorem~\ref{thm:laplacian_smoothing_testing_manifold} follows exactly the same steps as the proof of Theorem~\ref{thm:laplacian_smoothing_testing}, replacing the references to Lemma~\ref{lem:graph_sobolev_seminorm} and~\ref{lem:neighborhood_eigenvalue} by references to Propositions~\ref{prop:garciatrillos19_1} and~\eqref{eqn:neighborhood_eigenvalue_manifold}, and the ambient dimension $d$ by the intrinsic dimension $m$.
+
+\paragraph{Proof of~\eqref{eqn:laplacian_smoothing_testing_low_smoothness}.}
+When $\rho = 0$, the Laplacian smoother $\wh{f} = \mathbf{Y}$, the test statistic $\wh{T} = \frac{1}{n}\|\mathbf{Y}\|_2^2$, and the threshold $\wh{t}_b = 1 + 2bn^{-1/2}$. The expectation of $\wh{T}$ is 
+\begin{equation*}
+\Ebb\bigl[\wh{T}\bigr] = \mathbb{E}\bigl[f_0^2(X)\bigr] + 1 \geq p_{\min} \norm{f_0}_{\Leb^2(\Xset)}^2 + 1
+\end{equation*}
+When $f_0 \in \Leb^4(\Xset,M)$, the variance can be upper bounded
+\begin{equation*}
+\Var\bigl[\wh{T}\bigr] \leq \frac{1}{n}\Bigl(3 + p_{\max} M^4 + p_{\max}\norm{f_0}_{\Leb^2(\Xset)}^2\Bigr).
+\end{equation*}
+Now, let us assume that
+\begin{equation*}
+\norm{f_0}_{\Leb^2(X)}^2 \geq \frac{4b}{p_{\min}} n^{-1/2},
+\end{equation*}
+so that $E[\wh{T}] - \wh{t}_b \geq E[f_0^2(X)]/2$. Hence, by Chebyshev's inequality
+\begin{align*}
+\mathbb{P}_{f_0}\Bigl(\wh{T} \leq \wh{t}_b \Bigr) & \leq 4 \frac{\Var_{f_0}\bigl[\wh{T}\bigr]}{\mathbb{E}[f_0^2(X)]^2} \\
+& \leq \frac{4}{n} \cdot \frac{ 3 + p_{\max}\bigl(M^4 + \|f_0\|_{\Leb^2(\Xset)}^2 \bigr)}{p_{\min}^2 \|f_0\|_{\Leb^2(\Xset)}^4} \\
+& \leq \frac{1}{16b^2}\Bigl(3 + \frac{4bp_{\max}}{p_{\min}n^{1/2}} + p_{\max}M^4\Bigr).
+\end{align*}
+
+\subsection{Two convenient estimates}
+\label{subsec:convenient_estimate}
+The following Lemmas provides convenient upper and lower bounds on our estimation variance term (Lemma~\ref{lem:variance_term_estimation}) and testing variance term (Lemma~\ref{lem:variance_term_testing}).
+\begin{lemma}
+	\label{lem:variance_term_estimation}
+	For any $t > 0$,
+	\begin{equation*}
+	\frac{1}{4}\min\Bigl\{\floor{t^{-d/2}} - 1 \vee 0,n\Bigr\} \leq \sum_{k = 2}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^2 \leq t^{-d/2} +
+	\begin{cases*}
+	t^{-d/2},& ~~\textrm{if $d < 4$} \\
+	\frac{1}{t^2}\log n,& ~~\textrm{if $d = 4$} \\
+	\frac{1}{t^2}n^{-(4/d - 1)},&~~\textrm{if $d > 4$.}
+	\end{cases*}
+	\end{equation*}
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:variance_term_testing}
+	For any $t > 0$, when $d < 4$,
+	\begin{equation*}
+	\frac{1}{16}\min\Bigl\{\floor{t^{-d/2}} - 1 \vee 0,n\Bigr\} \leq \sum_{k = 2}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^4 \leq 2t^{-d/2}.
+	\end{equation*}
+\end{lemma}
+\paragraph{Proof of Lemma~\ref{lem:variance_term_estimation}.}
+We begin by proving the upper bounds. Observe that
+\begin{align*}
+\sum_{k = 1}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^2 & \leq t^{-d/2} + \frac{1}{t^2}\sum_{k = t^{-d/2} + 1}^{n} \frac{1}{k^{4/d}} \\
+& \leq t^{-d/2} + \frac{1}{t^2} \int_{t^{-d/2}}^{n} x^{-4/d} \,dx
+\end{align*}
+and the various upper bounds (for $d < 4$, $d = 4$, and $d > 4$) follow upon computing the integral.
+
+For the lower bound, we simply recognize that for each $k = 2,\ldots,n$ such that $k \leq \floor{t^{-d/2}}$, it holds that $1/(tk^{2/d} + 1)^2 \geq 1/4$, and there are at least $\min\Bigl\{\floor{t^{-d/2}} - 1 \vee 0,n\Bigr\}$ such values of $k$.
+
+\paragraph{Proof of Lemma~\ref{lem:variance_term_testing}.}
+The upper bound follows similarly to that of Lemma~\ref{lem:variance_term_estimation}:
+\begin{align*}
+\sum_{k = 1}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^4 & \leq t^{-d/2} + \frac{1}{t^4}\sum_{k = t^{-d/2} + 1}^{n} \frac{1}{k^{8/d}} \\
+& \leq t^{-d/2} + \frac{1}{t^4} \int_{t^{-d/2}}^{n} x^{-8/d} \,dx \\
+& \leq 2t^{-d/2}.
+\end{align*}
+
+The lower bound follows from the same logic as we used to derive the lower bound in Lemma~\ref{lem:variance_term_estimation}.
+
+\section{Concentration Inequalities}
+\label{sec:concentration}
+\begin{lemma}
+	\label{lem:chi_square_bound}
+	Let $\xi_1,\ldots,\xi_N$ be independent $N(0,1)$ random variables, and let $U := \sum_{k = 1}^{N} a_k(\xi_k^2 - 1)$.  Then for any $t > 0$,
+	\begin{equation*}
+	\Pbb\Bigl[U \geq 2 \norm{a}_2 \sqrt{t} + 2 \norm{a}_{\infty}t\Bigr] \leq \exp(-t).
+	\end{equation*}
+	In particular if $a_k = 1$ for each $k = 1,\ldots,N$, then
+	\begin{equation*}
+	\Pbb\Bigl[U\geq 2\sqrt{N t} + 2t\Bigr] \leq \exp(-t).
+	\end{equation*}
+\end{lemma}
+
+The proof of Lemma~\ref{lem:empirical_norm_sobolev} relies on (a variant of) the Paley-Zygmund Inequality.
+\begin{lemma}
+	\label{lem:paley_zygmund}
+	Let $f$ satisfy the following moment inequality for some $b \geq 1$:
+	\begin{equation}
+	\label{eqn:paley_zygmund_1}
+	\Ebb\bigl[\norm{f}_n^4\bigr] \leq \left(1 + \frac{1}{b^2}\right)\cdot\Bigl(\Ebb\bigl[\norm{f}_n^2\bigr]\Bigr)^2.
+	\end{equation}
+	Then,
+	\begin{equation}
+	\label{eqn:paley_zygmund_2}
+	\mathbb{P}\left[\norm{f}_n^2 \geq \frac{1}{b} \Ebb\bigl[\norm{f}_n^2\bigr]\right] \geq 1 - \frac{5}{b}.
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	Let $Z$ be a non-negative random variable such that $\mathbb{E}(Z^q) < \infty$. The Paley-Zygmund inequality says that for all $0 \leq \lambda \leq 1$,
+	\begin{equation}
+	\label{eqn:paley_zygmund_pf1}
+	\mathbb{P}(Z > \lambda \mathbb{E}(Z^p)) \geq \left[(1 - \lambda^p) \frac{\mathbb{E}(Z^p)}{(\mathbb{E}(Z^q))^{p/q}}\right]^{\frac{q}{q - p}}
+	\end{equation}
+	Applying~\eqref{eqn:paley_zygmund_pf1} with $Z = \norm{f}_n^2$, $p = 1$, $q = 2$ and $\lambda = \frac{1}{b}$, by assumption~\eqref{eqn:paley_zygmund_1} we have
+	\begin{equation*}
+	\mathbb{P}\Bigl(\norm{f}_n^2 > \frac{1}{b} \mathbb{E}[\norm{f}_n^2]\Bigr) \geq \Bigl(1 - \frac{1}{b}\Bigr)^2 \cdot  \frac{\bigl(\mathbb{E}[\norm{f}_n^2]\bigr)^2}{\mathbb{E}[\norm{f}_n^4]} \geq \frac{\Bigl(1 - \frac{2}{b}\Bigr)}{\Bigl(1 + \frac{1}{b^2}\Bigr)} \geq 1 - \frac{5}{b}.
+	\end{equation*}
+\end{proof}
+
+Let $Z_1,\ldots,Z_n$ be independently distributed and bounded random variables, such that $\Ebb[Z_i] = \mu_i$. Let $S_n = Z_1 + \ldots + Z_n$ and $\mu = \mu_1 + \ldots + \mu_n$. The multiplicative form of Hoeffding's inequality gives sharp bounds when $\mu \ll 1$. 
+\begin{lemma}[Hoeffding's Inequality, multiplicative form]
+	\label{lem:hoeffding}
+	Suppose $Z_i$ are independent random variables, which satisfy $Z_i \in [0,B]$ for $i = 1,\ldots,n$. For any $0 < \delta < 1$, it holds that
+	\begin{equation*}
+	\Pbb\biggl(\Bigl|S_n - \mu\Bigr| \geq \delta \mu\biggr) \leq 2\exp\biggl(-\frac{\delta^2\mu}{3B^2}\biggr)
+	\end{equation*}
+\end{lemma}
+We use Lemma~\ref{lem:hoeffding}, along with properties of the kernel $K$ and density $p$, to upper bound the maximum degree in our neighborhood graph, which we denote by $D_{\max}(G_{n,r}) := \max_{i = 1,\ldots,n} D_{ii}$.
+\begin{lemma}
+	\label{lem:max_degree}
+	Under the conditions of Lemma~\ref{lem:neighborhood_eigenvalue},
+	\begin{equation*}
+	D_{\max}(G_{n,r}) \leq 2p_{\max}nr^d,
+	\end{equation*}
+	with probability at least $1 - 2n\exp\Bigl(-nr^da_3p_{\min}/(3[K(0)]^2)\Bigr)$. 
+\end{lemma}
+\paragraph{Proof of Lemma~\ref{lem:max_degree}.}
+Fix $x \in \Xset$, and set
+\begin{equation*}
+D_{n,r}(x) :=  \sum_{i = 1}^{n} K\biggl(\frac{\|X_i - x\|}{r}\biggr);
+\end{equation*}
+note that $D_{n,r}(X_i)$ is just the degree of $X_i$ in $G_{n,r}$. By Hoeffding's inequality
+\begin{equation}
+\label{pf:max_degree_1}
+\Pbb\biggl(\Bigl|D_{n,r}(x) - \Ebb\bigl[D_{n,r}(x)\bigr]\Bigr| \geq \delta \Ebb\bigl[D_{n,r}(x)\bigr]\biggr) \leq 2\exp\biggl(-\frac{\delta^2\Ebb\bigl[D_{n,r}(x)\bigr]}{3[K(0)]^2}\biggr)
+\end{equation}
+
+Now we lower bound $\Ebb[D_{n,r}(x)]$ using the boundedness of the density $p$, and the fact that $\Xset$ has Lipschitz boundary:
+\begin{align*}
+\Ebb\bigl[D_{n,r}(x)\bigr] & = n \int_{\Xset} K\biggl(\frac{\|x' - x\|}{r}\biggr) p(x) \,dx \\
+& \geq n p_{\min} \int_{\Xset} K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dx \\
+& \geq n p_{\min} a_3 \int_{\Xset} K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dx \\
+& \geq nr^d p_{\min}.
+\end{align*}
+with the second inequality following from~\eqref{eqn:integral_boundary}, and the final inequality from the normalization $\int_{\Rd} K(\|z\|) \,dz = 1$. Similar derivations yield the upper bound
+\begin{equation*}
+\Ebb\bigl[D_{n,r}(x)\bigr] \leq nr^{d} p_{\max}
+\end{equation*} 
+and plugging these bounds in to~\eqref{pf:max_degree_1}, we determine that
+\begin{equation*}
+\Pbb\biggl(D_{n,r}(x) \geq (1 + \delta) nr^d p_{\max}\biggr) \leq 2\exp\biggl(-\frac{\delta^2nr^da_0p_{\min}}{3[K(0)]^2}\biggr),
+\end{equation*}
+and applying a union bound, we get that
+\begin{equation*}
+\Pbb\biggl(\max_{i = 1,\ldots,n}D_{n,r}(X_i) \geq (1 + \delta) nr^d p_{\max}\biggr) \leq 2n\exp\biggl(-\frac{\delta^2nr^da_0p_{\min}}{3[K(0)]^2}\biggr);
+\end{equation*}
+taking $\delta = 1$ gives the claimed upper bound.
