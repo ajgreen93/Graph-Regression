@@ -164,12 +164,22 @@
 \date{\today}
 \maketitle
 
-We use \emph{Laplacian learning} as a catch-all term for learning algorithms which leverage (possibly discrete approximations of) the Laplace operator to conduct \{unsupervised, semi-supervised, supervised\} learning tasks. In this note, I will detail various physical analogies and intuitions to explain what Laplacian learning is ``doing'', draw connections between Laplacian learning and other types of learning (e.g. kernel smoothing, RKHS regression), and hopefully provide some insight regarding when and why Laplacian learning is a reasonable idea. Much of what follows will be review of others' ideas, and I provide references where appropriate.
+We use \emph{Laplacian learning} as a catch-all term for learning algorithms which leverage (possibly discrete approximations of) the Laplace operator to conduct \{unsupervised, semi-supervised, supervised\} learning tasks. The purpose of this note is to explain what Laplacian learning does, and when and why it works well. The nature of these explanations differ, based on whether the problem at hand falls into one of two regimes--- either the \emph{well-posed} or \emph{ill-posed} regime--- as I now explain.
 
-\section{Physical analogies and intuitions} 
-One theme of the literature regarding Laplacian learning is that algorithms which use the Laplace operator are sometimes well-posed, and sometimes not. We will be particularly interested in analogies and intuition that explain when and why algorithms that use the Laplace operator succeed, and when and why they fail. The question of well-posedness often hinges on the extent to which constraints enforced on some subset of an ambient domain $\Omega$ ensure a well-posed problem: that is, a problem with a reasonable solution on $\Omega$. We will call the constraints \emph{boundary conditions}. 
+There is a long line of literature addressing the relationship between discrete Laplacian learning methods and their continuum counterparts. This literature provides compelling evidence that graph Laplacian learning methods are often approximating a reasonable, and indeed quite interesting, continuum counterpart. I term this setting the \emph{well-posed} regime. In this regime, I view graph Laplacians as a noisy version of the continuum problem we wish to solve, and I think the question ``what are graph Laplacians doing'' is always best answered by investigating the structure of the continuum counterpart. Of course, this leads to the question ``why use graph Laplacians at all''? The answer to this is that even though we are interested in solving these continuum problems, they are typically challenging to directly solve, which justifies use of a discrete approximation of the problem, i.e. graphs.
 
-Suppose we observe data $(x_1,y_1),\ldots,(x_n,y_n)$ and additionally $x_{n + 1},\ldots,x_{N}$, with $\Omega_N = \{x_1,\ldots,x_N\} \subset \Rd$. For a given kernel $\eta(\cdot): [0,\infty) \to [0,\infty)$, and length scale (or bandwidth) $\varepsilon$, the Laplace operator $L_{N,\varepsilon}: H^2(\Omega_N) \to L^2(\Omega_N)$ is defined according to, 
+On the other hand, another theme in the literature on Laplacian learning is that Laplacian learning problems are often \emph{ill-posed}---meaning, in a rough sense, that the solutions to these problems are either undesirable or even nonsensical. On graphs, this theme manifests itself in one of two ways: either graph Laplacian learning methods (a) are not well-posed, and do not correspond with well-posed continuum counterparts, or even more strikingly (b) are well-posed even when their seemingly obvious continuum counterparts are not. In this regime, in order to answer ``what are graph Laplacians doing?'' it feels like we must first tackle this question of well and ill-posedness. 
+
+Because I find the first regime to be (relatively) more straightforward, \textcolor{red}{for now} in this note I focus on the second regime, paying special attention to the differences between when we fall in situation (a) vs. when we fall in situation (b). I detail various physical analogies and intuitions to explain ``what the heck Laplacian learning is doing''\footnote{Ryan's quote!}, both when it is succeeding (a) and failing (b). I also draw connections between Laplacian learning and other types of learning (e.g. RKHS regression, kernel smoothing). Throughout, I adopt the view that although the original question was ``what is Laplacian learning doing?'', this is simply an intermediate question along the road to ``when and why should I use Laplacian learning?'' Finally: much of what follows will be review of others' ideas, and I provide references where appropriate.
+
+\textcolor{red}{(TODO): Obviously when framed this way, it seems important to give a good summary of the well-posed setting too.}
+
+\section{Physical Analogies and Intuitions} 
+\label{sec:analogies_and_intution}
+
+We will pay special attention to the \emph{semi-supervised learning} task, because it provides a useful intermediary between discrete and continuum problems. Suppose we observe data $(x_1,y_1),\ldots,(x_n,y_n)$ and additionally $x_{n + 1},\ldots,x_{N}$, with $\Omega_N = \{x_1,\ldots,x_N\} \subset \Rd$. Typically, although not always, we will treat the samples $x_1,\ldots,x_N$ as independent samples from a distribution $P$ with support $\Omega \subseteq \Rd$, and the labels $y_i$ as being (possibly noisy) evaluations of an underlying unknown regression function $f_0$. Our goal is to learn the regression function $f_0$ on $x_{n + 1},\ldots,x_{N}$, using the labels $Y = \{y_1,\ldots,y_n\}$ and a Laplace operator $L_{N,\varepsilon}$, which we now define.
+
+For a given kernel $\eta(\cdot): [0,\infty) \to [0,\infty)$, and length scale (or bandwidth) $\varepsilon$, the Laplace operator $L_{N,\varepsilon}: H^2(\Omega_N) \to L^2(\Omega_N)$ is defined according to, 
 \begin{equation*}
 L_{N,\varepsilon}u(x) = \frac{1}{N\epsilon^{d + 2}}\sum_{j = 1}^{N} \bigl(u(x) - u(x_j)\bigr)\eta\biggl(\frac{|x - x_i|}{\varepsilon}\biggr).
 \end{equation*}
@@ -177,7 +187,7 @@ The operator $L_{N,\varepsilon}$ is associated with a \emph{Dirichlet energy} $b
 \begin{equation*}
 b_{N,\varepsilon}(u) = \sum_{i,j = 1}^{N} \bigl(u(x_i) - u(x_j)\bigr)^2 \eta\biggl(\frac{|x - x_i|}{\varepsilon}\biggr),
 \end{equation*}
-the connection being that $b_{N,\varepsilon}(u) = \dotp{u}{L_{N,\varepsilon}u}_{N}$ for any $u \in H^2(\Omega_N)$. Our goal is to learn a function $u$ on $x_{n + 1},\ldots,x_{N}$ using the labels $Y = \{y_1,\ldots,y_n\}$ and the Laplace operator $L_{N,\varepsilon}$. 
+the connection being that $b_{N,\varepsilon}(u) = \dotp{u}{L_{N,\varepsilon}u}_{N}$ for any $u \in H^2(\Omega_N)$. 
 
 \paragraph{Mininum energy interpolation, and a connection with random walks.}
 
@@ -197,7 +207,7 @@ L_{N,\varepsilon}{\wh{u}}(x_i) = 0,& ~~\textrm{$x_i \in \Omega_N \setminus \{x_1
 \wh{u}(x_i) = y_i,&~~\textrm{$x_i \in \{x_1,\ldots,x_n\}$.}
 \end{cases}
 \end{equation}
-and takes the explicit form $\wh{u} = L^{\dagger} A y$. Here $A \in \Reals^{N \times n}$ is the kernel smoothing matrix with entries $A_{ij} = \eta(\|x_i - x_j\| / \varepsilon)$.
+and takes the explicit form $\wh{u} = L_{\mathrm{un}}^{\dagger} A y$, where $L_{\mathrm{un}}$ is the Laplacian matrix over the unlabeled data only. Here $A \in \Reals^{N \times n}$ is the kernel smoothing matrix with entries $A_{ij} = \eta(\|x_i - x_j\| / \varepsilon)$.
 
 The solution to the Laplace equation admits a probabilistic interpretation in terms of random walks. Let $X_0,X_1,\ldots$ be a random walk over $x_1,\ldots,x_N$, where at each step the walk moves from its current position $x_i$ to a neighboring point $x_j$ with probability $p(x_i,x_j) = A_{ij}/d(x_i)$, where $d(x_i) = \sum_{j = 1}^{n} A_{ij}$. The generator of this walk is the random walk Laplacian $L_{\mathrm{rw}} := (1/d) L_{N,\varepsilon}$. Suppose we stop this walk the first time it reaches a labeled point, i.e let the stopping time $\tau := \inf\{t: X_t \in \{x_1,\ldots,x_n\}\}$. Denote the resulting label by $y_{\tau}$. The solution $\wh{u}$ to~\eqref{eqn:min_energy_interpolant} is then the expected value of the response when the random walk stops,
 \begin{equation}
@@ -213,11 +223,12 @@ R_{ij} = R(x_i,x_j) = \bigl \langle L_{N,\varepsilon}^{\dagger}(e_i - e_j),(e_i 
 The resistance distance arises from two different (and therefore equivalent) physical interpretations. The first treats the graph $G$ corresponding to adjacency matrix $A$ as a resistor network. Placing an external current $c_{ext} := e_i - e_j$ then induces a potential difference between points $x_i$ and $x_j$, and it follows from Ohm's Law and Kirchoff's Laws that this potential difference is precisely $R(i,j)$. The second interpretation concerns the random walk $X_0,X_1,\ldots$ with starting point $X_0 = x_i$. The resistance distance $R_{ij}$ is (up to a rescaling) the \emph{commute time} of this random walk. The commute time $C_{ij} = C(x_i,x_j)$ is the sum  of two \emph{hitting times}
 ---$H(x_i,x_j)$, the expected time before the walk hits point $x_j$, plus $H(x_j,x_i)$, the expected time it takes for the random walk to return to point $x_i$. 
 
-The first connection between resistance distance and Laplace learning is simply that both can be interpreted in terms of these hitting times. We have just seen that the effective resistance between points $x_i$ and $x_j$ can be written as $R(i,j) \propto H(i,j) + H(j,i)$. On the other hand,~\eqref{eqn:min_energy_interpolant} provides a way to relate $\wh{u}$ to the expected hitting time. Concretely, supposing at the labeled points $y_i = g(x_i)$ for some Lipschitz function $g$ with Lipschitz constant $L$, then at an unlabeled point $x \in \Omega_N$ a martingale argument shows that
-\begin{equation*}
-\bigl|\wh{u}(x) - g(x)\bigr|^2 \lesssim \Ebb[\tau] \cdot \Ebb[|X_{\tau} - x|^2]  \cdot L,
-\end{equation*}
-where $\Ebb[\tau] = H\bigl(x,\{x_1,\ldots,x_n\}\bigr)$. \textcolor{red}{TODO: Calder2020a makes a lower bound argument, which also belongs here.}
+The first connection between resistance distance and Laplace learning is simply that both can be interpreted in terms of these hitting times. We have just seen that the effective resistance between points $x_i$ and $x_j$ can be written as $R(i,j) \propto H(i,j) + H(j,i)$. On the other hand,~\eqref{eqn:min_energy_interpolant} provides a way to relate $\wh{u}$ to the expected hitting time. Concretely, suppose at the labeled points $y_i = g(x_i)$ for some Lipschitz function $g$ with Lipschitz constant $L$. Then at an unlabeled point $x \in \Omega_N$, a martingale argument shows that
+\begin{equation}
+\label{eqn:connection_hitting_time_laplace_learning}
+\bigl|\wh{u}(x) - g(x)\bigr|^2 \asymp \Ebb[\tau] \cdot \Ebb[|X_{\tau} - x|^2]  \cdot L,
+\end{equation}
+where $\Ebb[\tau] = H\bigl(x,\{x_1,\ldots,x_n\}\bigr)$. (In~\eqref{eqn:connection_hitting_time_laplace_learning}, the $\lesssim$ direction holds for any $L$-Lipschitz function, while the $\gtrsim$ holds for some $L$-Lipschitz function.)
 
 The second connection between effective resistance and Laplace learning is an exact coupling between the two. Suppose we solve the minimum energy interpolation problem with $n = 2$, $y_1 = 1$ and $y_2 = -1$. Then the effective resistance is exactly one over the energy of $\wh{u}$,
 \begin{equation*}
@@ -259,13 +270,13 @@ A natural question: can we use the connections of the previous section to relate
 	
 	Make the banal mathematical point that even if $R(x_i,x_j)$ are all within $\epsilon$ of $1/d(x_j) + 1/d(x_i)$, if there are an increasing number of labeled points, this does not imply anything about the distance between $\wt{u}$ and $\wb{y}$.
 	\item Conclude that the crucial point is the ratio of labeled to unlabeled points, as this determines whether the walk will have mixed before it arrives at a labeled point.
-	\item Discuss other fixes---three of which are ``smearing the labels''---I have not seen anyone mention this, to the best of my knowledge---changing the graph \textcolor{red}{(Shi, Calder)}, and changing the norm \textcolor{red}{(El-Alaoui, Thorpe)}. 
+	\item Discuss other fixes to the ill-posedness of the semi-supervised problem when $N \to \infty$ and $n$ held constant. Three such fixes are (1) ``smearing the labels''---mentioned by Dejan to Ryan, but not analyzed in the literature as far as I know--- (2) changing the graph \textcolor{red}{(Shi, Calder)}, (3) changing the norm \textcolor{red}{(El-Alaoui, Thorpe)}.
 \end{itemize}
 
 
 \paragraph{Future directions.}
 
-To be clear, by future directions I mean only things for me to track down in the future, rather than any claim of novelty. A tremendous amount of work has been done regarding Laplace learning and I have certainly only scratched the surface of it in this summary.
+To be clear, by future directions I mean only things for me to track down in the future, rather than any claim of novelty, although some of these ideas I have not seen proposed elsewhere. A tremendous amount of work has been done regarding Laplace learning and I have likely only scratched the surface of it in this summary.
 \begin{itemize}
 	\item In practice, people often solve the penalized version of~\eqref{eqn:min_energy_interpolant}. This is thought to better handle the common situation of noisy responses. We refer to this as Laplacian smoothing. It would be interesting to find similar insights regarding Laplacian smoothing.
 	\item There are other relevant diffusion-based perspectives on Laplacian learning, i.e. tying Laplacian learning to walks or diffusions over graphs. This notably includes the \emph{diffusion maps} perspective of \textcolor{red}{Coifman and Lafon}. These perspectives should be reviewed as well. 
@@ -273,28 +284,29 @@ To be clear, by future directions I mean only things for me to track down in the
 	\item It has been observed \textcolor{red}{(Nadler09, Calder2020)} that even in the ill-posed regime---concretely, when $N$ is finite but extremely large compared to $n$---although $\wh{u}$ is quite obviously a bad estimator, once appropriately re-centered it performs quite well at classification tasks. This phenomenon has not been theoretically explained. 
 \end{itemize}
 
-\section{Laplacian learning as Reproducing Kernel Hilbert Space regression}
+\section{Laplacian learning and Reproducing Kernel Hilbert Space regression}
 We refer to the penalized analog of~\eqref{eqn:min_energy_interpolant} as \emph{Laplacian smoothing}, defined for a given value of $\lambda$ as
-\begin{equation*}
+\begin{equation}
+\label{eqn:laplacian_smoothing}
 \wt{u} := \argmin \|y - u\|_n^2 + \lambda b_r(u)
-\end{equation*}
-When the response is zero-mean, Laplacian smoothing is equivalent to ridge regression in the Reproducing Kernel Hilbert Space (RKHS) defined by the kernel $K = L^{\dagger}$. It is immediate that the kernel $K$ defines an RKHS $H_0^1(\Omega_N)$: $L^{\dagger}$ is a positive semi-definite (psd) bilinear form, and it is automatically trace-class because $L^2(\Omega_N)$ is finite-dimensional. The feature map is $\phi: x \mapsto \bigl(\lambda_2^{1/2} v_2(x),\lambda_3^{1/2} v_3(x),\ldots,\lambda_N^{1/2} v_N(x)\bigr)$. The norm is $\|u\|_{H_0^1(\Omega_N)} = \sqrt{b_{\varepsilon}(u)}$. 
+\end{equation}
+When the response is zero-mean, Laplacian interpolation is equivalent to linear regression, and Laplacian smoothing equivalent to ridge regression, in the Reproducing Kernel Hilbert Space (RKHS) induced by the kernel $K = L^{\dagger}$. It is immediate that the kernel $K$ defines an RKHS: $L^{\dagger}$ is a positive semi-definite (psd) bilinear form, and it is automatically trace-class (meaning it has a discrete spectrum, with eigenvalues belonging to $\ell^1(\mathbb{N})$) because $L^2(\Omega_N)$ is finite-dimensional. We denote the RKHS defined by $K$ as $H_0^1(\Omega_N)$, with the subscript $0$ alluding to the fact that functions in $H_0^1(\Omega_N)$ are zero-mean. The feature map is $\phi: x \mapsto \bigl(\lambda_2^{-1/2} v_2(x),\lambda_3^{-1/2} v_3(x),\ldots,\lambda_N^{-1/2} v_N(x)\bigr)$. The (squared-)norm is $\|u\|_{H_0^1(\Omega_N)}^2 = b_{\varepsilon}(u)$. 
 
 \paragraph{Laplacian smoothing as RKHS regression: ill-posed regime.}
-When $d \geq 2$, as $N \to \infty$ and $\varepsilon \to 0$ (second condition optional), and $\lambda$ remains fixed, $\wt{u}$ will converge to the ill-posed limit~\eqref{eqn:min_energy_interpolant_illposed}. This can be explained by the fact that while for any finite $N$, $L^{\dagger}$ is trace-class, when $d \geq 2$ asymptotically the trace explodes, meaning
+When $d \geq 2$, as $N \to \infty$ and $\varepsilon \to 0$ (second condition optional), and $\lambda$ remains fixed, $\wt{u}$ will converge to the ill-posed limit~\eqref{eqn:min_energy_interpolant_illposed}. This can be explained by the fact that---while for any finite number of samples $N$, the (pseudo-)inverse Laplacian $L^{\dagger}$ is trace-class---when $d \geq 2$ asymptotically the trace of $L^{\dagger}$ explodes, meaning
 \begin{equation*}
 \lim_{\substack{N \to \infty \\ \varepsilon \to 0}} tr(L^{\dagger}) \to \infty.
 \end{equation*}
-This will not be true when $d = 1$. 
-
 Equivalently, while it is the case that the evaluation functional $L_x: f \mapsto f(x)$ is bounded for any finite $N$,
 \begin{equation*}
 |L_x(f)| \leq C(N) \cdot \|f\|_{H_0^1(\Omega_N)},
 \end{equation*}
-asymptotically the statement is not true: $\lim_{N \to \infty} C(N) = \infty$.
+asymptotically the statement is not true: $\lim_{N \to \infty, \varepsilon \to 0} C(N) = \infty$. In each case, the condition $\varepsilon \to 0$ is optional.
+
+On the other hand, when $d = 1$ and $\varepsilon \to 0$ suitably fast as $N \to \infty$, the trace converges and the evaluation functionals are uniformly bounded. In the limit, Laplacian smoothing converges to a ridge regression estimate in a suitable RKHS. 
 
 \paragraph{Laplacian learning and RKHS regression: well-posed regime.}
-We now give a simple example showing that when $n/N \gg \varepsilon^2$, the representation cost (in $H_0^1(\Omega_N)$) of a spiky interpolant such as~\eqref{eqn:min_energy_interpolant_illposed} explodes. This is known to be exactly the minimum labeling rate at which minimum Dirichlet energy interpolation converges to a sensible continuum limit. 
+We now give a simple example showing that when $n/N \gg \varepsilon^2$, the representation cost (in $H_0^1(\Omega_N)$) of a spiky interpolant such as~\eqref{eqn:min_energy_interpolant_illposed} explodes.\footnote{We use the phrase ``representation cost'' interchangeably with RKHS norm, and Dirichlet energy.} The rate $n/N \asymp \varepsilon^2$ is known to be the minimum well-posed labeling rate: that is, the minimum fraction of labels for which minimum Dirichlet energy interpolation converges to a sensible continuum limit, at least in the zero-noise regime. 
 
 Suppose $y_i = g(x_i)$ for some function $g$, and suppose (for convenience only) that $\wb{y} = 0$. Then $u_N = (y_1,\ldots,y_n, 0,\ldots,0)$ belongs to $H_0^1(\Omega_n)$ and has squared-norm $\|u_N\|_{H_0^1(\Omega_N)}^2 = b_r(u_N)$ of at least
 \begin{equation*}
@@ -304,16 +316,99 @@ In the above $d_{\min}(G) = \min\bigl\{\sum_{j = n + 1}^{N} A_{ij}: i = 1,\ldots
 \begin{equation*}
 \lim_{N \to \infty} b_{\varepsilon}(u_N) \geq c \cdot \lim_{N \to \infty} \frac{n}{N \varepsilon^2}.
 \end{equation*}
-This is to be contrasted with the interpolator $u = \bigl(g(x_1),\ldots,g(x_n), g(x_{n + 1}),\ldots,g(x_N)\bigr)$, which has finite representational cost in the limit as $n \to \infty, N \to \infty$, regardless of the scaling of $n$ with respect to $N$.
+This is to be contrasted with the original regression function $g$. Clearly, in the zero-noise setting $g$ has zero in-sample error, the same as $u_N$. On the other hand, it is not hard to see that $g$ has finite representational cost in the limit as $n \to \infty, N \to \infty$, regardless of the scaling of $n$ with respect to $N$. As a result, we can rule out the possibility that $\wt{u} = u_N$. 
 
-\paragraph{Future directions.}
+\subsection{Laplacian learning, RKHS regression, and continuum limits}
+\label{subsec:laplacian_learning_continuum_limits}
+In this section, we explore some connections between Laplacian learning methods and more classical notions of RKHS regression. Classically, RKHS regression involve minimizing loss over a function class constructed using a kernel $\mc{K}: \Omega \times \Omega \to \Reals$. (Note the difference between $\mc{K}$ and the kernel $K = L^{\dagger}$, a data dependent kernel with domain $\Omega_N \times \Omega_N$.)
+
+\paragraph{Laplacian learning and RKHS: continuum limits when $d = 1$.}
+Let $L_0^2(P) \subseteq \Leb^2(P)$ consist of the square-integrable functions $f$ which satisfy Neumann conditions at the boundary of $\Omega$, i.e $\frac{\partial}{\partial \mathbf{n}}f = 0$, where $\mathbf{n}$ is the normal vector. When $d = 1$, the continuum counterpart for the Dirichlet energy over $L_0^2(P)$ is
+\begin{equation*}
+\dotp{\Delta_{P}f}{f}_{\Leb^2(P)} = \int \|\nabla f\|^2 p^2 \,d\nu,
+\end{equation*}
+and we let $H_0^1(P) \subset L_0^2(P)$ consist of those functions $f$ with finite Dirichlet energy. Here $\Delta_P$ is the \emph{weighted Laplace-Beltrami} operator
+\begin{equation*}
+\Delta_Pf := -\frac{1}{p} \dive(p^2 \nabla f).
+\end{equation*}
+If $\Omega$ is a compact domain, and $p$ is bounded away from $0$ and $\infty$, then the Green's function of $\Delta_P$ is associated with an RKHS. 
+
+\paragraph{Laplacian learning and RKHS: continuum limits when $d \geq 2$.}
 \begin{itemize}
-	\item Relate the minimum Dirichlet interpolant to overparameterized minimum-norm linear regression. 
+	\item When $d \geq 2$, the space $H_0^1(P)$ is no longer an RKHS.
+	\item I claim that the right continuum counterpart to Laplacian smoothing is instead given by restricting the domain of minimization to the first $N$ eigenfunctions of $\Delta_P$. In other words, let $V_k = \mathrm{span}\{v_1,\ldots,v_k\}$, and take
+	\begin{equation}
+	\label{eqn:bandlimited_laplacian_smoothing}
+	\check{u} := \argmin_{u \in V_N} \Bigl\{ \|y - u\|_n^2 + \lambda \int \|\nabla u\| p^2 \,d \nu  \Bigr\}
+	\end{equation}
+	The vector space $V_k$, equipped with inner product $\dotp{\cdot}{\cdot}_{\mc{H}}$, is an RKHS. Indeed, it is well-studied in the special case $d = 1$, $\Omega = \Reals$ and $P$ uniform. I further claim that as long as $N \to \infty$ sufficiently slowly as $n \to \infty$, the solution to~\eqref{eqn:bandlimited_laplacian_smoothing} is well-behaved in the limit.
+	\item \textcolor{red}{(TODO):} We need to justify each of the claims in the prior point. 
+	\begin{itemize}
+		\item I believe the first claim can be rigorously justified when the domain is $[0,1]^d$, the design points are equi-spaced grid points, the graph is the lattice, and the measure $P$ is uniform. It is much trickier to justify when the graph is a neighborhood graph, because it involves making statements about the top eigenvectors of the Laplacian $L_{N,\varepsilon}$, which are poorly understood. If we cannot rigorously justify it in this case, then the next best option is to give some intuition. For instance, we could say that all eigenvectors of $L_{N,\varepsilon}$ can be extrapolated to locally Lipschitz functions on $\Omega$ with bounded Lipschitz constant, and that such functions in turn lie very close to $V_N$.
+		\item The second claim is simply a matter of adapting some standard results regarding the entropy of RKHS.
+	\end{itemize}
+	\item We should also give some insight into the structure of $V_N$. For instance, what are the smoothness properties of functions $u \in V_N$? What does the kernel function look like (this is well known, I believe, when $d = 1$ and $p$ is uniform)? How do these depend on the density $p$?
 \end{itemize}
 
 
+\subsection{Laplacian Learning and Over-parameterized Linear Regression}
+Recent works (Belkin19, Hastie19, Bartlett19, Muthukumar19) have analyzed the behavior of minimum-norm linear regression in the noisy over-parameterized regime, where the number of features $N$ is greater than the number of samples $n$, and the responses $Y$ are assumed to be noisy evaluations of the regression function $f_0$. The minimum-energy interpolant $\wh{u}$ can be easily recast as the minimum-norm solution to an under-determined linear regression problem, as follows: letting
+\begin{equation}
+\begin{aligned}
+& \wh{\beta} = \argmin \|\beta\|_2^2, \\
+~~\textrm{such that} ~~& K^{1/2}\beta(x_i) = y_i~~\textrm{for~$i = 1,\ldots,n$.}
+\end{aligned}
+\end{equation}
+then $\wh{u} = K^{1/2} \wh{\beta}$.
+
+ Many of the phenomena well-known in Laplacian based semi-supervised learning can be re-expressed in the language of over-parameterized linear regression. In the following, let us assume that $d \geq 2$ and $\varepsilon \asymp (\log N/N)^{1/d}$.
+\begin{itemize}
+	\item The ill-posed regime for Laplacian learning is the regime where the risk converges to the risk of a \emph{null model}. It is the regime where the decay of the eigenvalues of $L^{\dagger}$ is too gradual, or equivalently the regime where the covariance matrix $\Sigma$ of the feature map $\phi$ is too close to isotropic.
+	\item Fix the number of labeled points $n$, and vary the number of unlabeled points $N - n$ from $0$ to $\infty$. I claim that the risk curve of $\wh{u}$, as a function of $N$, will replicate a descent of a \emph{double descent} curve. This prediction is based on the following three observations.
+	\begin{itemize}
+		\item As $N \to \infty$, the risk of $\wh{u}$ will converge to the null risk, as just identified.
+		\item As $N \to 0$, the risk of $\wh{u}$ will also converge to a constant. For instance, when $N = 1$, we know that $\wh{u} = Ay$. In words, the minimum Dirichlet energy interpolant is just performing kernel smoothing, and the choice of bandwidth results in a variance of constant order. 
+		\item When $N \asymp n/\varepsilon^2$, as already mentioned the estimator $\wh{u}$ is consistent in the zero-noise setting. Of course, this point does not imply that $\wh{u}$ is consistent when the responses are observed with noise, but I do find it suggestive.
+	\end{itemize} 
+	\item A particular instantiation of the \emph{semi-supervised} or \emph{cluster} assumption---in which the regression function $g$ is assumed to ``align'' with the density $p$ from which the design points $\Omega_N$ were sampled---can be formulated in terms of alignment between the regression function $f_0$ and the leading eigenvectors of $\Sigma$. It is known that the alignment between regression function $f_0$ and the leading eigenvectors of $\Sigma$ plays a key role in how much regularization and over-parameterization should be used. These results can be translated into making precise statements about how much unlabeled data is ``helping'' in the semi-supervised problem. Making such precise statements has proved surprisingly elusive.
+\end{itemize}
+Two nice things: 
+\begin{itemize}
+	\item Interpolation by minimizing continuum Dirichlet energy, or indeed the analogous higher-order energy,
+	\begin{equation*}
+	D_{2,k}(u) := \dotp{\Delta_P^ku}{u}_{P}
+	\end{equation*}
+	is something of a dead end in the noisy response regime.  The are two cases:
+	\begin{itemize}
+		\item When the dimension $d$ of $\Omega$ is greater than $2k$, then the problem is ill-posed, and the resulting interpolator will be spiky.
+		\item When the dimension $d$ is less than $2k$, the interpolator will be H\"{o}lder smooth with a bounded Holder norm, by the Sobolev embedding theorem (with Holder index $\alpha = k - d/2$ assuming $d$ is odd), but I claim it will still have bad test error. One can argue that any Holder smooth interpolator must be close to the labels $Y$ over a non-negligible portion of the unlabeled points, which is equivalent to saying that it must be far from the regression function $f_0$ at a non-negligible portion of the unlabeled points. ((Rakhlin 2019) give a formal analysis along these lines, studying minimum RKHS norm interpolation where the RKHS in question corresponds to the Laplace kernel, and thus possesses a Sobolev-like norm.)
+	\end{itemize}
+	This is disappointing: the minimum continuum Dirichlet energy interpolant seems at first blush like a very natural object of study. Luckily, discrete Laplacian interpolation comes to the rescue! It approximates the continuum Dirichlet energy, but avoids its pathological behavior. 
+	\item Viewing Laplacian learning as over-parameterized linear regression makes it far more credible that the discrete Laplacian \{interpolator,smoother\} should sometimes outperform their natural continuum analogues. If we think about both of the discrete and continuum problems as performing linear regression on a particular feature map---where in the discrete the feature map $\phi$ maps into $\Reals^n$, and for the continuum problem maps into $\ell^2(\mathbb{N})$---then it is much less obvious that we should prefer the ``limiting'' feature map, where the number of features is infinite. 
+\end{itemize}
+
+
+\paragraph{Future Directions.}
+It is possible that the above is a straightforward consequence of (or at least analogous to) things that are already known, and hence is not worth pursuing further. In that case, I think this discussion simply serves as a nice alternative perspective---elucidated by looking at things in the frequency domain---on when and why Laplacian learning is succeeding vs. failing (which was the original intention!)
+
+On the other hand, if we find it interesting to pursue further, some directions:
+\begin{itemize}
+	\item When the domain is the unit cube $[0,1]^d$, the design points are equi-spaced grid points, and the graph is the lattice, all the eigenvectors and eigenvalues of $L$ are explicitly known. This seems like a natural warmup problem, in which should not be too challenging to compute out-of-sample error.
+	\item Empirically verify that in the noisy label setting when, say, $d = 2$, the risk of $\wh{u}$ does in fact show a U-shape.
+\end{itemize}
 
 \section{Laplacian learning as kernel smoothing}
+\textcolor{red}{(TODO)}: Sketch the problem.
+
+\paragraph{Future directions.}
+\begin{itemize}
+	\item The equivalent kernel problem: relate the Laplacian smoother $\wt{u}$ to a kernel smoother. I see two approaches to this problem.
+	\begin{itemize}
+		\item One approach is to find the right continuum counterpart to~\eqref{eqn:laplacian_smoothing} (see Section~\ref{subsec:laplacian_learning_continuum_limits} for some ideas in this direction), and proceed to find an equivalent kernel for this continuum counterpart. This approach is promising insofar as finding the equivalent kernel for continuum problems (that is, problems in which the regularizer is a continuum Dirichlet energy) is well-studied in the literature \textcolor{red}{(references)}. It is challenging for two reasons: first, we do not always (or even usually) know the continuum counterpart for Laplacian smoothing, and second, even when we do know the continuum counterpart, it is not quite the same as those continuum problems studied in the literature---in particular, the density dependence is different.
+		\item The other approach is to use the random walk connections of Section~\ref{subsec:laplacian_learning_continuum_limits}.
+	\end{itemize}
+	\item Does the Laplacian interpolant $\wh{u}$ admit an (interesting) equivalent kernel? Note that this question, when posed with respect to continuum Laplacian interpolation,  can be answered in the negative---as discussed above, it is always either ill-posed or inconsistent.
+\end{itemize}
 
 
 
