@@ -245,9 +245,10 @@ For a kernel function $\eta(\cdot): [0,\infty) \to (-\infty,+\infty)$, bandwidth
 where $d_Q(x) = \int_{\Omega} \eta\bigl(\|z - x\|/\varepsilon\bigr) \,dQ(z)$. We denote $T_{\varepsilon,P_n}$ by $T_{\varepsilon,n}$, and $d_{P_n}$ by $d_n$. For convenience, we will assume that $\eta$ is normalized, $\int_{0}^{\infty} \eta(\|z\|) \,dz = 1$, and we will denote $K(\cdot) = (\eta(\cdot))^2$.
 
 The estimate we will consider is a kernel smoother passed over $\wh{\theta}$,
-\begin{equation*}
+\begin{equation}
+\label{eqn:kernel_smoother_laplacian_eigenmaps}
 \wh{f}(x) := T_{\varepsilon,n}\wh{\theta}_{1:n}(x).
-\end{equation*}
+\end{equation}
 In order to relate the out-of-sample error $\|\wh{f} - f^{\ast}\|_P$ to the in-sample error $\|\wh{\theta}_{1:n} - f^{\ast}_{1:n}\|_n$, we will assume the following.
 \begin{enumerate}[label=(A\arabic*)]
 	\item
