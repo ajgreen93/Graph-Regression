@@ -263,6 +263,7 @@ The following items summarize our major results.
 
 \subsection{Related Work}
 \begin{itemize}
+	\item \textcolor{red}{Belkin, Slepcev} show that for a fixed $k$, the eigenvector $v_k$ converges to the eigenfunction $u_k$, in the sense that \textcolor{red}{...}. \textcolor{red}{Shi, Garcia Trillos, Calder, Cheng} build on this, giving finite sample bounds, rates of convergence, and making statements uniform over $k$. This gives helpful intuition for what Laplacian eigenmaps is doing, i.e. that it is in fact approximating the \textcolor{red}{following} classical spectral series estimator. However, we emphasize that the minimax optimality of $\wh{f}$ or a test based on $\wh{T}$ does not follow straightforwardly from such results. We explain why in more detail in Section~\ref{sec:analysis}.
 	\item \cite{lee2016} considers a similar estimator --- the notable difference being the normalization of the Laplacian $L$ --- but get suboptimal rates for the supervised problem. 
 	\item \cite{zhou2011} consider a similar estimator, but in the semi-supervised setting. They consider the limit as the number of unlabeled points grows to infinity, in which case the estimator is simply a classic spectral series estimator, and the analysis is standard. 
 \end{itemize}
