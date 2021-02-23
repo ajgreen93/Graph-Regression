@@ -272,13 +272,16 @@ Under Assumption~\ref{asmp:kernel}, we automatically have that $d_\nu(x) = \vare
 \end{lemma}
 Notice that the variance term in the above is smaller than the typical variance term for kernel smoothing of noisy data (on the order of $1/(n\varepsilon^d)$) by a factor of $\varepsilon^2$. The bias term, on the other hand, is standard, and in particular the following estimate of the bias can be obtained. 
 \begin{lemma}
-	Suppose $f^{\ast} \in H_0^{s}(\Omega)$, $p \in C^{\beta}(\Omega)$ for $\beta = s - 1$, and that $\eta$ is an order-$s$ kernel. Then
+	Suppose $f^{\ast} \in H_0^{s}(\Omega)$, $p \in C^{r}(\Omega)$ for $r = s - 1$, and that $\eta$ is an order-$s$ kernel. Then
 	\begin{equation*}
 	\|T_{P,\varepsilon}f^{\ast} - f^{\ast}\|_P^2 \leq C \varepsilon^{2s}.
 	\end{equation*}
 \end{lemma}
+\begin{proof}
+	\textcolor{red}{(TODO)}
+\end{proof}
 
-Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp n^{-1/(2\beta + d)}$) than is typical for kernel smoothing with noisy data, leads to an asymptotically negligible error ($n^{-2s/(2\beta + d)}$) compared to the minimax rate for estimating Sobolev functions. 
+Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp n^{-1/(2r + d)}$) than is typical for kernel smoothing with noisy data, leads to an asymptotically negligible error ($n^{-2s/(2r + d)}$) compared to the minimax rate for estimating Sobolev functions. 
 
 \begin{proof}[Proof of Lemma~\ref{lem:kernel_smoothing_laplacian_eigenmaps}]
 	By the triangle inequality, 
@@ -306,7 +309,7 @@ Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp
 	\end{equation}
 	We begin with a pointwise estimate, which follows from Jensen's inequality:
 	\begin{equation*}
-	\Bigl(\bigl(T_{n,\varepsilon}u\bigr)(x)\Bigr)^2 \leq \frac{1}{d_n(x) n} \sum_{i = 1}^{n} u_i^2 \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
+	\Bigl(\bigl(T_{n,\varepsilon}u\bigr)(x)\Bigr)^2 \leq \frac{1}{d_n(x) n} \sum_{i = 1}^{n} (u_i)^2 \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
 	\end{equation*}
 	(Note that it is here that we have used the positivity of $\eta(\cdot)$.) Integrating with respect to $P$ and exchanging sum with integral yields an upper bound on the $L^2(P)$ norm of $T_{n,\varepsilon}u$,
 	\begin{equation}
