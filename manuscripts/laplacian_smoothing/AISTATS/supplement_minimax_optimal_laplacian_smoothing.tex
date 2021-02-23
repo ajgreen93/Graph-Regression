@@ -9,6 +9,7 @@
 \usepackage{mathtools}
 \usepackage{tikz}
 \usepackage{verbatim}
+\usepackage{microtype}
 
 \usepackage{natbib}
 \renewcommand{\bibname}{REFERENCES}
@@ -482,7 +483,7 @@ In this section, we prove Lemma~\ref{lem:neighborhood_eigenvalue}, following the
 \begin{equation*}
 \Delta_Pf(x) := -\frac{1}{p(x)} \dive\bigl(p^2\nabla f\bigr)(x)
 \end{equation*}
-To avoid confusion, in this section we write $\lambda_k(G_{n,r})$ for the $k$th smallest eigenvalue of the graph Laplacian matrix $\Lap_{n,r}$ and $\lambda_k(\Delta_P)$ for the $k$th smallest eigenvalue of $\Delta_P$ \footnote{Under the assumptions~\ref{asmp:domain} and~\ref{asmp:bounded_lipschitz_density}, the operator $\Delta_P$ has a discrete spectrum; see \citet{garciatrillos18} for more details.}. Some other notation: throughout this section, we will write $A, A_0, A_1,\ldots$ and $a,a_0,a_1,\ldots$ for constants which may depend on $\Xset$, $d$, $K$, and $p$, but do not depend on $n$; we keep track of all such constants explicitly in our proofs. We let $L_K$ denote the Lipschitz constant of the kernel $K$. Finally, for notational ease we set $\theta$ and $\wt{\delta}$ to be the following (small) positive constants.
+To avoid confusion, in this section we write $\lambda_k(G_{n,r})$ for the $k$th smallest eigenvalue of the graph Laplacian matrix $\Lap_{n,r}$ and $\lambda_k(\Delta_P)$ for the $k$th smallest eigenvalue of $\Delta_P$ \footnote{Under the assumptions~\ref{asmp:domain} and~\ref{asmp:density}, the operator $\Delta_P$ has a discrete spectrum; see \citet{garciatrillos18} for more details.}. Some other notation: throughout this section, we will write $A, A_0, A_1,\ldots$ and $a,a_0,a_1,\ldots$ for constants which may depend on $\Xset$, $d$, $K$, and $p$, but do not depend on $n$; we keep track of all such constants explicitly in our proofs. We let $L_K$ denote the Lipschitz constant of the kernel $K$. Finally, for notational ease we set $\theta$ and $\wt{\delta}$ to be the following (small) positive constants.
 \begin{equation}
 \label{asmp:smallness}
 \wt{\delta} := \max\Biggl\{n^{-1/d}, \min\biggl\{\frac{1}{2^{d + 3}A_0}, \frac{1}{A_3}, \frac{K(1)}{8L_KA_0}, \frac{1}{8\max\{A_1,A\}c_0}\biggr\}r\Biggr\},~~\textrm{and}~~
@@ -508,19 +509,19 @@ We note that Theorem~\ref{thm:neighborhood_eigenvalue} is not a strong enough re
 The bulk of this section is devoted to the proof of Theorem~\ref{thm:neighborhood_eigenvalue}. First, however, we show that our regularity under our conditions on $p$ and $\Xset$, Lemma~\ref{lem:neighborhood_eigenvalue} is a simple consequence of Theorem~\ref{thm:neighborhood_eigenvalue}. The link between the two is Weyl's Law.
 \begin{proposition}[Weyl's Law]
 	\label{prop:weyl}
-	Suppose the density $p$ and the domain $\Xset$ satisfy~\ref{asmp:domain} and~\ref{asmp:bounded_lipschitz_density}. Then there exist constants $a_2$ and $A_2$ such that
+	Suppose the density $p$ and the domain $\Xset$ satisfy~\ref{asmp:domain} and~\ref{asmp:density}. Then there exist constants $a_2$ and $A_2$ such that
 	\begin{equation}
 	\label{eqn:weyls_law}
 	a_2k^{2/d} \leq \lambda_k(\Delta_P) \leq A_2k^{2/d}~~\textrm{for all $k \in \mathbb{N}, k > 1$}.
 	\end{equation}
 \end{proposition}
-See Lemma 28 of~\citet{dunlop2020} for a proof that~\ref{asmp:domain} and~\ref{asmp:bounded_lipschitz_density} imply Weyl's Law.
+See Lemma 28 of~\citet{dunlop2020} for a proof that~\ref{asmp:domain} and~\ref{asmp:density} imply Weyl's Law.
 \paragraph{Proof of Lemma~\ref{lem:neighborhood_eigenvalue}.}
 Put
 \begin{equation*}
 \ell_{\star} = \floor{\biggl(\frac{\bigl(1/(2A) - (\theta + \wt{\delta})\bigr)}{rA_2^{1/2}}\biggr)^d}.
 \end{equation*}
-Let us verify that $\lambda_{\ell_{\star}}(\Delta_P)$ satisfies the condition~\ref{eqn:neighborhood_eigenvalue_1} of Theorem~\ref{thm:neighborhood_eigenvalue}. Setting $c_0 := 1/(2^{1/d}4A_2^{1/2})$, the assumed upper bound on the radius $r < c_0$ in \ref{asmp:radius1} guarantees that $\ell_{\star} \geq 2$. Therefore, by Proposition~\ref{prop:weyl} we have that
+Let us verify that $\lambda_{\ell_{\star}}(\Delta_P)$ satisfies the condition~\ref{eqn:neighborhood_eigenvalue_1} of Theorem~\ref{thm:neighborhood_eigenvalue}. Setting $c_0 := 1/(2^{1/d}4A_2^{1/2})$, the assumed upper bound on the radius $r \leq c_0$ guarantees that $\ell_{\star} \geq 2$. Therefore, by Proposition~\ref{prop:weyl} we have that
 \begin{align*}
 \sqrt{\lambda_{\ell_{\star}}(\Delta_P)} \leq A_2^{1/2}\ell_{\star}^{1/d} \leq  \frac{1}{r}\biggl(\frac{1}{2A} - (\theta + \wt{\delta})\biggr).
 \end{align*}
@@ -591,7 +592,7 @@ where $\mathrm{Id}(x) = x$ is the identity mapping.
 \citet{calder2019} take $\Xset$ to be a smooth submanifold of $\Rd$ without boundary, i.e. they assume $\Xset$ satisfies~\ref{asmp:domain_manifold}. In this setting, they exhibit an absolutely continuous measure $\wt{P}_n$ with density $\wt{p}_n$ that with high probability is close to $P_n$ in transportation distance, and for which $\|p - \wt{p}_n\|_{\Leb^\infty}$ is also small. In Proposition~\ref{prop:optimal_transport}, we adapt this result to the setting of full-dimensional manifolds with boundary.  
 \begin{proposition}
 	\label{prop:optimal_transport}
-	Suppose $\Xset$ satisfies~\ref{asmp:domain} and $p$ satisfies~\ref{asmp:bounded_lipschitz_density}. Then with probability at least $1 - A_0 n \exp\bigl\{-a_0 n\theta^2\wt{\delta}^d\bigr\}$, the following statement holds: there exists a probability measure $\wt{P}_n$ with density $\wt{p}_n$ such that:
+	Suppose $\Xset$ satisfies~\ref{asmp:domain} and $p$ satisfies~\ref{asmp:density}. Then with probability at least $1 - A_0 n \exp\bigl\{-a_0 n\theta^2\wt{\delta}^d\bigr\}$, the following statement holds: there exists a probability measure $\wt{P}_n$ with density $\wt{p}_n$ such that:
 	\begin{equation}
 	\label{eqn:optimal_transport_1}
 	d_{\infty}(\wt{P}_n, P_n) \leq A_0 \wt{\delta}
@@ -1141,7 +1142,7 @@ In Lemma~\ref{lem:empirical_norm_sobolev}, we lower bound $\norm{f_0}_n^2$ by (a
 
 \begin{lemma}
 	\label{lem:empirical_norm_sobolev}
-	Fix $\delta \in (0,1)$ Suppose $P$ satisfies~\ref{asmp:bounded_lipschitz_density}. If $f \in H^1(\Xset,M)$ is lower bounded in $\Leb^2(\Xset)$ norm,
+	Fix $\delta \in (0,1)$ Suppose $P$ satisfies~\ref{asmp:density}. If $f \in H^1(\Xset,M)$ is lower bounded in $\Leb^2(\Xset)$ norm,
 	\begin{equation}
 	\label{eqn:empirical_norm_sobolev_1}
 	\norm{f}_{\Leb^2(\Xset)} \geq \frac{C_6 M}{\delta} \cdot \max\Bigl\{n^{-1/2},n^{-1/d}\Bigr\}
