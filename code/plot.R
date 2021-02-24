@@ -3,7 +3,7 @@ library(ggplot2)
 library(gridExtra)
 
 ### Plot. ###
-save_directory <- "data/AISTATS/cosine/d1_largesample" # Please change this to whichever directory you prefer.
+save_directory <- "data/AISTATS/cosine/d5_largesample" # Please change this to whichever directory you prefer.
 plot_directory <- file.path(save_directory,"plots")
 dir.create(plot_directory)
 
@@ -83,6 +83,7 @@ if(d == 1)
 
 # Plot of mse---for best choice of tuning parameter---by sample size
 pdf(file.path(plot_directory,"mse_by_sample_size.pdf"))
+par(mar = c(5.1,4.5,4.1,4.1)) # The left hand side was getting cut off a tad.
 plot_dfs_best_mse <- vector(mode = "list", length = length(methods))
 names(plot_dfs_best_mse) <- names(methods)
 fitted_slopes <- numeric(length(methods))
