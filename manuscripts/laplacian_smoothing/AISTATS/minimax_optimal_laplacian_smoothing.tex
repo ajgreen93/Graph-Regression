@@ -198,7 +198,7 @@ Y_i = f_0(X_i) + \varepsilon_i, \quad \epsilon_i \sim N(0,1),
 \end{equation}
 where $\varepsilon_i$ is independent of $X_i$. Our goal is to perform statistical inference on the unknown regression function $f_0$, by which we mean either \emph{estimating} $f_0$ or more simply \emph{testing} whether $f_0 = 0$, i.e., whether there is any signal present. 
 
-Laplacian smoothing \citep{smola2003} is a penalized least squares estimator, defined over a graph. Let $G = (V,W)$ be a weighted undirected graph with vertices $V=\{1,\ldots,n\}$, associated with $\{X_1,\ldots,X_n\}$, the Laplacian smoothing estimator \smash{$\wh{f}$} is given by
+Laplacian smoothing \citep{smola2003} is a penalized least squares estimator, defined over a graph. Letting $G = (V,W)$ be a weighted undirected graph with vertices $V=\{1,\ldots,n\}$, associated with $\{X_1,\ldots,X_n\}$, the Laplacian smoothing estimator \smash{$\wh{f}$} is given by
 \begin{equation}
 \label{eqn:laplacian_smoothing}
 \wh{f} =  \argmin_{f \in \Reals^n} \; \sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^\top \Lap f. 
@@ -365,7 +365,7 @@ Under conditions~\ref{asmp:domain}, \ref{asmp:density}, the minimax estimation r
 \inf_{\wh{f}} \sup_{f_0 \in H^1(\Xset, M)} \Ebb\Bigl[\norm{\wh{f} - f_0}_{L^2(\Xset)}^2\Bigr] \asymp M^{2d/(2 + d)} n^{-2/(2 + d)}.
 \end{equation}
 % RJT: This is a bit of a weird reference, because (as per my understanding) Tsybakov only proves the rate is tight for Holder classes, which are contained in the Sobolev class. So technically from Tsybakov alone we only know \gtrsim, not \asymp for this one. It's fine, I wouldn't change anything because it would involve explaining a lot more, I'm just pointing this out.
-(Throughout we assume $M \geq n^{-1/2}$, as otherwise the minimax rate is just the parametric rate $n^{-1}$.)
+(Throughout we assume $M \geq n^{-1/2}$---as otherwise the minimax rate is just the parametric rate $n^{-1}$.)
 
 As nonparametric hypothesis testing is (comparatively) less familiar than nonparametric estimation, we briefly summarize the main idea before stating the optimal error rate. In the goodness-of-fit testing problem, we ask for a test function---formally, a Borel measurable function $\phi$ taking values in $\{0,1\}$---which can distinguish between the hypotheses
 \begin{equation}
@@ -417,18 +417,22 @@ Under these conditions, the Laplacian smoothing estimator \smash{$\wh{f}$} achie
 Next we state Theorem~\ref{thm:laplacian_smoothing_estimation1}, our main estimation result. Its proof, as with all proofs of results in this paper, can be found in the supplementary document. 
 \begin{theorem}
 	\label{thm:laplacian_smoothing_estimation1}
-  Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ has dimension $d < 4$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume the neighborhood graph \smash{$G_{n,r}$} is computed with a kernel $K$ satifsying \ref{asmp:kernel}. There are constants $N,C,C_1,c,c_1>0$ (not depending on $f_0$) such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_estimation}, the Laplacian smoothing estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$L = L_{n,r}$} and \smash{$\rho = M^{-4/(2 + d)} (nr^{d + 2})^{-1} n^{-2/(2 + d)}$}, satisfies
-	\begin{equation*}
+  Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ has dimension $d < 4$ and where $M \leq n^{1/d}$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume the neighborhood graph \smash{$G_{n,r}$} is computed with a kernel $K$ satifsying \ref{asmp:kernel}. There are constants $N,C,C_1,c,c_1>0$ (not depending on $f_0$) such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_estimation}, the Laplacian smoothing estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$L = L_{n,r}$} and \smash{$\rho = M^{-4/(2 + d)} (nr^{d + 2})^{-1} n^{-2/(2 + d)}$}, satisfies
+	\begin{equation}
+	\label{eqn:laplacian_smoothing_estimation1}
 	\bigl\|\wh{f} - f_0\bigr\|_n^2 \leq \frac{C}{\delta} M^{2d/(2 + d)} n^{-2/(2 + d)},
-	\end{equation*}
-  with probability at least $1 - \delta -  C_1n\exp(-c_1nr^d) - \exp(-c \min\{M^{d/(2d + 4)} n^{d/(2+d)},n\})$.
+	\end{equation}
+  with probability at least $1 - \delta -  C_1n\exp(-c_1nr^d) - \exp(-c (M^2n)^{d/(2 + d)})$.
 % RJT: Alden, please verify that what I wrote is correct (I reorganized the way we explained this, added for $n \geq N$ ...).
+% AJG: Verified.
 \end{theorem}
 
 To summarize: for $d = 1,2,$ or $3$, with high probability, the Laplacian smoothing estimator \smash{$\wh{f}$} has in-sample mean squared error that is within a constant factor of the minimax error. Some remarks:
 \begin{itemize}
   \item The first-order Sobolev space $H^1(\Xset)$ does not continuously embed into $C^0(\Xset)$ when $d>1$ (in general, the $k$th order space $H^k(\Xset)$ does not continuously embed into $C^0(\Xset)$ except if $2k>d$). For this reason, one really cannot speak of pointwise evaluation of a Sobolev function $f_0 \in H^1(\Xset)$ when $d>1$ (as we do in Theorem~\ref{thm:laplacian_smoothing_estimation1} by defining our target of estimation to be $f_0(X_i)$, $i=1,\ldots,n$). We can resolve this by appealing to what are known as \emph{Lebesgue points}, as explained in the supplement.
 % RJT: Alden, please add a section to the supplement to explain this part.
+% AJG: Added.
+	\item The assumption $M \leq n^{1/d}$ guarantees that the bound in~\eqref{eqn:laplacian_smoothing_estimation1} is meaningful, i.e. that the right hand side of~\eqref{eqn:laplacian_smoothing_estimation1} is of at most a constant order.
 	\item The lower bound on $r$ imposed in condition \ref{asmp:ls_kernel_radius_estimation} is compatible with practice, where by far the most common choice of radius is the connectivity threshold \smash{$r \asymp (\log(n)/n)^{1/d}$}, which makes \smash{$G_{n,r}$} as sparse as possible while still being connected, for maximum computational efficiency. The upper bound may seem a bit more mysterious---we need it for technical reasons to ensure that \smash{$\wh{f}$} does not overfit, but note that as a practical matter one rarely chooses $r$ to be so large anyway.
 	\item It is possible to extend \smash{$\wh{f}$} to be defined on all of $\Xset$ and then evaluate the error of such an extension (as measured against $f_0$) in $\Leb^2(\Xset)$ norm. When \smash{$\wh{f}$} and $f_0$ are suitably smooth, tools from empirical process theory (see e.g., Chapter 14 of \citet{wainwright2019}) or approximation theory (e.g., Section 15.5 of \citet{johnstone2011}) guarantee that the $\Leb^2(\Xset)$ error is not too much greater than its in-sample counterpart. In fact, as shown in the supplement, if $f_0$ is Lipschitz smooth and we extend \smash{$\wh{f}$} to be piecewise constant over the Voronoi tesselation induced by $X_1,\ldots,X_n$, then the out-of-sample error \smash{$\|\wh{f}-f_0\|_{\Leb^2(\Xset)}$} is within a negligible factor of the in-sample error \smash{$\|\wh{f}-f_0\|_n$}. We leave analysis of the Sobolev case to future work.
 %	\item Under the stronger assumption that $f_0$ is Lipschitz smooth, we can replace the factor of $\delta$ in the high probability bound by the sharper $\delta^2/n$.
@@ -437,15 +441,18 @@ To summarize: for $d = 1,2,$ or $3$, with high probability, the Laplacian smooth
 When $d = 4$, our analysis results in an upper bound for the error of Laplacian smoothing that is within a \smash{$(\log n)^{1/3}$} factor of the minimax error rate. But when $d \geq 5$, our upper bounds are much worse.
 \begin{theorem}
 	\label{thm:laplacian_smoothing_estimation2}
-  Under the assumptions of Theorem~\ref{thm:laplacian_smoothing_estimation1}, if $\Xset$ has dimension $d = 4$ and \smash{$r \asymp (\log n/n)^{1/4}$}, then we obtain 
+  Under the assumptions of Theorem~\ref{thm:laplacian_smoothing_estimation1}, if $\Xset$ has dimension $d = 4$, \smash{$r \asymp (\log n/n)^{1/4}$} and \smash{$\rho = M^{-2/3}(nr^6)^{-1}(\log n/n)^{1/3}$}, then we obtain 
 	\begin{equation*}
 	\bigl\|\wh{f} - f_0\bigr\|_n^2 \leq \frac{C}{\delta} M^{4/3} \biggl(\frac{\log n}{n}\biggr)^{1/3},
 	\end{equation*}
-with the same probability guarantee as in Theorem~\ref{thm:laplacian_smoothing_estimation1}. If the dimension $\Xset$ is $d \geq 5$, TODO
+with the same probability guarantee as in Theorem~\ref{thm:laplacian_smoothing_estimation1}. If the dimension of $\Xset$ is $d \geq 5$, \smash{$r \asymp (\log n/n)^{1/d}$} and \smash{$\rho =  M^{-2/3}(nr^{2 + d})^{-1}n^{-4/(3d)}$}, then
+	\begin{equation*}
+	\bigl\|\wh{f} - f_0\bigr\|_n^2 \leq \frac{C}{\delta} M^{4/3} \biggl(\frac{\log n}{n}\biggr)^{-4/(3d)},
+	\end{equation*}
 % RJT: Alden, please verify what I wrote is correct, and fill in the result for d \geq 5.
+% AJG: Verified and filled in.
 \end{theorem}
-
- This mirrors the conclusions of \citet{sadhanala16} who investigate estimation rates of Laplacian smoothing over the $d$-dimensional grid graph. These authors argue that their analysis is tight, and that it is likely the estimator, not the analysis, that is deficient when $d \geq 5$. Formalizing such a claim turns out to be harder in the random design setting than in the fixed design setting, and we leave it for future work. 
+This mirrors the conclusions of \citet{sadhanala16} who investigate estimation rates of Laplacian smoothing over the $d$-dimensional grid graph. These authors argue that their analysis is tight, and that it is likely the estimator, not the analysis, that is deficient when $d \geq 5$. Formalizing such a claim turns out to be harder in the random design setting than in the fixed design setting, and we leave it for future work. 
 
 However, we do investigate the matter empirically. In Figure~\ref{fig:fig1}, we study the (in-sample) mean squared error of the Laplacian smoothing estimator as the dimension $d$ grows. Here $X_1,\ldots,X_n$ are sampled uniformly over $\Xset = [-1,1]^d$, and the regression function is taken as \smash{$f_0(x) \propto \Pi_{i = 1}^{d} \cos(a \pi x_i)$}, where $a = 2$ for $d = 2$, and $a = 1$ for $d \geq 3$. This regression function $f_0$ is quite smooth, and for $d = 2$ and $d = 3$ Laplacian smoothing appears to achieve or exceed the minimax rate. When $d = 4$, Laplacian smoothing appears modestly suboptimal; this fits with our theoretical upper bound, which includes a \smash{$(\log n)^{1/3}$} factor that plays a non-negligible role for these problem sizes ($n=1000$ to $n=10000$). On the other hand, when $d = 5$, Laplacian smoothing seems to be decidedly suboptimal. 
 
@@ -457,6 +464,7 @@ However, we do investigate the matter empirically. In Figure~\ref{fig:fig1}, we 
 	\caption{Mean squared error of Laplacian smoothing (\texttt{LS}) as a function of sample size $n$. Each plot is on the log-log scale, and the results are averaged over 5 repetitions, with Laplacian smoothing tuned for optimal average mean squared error. The black line shows the minimax rate (in slope only; the intercept is chosen to match the observed error).}
 	\label{fig:fig1}
 % RJT: Alden, please verify that what I wrote about the intercept above is right. And if so, can you redo the black line for d = 2 so that the intercept matches better? Thanks. Oh and if you're already going to redo one of these plots, you can satisfy my unreasonably nitpicky brain and change the x- and y-axes on all of them to use words rather than symbols/acronyms: "Sample size" and "Mean squared error". 
+% AJG: Verified, and redone with requested changes.
 \end{figure*}
 
 \paragraph{Testing Error of Laplacian Smoothing.}
@@ -475,7 +483,7 @@ Here $b \geq 1$ is a tuning parameter selected by the user, with the choice driv
 \label{eqn:type_I_error}
 \Ebb_0\bigl[\wh{\varphi}\bigr] \leq \frac{1}{b^2}.
 \end{equation}
-The next theorem shows that this test also has small Type II error, uniformly over all $f_0$ that are separated from $0$ by at least the critical radius given in \eqref{eqn:sobolev_space_testing_critical_radius}. For this to hold, we will require a tighter range of scalings for the radius $r$.
+The next theorem shows that this test also has small Type II error, uniformly over all $f_0$ that are separated from $0$ by at least the critical radius given in \eqref{eqn:sobolev_space_testing_critical_radius}. For this to hold, we will require a tighter range of scalings for the graph radius $r$.
 \begin{enumerate}[label=(R\arabic*)]
 	\setcounter{enumi}{1}
 	\item 
@@ -540,7 +548,7 @@ and the second equality follows using integration by parts.\footnote{Assuming $f
 
 Of course, we know this is not the case: $\wh{f}$ and $\wt{f}$ look very differently when $d > 1$. What is driving this difference? The key point is that the discretization imposed by the graph $G_{n,r}$---which might seem problematic at first glance---turns out to be a blessing. The problem with~\eqref{eqn:thin_plate_spline} is that the class $H^1(\Xset)$, which fundamentally underlies the criterion, is far ``too big'' for $d > 1$. This is meant in various related senses. By the Sobolev embedding theorem, for $d>1$, the class $H^1(\Xset)$ does not continuously embed into any H\"{o}lder space; and in fact it does not even continuously embed into $C^0(\Xset)$. Thus we cannot really restrict the optimization to \emph{continuous} and weakly differentiable functions, as we could when $d=1$ (the smoothing spline case), without throwing out a substantial subset of functions in $H^1(\Xset)$. Even among continuous and differentiable functions $f$, as we explained previously, we can use ``bump'' functions (as in \citet{green93}) to construct $f$ that interpolates the pairs $(X_i,Y_i)$, $i=1,\ldots,n$ and achieves arbitrarily small penalty (and hence criterion) in \eqref{eqn:thin_plate_spline}. In this sense, any estimator resulting from solving \eqref{eqn:thin_plate_spline} estimator will clearly be inconsistent. 
 
-On the other hand, problem \eqref{eqn:laplacian_smoothing} is finite-dimensional. As a result \smash{$\wh{f}$} has far less capacity to overfit than does \smash{$\wt{f}$}, for any given sample size $n$. Discretization is not the only way to make the problem \eqref{eqn:thin_plate_spline} more tractable: for instance, one can replace the penalty \smash{$\int_{\Xset} \|\nabla f(x)\|_2^2 \,dx$} with a stricter choice like \smash{$\esssup_{x \in \Xset} \|\nabla f(x)\|_2$}, or conduct the optimization over some finite-dimensional linear subspace of $H^1(\Xset)$ (i.e., use a sieve). While these solutions do improve the statistical properties of \smash{$\wt{f}$} for $d > 1$ (see e.g., \citet{birge1993,birge1998,vandergeer2000}), Laplacian smoothing is generally speaking much simpler and more computationally friendly, and in addition, the other approaches are specifically tailored to the domain $\Xset$, in stark to \smash{$\wh{f}$}.
+On the other hand, problem \eqref{eqn:laplacian_smoothing} is finite-dimensional. As a result \smash{$\wh{f}$} has far less capacity to overfit than does \smash{$\wt{f}$}, for any given sample size $n$. Discretization is not the only way to make the problem \eqref{eqn:thin_plate_spline} more tractable: for instance, one can replace the penalty \smash{$\int_{\Xset} \|\nabla f(x)\|_2^2 \,dx$} with a stricter choice like \smash{$\esssup_{x \in \Xset} \|\nabla f(x)\|_2$}, or conduct the optimization over some finite-dimensional linear subspace of $H^1(\Xset)$ (i.e., use a sieve). While these solutions do improve the statistical properties of \smash{$\wt{f}$} for $d > 1$ (see e.g., \citet{birge1993,birge1998,vandergeer2000}), Laplacian smoothing is generally speaking much simpler and more computationally friendly. In addition, the other approaches are specifically tailored to the domain $\Xset$, in stark contrast to \smash{$\wh{f}$}.
 
 \paragraph{Overview of Analysis.}
 

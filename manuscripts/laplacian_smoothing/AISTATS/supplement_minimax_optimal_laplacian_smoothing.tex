@@ -187,7 +187,24 @@
 \onecolumn	
 \aistatstitle{Supplementary Materials for ``Minimax Optimal Regression over Sobolev Spaces via Laplacian Regularization on Neighborhood Graphs''}
 
-In this supplement, we provide proofs of all results found in the paper ``Minimax Optimal Regression over Sobolev Spaces via Laplacian Regularization on Neighborhood Graphs''. Our main theorems (Theorems~\ref{thm:laplacian_smoothing_estimation1}-\ref{thm:laplacian_smoothing_testing_manifold}) all follow the same general proof strategy, centered on conditioning. In Section~\ref{sec:fixed_graph_error_bounds}, we establish (estimation or testing) error bounds which hold for any graph $G$; these bounds are stated with respect to (functionals of) the graph $G$, and allow us to upper bound the error of $\wh{f}$ and $\wh{\varphi}$ conditional on the design $\mathbf{X} = x$. In Sections~\ref{sec:graph_sobolev_seminorm}, \ref{sec:graph_eigenvalues}, \ref{sec:empirical_norm}, and \ref{sec:manifold} we give all our necessary probabilistic estimates on these functionals, for the particular random neighborhood graph $G = G_{n,r}$. It is in these sections where we invoke our various assumptions on the distribution $P$ and regression function $f_0$. In Section~\ref{sec:main_results}, we prove our main theorems and some other results. In Section~\ref{sec:concentration}, we state a few concentration bounds that we use repeatedly in our proofs.
+In this supplement, we provide proofs of all results found in the paper ``Minimax Optimal Regression over Sobolev Spaces via Laplacian Regularization on Neighborhood Graphs''. Our main theorems (Theorems~\ref{thm:laplacian_smoothing_estimation1}-\ref{thm:laplacian_smoothing_testing_manifold}) all follow the same general proof strategy, centered on conditioning. In Section~\ref{sec:fixed_graph_error_bounds}, we establish (estimation or testing) error bounds which hold for any graph $G$; these bounds are stated with respect to (functionals of) the graph $G$, and allow us to upper bound the error of $\wh{f}$ and $\wh{\varphi}$ conditional on the design $\{X_1,\ldots,X_n\} = \{x_1,\ldots,x_n\}$. In Sections~\ref{sec:graph_sobolev_seminorm}, \ref{sec:graph_eigenvalues}, \ref{sec:empirical_norm}, and \ref{sec:manifold} we give all our necessary probabilistic estimates on these functionals, for the particular random neighborhood graph $G = G_{n,r}$. It is in these sections where we invoke our various assumptions on the distribution $P$ and regression function $f_0$. In Section~\ref{sec:main_results}, we prove our main theorems and some other results. In Section~\ref{sec:concentration}, we state a few concentration bounds that we use repeatedly in our proofs.
+
+\paragraph{Pointwise evaluation of Sobolev functions.}
+First, however, as promised in our main text we clarify what is meant by pointwise evaluation of the regression function $f_0$. Strictly speaking, each $f \in H^1(X)$ is really an equivalence class, defined only up to sets of Lebesgue measure 0. In order to make sense of the evaluation $x \mapsto f(x)$, one must therefore pick a representative $f^{\star} \in f$. When $d = 1$, this is resolved in a standard way---since $H^1(\mc{X})$ embeds continuously into $C^0(\mc{X})$, there exists a continuous version of every $f \in H^1(\mc{X})$, and we take this continuous version as the representative $f^{\star}$. On the other hand, when $d \geq 2$, the Sobolev space $H^1(\mc{X})$ does not continuously embed into $C^0(\mc{X})$, and we must choose representatives in a different manner. In this case we let $f^{\star}$ be the precise representative \citep{evans15}, defined pointwise at points $x \in \mc{X}$ as
+\begin{equation*}
+f^{\star}(x) = 
+\begin{dcases*}
+\lim_{\varepsilon \to 0} \frac{1}{\nu(B(x,\varepsilon))} \int_{B(x,\varepsilon)} f(x) dx,&~~\textrm{if the limit exists,} \\
+0,&~~\textrm{otherwise.}
+\end{dcases*}
+\end{equation*}
+Note that when $d = 1$, the precise representative of any $f \in H^1(\mc{X})$ is continuous. 
+
+Now we explain why the particular choice of representative is not crucial, using the notion of a Lebesgue point. Recall that for a locally Lebesgue integrable function $f$, a given point $x \in \mc{X}$ is a \emph{Lebesgue point} of $f$ if the limit of $1/(\nu(B(x,\varepsilon)))\int_{B(x,\varepsilon)} f(x) dx$ as $\varepsilon \to 0$ exists, and satisfies
+\begin{equation*}
+\lim_{\varepsilon \to 0} \frac{1}{\nu\bigl(B(x,\varepsilon)\bigr)} \int_{B(x,\varepsilon)} f(x) dx = f(x).
+\end{equation*}
+Let $E$ denote the set of Lebesgue points of $f$. By the Lebesgue differentiation theorem \citep{evans15}, if $f \in L^1(\mc{X})$ then almost every $x \in \mc{X}$ is a Lebesgue point, $\nu(\mc{X}\setminus E) = 0$. Since $f_0 \in H^1(\mc{X}) \subset \Leb^1(\mc{X})$, we can conclude that any function $g_0 \in f_0$ disagrees with the precise representative $f_0^{\star}$ only on a set of Lebesgue measure 0. Moreover, since we always assume the design distribution $P$ has a continuous density, with probability $1$ it holds that $g_0(X_i) = f_0^{\star}(X_i)$ for all $i = 1,\ldots,n$. This justifies the notation $f_0(X_i)$ that we use in our main text.
 
 \vfill
 
@@ -1277,24 +1294,34 @@ We are now in a position to prove Theorems~\ref{thm:laplacian_smoothing_estimati
 \label{subsec:laplacian_smoothing_estimation1_pf}
 
 \paragraph{Proof of Theorem~\ref{thm:laplacian_smoothing_estimation1}.}
-We have shown that the inequalities~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue} are satisfied with probability at least $1 - \delta - C_1n\exp(-c_1nr^d)$. From~\eqref{eqn:neighborhood_eigenvalue} and Lemma~\ref{lem:variance_term_estimation}, we have that
+We have shown that the inequalities~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue} are satisfied with probability at least $1 - \delta - C_1n\exp(-c_1nr^d)$, and throughout this proof we focus on the ``good event'' that both of these inequalities hold. 
+
+Now, set $\wt{\rho} = M^{-4/(2 + d)}n^{-2/(2 + d)}$ as prescribed in Theorem~\ref{thm:laplacian_smoothing_estimation1}, and note that $\wt{\rho}^{-d/2} \leq n$ is implied by the assumption $M \leq n^{1/d}$. Therefore  from~\eqref{eqn:neighborhood_eigenvalue} and Lemma~\ref{lem:variance_term_estimation}, it follows that
 \begin{equation*}
-\sum_{k = 1}^{n}\biggl(\frac{1}{\rho \lambda_k + 1}\biggr)^{2} \geq 1 + \sum_{k = 2}^{n}\biggl(\frac{1}{C_3 \wt{\rho} k^{2/d} + 1}\biggr)^{2} \geq 1 + \frac{1}{4} \min\Bigl\{\floor{\frac{\wt{\rho}^{-d/2}}{C_3^{d/2}}} - 1 \vee 0,n\Bigr\} \geq \min\Bigl\{\frac{\wt{\rho}^{-2/d}}{8C_3^{2/d}}, \frac{n}{4} \Bigr\}
+\sum_{k = 1}^{n}\biggl(\frac{1}{\rho \lambda_k + 1}\biggr)^{2} \geq 1 + \frac{1}{C_3^2}\sum_{k = 2}^{n}\biggl(\frac{1}{\wt{\rho} k^{2/d} + 1}\biggr)^{2} \geq \frac{1}{8C_3^2} \wt{\rho}^{-d/2}.
 \end{equation*}
-Therefore by Lemma~\ref{lem:ls_fixed_graph_estimation} along with~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue}, with probability at least $1 - \delta - C_1n\exp(-c_1nr^d) - \exp(-\min\{\wt{\rho}^{-d/2}/C_3^{d/2},n\}/8)$ it follows that,
+As a result, by Lemma~\ref{lem:ls_fixed_graph_estimation} along with~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue}, with probability at least $1 - \delta - C_1n\exp(-c_1nr^d) - \exp(-\wt{\rho}^{-d/2}/8C_3^2)$ it holds that,
 \begin{align}
 \|\wh{f} - f_0\|_n^2 & \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{n}\sum_{k = 2}^{n} \Biggl(\frac{1}{c_3 \wt{\rho}\min\{k^{2/d},r^{-2}\} + 1}\Biggr)^2 \nonumber \\
-& \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{n}\sum_{k = 1}^{n} \biggl(\frac{1}{c_3 \wt{\rho}k^{2/d} + 1}\biggr)^2 + \frac{10r^4}{c_3^2 \wt{\rho}^2}. \label{pf:laplacian_smoothing_estimation1_1}
+& \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{nc_3^2}\sum_{k = 2}^{n} \biggl(\frac{1}{\wt{\rho}k^{2/d} + 1}\biggr)^2 + \frac{10r^4}{c_3^2 \wt{\rho}^2}. \label{pf:laplacian_smoothing_estimation1_1}
 \end{align}
-Setting $\wt{\rho} = M^{-4/(2 + d)}n^{-2/(2 + d)}$ as prescribed in Theorem~\ref{thm:laplacian_smoothing_estimation1},  we have from Lemma~\ref{lem:variance_term_estimation} that
+The first term on the right hand side of~\eqref{pf:laplacian_smoothing_estimation1_1} is a bias term, while the second, third, and fourth terms each contribute to the variance. Of these, under our assumptions the third term dominates, as we show momentarily. First, we use Lemma~\ref{lem:variance_term_estimation} to get an upper bound on this variance term,
+\begin{equation*}
+\sum_{k = 2}^{n}\biggl(\frac{1}{\wt{\rho}k^{2/d} + 1}\biggr)^2 \leq 4\wt{\rho}^{-d/2}.
+\end{equation*}
+Then plugging this upper bound back into~\eqref{pf:laplacian_smoothing_estimation1_1}, we have that
 \begin{align*}
-\|\wh{f} - f_0\|_n^2 & \leq\frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{20\wt{\rho}^{-d/2}}{c_3^{d/2}n}  + \frac{10r^4}{c_3^2 \wt{\rho}^2} \\
-& = \biggl(\frac{C_2}{\delta} + \frac{20}{c_3^{d/2}}\biggr)M^{2d/(2+d)} n^{-2/(2 + d)} + \frac{10}{n} + \frac{10}{c_3^2}r^4M^{8/(2 + d)}n^{4/(2 + d)} \\
-& \leq \biggl(\frac{C_2}{\delta} + \frac{20}{c_3^{d/2}} + 10 + \frac{10}{c_3^2}\biggr)M^{2d/(2+d)} n^{-2/(2 + d)}
+\|\wh{f} - f_0\|_n^2 & \leq\frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{40\wt{\rho}^{-d/2}}{c_3^{2}n}  + \frac{10r^4}{c_3^2 \wt{\rho}^2} \\
+& = \biggl(\frac{C_2}{\delta} + \frac{40}{c_3^{2}}\biggr)M^{2d/(2+d)} n^{-2/(2 + d)} + \frac{10}{n} + \frac{10}{c_3^2}r^4M^{8/(2 + d)}n^{4/(2 + d)} \\
+& \leq \biggl(\frac{C_2}{\delta} + \frac{50}{c_3^{2}}\biggr)M^{2d/(2+d)} n^{-2/(2 + d)}
 \end{align*}
-with the last inequality following from~\ref{asmp:ls_kernel_radius_estimation} and the assumption $M \geq n^{-1/2}$. This completes the proof of Theorem~\ref{thm:laplacian_smoothing_estimation1}. When $M < n^{-1/2}$, one can set $\wt{\rho} = 1$ and trace through the previous calculations to determine that $\|\wh{f} - f_0\|_n^2 \leq C/n$ for an appropriate choice of $C$.
+with the last inequality following from~\ref{asmp:ls_kernel_radius_estimation} and the assumption $M \geq n^{-1/2}$. This completes the proof of Theorem~\ref{thm:laplacian_smoothing_estimation1}.
 
-\paragraph{Nearly-optimal rates when $d = 4$.}
+\paragraph{Proof of Theorem~\ref{thm:laplacian_smoothing_estimation2}.}
+We first establish that $\wh{f}$ achieves nearly-optimal rates when $d = 4$, and then prove the sub-optimal rates when $d > 4$.
+
+\textit{Nearly-optimal rates when $d = 4$.}
+
 Continuing on from~\eqref{pf:laplacian_smoothing_estimation1_1}, from Lemma~\ref{lem:variance_term_estimation} we have that
 \begin{equation*}
 \|\wh{f} - f_0\|_n^2 \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} +  \frac{10}{nc_3^2\wt{\rho}^2} +  \frac{10 \log n}{nc_3^2\wt{\rho}^2} + \frac{10r^4}{c_3^2\wt{\rho}^2}
@@ -1308,18 +1335,19 @@ and choosing $\wt{\rho} = M^{-2/3}(\log n/n)^{1/3}$ yields
 \|\wh{f} - f_0\|_n^2 \leq \biggl(\frac{C_2}{\delta} + \frac{20}{c_3^2} + \frac{10C_0}{c_3^2}\biggr) M^{4/3} \biggl(\frac{\log n}{n}\biggr)^{1/3} + \frac{10}{n}.
 \end{equation*}
 
-\paragraph{Suboptimal rates when $d > 4$.}
+\textit{Suboptimal rates when $d > 4$.}
+
 Once again continuing on from~\eqref{pf:laplacian_smoothing_estimation1_1}, from Lemma~\ref{lem:variance_term_estimation} we have that,
 \begin{equation*}
-\|\wh{f} - f_0\|_n^2 \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{nc_3^{d/2}\wt{\rho}^{d/2}} +  \frac{10}{n^{4/d}\wt{\rho}^2c_3^2} + \frac{10r^4}{\wt{\rho}^2c_3^2}
+\|\wh{f} - f_0\|_n^2 \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{nc_3^{2}\wt{\rho}^{d/2}} +  \frac{10}{n^{4/d}\wt{\rho}^2c_3^2} + \frac{10r^4}{\wt{\rho}^2c_3^2}
 \end{equation*}
 Setting $r = (C_0\log n/n)^{1/d}$, we obtain
 \begin{equation*}
-\|\wh{f} - f_0\|_n^2 \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{n\wt{\rho}^{d/2}c_3^{d/2}} +  \frac{10}{n^{4/d}\wt{\rho}^2c_3^2} + \frac{10C_0^{4/d}(\log n)^{4/d}}{n^{4/d}\wt{\rho}^2c_3^2},
+\|\wh{f} - f_0\|_n^2 \leq \frac{C_2}{\delta} \wt{\rho} M^2 + \frac{10}{n} + \frac{10}{n\wt{\rho}^{d/2}c_3^{2}} +  \frac{10}{n^{4/d}\wt{\rho}^2c_3^2} + \frac{10C_0^{4/d}(\log n)^{4/d}}{n^{4/d}\wt{\rho}^2c_3^2},
 \end{equation*}
 and choosing $\wt{\rho} = M^{-2/3}n^{-4/(3d)}$ yields
 \begin{equation*}
-\|\wh{f} - f_0\|_n^2 \leq \biggl(\frac{C_2}{\delta} + \frac{10}{c_3^2} + \frac{10C_0^{4/d}}{c_3^2}\biggr)M^{4/d}\biggl(\frac{\log(n)}{n^{1/3}}\biggr)^{4/d} + \frac{10}{c_3^{d/2}}M^{d/3}n^{-1/3} + \frac{10}{n}.
+\|\wh{f} - f_0\|_n^2 \leq \biggl(\frac{C_2}{\delta} + \frac{10}{c_3^2} + \frac{10C_0^{4/d}}{c_3^2}\biggr)M^{4/3}\biggl(\frac{\log n}{n^{1/3}}\biggr)^{4/d} + \frac{10}{c_3^{d/2}}M^{d/3}n^{-1/3} + \frac{10}{n}.
 \end{equation*}
 
 \paragraph{Bounds on $\Leb^2(\Xset)$ error under Lipschitz assumption.}
@@ -1426,13 +1454,13 @@ so that $E[\wh{T}] - \wh{t}_b \geq E[f_0^2(X)]/2$. Hence, by Chebyshev's inequal
 The following Lemmas provides convenient upper and lower bounds on our estimation variance term (Lemma~\ref{lem:variance_term_estimation}) and testing variance term (Lemma~\ref{lem:variance_term_testing}).
 \begin{lemma}
 	\label{lem:variance_term_estimation}
-	For any $t > 0$,
+	For any $t > 0$ such that $1 \leq t^{-d/2} \leq n$,
 	\begin{equation*}
-	\frac{1}{4}\min\Bigl\{\floor{t^{-d/2}} - 1 \vee 0,n\Bigr\} \leq \sum_{k = 2}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^2 \leq t^{-d/2} +
+	\frac{1}{8}t^{-d/2} - 1 \leq \sum_{k = 2}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^2 \leq t^{-d/2} +
 	\begin{cases*}
-	t^{-d/2},& ~~\textrm{if $d < 4$} \\
+	3t^{-d/2},& ~~\textrm{if $d < 4$} \\
 	\frac{1}{t^2}\log n,& ~~\textrm{if $d = 4$} \\
-	\frac{1}{t^2}n^{-(4/d - 1)},&~~\textrm{if $d > 4$.}
+	\frac{1}{t^2}n^{1 - 4/d},&~~\textrm{if $d > 4$.}
 	\end{cases*}
 	\end{equation*}
 \end{lemma}
@@ -1445,14 +1473,13 @@ The following Lemmas provides convenient upper and lower bounds on our estimatio
 	\end{equation*}
 \end{lemma}
 \paragraph{Proof of Lemma~\ref{lem:variance_term_estimation}.}
-We begin by proving the upper bounds. Observe that
+We begin by proving the upper bounds. Treating the sum over $k$ as a Riemann sum of a non-increasing function, we have that
 \begin{align*}
- \sum_{k = 1}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^2 & \leq t^{-d/2} + \frac{1}{t^2}\sum_{k = t^{-d/2} + 1}^{n} \frac{1}{k^{4/d}} \\
- & \leq t^{-d/2} + \frac{1}{t^2} \int_{t^{-d/2}}^{n} x^{-4/d} \,dx
+ \sum_{k = 2}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^2 & \leq \int_{1}^{n} \biggl(\frac{1}{tx^{2/d} + 1}\biggr)^2 \,dx \leq t^{-d/2} + \int_{t^{-d/2}}^{n} \biggl(\frac{1}{tx^{2/d} + 1}\biggr)^2 \,dx \leq t^{-d/2} + \frac{1}{t^2} \int_{t^{-d/2}}^{n} x^{-4/d} \,dx.
 \end{align*}
-and the various upper bounds (for $d < 4$, $d = 4$, and $d > 4$) follow upon computing the integral.
+The various upper bounds (for $d < 4$, $d = 4$, and $d > 4$) then follow upon computing the integral.
 
-For the lower bound, we simply recognize that for each $k = 2,\ldots,n$ such that $k \leq \floor{t^{-d/2}}$, it holds that $1/(tk^{2/d} + 1)^2 \geq 1/4$, and there are at least $\min\Bigl\{\floor{t^{-d/2}} - 1 \vee 0,n\Bigr\}$ such values of $k$.
+For the lower bound, we simply recognize that for each $k = 2,\ldots,n$ such that $k \leq \floor{t^{-d/2}}$, it holds that $1/(tk^{2/d} + 1)^2 \geq 1/4$, and there are at least $\min\Bigl\{\floor{t^{-d/2}} - 1,n - 1\Bigr\} > \frac{1}{2}t^{-d/2} - 1$ such values of $k$.
 
 \paragraph{Proof of Lemma~\ref{lem:variance_term_testing}.}
 The upper bound follows similarly to that of Lemma~\ref{lem:variance_term_estimation}:
