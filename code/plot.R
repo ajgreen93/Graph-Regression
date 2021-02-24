@@ -1,8 +1,9 @@
+library(dplyr)
 library(ggplot2)
 library(gridExtra)
 
 ### Plot. ###
-save_directory <- "data/AISTATS/cosine/d2_largesample" # Please change this to whichever directory you prefer.
+save_directory <- "data/AISTATS/cosine/d1_largesample" # Please change this to whichever directory you prefer.
 plot_directory <- file.path(save_directory,"plots")
 dir.create(plot_directory)
 
@@ -95,8 +96,11 @@ for(jj in 1:length(methods))
   {
     mse_ii_jj <- mse[[ii]][[jj]]
     best_mse[ii] <- min(rowMeans(mse_ii_jj))
-    minimax_mse[ii] <- 4*ns[ii]^{-2/(2 + d)}
+    minimax_mse[ii] <- ns[ii]^{-2/(2 + d)}
   }
+  
+  # Rescale minimax mse to match intercept with best_mse
+  minimax_mse <- minimax_mse * (best_mse[1]/minimax_mse[1])
   plot_dfs_best_mse[[jj]] <- data.frame(x = ns, y = best_mse, z = minimax_mse) 
   
   # fitted slope
@@ -126,7 +130,7 @@ ltys <- c(2,3)
 
 # shadow plot
 plot(x = ns, xlim = xlims, ylim = ylims,
-     log = "xy", xlab = "n", ylab = "mse", main = title, cex.main = 2, cex.lab = 2, cex.axis = 1.5)
+     log = "xy", xlab = "Sample size", ylab = "Mean squared error", main = title, cex.main = 2, cex.lab = 2, cex.axis = 1.5)
 
 # add points and lines
 for(jj in 1:length(methods))
