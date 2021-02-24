@@ -437,7 +437,7 @@ To summarize: for $d = 1,2,$ or $3$, with high probability, the Laplacian smooth
 	\item The assumption $M \leq n^{1/d}$ guarantees that the bound in~\eqref{eqn:laplacian_smoothing_estimation1} is meaningful, i.e. that the right hand side of~\eqref{eqn:laplacian_smoothing_estimation1} is of at most a constant order.
 	\item The lower bound on $r$ imposed in condition \ref{asmp:ls_kernel_radius_estimation} is compatible with practice, where by far the most common choice of radius is the connectivity threshold \smash{$r \asymp (\log(n)/n)^{1/d}$}, which makes \smash{$G_{n,r}$} as sparse as possible while still being connected, for maximum computational efficiency. The upper bound may seem a bit more mysterious---we need it for technical reasons to ensure that \smash{$\wh{f}$} does not overfit, but note that as a practical matter one rarely chooses $r$ to be so large anyway.
 	\item It is possible to extend \smash{$\wh{f}$} to be defined on all of $\Xset$ and then evaluate the error of such an extension (as measured against $f_0$) in $\Leb^2(\Xset)$ norm. When \smash{$\wh{f}$} and $f_0$ are suitably smooth, tools from empirical process theory (see e.g., Chapter 14 of \citet{wainwright2019}) or approximation theory (e.g., Section 15.5 of \citet{johnstone2011}) guarantee that the $\Leb^2(\Xset)$ error is not too much greater than its in-sample counterpart. In fact, as shown in the supplement, if $f_0$ is Lipschitz smooth and we extend \smash{$\wh{f}$} to be piecewise constant over the Voronoi tesselation induced by $X_1,\ldots,X_n$, then the out-of-sample error \smash{$\|\wh{f}-f_0\|_{\Leb^2(\Xset)}$} is within a negligible factor of the in-sample error \smash{$\|\wh{f}-f_0\|_n$}. We leave analysis of the Sobolev case to future work.
-%	\item Under the stronger assumption that $f_0$ is Lipschitz smooth, we can replace the factor of $\delta$ in the high probability bound by the sharper $\delta^2/n$.
+	\item Additionally, under the stronger assumption that $f_0$ is Lipschitz smooth, we can replace the factor of $\delta$ in the high probability bound by the sharper $\delta^2/n$.
 \end{itemize} 
 
 When $d = 4$, our analysis results in an upper bound for the error of Laplacian smoothing that is within a \smash{$(\log n)^{1/3}$} factor of the minimax error rate. But when $d \geq 5$, our upper bounds are much worse.
@@ -495,21 +495,18 @@ The next theorem shows that this test also has small Type II error, uniformly ov
 	C_0\biggl(\frac{\log n}{n}\biggr)^{\frac{1}{d}} \leq r \leq c_0 \wedge M^{\frac{(d - 8)}{8 + 2d}} n^{\frac{d - 20}{32 + 8d}}.
 	\end{equation*}
 \end{enumerate}
-
-Now define
+We will also require that the radius of the graph Sobolev class not be too large. Precisely, we will require $M \leq M_{\max}(d)$, where we define
 \begin{equation*}
-M_{\max}(d) =
+M_{\max}(d) :=
 \begin{cases*}
 n^{1/8} & \textrm{$d = 1$} \\
 n^{(4 - d)/(4d)} & \textrm{$d \geq 2$}.
 \end{cases*}
 \end{equation*}
-
-Note that when $d < 4$ and $M \leq M_{\max}(d)$, there always exists a choice of $r$ which satisfies~\ref{asmp:ls_kernel_radius_testing}. 
 We now state Theorem~\ref{thm:laplacian_smoothing_testing}, our main testing result.
 \begin{theorem}
 	\label{thm:laplacian_smoothing_testing}
-  Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ with $d < 4$, and where $M \leq M_{\max}(d)$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume \smash{$G_{n,r}$} is computed with a kernel $K$ satifsying \ref{asmp:kernel}. There are constants $N,C,c>0$ such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_testing}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$L = L_{n,r}$} and \smash{$\rho = (nr^{d + 2})^{-1} n^{-4/(4 + d)} M^{-8/(4 + d)}$}, satisfies the following: for all $b \geq 1$, and all $f_0$ such that
+  Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ with $d < 4$, and where $M \leq M_{\max}(d)$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume \smash{$G_{n,r}$} is computed with a kernel $K$ satisfying \ref{asmp:kernel}. There are constants $N,C,c>0$ such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_testing}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$L = L_{n,r}$} and \smash{$\rho = (nr^{d + 2})^{-1} n^{-4/(4 + d)} M^{-8/(4 + d)}$}, satisfies the following: for all $b \geq 1$, and all $f_0$ such that
 	\begin{equation}
 	\label{eqn:laplacian_smoothing_testing}
 	\bigl\|f_0\bigr\|_{\Leb^2(\Xset)}^2 \geq C b^2 M^{2d/(4 + d)} n^{-4/(4 + d)},
@@ -632,12 +629,13 @@ Under the assumptions \ref{asmp:domain_manifold}, \ref{asmp:density_manifold}, a
 
 \begin{theorem}
 	\label{thm:laplacian_smoothing_estimation_manifold}
-  As in Theorem \ref{thm:laplacian_smoothing_estimation1}, but where $\Xset \subseteq \Rd$ is now a manifold with intrinsic dimension $m < 4$, and the design distribution $P$ obeys \ref{asmp:domain_manifold}, \ref{asmp:density_manifold}. There are constants $N,C,C_1,c,c_1>0$ (not depending on $f_0$) such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_estimation_manifold}, the Laplacian smoothing estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$L = L_{n,r}$} and \smash{$\rho = M^{-4/(2 + m)} (nr^{m + 2})^{-1} n^{-2/(2 + m)}$}, satisfies
+  As in Theorem \ref{thm:laplacian_smoothing_estimation1}, but where $\Xset \subseteq \Rd$ is now a manifold with intrinsic dimension $m < 4$, the design distribution $P$ obeys \ref{asmp:domain_manifold}, \ref{asmp:density_manifold}, and $M \leq n^{1/m}$. There are constants $N,C,C_1,c,c_1>0$ (not depending on $f_0$) such that for any \smash{$n \geq N$}, and any radius $r$ as in \ref{asmp:ls_kernel_radius_estimation_manifold}, the Laplacian smoothing estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$L = L_{n,r}$} and \smash{$\rho = M^{-4/(2 + m)} (nr^{m + 2})^{-1} n^{-2/(2 + m)}$}, satisfies
 	\begin{equation*}
 	\bigl\|\wh{f} - f_0\bigr\|_n^2 \leq \frac{C}{\delta} M^{2m/(2 + m)} n^{-2/(2 + m)},
 	\end{equation*}
-  with probability at least $1 - \delta -  C_1 n\exp(-cnr^m) - \exp(-c \min\{M^{m/(2m + 4)} n^{m/(2+m)},n\})$.
+  with probability at least $1 - \delta -  C_1 n\exp(-cnr^m) - \exp(-c(M^2n)^{m/(2+m)})$.
 % RJT: Alden, please verify that what I wrote is correct.
+% AJG: Verified.
 \end{theorem}
 
 \begin{enumerate}[label=(R\arabic*)]
@@ -664,6 +662,7 @@ There are constants $N,C,c>0$ such that for any $n \geq N$, and any $r$ as in \r
 	C\biggl(\frac{1}{b}\Bigl[1 + n^{-m/(4 + m)}M^{-2m/(4 + m)}\Bigr] + n\exp\bigl(-cnr^m\bigr)\biggr).
 	\end{multline*}
 % RJT: Alden, please verify that what I wrote is correct.
+% AJG: Verified.
 \end{theorem}
 
 The proof of Theorems \ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} proceeds in a similar manner to that of Theorems \ref{thm:laplacian_smoothing_estimation1} and \ref{thm:laplacian_smoothing_testing}. The key difference is that in the manifold setting, the equations \eqref{eqn:graph_sobolev_seminorm} and \eqref{eqn:neighborhood_eigenvalue} used to upper bound bias and variance will hold with $d$ replaced by $m$.

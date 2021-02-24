@@ -183,6 +183,8 @@
 \renewcommand{\thesection}{A\arabic{section}}
 
 \begin{document}
+	
+\runningtitle{}
 
 \onecolumn	
 \aistatstitle{Supplementary Materials for ``Minimax Optimal Regression over Sobolev Spaces via Laplacian Regularization on Neighborhood Graphs''}
@@ -402,11 +404,15 @@ The upper bound on Type II error~\eqref{eqn:ls_fixed_graph_testing_typeII} then 
 \label{sec:graph_sobolev_seminorm}
 In this section, we prove Lemma~\ref{lem:graph_sobolev_seminorm}, which states an upper bound on $f^{\top} \Lap_{n,r} f$ that holds when $f$ is bounded in Sobolev norm. We also establish stronger bounds in the case when $f$ has a bounded Lipschitz constant; this latter result justifies one of our remarks after Theorem~\ref{thm:laplacian_smoothing_estimation1}. 
 
-To prove Lemma~\ref{lem:graph_sobolev_seminorm}, we will show that for any $f \in H^1(\Xset)$,
+Throughout this proof, we will assume that $f \in H^1(\Xset)$ has zero-mean, meaning $\int_{\Xset} f(x) \,dx = 0$. This is without loss of generality---assuming for the moment that~\eqref{eqn:graph_sobolev_seminorm} holds for zero-mean functions, for any $f \in H^1(\Xset)$, taking $a = \int_{\Xset} f(x) \,dx$ and $g = f - a$, we have that
 \begin{equation*}
-\Ebb\Bigl[f^{\top} \Lap_{n,r} f\Bigr] \leq C_2 n^2 r^{d + 2} \|f\|_{H^1(\Xset)}^2,
+f^{\top} L_{n,r} f = g^{\top} L_{n,r} g \leq \frac{C_2}{\delta} n^2 r^{d + 2} |g|_{H^1(\mc{X})}^2 = \frac{C_2}{\delta} n^2 r^{d + 2} |f|_{H^1(\mc{X})}^2.
+\end{equation*} 
+Now, for any zero-mean function $f \in H^1(\mc{X})$ it follows by the Poincare inequality (see Section 5.8, Theorem 1 of \citet{evans10}) that $\|f\|_{H^1(\mc{X})}^2 \leq C_8 |f|_{H^1(\mc{X})}^2$, for some constant $C_8$ that does not depend on $f$. Therefore, to prove Lemma~\ref{lem:graph_sobolev_seminorm}, it suffices to show that
+\begin{equation*}
+\Ebb\Bigl[f^{\top} \Lap_{n,r} f\Bigr] \leq C n^2 r^{d + 2} \|f\|_{H^1(\Xset)}^2,
 \end{equation*}
-whence the claim follows immediately by Markov's inequality (recall that $\Lap_{n,r}$ is positive semi-definite, and therefore $f^{\top} \Lap_{n,r} f$ is a non-negative random variable).
+since the high-probability upper bound then follows immediately by Markov's inequality. (Recall that $\Lap_{n,r}$ is positive semi-definite, and therefore $f^{\top} \Lap_{n,r} f$ is a non-negative random variable).
 
 Since
 \begin{equation*}
@@ -419,7 +425,7 @@ it follows that
 \end{equation}
 where $X$ and $X'$ are random variables independently drawn from $P$.
 
-Take $\Omega$ to be an arbitrary bounded open set such that $B(x,r) \subset \Omega$ for all $x \in \mc{X}$. For the remainder of this proof, we will assume that (i) $f \in H^1(\Omega)$ and additionally (ii) $\|f\|_{H^1(\Omega)} \leq C_5 \|f\|_{H^1(\mc{X})}$ for a constant $C_5$ that does not depend on $f$. This is without loss of generality, since by Theorem~1 of~\citet{evans10} there exists an extension operator $E: H^1(\mc{X}) \to H^1(\Omega)$ for which the extension $Ef$ satisfies both (i) and (ii). Additionally, we will assume $f \in C^{\infty}(\Omega)$. Again, this is without loss of generality, as $C^{\infty}(\Omega)$ is dense in $H^1(\Omega)$ and the expectation on the right hand side of~\eqref{pf:first_order_graph_sobolev_seminorm_1} is continuous in $H^1(\Omega)$. The reason for dealing with a smooth extension $f \in C^{\infty}(\Omega)$ is so that we can make sense of the following equality for any $x$ and $x'$ in $\mc{X}$:
+Now, take $\Omega$ to be an arbitrary bounded open set such that $B(x,c_0) \subset \Omega$ for all $x \in \mc{X}$. For the remainder of this proof, we will assume that (i) $f \in H^1(\Omega)$ and additionally (ii) $\|f\|_{H^1(\Omega)} \leq C_5 \|f\|_{H^1(\mc{X})}$ for a constant $C_5$ that does not depend on $f$. This is without loss of generality, since by Theorem~1 in Chapter 5.4 of~\citet{evans10} there exists an extension operator $E: H^1(\mc{X}) \to H^1(\Omega)$ for which the extension $Ef$ satisfies both (i) and (ii). Additionally, we will assume $f \in C^{\infty}(\Omega)$. Again, this is without loss of generality, as $C^{\infty}(\Omega)$ is dense in $H^1(\Omega)$ and the expectation on the right hand side of~\eqref{pf:first_order_graph_sobolev_seminorm_1} is continuous in $H^1(\Omega)$. The reason for dealing with a smooth extension $f \in C^{\infty}(\Omega)$ is so that we can make sense of the following equality for any $x$ and $x'$ in $\mc{X}$:
 \begin{equation}
 \label{pf:first_order_graph_sobolev_seminorm_1.5}
 f(x') - f(x) = \int_{0}^{1} \nabla f\bigl(x + t(x' - x)\bigr)^{\top} (x' - x) \,dt.
@@ -448,7 +454,7 @@ where the last equality follows from the rotational symmetry of $K(\|z\|)$. Plug
 \begin{equation*}
 \int_{\Xset} \int_{\Xset} \bigl(f(x') - f(x)\bigr)^2 K\biggl(\frac{\|x' - x\|}{r}\biggr) \,dx' \,dx \leq r^{d + 2} \sigma_K \|f\|_{H^1(\Omega)}^2 \leq C_5 r^{d + 2} \sigma_K \|f\|_{H^1(\mc{X})}^2,
 \end{equation*}
-proving the claim of Lemma~\ref{lem:graph_sobolev_seminorm} upon taking $C_2 := C_5 \sigma_K p_{\max}^2$ in the statement of the lemma.
+proving the claim of Lemma~\ref{lem:graph_sobolev_seminorm} upon taking $C_2 := C_8C_5 \sigma_K p_{\max}^2$ in the statement of the lemma.
 
 \subsection{Stronger bounds under Lipschitz assumption}
 Suppose $f$ satisfies $|f(x') - f(x)| \leq M \|x - x\|$ for all $x,x' \in \mc{X}$. Then we can strengthen the high probability bound in Lemma~\ref{lem:graph_sobolev_seminorm} from $1 - \delta$ to $1 - \delta^2/n$, at the cost of only a constant factor in the upper bound on $f^{\top} \Lap_{n,r} f$.
@@ -1172,13 +1178,13 @@ In Lemma~\ref{lem:empirical_norm_sobolev}, we lower bound $\norm{f_0}_n^2$ by (a
 \end{lemma}
 
 \paragraph{Proof of Lemma~\ref{lem:empirical_norm_sobolev}.}
-To establish~\eqref{eqn:empirical_norm_sobolev}, it is sufficient to show that
+In this proof, we will find it more convenient to deal with the parameterization $b = 1/\delta$. To establish~\eqref{eqn:empirical_norm_sobolev}, it is sufficient to show that
 \begin{equation*}
 \mathbb{E}\bigl[\norm{f}_n^4\bigr] \leq \left(1 + \frac{1}{b^2}\right)\cdot \left(\mathbb{E}\bigl[\norm{f}_n^2\bigr]\right)^2;
 \end{equation*}
 then \eqref{eqn:empirical_norm_sobolev} follows from the Paley-Zygmund inequality (Lemma~\ref{lem:paley_zygmund}). Since $p \leq p_{\max}$ is uniformly bounded, we can relate $\mathbb{E}\bigl[\norm{f}_n^4\bigr]$ to the $\Leb^4(\Xset)$-norm,
 \begin{equation*}
-\mathbb{E}\bigl[\norm{f}_n^4\bigr] = \frac{(n-1)}{n}\left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + \frac{\mathbb{E}\Bigl[\bigl(f(x_1)\bigr)^4\Bigr]}{n} \leq \left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + p_{\max}\frac{\norm{f}_{\Leb^4(\Xset)}^4}{n}.
+\mathbb{E}\bigl[\norm{f}_n^4\bigr] = \frac{(n-1)}{n}\left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + \frac{\mathbb{E}\Bigl[\bigl(f(X_1)\bigr)^4\Bigr]}{n} \leq \left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + p_{\max}\frac{\norm{f}_{\Leb^4(\Xset)}^4}{n}.
 \end{equation*}
 We will use the Sobolev inequalities as a tool to show that $\|f\|_{\Leb^4(\Xset)}/n \leq \bigl(\mathbb{E}[\|f\|_n^2]\bigr)^2/(b^2p_{\max})$, whence the claim of the Lemma is shown. The nature of the inequalities we use depend on the value of $d$. In particular, we will use the following relationships between norms: 
 \begin{equation*}
@@ -1294,7 +1300,7 @@ We are now in a position to prove Theorems~\ref{thm:laplacian_smoothing_estimati
 \label{subsec:laplacian_smoothing_estimation1_pf}
 
 \paragraph{Proof of Theorem~\ref{thm:laplacian_smoothing_estimation1}.}
-We have shown that the inequalities~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue} are satisfied with probability at least $1 - \delta - C_1n\exp(-c_1nr^d)$, and throughout this proof we focus on the ``good event'' that both of these inequalities hold. 
+We have shown that the inequalities~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue} are satisfied with probability at least $1 - \delta - C_1n\exp(-c_1nr^d)$, and throughout this proof we take as granted that both of these inequalities hold.
 
 Now, set $\wt{\rho} = M^{-4/(2 + d)}n^{-2/(2 + d)}$ as prescribed in Theorem~\ref{thm:laplacian_smoothing_estimation1}, and note that $\wt{\rho}^{-d/2} \leq n$ is implied by the assumption $M \leq n^{1/d}$. Therefore  from~\eqref{eqn:neighborhood_eigenvalue} and Lemma~\ref{lem:variance_term_estimation}, it follows that
 \begin{equation*}
@@ -1401,28 +1407,28 @@ The proof of Theorem~\ref{thm:laplacian_smoothing_estimation_manifold} follows e
 \label{subsec:laplacian_smoothing_testing_pf}
 
 \paragraph{Proof of Theorem~\ref{thm:laplacian_smoothing_testing}.}
-Recall that we have shown that the inequalities~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue} are satisfied with probability at least $1 - \delta - C_1n\exp(-c_1nr^d)$.
+Let $\delta = 1/b$. Recall that we have shown that the inequalities~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue} are satisfied with probability at least $1 - 1/b - C_1n\exp(-c_1nr^d)$, and throughout this proof we take as granted that both of these inequalities hold. 
 
-Now, we would like to invoke Lemma~\ref{lem:ls_fixed_graph_testing}, and in order to do so, we must show that the inequality~\eqref{eqn:ls_fixed_graph_testing_critical_radius} is satisfied with respect to $G = G_{n,r}$. First, we upper bound the right hand side of this inequality. By~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue},
+Now, we would like to invoke Lemma~\ref{lem:ls_fixed_graph_testing}, and in order to do so, we must show that the inequality~\eqref{eqn:ls_fixed_graph_testing_critical_radius} is satisfied with respect to $G = G_{n,r}$. First, we upper bound the right hand side of this inequality. Set $\wt{\rho} = M^{-8/(4 + d)}n^{-4/(4 + d)}$ as prescribed by Theorem~\ref{thm:laplacian_smoothing_testing}, it follows from~\eqref{eqn:graph_sobolev_seminorm} and~\eqref{eqn:neighborhood_eigenvalue} that
 \begin{align*}
-\frac{2 \rho}{n} \bigl(f_0^{\top} \Lap f_0\bigr) + \frac{4b}{n} \biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \biggr)^{1/2} & \leq C_2b\wt{\rho}M^2 + \frac{4b}{n}\Biggl[1 + \biggl(\sum_{k = 2}^{n} \frac{1}{(c_3\wt{\rho}k^{2/d} + 1)^4} \biggr)^{1/2} + \frac{r^4n^{1/2}}{c_3^2\wt{\rho}^2}\Biggr] \\
-& \leq C_2b\wt{\rho}M^2 + \frac{4b}{n}\biggl(1 + \frac{\sqrt{2}}{c_3^{d/4}}\wt{\rho}^{-d/4} + \frac{r^4n^{1/2}}{c_3^2\wt{\rho}^2}\biggr) \\ 
-& \leq \Bigl(C_2 + 4 + \frac{4\sqrt{2}}{c_3^{d/4}} + \frac{4}{c_3^2}\Bigr)bM^{2d/(4 + d)} n^{-4/(4 + d)}
+\frac{2 \rho}{n} \bigl(f_0^{\top} \Lap f_0\bigr) + \frac{4b}{n} \biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \biggr)^{1/2} & \leq C_2b\wt{\rho}M^2 + \frac{4b}{n}\Biggl[1 + \frac{1}{c_3^2}\biggl(\sum_{k = 2}^{n} \frac{1}{(\wt{\rho}k^{2/d} + 1)^4} \biggr)^{1/2} + \frac{r^4n^{1/2}}{c_3^2\wt{\rho}^2}\Biggr] \\
+& \leq C_2b\wt{\rho}M^2 + \frac{4b}{n}\biggl(1 + \frac{\sqrt{2}}{c_3^{2}}\wt{\rho}^{-d/4} + \frac{r^4n^{1/2}}{c_3^2\wt{\rho}^2}\biggr) \\ 
+& \leq \Bigl(C_2 + 4 + \frac{4\sqrt{2}}{c_3^{2}} + \frac{4}{c_3^2}\Bigr)bM^{2d/(4 + d)} n^{-4/(4 + d)}.
 \end{align*}
-where the second inequality is justfied by Lemma~\ref{lem:variance_term_testing}, and in the third inequality we set $\wt{\rho} = M^{-8/(4 + d)}n^{-4/(4 + d)}$ as prescribed by Theorem~\ref{thm:laplacian_smoothing_testing}, and use both the upper bound on $r$ assumed in~\ref{asmp:ls_kernel_radius_testing} as well as the fact that $M \geq n^{-1/2}$.
+The second inequality in the above is justified by Lemma~\ref{lem:variance_term_testing}, keeping in mind that $M \leq M_{\max}(d)$ implies that $\wt{\rho}^{-d/2} \leq n$. The third inequality follows from the upper bound on $r$ assumed in~\ref{asmp:ls_kernel_radius_testing} as well as the fact that $M \geq n^{-1/2}$.
 
-Next we lower bound the left hand side of the inequality~\eqref{eqn:ls_fixed_graph_testing_critical_radius}---i.e. we lower bound the empirical norm $\|f_0\|_n^2$---using Lemma~\ref{lem:empirical_norm_sobolev}. Recall that by assumption, $M \leq M_{\max}(d)$. Therefore, taking $C \geq C_6$ in~\eqref{eqn:laplacian_smoothing_testing}, we have that~\eqref{eqn:empirical_norm_sobolev_1} is satisfied, so that it follows from~\eqref{eqn:empirical_norm_sobolev} that
+Next we lower bound the left hand side of the inequality~\eqref{eqn:ls_fixed_graph_testing_critical_radius}---i.e. we lower bound the empirical norm $\|f_0\|_n^2$---using Lemma~\ref{lem:empirical_norm_sobolev}. Recall that by assumption, $M \leq M_{\max}(d)$. Therefore, taking $C \geq C_6$ in~\eqref{eqn:laplacian_smoothing_testing}, implies that the lower bound on $\|f\|_{\Leb^2(\mc{X})}$ in~\eqref{eqn:empirical_norm_sobolev_1} is satisfied. As a result, it follows from~\eqref{eqn:empirical_norm_sobolev} that
 \begin{equation*}
-\|f\|_n^2 \geq \frac{\|f\|_{P}^2}{b} \geq \frac{p_{\min}}{b} \|f\|_{\Leb^2(\Xset)}^2 \geq CbM^{2d/(4 + d)}n^{-4/(4 + d)},
+\|f\|_n^2 \geq \frac{\mathbb{E}[\|f\|_n^2]}{b} \geq \frac{p_{\min}}{b} \|f\|_{\Leb^2(\Xset)}^2 \geq CbM^{2d/(4 + d)}n^{-4/(4 + d)},
 \end{equation*}
-with probability at least $1 - 5/b$. Taking $C \geq C_2 + 4 + (4\sqrt{2})/c_3^{d/4} + 4/c_3^2$ in~\eqref{eqn:laplacian_smoothing_testing} thus implies~\eqref{eqn:ls_fixed_graph_testing_critical_radius}, and we may therefore use Lemma~\ref{lem:ls_fixed_graph_testing} to upper bound the type II error the Laplacian smoothing test $\wh{\varphi}$. Observe that by~\eqref{eqn:neighborhood_eigenvalue} and the lower bound in Lemma~\ref{lem:variance_term_testing}, 
+with probability at least $1 - 5/b$. Taking $C \geq C_2 + 4 + (4\sqrt{2})/c_3^{2} + 4/c_3^2$ in~\eqref{eqn:laplacian_smoothing_testing} thus implies~\eqref{eqn:ls_fixed_graph_testing_critical_radius}, and we may therefore use Lemma~\ref{lem:ls_fixed_graph_testing} to upper bound the type II error the Laplacian smoothing test $\wh{\varphi}$. Observe that by~\eqref{eqn:neighborhood_eigenvalue} and the lower bound in Lemma~\ref{lem:variance_term_testing}, 
 \begin{equation*}
-\sum_{k = 1}^{n} \biggl(\frac{1}{\rho \lambda_k + 1}\biggr)^4 \geq 1 + \sum_{k = 2}^{n}\biggl(\frac{1}{C_3\wt{\rho}k^{2/d} + 1}\biggr)^4 \geq 1 + \frac{1}{16}\min\biggl\{\floor{\frac{\wt{\rho}^{-d/2}}{C_3^{d/2}}} - 1 \vee 0, n \biggr\} \geq \min\biggl\{\frac{\wt{\rho}^{-d/2}}{32 C_3^{d/2}}, \frac{n}{16} \biggr\}.
+\sum_{k = 1}^{n} \biggl(\frac{1}{\rho \lambda_k + 1}\biggr)^4 \geq 1 + \frac{1}{C_3^4}\sum_{k = 2}^{n}\biggl(\frac{1}{\wt{\rho}k^{2/d} + 1}\biggr)^4 \geq \frac{1}{32C_3^4}\wt{\rho}^{-d/2}.
 \end{equation*}
 We conclude that
 \begin{align*}
 \Pbb_{f_0}\bigl(\wh{T} \leq \wh{t}_b\bigr) & \leq \frac{6}{b} + \frac{4}{b^2} + \frac{8}{b} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{-1/2} + C_1n\exp(-c_1nr^d)\\
-& \leq \frac{10}{b} + \frac{32\sqrt{2}}{b} \max\Bigl\{ C_3^{d/4}\wt{\rho}^{d/4} ,n^{-1/2}\Bigr\} + C_1n\exp(-c_1nr^d),
+& \leq \frac{10}{b} + \frac{32\sqrt{2}}{b} C_3^{2}\wt{\rho}^{d/4} + C_1n\exp(-c_1nr^d),
 \end{align*}
 establishing the claim of Theorem~\ref{thm:laplacian_smoothing_testing}.
 
@@ -1467,9 +1473,9 @@ The following Lemmas provides convenient upper and lower bounds on our estimatio
 
 \begin{lemma}
 	\label{lem:variance_term_testing}
-	For any $t > 0$, when $d < 4$,
+	Suppose $d \leq 4$. Then for any $t > 0$ such that $1 \leq t^{-d/2} \leq n$,
 	\begin{equation*}
-	\frac{1}{16}\min\Bigl\{\floor{t^{-d/2}} - 1 \vee 0,n\Bigr\} \leq \sum_{k = 2}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^4 \leq 2t^{-d/2}.
+	\frac{1}{32}t^{-d/2} - 1 \leq \sum_{k = 2}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^4 \leq 2t^{-d/2}.
 	\end{equation*}
 \end{lemma}
 \paragraph{Proof of Lemma~\ref{lem:variance_term_estimation}.}
@@ -1484,11 +1490,8 @@ For the lower bound, we simply recognize that for each $k = 2,\ldots,n$ such tha
 \paragraph{Proof of Lemma~\ref{lem:variance_term_testing}.}
 The upper bound follows similarly to that of Lemma~\ref{lem:variance_term_estimation}:
 \begin{align*}
-\sum_{k = 1}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^4 & \leq t^{-d/2} + \frac{1}{t^4}\sum_{k = t^{-d/2} + 1}^{n} \frac{1}{k^{8/d}} \\
-& \leq t^{-d/2} + \frac{1}{t^4} \int_{t^{-d/2}}^{n} x^{-8/d} \,dx \\
-& \leq 2t^{-d/2}.
+\sum_{k = 1}^{n} \biggl(\frac{1}{tk^{2/d} + 1}\biggr)^4 \leq t^{-d/2} + \frac{1}{t^4}\sum_{k = t^{-d/2} + 1}^{n} \frac{1}{k^{8/d}} \leq t^{-d/2} + \frac{1}{t^4} \int_{t^{-d/2}}^{n} x^{-8/d} \,dx \leq 2t^{-d/2}.
 \end{align*}
-
 The lower bound follows from the same logic as we used to derive the lower bound in Lemma~\ref{lem:variance_term_estimation}.
 
 \section{Concentration Inequalities}
