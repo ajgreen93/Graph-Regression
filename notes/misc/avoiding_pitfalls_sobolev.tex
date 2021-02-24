@@ -1,0 +1,246 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue
+}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{tikz}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+\newcommand{\Lap}{{\bf L}}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Integrals
+\def\Xint#1{\mathchoice
+	{\XXint\displaystyle\textstyle{#1}}%
+	{\XXint\textstyle\scriptstyle{#1}}%
+	{\XXint\scriptstyle\scriptscriptstyle{#1}}%
+	{\XXint\scriptscriptstyle\scriptscriptstyle{#1}}%
+	\!\int}
+\def\XXint#1#2#3{{\setbox0=\hbox{$#1{#2#3}{\int}$}
+		\vcenter{\hbox{$#2#3$}}\kern-.5\wd0}}
+\def\ddashint{\Xint=}
+\def\dashint{\Xint-}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{FS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Note on: Avoiding Pitfalls when Thinking about Sobolev Spaces}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+The purpose of this note is to record some errors we've made when thinking about Sobolev spaces, and continuum estimators defined using their norms (thin-plate splines). The goal is to avoid repeating these errors in the future.
+
+\begin{itemize}
+	\item \textbf{Lesson 1: Pick your representative.} Elements $u$ of Sobolev spaces $W^{k,p}(\Omega)$ are equivalence classes. Functions $f$ and $g$ are equivalent if they disagree only a set of Lebesgue measure-zero. In order to speak of pointwise evaluation of some $u \in W^{k,p}(\Omega)$, we must pick first pick a representative $f^{\star} \in u$. 
+	\begin{itemize}
+		\item When $pk > d$, by the Sobolev Embedding Theorem every $u \in W^{k,p}(\Omega)$ has a continuous representative, and the convention is to take $f^{\star}$ to be that continuous representative.
+		\item When $pk \leq d$, $W^{k,p}(\Omega)$ no longer embeds into $C(\Omega)$. In this case, we choose $f^{\star}$ to be the \emph{precise representative} of $u$, defined for $x \in \Omega$ as
+		\begin{equation*}
+		f^{\star}(x) :=
+		\begin{dcases}
+		\lim_{r \to 0} \biggl\{\frac{1}{\nu(B(x,r))} \int_{B(x,r)} u(x) \,dx\biggr\},& ~~\textrm{if the limit exists} \\
+		0,& ~~\textrm{otherwise.}
+		\end{dcases}
+		\end{equation*}
+		Note that by the Lebesgue Differentation Theorem, the set $E$ of Lebesgue points of any $u \in W^{k,p}(\Omega) \subset L^1(\Omega)$ satisfies $\nu(\Omega\setminus E) = 0$. Thus $f^{\star}$ is indeed a representative of $u$. Moreover when $2k > d$, $f^{\star}$ is continuous. 
+	\end{itemize}
+	Once we have picked representatives, we can make sense of the objective function
+	\begin{equation*}
+	R(u) = \|Y - u\|_n^2 + \lambda |u|_{W^{k,p}(\Omega)}^2.
+	\end{equation*}
+	Henceforth when we say ``function $f \in W^{k,p}(\Omega)$'', we are referring to the precise representative $f^{\star}$ of an equivalence class $u$.
+	\item \textbf{Lesson 2: Be precise about why the smoothing spline problem is well-posed when $2k > d$.} Let $p = 2$. When $2k > d$, the Hilbert-Sobolev space $H^k(\Omega) = W^{k,2}(\Omega)$ can be continuously embedded into $C^{j,\gamma}(\Omega)$ with $\gamma = \floor{d/2} + 1 - d/2$ and $j = k - \gamma - d/2$ (Here for convenience we have assumed $d$ is odd.) For the moment set $d = 1$ and $\Omega = [0,1]$. When $d = 1$, observe that $\gamma = 1/2$ and $j = k - 1$. Therefore any function $f \in H^k(\Omega)$ is absolutely continuous, with continuous derivatives $f',f'',\ldots,f^{(k- 1)}$, and with $k$th weak derivative bounded in $L^2([0,1])$ norm. These continuity properties ensure that the \emph{smoothing spline} optimization problem,
+	\begin{equation}
+	\label{eqn:smoothing_spline}
+	\min_{H^k([0,1])} \|Y - u\|_n^2 + \lambda |u|_{W^{k,p}(\Omega)}^2,
+	\end{equation}
+	is well-defined. By this we mean that there exists a unique function $\wt{u} \in H^k([0,1])$ which achieves the minimum in~\eqref{eqn:smoothing_spline}. Much more is known about the properties of $\wt{u}$, but that is not important for this discussion.
+	\item \textbf{Lesson 3: Be precise about why the smoothing spline problem is ill-posed when $2k \leq d$.} Let's return to the general multivariate setting, where $d$ is arbitrary and $\Omega$ is a regular domain. Suppose $2k \leq d$. Now we know problem~\eqref{eqn:smoothing_spline} is ill-posed. My previous explanation of this facet would have been ``it is ill-posed because you can put spikes at the data'' but that is not the case--we have already ruled out changes on a set of measure zero by picking a precise representative. The correct explanation is that $R(u)$ is not a continuous function of $u$ with respect to the topology induced by $H^k(\Omega)$ norm. For instance, take a sequence of bump function $g_h = \textcolor{red}{(?)}$. Clearly $g_h(x) = 0$ for any $x \in \Omega\setminus B(0,h)$. On the one hand, a standard calculation will show that $g_h \to 0$ as $h \to \infty$, where crucially convergence is meant in the Sobolev norm. On the other hand, $g_h(0) = 1$ for all $h$, and so $R(g_h) \not\to R(0)$. For this reason~\eqref{eqn:smoothing_spline} does not have a minimizer in $H^k(\Omega)$. 
+	
+	NB: This is a particular example of a general mistake I often make, which is forgetting that convergence of a sequence in Sobolev norm does not imply pointwise convergence, either of the function $f$ (when $2k \leq d$) or of the $j$th derivative of the function (when $2(k - j) \leq d$.).
+	\item \textbf{Lesson 4: Practical implementation.} In our AISTATS paper,  I make the following comment:
+	\begin{quotation}
+		...any practical implementation of~\eqref{eqn:smoothing_spline} will be inconsistent [when $d \geq 2$ and $k = 1$.]
+	\end{quotation}
+	This comment is too imprecise to be interpretable. Let's give it some meaning. Numerically, one could try to solve~\eqref{eqn:smoothing_spline} by discretizing the space $\Omega$ and solving a discrete version of~\eqref{eqn:smoothing_spline}. \textcolor{red}{This discrete problem} will always be well-posed, meaning it will always admit a unique solution. Unfortunately, if one takes the discretization of $\Omega$ to be \textcolor{red}{sufficiently fine} (compared to the number of samples $n$) the resulting estimator $\check{u}$ will be an inconsistent estimator of $f_0$.
+	\item \textbf{Lesson 5: Be more imaginative.} I tend to think of Sobolev spaces as containing continuous and continuously differentiable functions, up to local deviations (spikes). This intuition is only appropriate when $2k > d$. For instance, the fractional Sobolev space $H^{1/2}([0,1])$ contains step-functions. When $d \geq 2$, weak differentiability does not imply continuity. 
+\end{itemize}
+
+\textcolor{red}{(TODO):}
+\begin{itemize}
+	\item Note that when $2k > d$, and $d > 1$, the $(k-1)$st partial derivatives of $f \in H^k(\Omega)$ may not be classically defined, and yet~\eqref{eqn:smoothing_spline} is still well-defined. Find what continuity properties suffice for~\eqref{eqn:smoothing_spline} to be well-defined.
+	\item Give an example of a \textcolor{red}{reasonable function} $f \in H^1([-1,1]^2)$ which is discontinuous. A brief Google search finds examples which seem straight out of the mind of Georg Cantor.
+\end{itemize}
+
+\end{document}

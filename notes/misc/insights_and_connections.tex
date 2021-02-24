@@ -383,7 +383,13 @@ If $\Omega$ is a compact domain, and $p$ is bounded away from $0$ and $\infty$, 
 		\item I believe the first claim can be rigorously justified when the domain is $[0,1]^d$, the design points are equi-spaced grid points, the graph is the lattice, and the measure $P$ is uniform. It is much trickier to justify when the graph is a neighborhood graph, because it involves making statements about the top eigenvectors of the Laplacian $L_{N,\varepsilon}$, which are poorly understood. If we cannot rigorously justify it in this case, then the next best option is to give some intuition. For instance, we could say that all eigenvectors of $L_{N,\varepsilon}$ can be extrapolated to locally Lipschitz functions on $\Omega$ with bounded Lipschitz constant, and that such functions in turn lie very close to $V_N$.
 		\item The second claim is simply a matter of adapting some standard results regarding the entropy of RKHS.
 	\end{itemize}
-	\item We should also give some insight into the structure of $V_N$. For instance, what are the smoothness properties of functions $u \in V_N$? What does the kernel function look like (this is well known, I believe, when $d = 1$ and $p$ is uniform)? How do these depend on the density $p$?
+	\item \textcolor{red}{(TODO)}: We should also give some insight into the structure of $V_N$. For instance, what are the smoothness properties of functions $u \in V_N$? What does the kernel function look like (this is well known, I believe, when $d = 1$ and $p$ is uniform)? How do these depend on the density $p$?
+	\item \textcolor{red}{(TODO)}: Some grumpy advisor might say that we need to justify why anyone should care about relating $\wh{u}$ to $\check{u}$. One way to do this is by arguing that methodologically~\eqref{eqn:bandlimited_laplacian_smoothing} is superior to~\eqref{eqn:laplacian_smoothing}, for instance because it is well defined over all of $\Omega$ rather than only $\Omega_N$. Another way to do this is by arguing that the representation~\eqref{eqn:bandlimited_laplacian_smoothing} buys us something theoretically. Three example things it might buy are: 
+	\begin{enumerate}[(1)]
+		\item It may be possible to relate~\eqref{eqn:bandlimited_laplacian_smoothing} to an equivalent kernel,
+		\item It is far easier to analyze~\eqref{eqn:bandlimited_laplacian_smoothing} than directly analyzing Laplacian smoothing. Hopefully, we can easily get sharp upper bounds for more interesting situations than we have analyzed thus far. For instance, when $p$ or $\Omega$ are complicated, instead of being a smooth function with a smooth boundary, respectively. 
+		\item It should be easy to prove a lower bound on the error of~\eqref{eqn:bandlimited_laplacian_smoothing} when $d > 4$. 
+	\end{enumerate}
 \end{itemize}
 
 

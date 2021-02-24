@@ -199,9 +199,9 @@ Lf(X_i) = \sum_{j = 1}^{n} \bigl(f(X_i) - f(X_j)\bigr)e_{ij}.
 \end{equation}
 The Laplacian $L$ can be seen as a discretization of the Laplace-Beltrami operator $\Delta_P$ \textcolor{red}{(...)}. The eigenvectors of $L$ form an orthonormal basis of $L^2(X)$, and are approximations to the eigenvectors of $\Delta_P$. Their corresponding eigenvalues are estimates of~\textcolor{red}{(...)}, and provide a notion of smoothness for each eigenvector---the smaller the eigenvalue, the smoother the eigenvector. 
 
-\textbf{(3) Why we study.} Laplacian eigenmaps is thus an example of a \emph{spectral series} estimator. Series estimators are one of the most classical ways to perform non-parametric regression. Traditionally, series estimators are defined with respect to a fixed set of basis functions, orthogonalized with respect to some pre-determined reference measure $Q$. In contrast, eigenvectors of the graph Laplacian are data-dependent objects, and adapt to the geometry of the distribution $P$ in a rich manner. 
+\textbf{(3) Why we study.} Laplacian eigenmaps is thus an example of a \emph{spectral series} estimator. A spectral series estimator is a special case of an orthogonal series estimator, one of the most classical methods of non-parametric regression. Traditionally, orthogonal series estimators are defined with respect to a fixed set of basis functions, orthogonalized with respect to some pre-determined reference measure $Q$. Spectral series estimators take a particular orthogonal basis, the eigenfunctions of $\Delta_Q$. In contrast, eigenvectors of the graph Laplacian are data-dependent objects, and adapt to the geometry of the design distribution $P$ in a rich manner. 
 
-The study of (classical) spectral series estimators is rich, and their theoretical optimality is well-understood \textcolor{red}{(references)}. However, in practice these estimators suffer from some serious drawbacks.
+The theoretical properties of (classical) spectral series estimators are by this point well-understood \textcolor{red}{(references)}. In particular, they are minimax optimal for nonparametric regression over H\"{o}lder and Sobolev spaces. However, in practice these estimators suffer from some serious drawbacks. Finding the eigenfunctions of $\Delta_Q$ is in general non-trivial. The statistical optimality of such estimators also hinges on the reference measure $Q$ being equal to $P$, an unrealistic assumption when $P$ is unknown. If $Q \neq P$, the standard recommendation is to instead do least squares---this can be statistically rate-optimal, but is numerically unstable when dimension $d$ is even moderately large.
 
 \textbf{(4) Our contributions.} Laplacian eigenmaps avoid these drawbacks \textcolor{red}{(...)} On the other hand their statistical properties are not as well understood \textcolor{red}{(...)}. The primary contribution of our paper is to fill this theoretical gap, by answering the following question:
 
@@ -209,9 +209,11 @@ The study of (classical) spectral series estimators is rich, and their theoretic
 	\textcolor{red}{(TODO)}
 \end{quote}
 
-Broadly speaking, we show that when the regression function $f_0$ is smooth, in the sense of having bounded derivatives in the Sobolev sense, Laplacian eigenmaps is statistically minimax optimal. This statement holds for different relations between the dimension $d$ and number of derivatives $s$, depending on the problem (estimation) \textcolor{red}{(TODO): Add two tables summarizing your major results here.} 
+Broadly speaking, we show that when the regression function $f_0$ is smooth, in the sense of having bounded derivatives in the Sobolev sense, Laplacian eigenmaps is statistically minimax optimal. This statement holds for different relations between the dimension $d$ and number of derivatives $s$, depending on the problem (estimation or testing). \textcolor{red}{(TODO): Add two tables summarizing your major results here.} 
 
 \textbf{(5) Organization.}
+
+\textcolor{red}{(TODO)}
 
 \textbf{(6) Notation.}
 
@@ -271,7 +273,7 @@ The Sobolev class $H^s(P)$ consists of all those functions $f \in \Leb^2(P)$ whi
 \end{equation*}
 where $D^jf := \sum_{|\alpha| = j}D^{\alpha}f$ is the sum of all weak partial derivatives of order $j$, and we use the multiindex notation $D^{\alpha}f = \partial^j f/(\partial^{\alpha_1}x^1\ldots \partial^{\alpha_d}x^d)$ for multiindex $\alpha$. The Sobolev ball of radius $M$ consists of all those functions $f \in H^s(P)$ with Sobolev norm no greater than $M$,
 \begin{equation*}
-H^s(\mc{X};M) := \{f \in H^s(P): \|f\|_{H^s(P)} \leq M\}
+H^s(P;M) := \{f \in H^s(P): \|f\|_{H^s(P)} \leq M\}
 \end{equation*}
 
 \textcolor{red}{(TODO)}: 
@@ -389,27 +391,27 @@ In this section, we will show that the estimator $\wh{f}$, and a test using the 
 
 \subsection{First-order Sobolev classes}
 \label{sec:first_order_sobolev_classes}
-To begin, we handle the case where $f_0 \in H^1(\mc{X})$.
+To begin, we handle the case where $f_0 \in H^1(P)$. We show that $\wh{f}$ and a test based on $\wh{T}$ are minimax optimal, for all values of $d$, and under no additional assumptions on the data generating process, i.e. on $P$ or $f_0$. 
 
-\textbf{(1) Laplacian eigenmaps is an optimal estimator.} When the graph radius $\varepsilon$ and number of eigenvectors $K$ are chosen appropriately, the estimator $\wh{f}$ has (in-sample) optimal risk (up to constant factors) $\|\wh{f} - f_0\|_n^2 \lesssim n^{-2/(2 + d)}$. 
+\paragraph{Estimation.} When the graph radius $\varepsilon$ and number of eigenvectors $K$ are chosen appropriately, the estimator $\wh{f}$ has (in-sample) optimal risk (up to constant factors) $\|\wh{f} - f_0\|_n^2 \lesssim n^{-2/(2 + d)}$. 
 \begin{enumerate}[label=(A\arabic*)]
 	\setcounter{enumi}{3}
 	\item 
-	\label{asmp:estimation_fo} 
+	\label{asmp:parameters_estimation_fo} 
 	The graph radius $\varepsilon$ and the number of eigenvectors $K$ satisfy the following inequalities:
 	\begin{equation}\\
-	\label{eqn:radius_estimation_fo} 
-	C_1 \biggl(\frac{\log n}{n}\biggr)^{1/d} \leq \varepsilon \leq \min\{i_0,K^{-1/d}\},
+	\label{eqn:radius_fo} 
+	C_0 \biggl(\frac{\log n}{n}\biggr)^{1/d} \leq \varepsilon \leq \min\{i_0,K^{-1/d}\},
 	\end{equation}
 	and 
 	\begin{equation}
 	\label{eqn:eigenvector_estimation_fo} 
-	c_2 (M^2 n)^{2d/(2 + d)}\leq K \leq C_2 (M^2 n)^{2d/(2 + d)}.
+	c_1 (M^2 n)^{2d/(2 + d)}\leq K \leq C_1 (M^2 n)^{2d/(2 + d)}.
 	\end{equation}
 \end{enumerate}
 \begin{theorem}
 	\label{thm:laplacian_eigenmaps_estimation_fo}
-	Suppose the general assumptions~\ref{asmp:domain}-\ref{asmp:sobolev_radius} are satisfied. Then for any $f_0 \in H^1(P,M)$, if Laplacian eigenmaps is run with parameters $\varepsilon$ and $K$ satisfying~\ref{asmp:estimation_fo}, with probability at least $1 - \delta - \textcolor{red}{(???)}$ it follows that
+	Suppose $f_0 \in H^1(P,M)$. If the Laplacian eigenmaps estimator $\wh{f}$ is computed with parameters $\varepsilon$ and $K$ that satisfy~\ref{asmp:parameters_estimation_fo}, then the following statement holds for any $\delta \in (0,1)$: with probability at least $1 - \delta - \textcolor{red}{(???)}$,
 	\begin{equation}
 	\label{eqn:laplacian_eigenmaps_estimation_fo}
 	\|\wh{f} - f_0\|_n^2 \leq \frac{C}{\delta}M^{2d/(2 + d)}n^{-2/(2 + d)}
@@ -417,7 +419,7 @@ To begin, we handle the case where $f_0 \in H^1(\mc{X})$.
 \end{theorem}
 Some remarks:
 \begin{itemize}
-	\item \textbf{(1.1) How to tune hyper-parameters.} We note that the ranges~\eqref{eqn:radius_estimation_fo} and~\eqref{eqn:eigenvector_estimation_fo} depend on unknown quantities such as $f_0$ and $P$. In practice, one typically tunes hyper-parameters by sample-splitting or cross-validation. However, because the estimator $\wh{f}$ is defined only in-sample, such approaches cannot be straightforwardly applied to select the graph radius $\varepsilon$, or number of eigenvectors $K$. We discuss out-of-sample extensions of $\wh{f}$ later, in Section~\ref{sec:out_of_sample}.
+	\item \textbf{(1.1) How to tune hyper-parameters.} We note that the ranges~\eqref{eqn:radius_fo} and~\eqref{eqn:eigenvector_estimation_fo} depend on unknown quantities such as $f_0$ and $P$. In practice, one typically tunes hyper-parameters by sample-splitting or cross-validation. However, because the estimator $\wh{f}$ is defined only in-sample, such approaches cannot be straightforwardly applied to select the graph radius $\varepsilon$, or number of eigenvectors $K$. We discuss out-of-sample extensions of $\wh{f}$ later, in Section~\ref{sec:out_of_sample}.
 	\item \textbf{(1.2) The dependence on failure probability can be improved.} The upper bound on in-sample risk given by Equation~\eqref{eqn:laplacian_eigenmaps_estimation_fo} depends on the pre-factor $C/\delta$, and holds with probability $1 - \delta - \textcolor{red}{(?)}$. When $f_0 \in C^1(\mc{X};M)$, we can improve these dependencies, changing the pre-factor in~\eqref{eqn:laplacian_eigenmaps_estimation_fo} to $C(1 + 1/\delta)$, and showing that the bound holds with probability at least $1 - C\delta^2/n$. 
 \end{itemize}
 
@@ -425,11 +427,30 @@ Some remarks:
 \begin{equation*}
 t_{\delta} := \frac{K}{n} + \frac{2K}{\sqrt{n}}.
 \end{equation*}
-The choice of $t_{\delta}$ guarantees that $\varphi$ is a level-$\delta$ test. Under appropriate choices of $\varepsilon$ and $K$, the test $\varphi$ has non-negligible power (up to constant factors) against alternatives separated the null by at least $\|f_0\|_{P}^2 \gtrsim M^{2d/(4 + d)}n^{-4/(4 + d)}$. 
+The choice of $t_{\delta}$ guarantees that $\varphi$ is a level-$\delta$ test. Under appropriate choices of $\varepsilon$ and $K$, the test $\varphi$ has non-negligible power (up to constant factors) against alternatives separated the null by at least $\|f_0\|_{P}^2 \gtrsim M^{2d/(4 + d)}n^{-4/(4 + d)}$, whenever $d < 4$. 
 
+\begin{enumerate}[label=(A\arabic*)]
+	\setcounter{enumi}{4}
+	\item 
+	\label{asmp:parameters_testing_fo}
+	The graph radius $\varepsilon$ and the number of eigenvectors $K$ satisfy~\eqref{eqn:radius_fo}. Additionally,
+	\begin{equation}
+	\label{eqn:eigenvector_testing_fo}
+	c_2 (M^2 n)^{2d/(4 + d)}\leq K \leq C_2 (M^2 n)^{2d/(4 + d)}.
+	\end{equation}
+\end{enumerate}
+Let $p(d) = \min\{1,2/d\}$.
 \begin{theorem}
 	\label{thm:laplacian_eigenmaps_testing_fo}
-	\textcolor{red}{(TODO)}
+	Suppose $f_0 \in H^1(\mc{X};M)$. If the Laplacian eigenmaps test $\varphi$ is computed with parameters $\varepsilon$ and $K$ that satisfy~\ref{asmp:parameters_testing_fo}, then the following statement holds for any $\delta \in (0,1)$: if $f_0$ satisfies
+	\begin{equation}
+	\label{eqn:laplacian_eigenmaps_testing_criticalradius_fo}
+	\|f_0\|_P^2 \geq \frac{C}{\delta} \max\biggl\{\frac{1}{\delta}M^{2d/(4 + d)}n^{-4/(4 + d)}, M n^{-p(d)}\biggr\},
+	\end{equation}
+	then $\varphi$ has Type II error upper bounded by 
+	\begin{equation}
+	\Pbb_{f_0}(\varphi = 0) \leq \delta + \textcolor{red}{(...)}
+	\end{equation}
 \end{theorem}
 Some remarks:
 \begin{itemize}
