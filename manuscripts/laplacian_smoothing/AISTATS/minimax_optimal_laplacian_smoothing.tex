@@ -25,7 +25,7 @@
 \usepackage{bm}
 
 \usepackage{natbib}
-\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibname}{References}
 \renewcommand{\bibsection}{\subsubsection*{\bibname}}
 
 \DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
@@ -674,6 +674,10 @@ We emphasize that little about $\Xset$ needs be known for Theorems~\ref{thm:lapl
 \label{sec:discussion}
 
 We have shown that Laplacian smoothing, computed over a neighborhood graph, can be optimal for both estimation and goodness-of-fit testing over Sobolev spaces. There are many extensions worth pursuing, and several have already been mentioned. We conclude by mentioning a couple more. In practice, it is more common to use a $k$-nearest-neighbor (kNN) graph than a neighborhood graph, due to the guaranteed connectivity and sparsity of the former; we suspect that by building on the work of \citet{calder2019}, one can show that our main results all hold under the kNN graph as well. In another direction, one can also generalize Laplacian smoothing by replacing the penalty \smash{$f^\top \Lap_{n,r} f$} with \smash{$f^\top \Lap_{n,r}^k f$}, for an integer $k > 1$. The hope is that this would then achieve minimax optimal rates over the higher-order Sobolev class $H^k(\Xset)$. % In the very special case of $k = 2$ and $d \leq 2$, we can show that this is indeed the case, but the general story--for all combinations of $k$ and $d$---remains beyond our reach. 
+
+\subsection*{Acknowledgements}
+
+AG and RJT were supported by ONR grant N00014-20-1-2787.  
 
 \bibliographystyle{plainnat}
 \bibliography{../../../graph_regression_bibliography} 
