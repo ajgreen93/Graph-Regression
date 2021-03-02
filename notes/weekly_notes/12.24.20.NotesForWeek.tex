@@ -242,9 +242,9 @@ For a kernel function $\eta(\cdot): [0,\infty) \to (-\infty,+\infty)$, bandwidth
 \begin{equation*}
 \bigl(T_{\varepsilon,Q}f)(x) := \frac{1}{d_Q(x)} \int_{\Omega} f(z)\eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dQ(z)
 \end{equation*}
-where $d_Q(x) = \int_{\Omega} \eta\bigl(\|z - x\|/\varepsilon\bigr) \,dQ(z)$. We denote $T_{\varepsilon,P_n}$ by $T_{\varepsilon,n}$, and $d_{P_n}$ by $d_n$. For convenience, we will assume that $\eta$ is normalized, $\int_{0}^{\infty} \eta(\|z\|) \,dz = 1$, and we will denote $K(\cdot) = (\eta(\cdot))^2$.
+where $d_Q(x) = \int_{\Omega} \eta\bigl(\|z - x\|/\varepsilon\bigr) \,dQ(z)$. We denote $T_{\varepsilon,P_n}$ by $T_{\varepsilon,n}$, and $d_{P_n}$ by $d_n$. For convenience, we will assume that $\eta$ is normalized, $\int_{0}^{\infty} \eta(s) \,ds = 1$, and we will denote $K(\cdot) = (\eta(\cdot))^2$.
 
-The estimate we will consider is a kernel smoother passed over $\wh{\theta}$,
+The estimated function $\wh{f}$ we will consider is a kernel smoother passed over $\wh{\theta}$,
 \begin{equation}
 \label{eqn:kernel_smoother_laplacian_eigenmaps}
 \wh{f}(x) := T_{\varepsilon,n}\wh{\theta}_{1:n}(x).
@@ -272,9 +272,9 @@ Under Assumption~\ref{asmp:kernel}, we automatically have that $d_\nu(x) = \vare
 \end{lemma}
 Notice that the variance term in the above is smaller than the typical variance term for kernel smoothing of noisy data (on the order of $1/(n\varepsilon^d)$) by a factor of $\varepsilon^2$. The bias term, on the other hand, is standard, and in particular the following estimate of the bias can be obtained. 
 \begin{lemma}
-	Suppose $f^{\ast} \in H_0^{s}(\Omega)$, $p \in C^{r}(\Omega)$ for $r = s - 1$, and that $\eta$ is an order-$s$ kernel. Then
+	Suppose $f^{\ast} \in H_0^{s}(\Omega)$, $p \in C^{r}(\Omega)$ for $r = s - 1$, and that $\eta$ is an order-$s$ kernel.
 	\begin{equation*}
-	\|T_{P,\varepsilon}f^{\ast} - f^{\ast}\|_P^2 \leq C \varepsilon^{2s}.
+	\|T_{\varepsilon,P}f^{\ast} - f^{\ast}\|_P^2 \leq C \varepsilon^{2s}.
 	\end{equation*}
 \end{lemma}
 \begin{proof}
@@ -296,20 +296,20 @@ Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp
 	and 
 	\begin{equation}
 	\label{pf:kernel_smoothing_laplacian_eigenmaps_0.5}
-	\|T_{\varepsilon,n}f^{\ast}_{1:n} - f^{\ast}\|_P^2 \leq \frac{1}{\delta}\frac{\varepsilon^2}{n\varepsilon^d} |f|_{H^1(\mc{X})}^2 + \frac{1}{\delta}\|T_{\varepsilon,P}f^{\ast} - f^{\ast}\|_P^2,
+	\|T_{\varepsilon,n}f^{\ast}_{1:n} - f^{\ast}\|_P^2 \leq \frac{C}{\delta}\frac{\varepsilon^2}{n\varepsilon^d} |f|_{H^1(\mc{X})}^2 + \frac{1}{\delta}\|T_{\varepsilon,P}f^{\ast} - f^{\ast}\|_P^2,
 	\end{equation}
 	the latter inequality holding with probability $1 - \delta$.
 	
 	\textit{Proof of \eqref{pf:kernel_smoothing_laplacian_eigenmaps_0}.} We will begin by assuming that $\eta(z) \geq 0$ for all $z$, and return to prove the claim in its full generality at the end.
 	
-	The left hand side of~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0} is equal to $\|T_{\varepsilon,n}(\wh{\theta}_{1:n} - f^{\ast}_{1:n})\|_P$, and~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0} is implied by showing that the operator $T_{\varepsilon,n}: L^2(X) \to L^2(\Omega)$ is (up to constant) a contraction, meaning that for any $u \in L^2(X)$,
+	The left hand side of~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0} is equal to $\|T_{\varepsilon,n}(\wh{\theta}_{1:n} - f^{\ast}_{1:n})\|_P$, and~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0} is implied by showing that the operator $T_{\varepsilon,n}: L^2(X) \to L^2(\Omega)$ is (up to a constant) a contraction, meaning that for any $u \in L^2(X)$,
 	\begin{equation}
 	\label{pf:kernel_smoothing_laplacian_eigenmaps_1}
 	\|T_{\varepsilon,n}u\|_P^2 \leq \frac{1}{\alpha}\bigl(1 + o_P(1)\bigr) \|u\|_n^2.
 	\end{equation}
 	We begin with a pointwise estimate, which follows from Jensen's inequality:
 	\begin{equation*}
-	\Bigl(\bigl(T_{n,\varepsilon}u\bigr)(x)\Bigr)^2 \leq \frac{1}{d_n(x) n} \sum_{i = 1}^{n} (u_i)^2 \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
+	\Bigl(\bigl(T_{n,\varepsilon}u\bigr)(x)\Bigr)^2 \leq \frac{1}{d_n(x) n} \sum_{i = 1}^{n} \bigl(u(X_i)\bigr)^2 \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
 	\end{equation*}
 	(Note that it is here that we have used the positivity of $\eta(\cdot)$.) Integrating with respect to $P$ and exchanging sum with integral yields an upper bound on the $L^2(P)$ norm of $T_{n,\varepsilon}u$,
 	\begin{equation}
@@ -342,26 +342,26 @@ Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp
 	
 	Now, suppose $\eta(\cdot)$ can take on negative values. In this case, we have $\eta(\cdot) = \mathrm{sgn}(\eta(\cdot))K^{1/2}(\cdot)$. Let $d_n(x;K^{1/2})$ be the empirical degree with respect to kernel function $K^{1/2}$. Then
 	\begin{align*}
-	T_{n,\varepsilon}(\wh{\theta} - \varepsilon)(x) & = \frac{1}{d_n(x)n} \sum_{i = 1}^{n} \bigl(\wh{\theta}_i - f^{\ast}(X_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr) \\
-	& = \frac{d_n(x;K^{1/2})}{d_n(x)}\frac{1}{d_n(x;K^{1/2})n} \sum_{i = 1}^{n} \bigl(\wh{\theta}_i - f^{\ast}(X_i)\bigr) \mathrm{sgn}\biggl(\eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr)\biggr) K^{1/2}\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
+	T_{n,\varepsilon}(u)(x) & = \frac{1}{d_n(x)n} \sum_{i = 1}^{n} \bigl(u(X_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr) \\
+	& = \frac{d_n(x;K^{1/2})}{d_n(x)}\frac{1}{d_n(x;K^{1/2})n} \sum_{i = 1}^{n} \bigl(u(X_i)\bigr) \mathrm{sgn}\biggl(\eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr)\biggr) K^{1/2}\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
 	\end{align*}
 	Taking the square and applying Jensen's inequality, we deduce that
 	\begin{align*}
-	\bigl(T_{n,\varepsilon}(\wh{\theta} - \varepsilon)(x)\bigr)^2 & \leq \biggl(\frac{d_n(x;K^{1/2})}{d_n(x)}\biggr)^2 \cdot \frac{1}{d_n(x;K^{1/2})n}\sum_{i = 1}^{n} \bigl(\wh{\theta}_i - f^{\ast}(X_i)\bigr)^2 K^{1/2}\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr) \\
-	& \leq \frac{(1 + o_P(1))\|\eta\|_{\infty}}{\alpha} \cdot \frac{1}{d_n(x;K^{1/2})n}\sum_{i = 1}^{n} \bigl(\wh{\theta}_i - f^{\ast}(X_i)\bigr)^2 K^{1/2}\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr),
+	\bigl(T_{n,\varepsilon}u(x)\bigr)^2 & \leq \biggl(\frac{d_n(x;K^{1/2})}{d_n(x)}\biggr)^2 \cdot \frac{1}{d_n(x;K^{1/2})n}\sum_{i = 1}^{n} \bigl(u(X_i)\bigr)^2 K^{1/2}\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr) \\
+	& \leq \frac{(1 + o_P(1))\|\eta\|_{\infty}^2}{\alpha^2} \cdot \frac{1}{d_n(x;K^{1/2})n}\sum_{i = 1}^{n} \bigl(u(X_i)\bigr)^2 K^{1/2}\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr),
 	\end{align*}
-	with the latter inequality following by Lemma~\ref{lem:measure_of_ball_estimate}. From here the proof proceeds along similar lines to the case where $\eta$ is non-negative.
+	with the latter inequality following by Lemma~\ref{lem:measure_of_ball_estimate} and assumption~\ref{asmp:kernel}. From here the proof proceeds along similar lines to the case where $\eta$ is non-negative.
 	
 	\textit{Proof of~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0.5}.}  
 	We will begin by introducing some notation. For a function $u \in L^2(\Omega)$, let
 	\begin{equation*}
-	L_{\varepsilon,n}u(x) := T_{\varepsilon,n}u(x) - u(x) = \frac{1}{d_n(x)n} \sum_{i = 1}^{n} \bigl(u(x) - u(x_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr)
+	L_{\varepsilon,n}u(x) := T_{\varepsilon,n}u(x) - u(x) = \frac{1}{d_n(x)n} \sum_{i = 1}^{n} \bigl(u(x) - u(X_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr)
 	\end{equation*}
 	and let
 	\begin{equation*}
-	\wt{L}_{\varepsilon,n}u(x) := \frac{d_n(x)}{d_P(x)}L_{\varepsilon,n}u(x) = \frac{1}{d_P(x)n} \sum_{i = 1}^{n} \bigl(u(x) - u(x_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
+	\wt{L}_{\varepsilon,n}u(x) := \frac{d_n(x)}{d_P(x)}L_{\varepsilon,n}u(x) = \frac{1}{d_P(x)n} \sum_{i = 1}^{n} \bigl(u(x) - u(X_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr).
 	\end{equation*}
-	We have already shown that $d_n(x)/d_p(x) = (1 + o_P(1))$, and so we will focus our analysis on upper bounding $\Ebb[\|\wt{L}_{\varepsilon,n}f^{\ast}\|_P^2]$. We begin by providing expressions for the pointwise mean and variance of $\wt{L}_{\varepsilon,n}f^{\ast}(x)$:
+	We have already shown that $d_n(x)/d_P(x) = (1 + o_P(1))$, and so we will focus our analysis on upper bounding $\Ebb[\|\wt{L}_{\varepsilon,n}f^{\ast}\|_P^2]$. We begin by providing expressions for the pointwise mean and variance of $\wt{L}_{\varepsilon,n}f^{\ast}(x)$:
 	\begin{equation*}
 	\Ebb\bigl[\wt{L}_{\varepsilon,n}f^{\ast}(x)\bigr] = T_{P,\varepsilon}f^{\ast}(x) - f^{\ast}(x)
 	\end{equation*}
@@ -376,7 +376,12 @@ Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp
 	\Ebb\bigl[\|\wt{L}_{\varepsilon,n}f^{\ast}\|_P^2\bigr]  & \leq \|T_{P,\varepsilon}f^{\star} - f^{\star}\|_{P}^2 + \frac{1}{p_{\min}^2 \alpha^2 \varepsilon^{2d}} E_{\varepsilon}(f^{\ast}) \\
 	& \leq \|T_{P,\varepsilon}f^{\star} - f^{\star}\|_{P}^2 + \frac{C\varepsilon^2}{p_{\min}^2 \alpha^2 \varepsilon^{d}} |f|_{H^1(\Omega)}^2
 	\end{align*}
-	where $E_{\varepsilon}(f^{\ast}) := \int_{\Omega} \int_{\Omega} (f^{\ast}(x') - f^{\ast}(x))^2 K(\|x' - x\|/\varepsilon) p(x') p(x) ,\dx' \,dx$, and we have shown in our AISTATS paper that $E_{\varepsilon}(f^{\ast}) \leq C \varepsilon^{d + 2} \|f\|_{H^1(\Omega)}^2$, justifying the second inequality.
+	where $E_{\varepsilon}(f^{\ast}) := \int_{\Omega} \int_{\Omega} (f^{\ast}(x') - f^{\ast}(x))^2 K(\|x' - x\|/\varepsilon) p(x') p(x) ,\dx' \,dx$, and we have shown in our AISTATS paper that $E_{\varepsilon}(f^{\ast}) \leq C \varepsilon^{d + 2} |f|_{H^1(\Omega)}^2$, justifying the second inequality. Consequently, 
+	\begin{align*}
+	\|T_{n,\varepsilon}f^{\ast}_{1:n} - f^{\ast}\|_P^2 \leq (1 + o_P(1))^2 \|\wt{L}_{\varepsilon,n}f^{\ast}\|_P^2 & \leq \frac{\bigl(1 + o_P(1)\bigr)^2}{\delta} \mathbb{E}\bigl[\|\wt{L}_{\varepsilon,n}f^{\ast}\|_P^2\bigr] \\ 
+	& \leq \frac{\bigl(1 + o_P(1)\bigr)^2}{\delta}\biggl(\|T_{P,\varepsilon}f^{\star} - f^{\star}\|_{P}^2 + \frac{C\varepsilon^2}{p_{\min}^2 \alpha^2 \varepsilon^{d}} |f|_{H^1(\Omega)}^2\biggr)
+	\end{align*}
+	with probability at least $1 - \delta$, establishing~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0.5}.
 \end{proof}
 
 \begin{lemma}

@@ -390,6 +390,7 @@ If $\Omega$ is a compact domain, and $p$ is bounded away from $0$ and $\infty$, 
 		\item It is far easier to analyze~\eqref{eqn:bandlimited_laplacian_smoothing} than directly analyzing Laplacian smoothing. Hopefully, we can easily get sharp upper bounds for more interesting situations than we have analyzed thus far. For instance, when $p$ or $\Omega$ are complicated, instead of being a smooth function with a smooth boundary, respectively. 
 		\item It should be easy to prove a lower bound on the error of~\eqref{eqn:bandlimited_laplacian_smoothing} when $d > 4$. 
 	\end{enumerate}
+	In a negative direction,~\eqref{eqn:bandlimited_laplacian_smoothing} reveals that the Laplacian smoothing is automatically zeroing out certain high-frequency signals. Once we acknowledge this fact, we should probably also acknowledge that the particular choice of frequency at which to cut off was made somewhat arbitrarily. Indeed, we get much stronger theoretical guarantees if we cut off at a much lower frequency. This motivates Laplacian eigenmaps.
 \end{itemize}
 
 
