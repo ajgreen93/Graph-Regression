@@ -270,15 +270,15 @@ Under Assumption~\ref{asmp:kernel}, we automatically have that $d_\nu(x) = \vare
 	\|\wh{f} - f^{\ast}\|_P^2 \leq C\biggl(\|\wh{\theta}_{1:n} - f^{\ast}_{1:n}\|_n^2 + \frac{1}{\delta} \cdot \frac{\varepsilon^2}{n\varepsilon^d} |f|_{H^1(\mc{X})}^2 + \frac{1}{\delta}\|T_{\varepsilon,P}f^{\ast} - f^{\ast}\|_P^2\biggr)
 	\end{equation*}
 \end{lemma}
-Notice that the variance term in the above is smaller than the typical variance term for kernel smoothing of noisy data (on the order of $1/(n\varepsilon^d)$) by a factor of $\varepsilon^2$. The bias term, on the other hand, is standard, and in particular the following estimate of the bias can be obtained. 
+Notice that the variance term in the above is smaller than the typical variance term for kernel smoothing of noisy data (on the order of $1/(n\varepsilon^d)$) by a factor of $\varepsilon^2$. The bias term, on the other hand, is standard (at least when $f^{\ast} \in C_0^s(\Omega)$). In particular the following estimate of the bias can be obtained. 
 \begin{lemma}
-	Suppose $f^{\ast} \in H_0^{s}(\Omega)$, $p \in C^{r}(\Omega)$ for $r = s - 1$, and that $\eta$ is an order-$s$ kernel.
+	\label{lem:kernel_smoothing_bias}
+	Suppose $f^{\ast} \in H_0^{s}(\Omega)$, $p \in C^{r}(\Omega)$ for $r = s - 1$, and that $\eta$ is an order-$s$ kernel. It follows that
 	\begin{equation*}
 	\|T_{\varepsilon,P}f^{\ast} - f^{\ast}\|_P^2 \leq C \varepsilon^{2s}.
 	\end{equation*}
 \end{lemma}
-\begin{proof}
-	\textcolor{red}{(TODO)}
+\begin{proof}[Proof (when dimension $d = 1$).]
 \end{proof}
 
 Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp n^{-1/(2r + d)}$) than is typical for kernel smoothing with noisy data, leads to an asymptotically negligible error ($n^{-2s/(2r + d)}$) compared to the minimax rate for estimating Sobolev functions. 
@@ -475,7 +475,7 @@ It seems like a useful starting place would be to take $f^{\ast} \propto \psi_k$
 
 \paragraph{$(\|f_{\perp}^{\ast}\|_n)$.}
 
-This one I frankly have no thoughts on how to analyze. I don't even understand it all that well, as evidence by the fact that I can't name it.
+This one I frankly have no thoughts on how to analyze. I don't even understand it all that well, as evidenced by the fact that I can't name it.
 
 
 \clearpage
@@ -493,5 +493,63 @@ We will apply Lemma~\ref{lem:l2p_error_fixed_design}, and then use our assumptio
 \begin{lemma}
 	content...
 \end{lemma}
+
+\section{Miscellaneous}
+I put things here which did not belong in any other section.
+
+\subsection{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $d = 1$ and $p$ uniform}
+Without loss of generality take the domain $\Omega = (0,1)$. Recall that we are interested in upper bounding
+\begin{equation*}
+\|T_{P,\varepsilon}u - u\|_{P}^2 = \int_{\Omega} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x) \leq C\varepsilon^{2k}
+\end{equation*}
+where $L_{P,\varepsilon}$ is a non-local approximation to the continuum weighted Laplacian, given by
+\begin{equation*}
+L_{P,\varepsilon}u(x) := \frac{1}{d_P(x)}\int_{\Omega} \bigl(u(z) - u(x)\bigr) \eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dP(z).
+\end{equation*}
+We begin with a pointwise analysis of $L_{p,\varepsilon}u(x)$ at a given $x \in \Omega$. We may assume without loss of generality that $u \in C_0^{\infty}(\Omega)$, since $C_0^{\infty}(\Omega)$ is dense in $H_0^k(\Omega)$ and $\|T_{P,\varepsilon}u - u\|_P^2$ is continuous with respect to $\|\cdot\|_{H_0^k}$. Since $u$ is smooth, for every $x,z \in \Omega$, we have the $k$th-order Taylor expansion
+\begin{equation*}
+u(z) - u(x) = \sum_{j = 1}^{k - 1} (z - x)^{j} u^{(j)}(x)  + \frac{(z - x)^k}{(k - 1)!}\int_{0}^{1}(1 - t)^{k - 1}u^{(k)}(x + t(z - x))\,dt.
+\end{equation*}
+As a result,
+\begin{equation}
+\label{pf:kernel_smoothing_bias_1d_1}
+\begin{aligned}
+L_{P,\varepsilon}u(x) = \frac{1}{d_P(x)} & \Biggl\{\sum_{j = 1}^{k - 1} u^{(j)}(x) \int_{\Omega}(z - x)^{j}\eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr)\,dz + \\ 
+& \frac{1}{(k - 1)!} \int_{\Omega} \int_{0}^{1} (1 - t)^k (z - x)^k u^{(k)}(x + t(z - x)) \eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dt \,dz \Biggr\}
+\end{aligned}
+\end{equation}
+The way in which we use~\eqref{pf:kernel_smoothing_bias_1d_1} will depend on whether $x \in \Omega$ satisfies $B(x,\varepsilon) \subset \Omega$ or not. Let $\Omega_{\varepsilon} := \{x: B(x,\varepsilon) \in \Omega\}$ and let $\partial_{\varepsilon}\Omega := \Omega \setminus \Omega_{\varepsilon}$. Clearly
+\begin{equation*}
+\|L_{P,\varepsilon}u\|_{P}^2 = \underbrace{\int_{\Omega_{\varepsilon}} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_1} + \underbrace{\int_{\partial_{\varepsilon}\Omega} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_2}
+\end{equation*}
+and we now separately upper bound $I_1$ and $I_2$.
+
+\paragraph{Upper bound on $I_1$.}
+If $x \in \Omega_{\varepsilon}$ then all $z \in B(x,\varepsilon)$ also belong to $\Omega$. For one thing, this implies
+\begin{equation*}
+d_P(x) = \int_{\Omega} \eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dz = \varepsilon \cdot \int_{B(0,1)}  \eta(v) \,dv = \epsilon.
+\end{equation*}
+Addtionally, we have that all $j = 1,\ldots,k - 1$, 
+\begin{equation*}
+\int_{\Omega}(z - x)^{k}\eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dz = \varepsilon^j \cdot \int_{B(0,1)} v^j \eta(v) \,dv = 0,
+\end{equation*}
+where the second equality follows because $\eta$ is a $k$th-order kernel. Consequently $L_{P,\varepsilon}$ depends only on the $k$th derivative of $u$: changing variables to $v = (z - x)/\varepsilon$, we have
+\begin{align*}
+L_{P,\varepsilon}u(x) & = \frac{1}{\varepsilon} \cdot \frac{1}{(k - 1)!} \int_{0}^{1} \int_{\Omega} (1 - t)^k (z - x)^k u^{(k)}(x + t(z - x)) \eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dz \,dv \\
+& = \frac{\varepsilon^{k}}{(k - 1)!} \int_{0}^{1} \int_{B(0,1)} (1 - t)^k v^k u^{(k)}(x + t\varepsilon v) \eta(v) \,dv \,dt.
+\end{align*} 
+This identity along with Jensen's inequality implies that
+\begin{equation*}
+\Bigl(L_{P,\varepsilon}u(x)\Bigr)^2 \leq \biggl(\frac{\varepsilon^{k}}{(k - 1)!}\biggr)^2 \cdot  \int_{0}^{1} \int_{B(0,1)} v^{2k} \bigl(u^{(k)}(x + t\varepsilon v)\bigr)^2 \eta(|v|) \,dv \,dt.
+\end{equation*}
+Integrating over all $x \in \Omega_{\varepsilon}$ gives an upper bound on $I_1$. 
+From here, by changing the order of integration, substituting $\wt{x} = x + t\varepsilon v$, and noting that $\wt{x} \in \Omega$, we arrive at the desired bound:
+\begin{align*}
+I_1 & \leq \biggl(\frac{\varepsilon^{k}}{(k - 1)!}\biggr)^2 \int_{0}^{1} \int_{B(0,1)} \int_{\Omega_{\varepsilon}} v^{2k} \bigl(u^{(k)}(x + t\varepsilon v)\bigr)^2 \eta(|v|) \,dx \,dv \,dt \\
+& \leq \biggl(\frac{\varepsilon^{k}}{(k - 1)!}\biggr)^2 \int_{0}^{1} \int_{B(0,1)} \int_{\Omega} v^{2k} \bigl(u^{(k)}(\wt{x})\bigr)^2 \eta(|v|) \,d\wt{x} \,dv \,dt \\
+& = \biggl(\frac{\varepsilon^{k}}{(k - 1)!}\biggr)^2 |u|_{H^k(\Omega)}^2 \sigma_{\eta}.
+\end{align*}
+
+\paragraph{Upper bound on $I_2$.}
 
 \end{document}

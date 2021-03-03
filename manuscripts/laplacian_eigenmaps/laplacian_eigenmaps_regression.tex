@@ -346,7 +346,7 @@ When $4s \geq d$ the functions in $H^s(\Xset)$ are very irregular---formally spe
 \end{itemize}
 
 \subsection{Spectral series methods for Sobolev Spaces}
-Spectral series estimators are particularly designed for estimation in Sobolev spaces. Let $f_1,f_2,\ldots$ be the unit norm eigenfunctions of $\Delta_P$. The classical order-$K$ spectral series estimator $\wt{f}$ and test statistic $\wt{T}$ are
+Spectral series estimators---and tests using their $\Leb^2$-norm---are particularly designed for regression in Sobolev spaces. Let $f_1,f_2,\ldots$ be the unit norm eigenfunctions of $\Delta_P$. The classical order-$K$ spectral series estimator $\wt{f}$ and test statistic $\wt{T}$ are
 \begin{equation*}
 \wt{f} = \sum_{k = 1}^{K} \dotp{Y}{f_k}_n f_k~~\textrm{and}~~\wt{T} = \|\wt{f}\|_P^2.
 \end{equation*}
@@ -391,7 +391,7 @@ In this section, we will show that the estimator $\wh{f}$, and a test using the 
 
 \subsection{First-order Sobolev classes}
 \label{sec:first_order_sobolev_classes}
-To begin, we handle the case where $f_0 \in H^1(P)$. We show that $\wh{f}$ and a test based on $\wh{T}$ are minimax optimal, for all values of $d$, and under no additional assumptions on the data generating process, i.e. on $P$ or $f_0$. 
+To begin, we handle the case where $f_0 \in H^1(P)$. We show that $\wh{f}$ and a test based on $\wh{T}$ are minimax optimal, for all values of $d$, and under no additional assumptions on the data generating process, i.e. on either $P$ or $f_0$. 
 
 \paragraph{Estimation.} When the graph radius $\varepsilon$ and number of eigenvectors $K$ are chosen appropriately, the estimator $\wh{f}$ has (in-sample) optimal risk (up to constant factors) $\|\wh{f} - f_0\|_n^2 \lesssim n^{-2/(2 + d)}$. 
 \begin{enumerate}[label=(A\arabic*)]
@@ -466,7 +466,8 @@ In this section, we now assume that the regression function displays some higher
 \begin{enumerate}[label=(A\arabic*)]
 	\setcounter{enumi}{5}
 	\item 
-	The graph radius $\varepsilon$ and number of eigenvectors $K$ satisfies
+	\label{asmp:parameters_estimation_ho}
+	The graph radius $\varepsilon$ and number of eigenvectors $K$ satisfy
 	\begin{equation*}
 	C_0 \cdot \max\biggl\{\biggl(\frac{\log}{n}\biggr)^{1/d}, n^{-1/(2r + d)}\biggr\} \leq \varepsilon \leq \min\{i_0, K^{-1/d}\}
 	\end{equation*}
@@ -486,7 +487,7 @@ In this section, we now assume that the regression function displays some higher
 \end{theorem}
 Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho}, in combination with Theorem~\ref{thm:laplacian_eigenmaps_estimation_fo}, implies that in the flat Euclidean setting Laplacian eigenmaps is a rate-optimal estimator over Sobolev classes, for all scalings of $s$ and $d$. Some other remarks:
 \begin{itemize}
-	\item \textbf{(1.1) Optimal rates, no RKHS.} It is worth pointing out that we do not require that the regularity of the Sobolev space satisfy $2s > d$, a condition often seen in the literature. In the ``sub-critical'' regime $2s < d$, the Sobolev space $H^s(\mc{X})$ is quite irregular. For instance, it is not a Reproducing Kernel Hilbert Space, nor does it embed into any H\"{o}lder space. As a result, certain versions of the nonparametric regression problem are ill-posed---for instance when loss is measured in $\Leb^{\infty}$ norm, or when the design points $X$ are assumed to be fixed. Likewise, certain estimators are ``off the table'', most notably RKHS-based methods such as smoothing splines. However, at these scales spectral series estimators still obtain the optimal rates for random design regression measured in $\Leb^2(P)$ norm. Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho} shows that the same is true with respect to Laplacian eigenmaps, with error measured in $\Leb^2(P_n)$ norm.
+	\item \textbf{(1.1) Optimal rates, no RKHS.} It is worth pointing out that we do not require that the regularity of the Sobolev space satisfy $2s > d$, a condition often seen in the literature. In the ``sub-critical'' regime $2s < d$, the Sobolev space $H^s(\mc{X})$ is quite irregular. For instance, it is not a Reproducing Kernel Hilbert Space, nor does it embed into any H\"{o}lder space. As a result, certain versions of the nonparametric regression problem are ill-posed---for instance when loss is measured in $\Leb^{\infty}$ norm, or when the design points $\{X_1,\ldots,X_n\}$ are assumed to be fixed. Likewise, certain estimators are ``off the table'', most notably RKHS-based methods such as smoothing splines. Nevertheless, for random design regression with error measured in $\Leb^2(P)$-norm, spectral series estimators obtain the minimax rates for all values of $s$ and $d$. Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho} shows that the same is true with respect to Laplacian eigenmaps, with error measured in $\Leb^2(P_n)$ norm.
 	\item \textbf{(1.2) The zero-trace condition.} The zero-trace condition can likely be weakened. However, requiring some boundary condition on $f_0$ and its first through $(k -1 )$th-order derivatives is unavoidable. \textcolor{red}{Explain why: graphs are implicitly boundaryless objects, and the eigenvectors of $L$ converge to those eigenvectors of $\Delta_P$ which satisfy boundary conditions. Repeat that this is a standard assumption made when analyzing spectral series estimators}.
 	\item \textbf{(1.3) The bounded norm and smooth density conditions.} We require that $f_0$ be bounded in the Sobolev norm $\|f_0\|_{H^s(\mc{X})}$---as opposed to the semi-norm $|f_0|_{H^s(\mc{X})}$--- and that $p \in C^{s - 1}(\mc{X})$. Both requirements are related and fundamental, as we shall now explain. As previously mentioned, $L$ converges to a weighted-version of the Laplace operator $\Delta_P$ (also known as the Fokker-Planck) operator. The operator $\Delta_P$ includes both first and second-order derivatives,
 	\begin{equation}
@@ -497,7 +498,7 @@ Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho}, in combination with Theorem
 	\item \textbf{(1.4) Both of the remarks after Theorem~\ref{thm:laplacian_eigenmaps_estimation_fo} continue to apply.}
 \end{itemize}
 
-\textbf{(1.4) Rates for testing with higher-order smoothness assumptions.} For testing, we can get the optimal rate $n^{-4s/(4s + d)}$ when $d \leq 4$. When $4 < d \leq 4s$, we get the rate~\textcolor{red}{(...)} Recall that the rate $n^{-4s/(4s + d)}$ is optimal whenever $d \leq 4s$. Therefore there are scalings of $s$ and $d$ for which we do not get the optimal rate. We do not know whether this is due to looseness in our proof techniques, or a problem with the test itself, and leave this for future work. 
+\textbf{(1.4) Rates for testing with higher-order smoothness assumptions.} For testing, we can get the optimal rate $n^{-4s/(4s + d)}$ when $d \leq 4$. When $4 < d \leq 4s$, we get the rate~\textcolor{red}{(...)} Recall that the rate $n^{-4s/(4s + d)}$ is optimal whenever $d \leq 4s$. Thus when $4s > d$, our upper bounds do not imply that $\varphi$ is an optimal test. We do not know whether this is due to looseness in our proof techniques, or a problem with the test itself, and leave this for future work.
 
 \subsection{Analysis}
 \label{sec:analysis}
@@ -530,12 +531,13 @@ The proof of Proposition~\ref{prop:graph_seminorm} involves two steps. In the fi
 E_{\varepsilon}^{(s)}(f) := \dotp{L_{P,\varepsilon}^sf}{f}_{P}
 \end{equation*}
 where $L_{P,\varepsilon}$ is a non-local approximation to $\Delta_P$, 
-\begin{equation*}
-L_{P,\varepsilon}f(x) := \int_{\mc{X}}\bigl(f(z) - f(x)\bigr) \eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dP(x).
-\end{equation*}
+\begin{equation}
+\label{eqn:nonlocal_laplacian}
+L_{P,\varepsilon}f(x) := \frac{1}{\varepsilon^{d + 2}}\int_{\mc{X}}\bigl(f(z) - f(x)\bigr) \eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dP(x).
+\end{equation}
 In the second step, we show that $E_{\varepsilon}^{(s)}(f)$ is in turn upper bounded by a constant times $D_s(f) := \|f\|_{H^s(P)}^2$. Together, these steps establish Proposition~\ref{prop:graph_seminorm}.
 
-When $s = 1$, similar results have been shown in \textcolor{red}{(?)}. On the other hand, much less work has been done in the $s > 1$ case, where the analysis is more complicated. For one thing, we note that when $s > 1$ the graph energy $\dotp{L^s f}{f}_n$ is itself a biased estimate of the non-local energy $E_{\varepsilon}^{(s)}(f)$. This bias term is the second term on the right hand side of~\eqref{eqn:graph_seminorm_1}, and is neglible only when $r \gtrsim n^{-1/(2r + d)}$. On the other hand, in order to give an estimate of $E_{\varepsilon}^{(s)}(f)$ in terms of the Sobolev norm $D_s(f)$, we first show that $L_{P,\varepsilon}^jf(x) \approx \Delta_P^jf(x)$, for $j = s/2$ when $s$ is odd and $j = (s - 1)/2$ when $s$ is even. In words, we show that a $j$th-order iterated difference operator approximates a $2j$-th (or $2j + 1$-th) order differential operator.  It is in order to establish this fact that we require on the one hand $p \in C^{r}(\mc{X};M)$, and on the other hand that $f$ be zero-trace.
+When $s = 1$, similar results have been shown in \textcolor{red}{(?)}. On the other hand, much less work has been done in the $s > 1$ case, where the analysis is more complicated. For one thing, we note that when $s > 1$ the graph energy $\dotp{L^s f}{f}_n$ is itself a biased estimate of the non-local energy $E_{\varepsilon}^{(s)}(f)$. This bias term is the second term on the right hand side of~\eqref{eqn:graph_seminorm_1}, and is neglible only when $r \gtrsim n^{-1/(2r + d)}$. On the other hand, in order to give an estimate of $E_{\varepsilon}^{(s)}(f)$ in terms of the Sobolev norm $D_s(f)$, we first show that $L_{P,\varepsilon}^jf(x) \approx \Delta_P^jf(x)$, for $j = s/2$ when $s$ is odd and $j = (s - 1)/2$ when $s$ is even. In words, we show that a $j$th-order iterated difference operator approximates a $2j$-th (or $2j + 1$-th) order differential operator.  In to establish this fact, we require that on the one hand $p \in C^{r}(\mc{X};M)$, and on the other hand $f$ be zero-trace.
 
 \textbf{(3) Lower bound on the eigenvalue.} On the other hand, recent work \textcolor{red}{(Burago14, Shi16, Garcia Trillos 18)} has analyzed the convergence of $\lambda_{k}$ towards $\lambda_{k}(\Delta_P)$. They provide explicit bounds on the relative error $|\lambda_{k} - \lambda_{k}(\Delta_P)|/\lambda_{k}(\Delta_P)$, showing that the relative error is small for sufficiently large $n$, small $\varepsilon$, and any $1 \leq k \leq n$ that is not too large relative to $n$. These results are actually stronger than are necessary to establish Theorems~\ref{thm:laplacian_eigenmaps_estimation_fo}-\ref{thm:laplacian_eigenmaps_estimation_ho}---in order to get rate-optimality, we need only show that $\lambda_{K}/\lambda_K(P)$ is $\Omega_P(1)$---but unfortunately they all assume $P$ is supported on a manifold without boundary. We will instead use the results of \textcolor{red}{(Green 2021)}, whose assumptions match our own, and who give a weaker bound on $\lambda_k/\lambda_k(\Delta_P)$ that will nevertheless suffice for our purposes. 
 
@@ -586,14 +588,65 @@ We now show that Laplacian eigenmaps achieves the faster minimax rates under the
 \paragraph{Estimation.}
 To obtain a minimax optimal estimator, we choose the graph radius $\varepsilon$ and number of eigenvectors $K$ as in~\ref{asmp:parameters_estimation_ho}, except with ambient dimension $d$ replaced by the intrinsic dimension $m$.
 
+\begin{enumerate}[label=(A\arabic*)]
+	\setcounter{enumi}{5}
+	\item 
+	\label{asmp:parameters_estimation_manifold}
+	The graph radius $\varepsilon$ and number of eigenvectors $K$ satisfy
+	\begin{equation}
+	\label{eqn:radius_estimation_manifold}
+	C_0 \cdot \max\biggl\{\biggl(\frac{\log}{n}\biggr)^{1/m}, n^{-1/(2r + m)}\biggr\} \leq \varepsilon \leq \min\{i_0, K^{-1/m}\}
+	\end{equation}
+	and
+	\begin{equation*}
+	K \asymp (M^2n)^{2m/(2s + m)}
+	\end{equation*}
+\end{enumerate}
+
+\begin{theorem}
+	\label{thm:laplacian_eigenmaps_estimation_manifold}
+	Suppose $f_0 \in H^s(\mc{X},M)$, for $s \leq 2$. Under appropriate conditions, with probability at least $1 - \delta - \textcolor{red}{(?)}$,
+	\begin{equation}
+	\label{eqn:laplacian_eigenmaps_estimation_manifold}
+	\|\wh{f} - f_0\|_n^2 \lesssim M^{2m/(2s + m)}n^{-2s/(2s + m)}
+	\end{equation}
+\end{theorem}
 
 \paragraph{Testing.}
+To construct a minimax optimal test using $\wh{T}$, we choose $\varepsilon$ and $K$ as in~\ref{asmp:parameters_testing_fo}, except with the ambient dimension $d$ replaced by the intrinsic dimension $m$.
+\begin{enumerate}[label=(A\arabic*)]
+	\setcounter{enumi}{5}
+	\item 
+	\label{asmp:parameters_testing_manifold}
+	The graph radius $\varepsilon$ and number of eigenvectors $K$ satisfy~\eqref{eqn:radius_estimation_manifold}, for $r = 0$. Additionally, there exist constants $c_2$ and $C_2$ such that
+	\begin{equation*}
+	c_2 (M^2n)^{2m/(4s + m)} \leq K \leq C_2 (M^2n)^{2m/(4s + m)}
+	\end{equation*}
+\end{enumerate}
+
+\begin{theorem}
+	\label{thm:laplacian_eigenmaps_testing_manifold}
+	Suppose $f_0 \in H^1(\mc{X};M)$. If the Laplacian eigenmaps test $\varphi$ is computed with parameters $\varepsilon$ and $K$ that satisfy~\ref{asmp:parameters_testing_manifold}, then the following statement holds for any $\delta \in (0,1)$: if $f_0$ satisfies
+	\begin{equation}
+	\label{eqn:laplacian_eigenmaps_testing_criticalradius_manifold}
+	\|f_0\|_P^2 \geq \frac{C}{\delta} \max\biggl\{\frac{1}{\delta}M^{2m/(4 + m)}n^{-4/(4 + m)}, M n^{-p(m)}\biggr\},
+	\end{equation}
+	then $\varphi$ has Type II error upper bounded by 
+	\begin{equation}
+	\Pbb_{f_0}(\varphi = 0) \leq \delta + \textcolor{red}{(...)}
+	\end{equation}
+\end{theorem}
+
+\begin{itemize}
+	\item \textbf{Proof strategy.} The proofs of Theorems~\ref{thm:laplacian_eigenmaps_estimation_manifold} and~\ref{thm:laplacian_eigenmaps_testing_manifold} proceed in a similar manner to the full-dimensional setting.
+	\item \textbf{Restriction on number of derivatives.} Unlike in the full-dimensional case, Theorem~\ref{thm:laplacian_eigenmaps_estimation_manifold} holds only when $s \leq 2$. Roughly speaking, we need this restriction in order to show that $L_{P,\varepsilon}^sf(x)$ is a good approximation to $\Delta_P^sf(x)$. Otherwise, the error incurred by using Euclidean distance rather than geodesic distance in~\eqref{eqn:nonlocal_laplacian} will dominate.
+\end{itemize}
 
 \section{Out-of-sample error}
 \label{sec:out_of_sample}
 Sections~\ref{sec:minimax_optimal_laplacian_eigenmaps} and~\ref{sec:manifold_adaptivity} show that Laplacian eigenmaps is an optimal method for nonparametric regression. As explained previously, we have measured estimation error in $\|\cdot\|_n$ norm---in words, the average squared loss incurred over the $n$ observed design points--- whereas error measured in $L^2(P)$ norm is the more typical metric in the random design setup.
 
-Of course, the Laplacian eigenmaps estimator is only defined at the observed design points $X_1,\ldots,X_n$, and to measure its error in $L^2(P)$ norm we must first give a means of extending it to the rest of $\Xset$. We propose a simple method, essentially kernel smoothing, to do the job, which can be applied to any estimator defined at the design points, including Laplacian eigenmaps. We show that the smoothed version of $\wh{f}$ has optimal $L^2(P)$ error. 
+Of course, the Laplacian eigenmaps estimator is only defined at the observed design points $X_1,\ldots,X_n$, and to measure its error in $L^2(P)$ norm we must first extend it to the rest of $\Xset$. We propose a simple method, essentially kernel smoothing, to do the job, which can be applied to any estimator defined at the design points, including Laplacian eigenmaps. We show that the smoothed version of $\wh{f}$ has optimal $L^2(P)$ error. 
 
 \subsection{Extension using Kernel Smoothing}
 
