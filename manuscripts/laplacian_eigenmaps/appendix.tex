@@ -1,0 +1,16 @@
+\noindent 
+
+\section{Proofs in Manifold Setting}
+\label{sec:manifold_proofs}
+
+In more detail, recall from our discuss.on in Section~\ref{subsec:analysis} that an essential step in our proofs is relating the iterated non-local operator $L_{P,\varepsilon}^j$ to the weighted Laplace-Beltrami operator $\Delta_P^j$, for $j = \floor{s/2}$. Suppose for the moment $s = 4$. Then we relate $L_{P,\varepsilon}$ to $\Delta_P$ by means of an intermediary nonlocal operator, as described by the following chain of estimates:
+	\begin{align*}
+	L_{P,\varepsilon} f(x) & = \int_{\mc{X}} \bigl(f(z) - f(x)\bigr)\eta\biggl(\frac{|z - x|}{\varepsilon}\biggr) \,dP(x) \\
+	& = \bigl(1 + O(\varepsilon^2)\bigr) \int_{\mc{X}} \bigl(f(z) - f(z)\bigr)\eta\biggl(\frac{d_{\mc{X}}(z,x)}{\varepsilon}\biggr) \,dP(x) \\
+	& = \Delta_Pf(x) + O\bigl(\varepsilon^2M\bigr) + O(\varepsilon^3).
+	\end{align*}
+	Here, $d_{\mc{X}}(\cdot,\cdot)$ is the geodesic distance on $\mc{X}$. For simplicity we have assumed $f \in C^3(\mc{X})$ and $p \in C^2(\mc{X})$, but the main idea will not change if we assume Sobolev smoothness instead. From this, we may deduce that
+	\begin{align*}
+	L_{P,\varepsilon}^2 f(x) = 
+	\end{align*}
+	When $s = 1$, this suffices.

@@ -419,7 +419,7 @@ To begin, we handle the case where $f_0 \in H^1(P)$. We show that $\wh{f}$ and a
 \end{theorem}
 Some remarks:
 \begin{itemize}
-	\item Regarding the restrictions on hyperparameters: the lower bound on $\varepsilon$ is the connectivity threshold, the smallest length scale at which the resulting graph will still, with high probability, be connected. On the other hand, as we will see in Section~\ref{sec:analysis}, the upper bound on $\varepsilon$ is needed to ensure that the graph eigenvalue $\lambda_K \asymp \lambda_K(\Delta_P) \asymp K^{2/d}$. Finally, the restriction $K \asymp (M^2n)^{2d/(2 + d)}$ is chosen  to optimally trade-off bias and variance. Together, these restrictions suggest that the 
+	\item Regarding the restrictions on hyperparameters: the lower bound on $\varepsilon$ is the connectivity threshold, the smallest length scale at which the resulting graph will still, with high probability, be connected. On the other hand, as we will see in Section~\ref{subsec:analysis}, the upper bound on $\varepsilon$ is needed to ensure that the graph eigenvalue $\lambda_K \asymp \lambda_K(\Delta_P) \asymp K^{2/d}$. Finally, the restriction $K \asymp (M^2n)^{2d/(2 + d)}$ is chosen  to optimally trade-off bias and variance. Together, these restrictions suggest that the 
 	\item \textbf{(1.1) How to tune hyper-parameters.} We note that the ranges~\eqref{eqn:radius_fo} and~\eqref{eqn:eigenvector_estimation_fo} depend on unknown quantities such as the dimension $d$ and radius of the Sobolev ball $M$. In practice, one typically tunes hyper-parameters by sample-splitting or cross-validation. However, because the estimator $\wh{f}$ is defined only in-sample, such approaches cannot be straightforwardly applied to select the graph radius $\varepsilon$, or number of eigenvectors $K$. We return to this issue upon considering out-of-sample extensions of $\wh{f}$ later, in Section~\ref{sec:out_of_sample}.
 	\item \textbf{(1.2) The dependence on failure probability can be improved.} The upper bound on in-sample risk given by Equation~\eqref{eqn:laplacian_eigenmaps_estimation_fo} depends on the pre-factor $C/\delta$, and holds with probability $1 - \delta - \textcolor{red}{(?)}$. When $f_0 \in C^1(\mc{X};M)$, we can improve these dependencies, changing the pre-factor in~\eqref{eqn:laplacian_eigenmaps_estimation_fo} to $C(1 + 1/\delta)$, and showing that the bound holds with probability at least $1 - C\delta^2/n$. 
 \end{itemize}
@@ -501,7 +501,7 @@ Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho}, in combination with Theorem
 \textbf{(1.4) Rates for testing with higher-order smoothness assumptions.} For testing, we can get the optimal rate $n^{-4s/(4s + d)}$ when $d \leq 4$. When $4 < d \leq 4s$, we get the rate~\textcolor{red}{(...)} Recall that the rate $n^{-4s/(4s + d)}$ is optimal whenever $d \leq 4s$. Thus when $4s > d$, our upper bounds do not imply that $\varphi$ is an optimal test. We do not know whether this is due to looseness in our proof techniques, or a problem with the test itself, and leave this for future work.
 
 \subsection{Analysis}
-\label{sec:analysis}
+\label{subsec:analysis}
 
 \textbf{(1) Bias and variance terms, for estimation and testing}. We analyze the estimation error of $\wh{f}$, and the testing error of $\wh{\varphi}$, by first conditioning on the design points $X$ and deriving \emph{design-dependent} bias and variance terms. For estimation, we have that with high probability, conditional on the design $X$,
 \begin{equation*}
@@ -542,6 +542,7 @@ When $s = 1$, similar results have been shown in \textcolor{red}{(?)}. On the ot
 \textbf{(3) Lower bound on the eigenvalue.} On the other hand, recent work \textcolor{red}{(Burago14, Shi16, Garcia Trillos 18)} has analyzed the convergence of $\lambda_{k}$ towards $\lambda_{k}(\Delta_P)$. They provide explicit bounds on the relative error $|\lambda_{k} - \lambda_{k}(\Delta_P)|/\lambda_{k}(\Delta_P)$, showing that the relative error is small for sufficiently large $n$, small $\varepsilon$, and any $1 \leq k \leq n$ that is not too large relative to $n$. These results are actually stronger than are necessary to establish Theorems~\ref{thm:laplacian_eigenmaps_estimation_fo}-\ref{thm:laplacian_eigenmaps_estimation_ho}---in order to get rate-optimality, we need only show that $\lambda_{K}/\lambda_K(P)$ is $\Omega_P(1)$---but unfortunately they all assume $P$ is supported on a manifold without boundary. We will instead use the results of \textcolor{red}{(Green 2021)}, whose assumptions match our own, and who give a weaker bound on $\lambda_k/\lambda_k(\Delta_P)$ that will nevertheless suffice for our purposes. 
 
 \begin{proposition}
+	\label{prop:graph_eigenvalue}
 	\textcolor{red}{(TODO)}
 	With probability at least $1 - \textcolor{red}{(?)}$,
 	\begin{equation*}
@@ -605,7 +606,7 @@ To obtain a minimax optimal estimator, we choose the graph radius $\varepsilon$ 
 
 \begin{theorem}
 	\label{thm:laplacian_eigenmaps_estimation_manifold}
-	Suppose $f_0 \in H^s(\mc{X},M)$, for $s \leq 2$. Under appropriate conditions, with probability at least $1 - \delta - \textcolor{red}{(?)}$,
+	Suppose $f_0 \in H^s(\mc{X},M)$, for $s \leq 4$. Under appropriate conditions, with probability at least $1 - \delta - \textcolor{red}{(?)}$,
 	\begin{equation}
 	\label{eqn:laplacian_eigenmaps_estimation_manifold}
 	\|\wh{f} - f_0\|_n^2 \lesssim M^{2m/(2s + m)}n^{-2s/(2s + m)}
@@ -638,8 +639,9 @@ To construct a minimax optimal test using $\wh{T}$, we choose $\varepsilon$ and 
 \end{theorem}
 
 \begin{itemize}
-	\item \textbf{Proof strategy.} The proofs of Theorems~\ref{thm:laplacian_eigenmaps_estimation_manifold} and~\ref{thm:laplacian_eigenmaps_testing_manifold} proceed in a similar manner to the full-dimensional setting.
-	\item \textbf{Restriction on number of derivatives.} Unlike in the full-dimensional case, Theorem~\ref{thm:laplacian_eigenmaps_estimation_manifold} holds only when $s \leq 2$. Roughly speaking, we need this restriction in order to show that $L_{P,\varepsilon}^sf(x)$ is a good approximation to $\Delta_P^sf(x)$. Otherwise, the error incurred by using Euclidean distance rather than geodesic distance in~\eqref{eqn:nonlocal_laplacian} will dominate.
+	\item \textbf{Proof strategy.} The proofs of Theorems~\ref{thm:laplacian_eigenmaps_estimation_manifold} and~\ref{thm:laplacian_eigenmaps_testing_manifold} follow very similarly to the full-dimensional setting. The difference is that when $\mc{X}$ is a manifold with intrinsic dimension $m$, we can prove analogous results to Propositions~\ref{prop:graph_seminorm} and~\ref{prop:graph_eigenvalue}, but with the ambient dimension $d$ replaced by the intrinsic dimension $m$. 
+	\item \textbf{Restriction on number of derivatives.} Unlike in the full-dimensional case, our upper bound on the estimation error of $\wh{f}$ matches the minimax rate $n^{-2s/(2s + m)}$ only when $s \leq 4$. At a high level, thinking of the graph $G$ as an estimate of the manifold $\mc{X}$, we incur some error by using Euclidean distance rather than geodesic distance to form the edges of $G$. By contrast, in the full-dimensional setting the Euclidean metric exactly coincides with the geodesic distance for all points $x,z \in \mc{X}$ that are sufficiently close to each other and far from the boundary of $\mc{X}$). This extra error incurred in the manifold setting dominates when $s > 4$. We give a more detailed explanation of this phenomenon in Appendix~\ref{sec:manifold_proofs}.
+	\item \textbf{Comparison with traditional spectral series estimators.} Traditional spectral series estimators achieve the minimax rate for all values of $s$ and $m$. On the other hand, as we have already discussed, their default implementation assumes a priori knowledge of the domain $\mc{X}$, which is arguably a particularly unrealistic assumption when $\mc{X}$ is assumed to be a manifold. It is not clear whether this gap between spectral series and Laplacian eigenmaps estimators---or more generally, between estimators which assume strong knowledge of the manifold, and those which do not---is real, or a product of loose upper bounds. 
 \end{itemize}
 
 \section{Out-of-sample error}
@@ -685,5 +687,9 @@ We now answer this question, by \textcolor{red}{(...)}.
 
 \bibliographystyle{plainnat}
 \bibliography{../../graph_regression_bibliography} 
+
+\appendix
+
+\input{appendix.tex}
 
 \end{document}
