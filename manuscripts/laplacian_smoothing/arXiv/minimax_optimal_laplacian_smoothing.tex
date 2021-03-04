@@ -19,8 +19,14 @@
 \usepackage{microtype}
 \usepackage{bm}
 
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\green}[1]{\textcolor{green}{#1}}
+\newcommand{\sbcomment}[1]{{\bf{{\red{{SB --- #1}}}}}}
+
+
 \usepackage{natbib}
-\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibname}{References}
 \renewcommand{\bibsection}{\subsubsection*{\bibname}}
 
 \DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
@@ -174,7 +180,9 @@
 
 \begin{document}
 
-\begin{center} {\Large{\bf{Minimax Optimal Regression over Sobolev Spaces via Laplacian Regularization on Neighborhood Graphs}}}
+\begin{center} {\Large{\bf{Minimax Optimal Regression over Sobolev Spaces \\
+\vspace{.2cm}
+ via Laplacian Regularization on Neighborhood Graphs}}}
 	
 	\vspace*{.3cm}
 	
@@ -209,21 +217,22 @@
 	In this paper we study the statistical properties of Laplacian smoothing, a graph-based approach to nonparametric regression. Under standard regularity conditions, we establish upper bounds on the error of the Laplacian smoothing estimator \smash{$\wh{f}$}, and a goodness-of-fit test also based on \smash{$\wh{f}$}. These upper bounds match the minimax optimal estimation and testing rates of convergence over the first-order Sobolev class $H^1(\Xset)$, for $\Xset \subseteq \Rd$ and $1 \leq d < 4$; in the estimation problem, for $d = 4$, they are optimal modulo a $\log n$ factor. Additionally, we prove that Laplacian smoothing is manifold-adaptive: if $\Xset \subseteq \Reals^d$ is an $m$-dimensional manifold with $m < d$, then the error rate of Laplacian smoothing (in either estimation or testing) depends only on $m$, in the same way it would if $\Xset$ were a full-dimensional set in $\Reals^m$.
 \end{abstract}
 
-\section{INTRODUCTION}
+\section{Introduction}
 
-We adopt the standard setup in nonparametric regression, where we observe samples $(X_1,Y_1),\ldots,(X_n,Y_n)$ that are i.i.d.\ draws from the model 
+We adopt the standard nonparametric regression setup, where we observe samples $(X_1,Y_1),\ldots,(X_n,Y_n)$ that are i.i.d.\ draws from the model 
 \begin{equation}
 \label{eqn:signal_plus_noise_model}
 Y_i = f_0(X_i) + \varepsilon_i, \quad \epsilon_i \sim N(0,1), 
 \end{equation}
-where $\varepsilon_i$ is independent of $X_i$. Our goal is to perform statistical inference on the unknown regression function $f_0$, by which we mean either \emph{estimating} $f_0$ or more simply \emph{testing} whether $f_0 = 0$, i.e., whether there is any signal present. 
+where $\varepsilon_i$ is independent of $X_i$. Our goal is to perform statistical inference on the unknown regression function $f_0$, by which we mean either \emph{estimating} $f_0$ or \emph{testing} whether $f_0 = 0$, i.e., whether there is any signal present. 
 
-Laplacian smoothing \citep{smola2003} is a penalized least squares estimator, defined over a graph. Letting $G = (V,W)$ be a weighted undirected graph with vertices $V=\{1,\ldots,n\}$, associated with $\{X_1,\ldots,X_n\}$, the Laplacian smoothing estimator \smash{$\wh{f}$} is given by
+Laplacian smoothing \citep{smola2003} is a penalized least squares estimator, defined over a graph. Letting $G = (V,W)$ be a weighted undirected graph with vertices $V=\{1,\ldots,n\}$, associated with $\{X_1,\ldots,X_n\}$, and $W \in \mathbb{R}^{n \times n}$ is the (weighted) adjacency matrix of the graph. 
+the Laplacian smoothing estimator \smash{$\wh{f}$} is given by
 \begin{equation}
 \label{eqn:laplacian_smoothing}
 \wh{f} =  \argmin_{f \in \Reals^n} \; \sum_{i = 1}^{n}(Y_i - f_i)^2 + \rho \cdot f^\top \Lap f. 
 \end{equation}
-Here $\Lap$ is the graph Laplacian matrix (to be defined in Section~\ref{sec:problem_setup_and_background}), $G$ is typically a geometric graph (such as a $k$-nearest-neighbor or neighborhood graph), $\rho \geq 0$ is a tuning parameter, and the penalty
+Here $\Lap$ is the graph Laplacian matrix (defined formally in Section~\ref{sec:problem_setup_and_background}), $G$ is typically a geometric graph (such as a $k$-nearest-neighbor or neighborhood graph), $\rho \geq 0$ is a tuning parameter, and the penalty
 \begin{equation*}
 f^\top \Lap f = \frac{1}{2} \sum_{i,j = 1}^{n} W_{ij}(f_i - f_j)^2
 \end{equation*}
@@ -232,7 +241,7 @@ encourages \smash{$\wh{f}_i \approx \wh{f}_j$} when $X_i \approx X_j$. Assuming 
 \label{eqn:laplacian_smoothing_test}
 \wh{T} = \frac{1}{n} \| \wh{f} \|_2^2 
 \end{equation}
-would in turn be a reasonable way to test $f_0 = 0$. 
+is in turn a natural test statistic to test if $f_0 = 0$. 
 
 Of course there are many methods for nonparametric regression (see, e.g., \citet{gyorfi2006,wasserman2006,tsybakov2008_book}), but Laplacian smoothing has its own set of advantages. For instance:
 \begin{itemize}
@@ -243,19 +252,19 @@ Of course there are many methods for nonparametric regression (see, e.g., \citet
 
 For these reasons, a body of work has emerged that analyzes the statistical properties of Laplacian smoothing, and graph-based methods more generally. Roughly speaking, this work can be divided into two categories, based on the perspective they adopt. 
 \begin{itemize}
-	\item \emph{Fixed design perspective.} Here one treats the design points $X_1,\ldots,X_n$ and the graph $G$ as fixed, and carries out inference on $f_0(X_i)$, $i=1,\ldots,n$. In this problem setting, tight upper bounds have been derived on the error of various graph-based methods (e.g., \citet{wang2016,hutter2016,sadhanala16,sadhanala17,kirichenko2017,kirichenko2018}) and tests (e.g., \citet{sharpnack2010identifying,sharpnack2013b,sharpnack2013,sharpnack2015}), which certify that such procedures are \emph{optimal} over ``function'' classes (in quotes because these classes really model the $n$-dimensional vector of evaluations). The upside of this work is its generality: in this setting $G$ need not be a geometric graph, but in principle it could be any graph over $V=\{1,\ldots,n\}$. The downside is that, in the context of nonparametric regression, it is not as natural to think of the evaluations of $f_0$ as exhibiting smoothness over some fixed pre-defined graph $G$, and more natural to speak of the smoothness of the function $f_0$ itself. 
+	\item \emph{Fixed design perspective.} Here one treats the design points $X_1,\ldots,X_n$ and the graph $G$ as fixed, and carries out inference on $f_0(X_i)$, $i=1,\ldots,n$. In this problem setting, tight upper bounds have been derived on the error of various graph-based methods (e.g., \citet{wang2016,hutter2016,sadhanala16,sadhanala17,kirichenko2017,kirichenko2018}) and tests (e.g., \citet{sharpnack2010identifying,sharpnack2013b,sharpnack2013,sharpnack2015}), which certify that such procedures are \emph{optimal} over ``function'' classes (in quotes because these classes really model the $n$-dimensional vector of evaluations). The upside of this work is its generality: in this setting $G$ need not be a geometric graph, but in principle it could be any graph over $V=\{1,\ldots,n\}$. The downside is that, in the context of nonparametric regression, it is arguably not as natural to think of the evaluations of $f_0$ as exhibiting smoothness over some fixed pre-defined graph $G$, and more natural to speak of the smoothness of the function $f_0$ itself. 
 	\item \emph{Random design perspective.} Here one treats the design points $X_1,\ldots,X_n$ as independent samples from some distribution $P$ supported on a domain $\Xset \subseteq \Rd$. Inference is drawn on the regression function $f_0: \Xset \to \Reals$, which is typically assumed to be smooth in some \emph{continuum} sense, e.g., it possesses a first derivative bounded in $L^{\infty}$ (H\"{o}lder) or $\Leb^2$ (Sobolev) norm. To conduct graph-based inference, the user first builds a neighborhood graph over the random design points---so that $W_{ij}$ is large when $X_i$ and $X_j$ are close in (say) Euclidean distance---and then computes e.g., \eqref{eqn:laplacian_smoothing} or \eqref{eqn:laplacian_smoothing_test}. In this context, various graph-based procedures have been shown to be \emph{consistent}: as $n \to \infty$, they converge to a continuum limit (see \citet{belkin07,vonluxburg2008,trillos2018} among others). However, until recently such statements were not accompanied by error rates, and even so, such error rates as have been proved \citep{lee2016,trillos2020} are not optimal over continuum function spaces, such as H\"{o}lder or Sobolev classes. 
 \end{itemize}
 The random design perspective bears a more natural connection with nonparametric regression (the focus in this paper), as it allows us to formulate smoothness based on $f_0$ itself (how it behaves as a continuum function, and not just its evaluations at the design points). In this paper, we will adopt the random design perspective, and seek to answer the following question:
-\begin{quote}{When we assume the regression function $f_0$ to be smooth in a continuum sense, does Laplacian smoothing achieve optimal performance for estimation and goodness-of-fit testing?} 
+\begin{quote}{When we assume the regression function $f_0$ is smooth in a continuum sense, does Laplacian smoothing achieve optimal performance for estimation and goodness-of-fit testing?} 
 \end{quote}
 This is no small question---arguably, it is \emph{the} central question of nonparametric regression---and without an answer one cannot fully compare the statistical properties of Laplacian smoothing to alternative methods. It also seems difficult to answer: as we discuss next, there is a fundamental gap between the \emph{discrete} smoothness imposed by the penalty $f^\top \Lap f$ in problem \eqref{eqn:laplacian_smoothing} and the \emph{continuum} smoothness assumed on $f_0$, and in order to obtain sharp upper bounds we will need to bridge this gap in a suitable sense.
 
-\section{SUMMARY OF RESULTS}
+\section{Summary of Results}
 
 \paragraph{Advantages of the Discrete Approach.} 
 
-In light of this last point, it is worth asking whether there is any \emph{statistical} advantage to solving a discrete problem such as \eqref{eqn:laplacian_smoothing} (setting aside computational considerations for the moment). After all, we could have instead solved the following variational problem:
+In light of the potential difficulty in bridging the gap between discrete and continuum notions of smoothness, it is worth asking whether there is any \emph{statistical} advantage to solving a discrete problem such as \eqref{eqn:laplacian_smoothing} (setting aside computational considerations for the moment). After all, we could have instead solved the following variational problem:
 \begin{equation}
 \label{eqn:thin_plate_spline}
 \wt{f} = \argmin_{f : \Xset \to \Reals} \; \sum_{i = 1}^{n} \bigl(Y_i - f(X_i)\bigr)^2 + \rho \hspace{-2pt} \int_{\Xset} \|\nabla f(x)\|_2^2 \,dx,
@@ -263,9 +272,9 @@ In light of this last point, it is worth asking whether there is any \emph{stati
 where the optimization is performed over all functions for which the criterion is well-defined and finite (continuous functions $f$ that have a weak derivative $\nabla f$ in $L^2(\Xset)$). Analogously, for testing, we could use:
 \begin{equation}
 \label{eqn:thin_plate_spline_test}
-\wt{T} = \| \wt{f} \|_n^2 = \frac{1}{n} \sum_{i=1}^n \wt{f}(X_i)^2.
+\wt{T} = \| \wt{f} \|_n^2 := \frac{1}{n} \sum_{i=1}^n \wt{f}(X_i)^2.
 \end{equation}
-The penalty term in \eqref{eqn:thin_plate_spline} leverages the assumption that $f_0$ has a smooth derivative in a seemingly natural way. Indeed, the estimator \smash{$\wt{f}$} and statistic \smash{$\wt{T}$} are well-known: for $d = 1$, \smash{$\wt{f}$} is the familiar \emph{smoothing spline}, and for $d>1$, it is type of a \emph{thin-plate spline}. The statistical properties of smoothing and thin-plate splines are well-understood \citep{vandergeer2000,liu2019}. As we discuss later, the Laplacian smoothing problem \eqref{eqn:laplacian_smoothing} can be viewed as a discrete and noisy approximation to \eqref{eqn:thin_plate_spline}. At first blush, this suggests that Laplacian smoothing should at best inherit the statistical properties of \eqref{eqn:thin_plate_spline}, and at worst may have meaningfully larger error.
+The penalty term in \eqref{eqn:thin_plate_spline} leverages the assumption that $f_0$ has a smooth derivative in a seemingly natural way. Indeed, the estimator \smash{$\wt{f}$} and statistic \smash{$\wt{T}$} are well-known: for $d = 1$, \smash{$\wt{f}$} is the familiar \emph{smoothing spline}, and for $d>1$, it is a type of \emph{thin-plate spline}. The statistical properties of smoothing and thin-plate splines are well-understood \citep{vandergeer2000,liu2019}. As we discuss later, the Laplacian smoothing problem \eqref{eqn:laplacian_smoothing} can be viewed as a discrete and noisy approximation to \eqref{eqn:thin_plate_spline}. At first blush, this suggests that Laplacian smoothing should at best inherit the statistical properties of \eqref{eqn:thin_plate_spline}, and at worst may have meaningfully larger error.
 
 However, as we shall see the actual story is quite different: remarkably, Laplacian smoothing enjoys optimality properties even in settings where the thin-plate spline estimator \eqref{eqn:thin_plate_spline} is not well-posed (to be explained shortly); Tables~\ref{tbl:estimation_rates} and~\ref{tbl:testing_rates} summarize. As we establish in Theorems~\ref{thm:laplacian_smoothing_estimation1}-\ref{thm:laplacian_smoothing_testing_manifold}, when computed over an appropriately formed neighborhood graph, Laplacian smoothing estimators and tests are minimax optimal over first-order \emph{continuum} Sobolev balls. This holds true either when $\Xset \subseteq \Rd$ is a full-dimensional domain and $d = 1,2,$ or $3$, or when $\Xset$ is a manifold embedded in $\Rd$ of intrinsic dimension $m = 1,2,$ or $3$. Additionally, the estimator \smash{$\wh{f}$} is nearly minimax optimal (to within a \smash{$(\log n)^{1/3}$} factor) when $d=4$ (or $m=4$ in the manifold case). 
 
@@ -326,9 +335,9 @@ For an integer $p \geq 1$, we use $\Leb^p(\Xset)$ for the set of functions $f$ s
 \begin{equation*}
 \norm{f}_{\Leb^p(\Xset)}^p := \int_{\Xset} |f(x)|^p \,dx < \infty,
 \end{equation*}
-and $C^p(\Xset)$ for the set of functions that are $p$ times continuously differentiable. For sequences $a_n,b_n$, we write $a_n \lesssim b_n$ to mean $a_n \leq Cb_n$ for a constant $C>0$ and large enough $n$, and $a_n \asymp b_n$ to mean $a_n \lesssim b_n$ and $b_n \lesssim a_n$. Lastly, we use $a \wedge b = \max\{a,b\}$. 
+and $C^p(\Xset)$ for the set of functions that are $p$ times continuously differentiable. For sequences $a_n,b_n$, we write $a_n \lesssim b_n$ to mean $a_n \leq Cb_n$ for a constant $C>0$ and large enough $n$, and $a_n \asymp b_n$ to mean $a_n \lesssim b_n$ and $b_n \lesssim a_n$. Lastly, we use $a \wedge b = \max\{a,b\}$. \sbcomment{This is wrong, should check where it appears.}
 
-\section{BACKGROUND}
+\section{Background}
 \label{sec:problem_setup_and_background}
 
 Before we present our main results in Section~\ref{sec:minimax_optimal_laplacian_smoothing}, we define neighborhood graph Laplacians, and review known minimax rates over first-order Sobolev spaces.
@@ -345,7 +354,8 @@ with $\|\cdot\|_2$ denoting the $\ell_2$ norm on $\Rd$. Defining $D$ as the $n \
 \label{eqn:graph_Laplacian}
 \Lap_{n,r} = D - W.
 \end{equation}
-We add subscripts $n,r$ to $\Lap$ and $G$ to emphasize that they depend on the design points $X_1,\ldots,X_n$ and the radius $r$. To avoid any confusion: henceforth when we speak of \smash{$\wh{f}$} and \smash{$\wh{T}$}, we will always assume that they are fit using the neighborhood graph Laplacian \smash{$L = L_{n,r}$}. Writing its eigendecomposition as \smash{$L = \sum_{k = 1}^{n} \lambda_k v_k v_k^\top$}, we always assume, by convention, ordered eigenvalues $0 = \lambda_1 \leq \cdots \leq \lambda_n$, and unit-norm eigenvectors. %we will make reference to these objects later on.
+We add subscripts $n,r$ to $\Lap$ and $G$ to emphasize that they depend on the design points $X_1,\ldots,X_n$ and the radius $r$. To avoid any confusion: henceforth when we speak of \smash{$\wh{f}$} and \smash{$\wh{T}$}, we will always assume that they are fit using the neighborhood graph Laplacian \smash{$L = L_{n,r}$}. Writing its eigendecomposition as \smash{$L = \sum_{k = 1}^{n} \lambda_k v_k v_k^\top$}, we always assume, by convention, ordered eigenvalues $0 = \lambda_1 \leq \cdots \leq \lambda_n$, and unit-norm eigenvectors. %we will make reference to these objects later on. 
+\sbcomment{Don't understand why you're switching between $L$ and $L_{n,r}$?}
 
 \paragraph{Sobolev Spaces.}
 
@@ -385,15 +395,15 @@ Under conditions~\ref{asmp:domain}, \ref{asmp:density}, the minimax estimation r
 \inf_{\wh{f}} \sup_{f_0 \in H^1(\Xset, M)} \Ebb\Bigl[\norm{\wh{f} - f_0}_{L^2(\Xset)}^2\Bigr] \asymp M^{2d/(2 + d)} n^{-2/(2 + d)}.
 \end{equation}
 % RJT: This is a bit of a weird reference, because (as per my understanding) Tsybakov only proves the rate is tight for Holder classes, which are contained in the Sobolev class. So technically from Tsybakov alone we only know \gtrsim, not \asymp for this one. It's fine, I wouldn't change anything because it would involve explaining a lot more, I'm just pointing this out.
-(Throughout we assume $M \geq n^{-1/2}$, as otherwise the minimax rate is just the parametric rate $n^{-1}$.)
+(Throughout we assume $M \geq n^{-1/2}$, as otherwise the minimax rate is just the parametric rate $n^{-1}$.) \sbcomment{I don't think the second part of this comment is correct the way you've defined the Sobolev class.}
 
-As nonparametric hypothesis testing is (comparatively) less familiar than nonparametric estimation, we briefly summarize the main idea before stating the optimal error rate. In the goodness-of-fit testing problem, we ask for a test function---formally, a Borel measurable function $\phi$ taking values in $\{0,1\}$---which can distinguish between the hypotheses
+As minimax rates in nonparametric hypothesis testing are (comparatively) less familiar than those in nonparametric estimation, we briefly summarize the main idea before stating the optimal error rate. In the goodness-of-fit testing problem, we ask for a test function---formally, a Borel measurable function $\phi$ taking values in $\{0,1\}$---which can distinguish between the hypotheses
 \begin{equation}
 \mathbf{H}_0: f_0 = f_0^{\star}, ~~\textrm{versus}~~ \mathbf{H}_a: f_0 \in \mc{F} \setminus \{f_0^{\star}\}.
 \end{equation} 
-Typically, the null hypothesis $f_0 = f_0^{\star} \in \mc{F}$ reflects the absence of interesting structure, and $\mc{F} \setminus  \{f_0^{\star}\}$ is a set of smooth departures from this null. In this paper, as in \citet{ingster2009}, we focus on the problem of \emph{signal detection} in Sobolev spaces, where $f_0^{\star} = 0$ and $\mc{F} = H^1(\Xset,M)$ is a first-order Sobolev ball. 
+Typically, the null hypothesis $f_0 = f_0^{\star} \in \mc{F}$ reflects the absence of interesting structure, and $\mc{F} \setminus  \{f_0^{\star}\}$ is a set of smooth departures from this null. In this paper, as in \citet{ingster2009}, we focus on the problem of \emph{signal detection} in Sobolev spaces, where $f_0^{\star} = 0$ and $\mc{F} = H^1(\Xset,M)$ is a first-order Sobolev ball. \sbcomment{Why isn't this without loss of generality?}
 
-The minimax critical radius is the smallest value of $\epsilon$ such that some level-${\alpha}$ test $\phi$ has power at least $1 - \alpha$ over all $\mc{F}_{\epsilon} := \mc{F} \cap \{f: \|f\|_{\Leb^2(\Xset)} \geq \epsilon\}$:
+\sbcomment{Define a level-$\alpha$ test.} The minimax critical radius is the smallest value of $\epsilon$ such that some level-${\alpha}$ test $\phi$ has power at least $1 - \alpha$ over all $\mc{F}_{\epsilon} := \mc{F} \cap \{f: \|f\|_{\Leb^2(\Xset)} \geq \epsilon\}$:
 \begin{equation*}
 \epsilon(\mc{F}) := \inf\biggl\{\epsilon > 0: \inf_{\phi} \sup_{f_0 \in \mc{F}_{\epsilon}} \Ebb_{f_0}[1 - \phi] \leq \alpha \biggr\},
 \end{equation*} 
@@ -406,7 +416,7 @@ Testing $f_0=0$ is an easier problem than estimating $f_0$, and hence the minima
 \end{equation}
 When $d \geq 4$ the functions in $H^1(\Xset)$ are very irregular; formally speaking $H^1(\Xset)$ does not continuously embed into $\Leb^4(\Xset)$ when $d \geq 4$, and the minimax testing rates in this regime are unknown. 
 
-\section{MINIMAX OPTIMALITY OF LAPLACIAN SMOOTHING}
+\section{Minimax Optimality of Laplacian Smoothing}
 \label{sec:minimax_optimal_laplacian_smoothing}
 
 We now formalize the main conclusions of this paper: that Laplacian smoothing methods on neighborhood graphs are minimax rate-optimal over first-order continuum Sobolev classes. We will assume \ref{asmp:domain}, \ref{asmp:density} on $P$, and the following condition on the kernel $K$.
@@ -608,7 +618,7 @@ H^1(G_{n,r},M) := \{f: f^\top \Lap_{n,r} f \leq M^2\}
 \end{equation*}
 that is data-dependent and random, and so we do not have access to either of the aforementioned properties a priori, and instead, must prove they hold with high probability. In this sense, our analysis is different than the typical one in nonparametric regression.
 
-\section{MANIFOLD ADAPTIVITY}
+\section{Manifold Adaptivity}
 \label{sec:manifold_adaptivity}
 
 The minimax rates $n^{-2/(2 + d)}$ and $n^{-4/(4 + d)}$, in estimation and testing, suffer from the curse of dimensionality. However, in practice it can be often reasonable to assume a \emph{manifold hypothesis}: that the data $X_1,\ldots,X_n$ lie on a manifold $\Xset$ of $\Rd$ that has intrinsic dimension $m < d$. Under such an assumption, it is known \citep{bickel2007,ariascastro2018} that the optimal rates over $H^1(\Xset)$ are now $n^{-2/(2 + m)}$ (for estimation) and $n^{-4/(4 + m)}$ (for testing), which are much faster than the full-dimensional error rates when $m \ll d$. 
@@ -686,7 +696,7 @@ The proof of Theorems \ref{thm:laplacian_smoothing_estimation_manifold} and \ref
 
 We emphasize that little about $\Xset$ needs be known for Theorems~\ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} to hold. Indeed, all that is needed is the intrinsic dimension $m$, to properly tune $r$ and $\rho$ (from a theoretical point of view), and otherwise \smash{$\wh{f}$} and \smash{$\wh{\varphi}$} are computed without regard to $\Xset$. In contrast, the penalty in \eqref{eqn:thin_plate_spline} would have to be specially tailored to work in this setting, revealing another advantage of the discrete approach to the variational one.
 
-\section{DISCUSSION}
+\section{Discussion}
 \label{sec:discussion}
 
 We have shown that Laplacian smoothing, computed over a neighborhood graph, can be optimal for both estimation and goodness-of-fit testing over Sobolev spaces. There are many extensions worth pursuing, and several have already been mentioned. We conclude by mentioning a couple more. In practice, it is more common to use a $k$-nearest-neighbor (kNN) graph than a neighborhood graph, due to the guaranteed connectivity and sparsity of the former; we suspect that by building on the work of \citet{calder2019}, one can show that our main results all hold under the kNN graph as well. In another direction, one can also generalize Laplacian smoothing by replacing the penalty \smash{$f^\top \Lap_{n,r} f$} with \smash{$f^\top \Lap_{n,r}^k f$}, for an integer $k > 1$. The hope is that this would then achieve minimax optimal rates over the higher-order Sobolev class $H^k(\Xset)$. % In the very special case of $k = 2$ and $d \leq 2$, we can show that this is indeed the case, but the general story--for all combinations of $k$ and $d$---remains beyond our reach. 
@@ -697,7 +707,6 @@ AG and RJT were supported by ONR grant N00014-20-1-2787.
 
 \bibliographystyle{plainnat}
 \bibliography{../../../graph_regression_bibliography} 
-\clearpage
 
 \appendix
 
