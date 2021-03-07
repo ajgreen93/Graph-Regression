@@ -1,4 +1,8 @@
-\noindent In the appendix, we provide proofs of all results found in the paper ``Minimax Optimal Regression over Sobolev Spaces via Laplacian Regularization on Neighborhood Graphs''. Our main theorems (Theorems~\ref{thm:laplacian_smoothing_estimation1}-\ref{thm:laplacian_smoothing_testing_manifold}) all follow the same general proof strategy, centered on conditioning. In Section~\ref{sec:fixed_graph_error_bounds}, we establish (estimation or testing) error bounds which hold for any graph $G$; these bounds are stated with respect to (functionals of) the graph $G$, and allow us to upper bound the error of $\wh{f}$ and $\wh{\varphi}$ conditional on the design $\{X_1,\ldots,X_n\} = \{x_1,\ldots,x_n\}$. In Sections~\ref{sec:graph_sobolev_seminorm}, \ref{sec:graph_eigenvalues}, \ref{sec:empirical_norm}, and \ref{sec:manifold} we give all our necessary probabilistic estimates on these functionals, for the particular random neighborhood graph $G = G_{n,r}$. It is in these sections where we invoke our various assumptions on the distribution $P$ and regression function $f_0$. In Section~\ref{sec:main_results}, we prove our main theorems and some other results. In Section~\ref{sec:concentration}, we state a few concentration bounds that we use repeatedly in our proofs.
+% !TEX root = minimax_optimal_laplacian_smoothing.tex
+\section{Preliminaries}
+\label{app:preliminaries}
+\noindent In the appendix, we provide complete proofs of all results. % found in the paper ``Minimax Optimal Regression over Sobolev Spaces via Laplacian Regularization on Neighborhood Graphs''. 
+Our main theorems (Theorems~\ref{thm:laplacian_smoothing_estimation1}-\ref{thm:laplacian_smoothing_testing_manifold}) all follow the same general proof strategy of first establishing bounds in the fixed-design setup. In Section~\ref{sec:fixed_graph_error_bounds}, we establish (estimation or testing) error bounds which hold for any graph $G$; these bounds are stated with respect to (functionals of) the graph $G$, and allow us to upper bound the error of $\wh{f}$ and $\wh{\varphi}$ conditional on the design $\{X_1,\ldots,X_n\} = \{x_1,\ldots,x_n\}$. In Sections~\ref{sec:graph_sobolev_seminorm}, \ref{sec:graph_eigenvalues}, \ref{sec:empirical_norm}, and \ref{sec:manifold} we develop all the necessary probabilistic estimates on these functionals, for the particular random neighborhood graph $G = G_{n,r}$. It is in these sections where we invoke our various assumptions on the distribution $P$ and regression function $f_0$. In Section~\ref{sec:main_results}, we prove our main theorems and some other results. In Section~\ref{sec:concentration}, we state a few concentration bounds that we use repeatedly in our proofs.
 
 \paragraph{Pointwise evaluation of Sobolev functions.}
 First, however, as promised in our main text we clarify what is meant by pointwise evaluation of the regression function $f_0$. Strictly speaking, each $f \in H^1(X)$ is really an equivalence class, defined only up to sets of Lebesgue measure 0. In order to make sense of the evaluation $x \mapsto f(x)$, one must therefore pick a representative $f^{\star} \in f$. When $d = 1$, this is resolved in a standard way---since $H^1(\mc{X})$ embeds continuously into $C^0(\mc{X})$, there exists a continuous version of every $f \in H^1(\mc{X})$, and we take this continuous version as the representative $f^{\star}$. On the other hand, when $d \geq 2$, the Sobolev space $H^1(\mc{X})$ does not continuously embed into $C^0(\mc{X})$, and we must choose representatives in a different manner. In this case we let $f^{\star}$ be the precise representative \citep{evans15}, defined pointwise at points $x \in \mc{X}$ as
@@ -17,9 +21,6 @@ Now we explain why the particular choice of representative is not crucial, using
 \end{equation*}
 Let $E$ denote the set of Lebesgue points of $f$. By the Lebesgue differentiation theorem \citep{evans15}, if $f \in L^1(\mc{X})$ then almost every $x \in \mc{X}$ is a Lebesgue point, $\nu(\mc{X}\setminus E) = 0$. Since $f_0 \in H^1(\mc{X}) \subseteq \Leb^1(\mc{X})$, we can conclude that any function $g_0 \in f_0$ disagrees with the precise representative $f_0^{\star}$ only on a set of Lebesgue measure 0. Moreover, since we always assume the design distribution $P$ has a continuous density, with probability $1$ it holds that $g_0(X_i) = f_0^{\star}(X_i)$ for all $i = 1,\ldots,n$. This justifies the notation $f_0(X_i)$ used in the main text.
 
-\vfill
-
-\clearpage
 
 \section{Graph-dependent error bounds}
 \label{sec:fixed_graph_error_bounds}
@@ -39,13 +40,13 @@ Recall \eqref{eqn:laplacian_smoothing} and \eqref{eqn:laplacian_smoothing_test}:
 and the Laplacian smoothing test statistic is 
 \begin{equation*}
 \label{eqn:ls_ts_G}
-\wh{T} := \frac{1}{n} \Bigl\|\wh{f}\Bigr\|_2^2.
+\wh{T} := \frac{1}{n} \|\wh{f}\|_2^2.
 \end{equation*}
 We note that in this section, many of the derivations involved in upper bounding the estimation error of $\wh{f}$ are similar to those of \cite{sadhanala16}, with the difference being that we seek bounds in high probability rather than in expectation. We keep the work here self-contained for purposes of completeness.
 
 \subsection{Error bounds for linear smoothers}
 
-Let $S \in \Reals^{n \times n}$ be a square, symmetric matrix, and let 
+Let $S \in \Reals^{n \times n}$ be a fixed square, symmetric matrix, and let 
 \begin{equation*}
 \wc{f} := SY
 \end{equation*}
@@ -65,14 +66,14 @@ In Lemma~\ref{lem:linear_smoother_fixed_graph_testing}, we upper bound the error
 	\label{lem:linear_smoother_fixed_graph_testing}
 	Let $\wc{T} = Y^{\top} S^2 Y$ for a square, symmetric matrix $S \in \Reals^{n \times n}$. Define the threshold $\wc{t}_b$ to be 
 	\begin{equation}
-	\wc{t}_{b} := \norm{\lambdavec(S)}_2^2 + 2b \norm{\lambdavec(S)}_4^2
+	\wc{t}_{b} := \norm{\lambdavec(S)}_2^2 + 2b \norm{\lambdavec(S)}_4^2.
 	\end{equation}
 	It holds that:
 	\begin{itemize}
 		\item \textbf{Type I error.}
 		\begin{equation}
 		\label{eqn:linear_smoother_fixed_graph_testing_typeI}
-		\Pbb_0\bigl(\wc{T} > \wc{t}_b\bigr) \leq \frac{1}{b^2}
+		\Pbb_0\bigl(\wc{T} > \wc{t}_b\bigr) \leq \frac{1}{b^2}.
 		\end{equation}
 		\item \textbf{Type II error.} Under the further assumption
 		\begin{equation}
@@ -91,8 +92,9 @@ In Lemma~\ref{lem:linear_smoother_fixed_graph_testing}, we upper bound the error
 The expectation $\Ebb_{f_0}[\wc{f}] = Sf_0$, and by the triangle inequality,
 \begin{align*}
 \frac{1}{n}\bigl\|\wc{f} - f_0\bigr\|_2^2 & \leq \frac{2}{n}\Bigl(\bigl\|\wc{f} - \Ebb_{f_0}[\wc{f}]\bigr\|_2^2 + \bigl\|\Ebb_{f_0}[\wc{f}] - f_0\bigr\|_2^2\Bigr) \\ 
-& = \frac{2}{n}\Bigl(\bigl\|S\varepsilon\bigr\|_2^2 + \bigl\|(S - I)f_0\bigr\|_2^2\Bigr)
+& = \frac{2}{n}\Bigl(\bigl\|S\varepsilon\bigr\|_2^2 + \bigl\|(S - I)f_0\bigr\|_2^2\Bigr).
 \end{align*}
+\sbcomment{General comment. Please punctuate math. I've done it till this point but please check everywhere.}
 Writing $\norm{S\varepsilon}_2^2 = \sum_{k = 1}^{n} \lambda_k(S)^2 Z_k^2$, the claim follows from the result of \citet{laurent00} on concentration of $\chi^2$-random variables, which for completeness we restate in Lemma~\ref{lem:chi_square_bound}. To be explicit, taking $t = \norm{\lambdavec(S)}_2^2$ in Lemma~\ref{lem:chi_square_bound} completes the proof of Lemma~\ref{lem:linear_smoother_fixed_graph_estimation}. 
 
 \paragraph{Proof of Lemma~\ref{lem:linear_smoother_fixed_graph_testing}.}
@@ -125,7 +127,7 @@ The bound \eqref{eqn:linear_smoother_fixed_graph_testing_typeII} also follows fr
 \begin{equation*}
 \begin{aligned}
 \Pbb_{f_0}\Bigl(\wc{T} \leq \wc{t}_b\Bigr) & = \Pbb_{f_0}\Bigl(\wc{T} - \Ebb_{f_0}\bigl[\wc{T}\bigr] \leq \wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr) \\
-& \overset{(i)}{\leq} \Pbb_{f_0}\Bigl(\Bigl|\wc{T} - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr| \geq \Bigl|\wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr|\Bigr) \leq \frac{Var_{f_0}\bigl[\wc{T}\bigr]}{\bigl(\wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\bigr)^2} \\ 
+& \overset{(i)}{\leq} \Pbb_{f_0}\Bigl(\Bigl|\wc{T} - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr| \geq \Bigl|\wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr|\Bigr) \leq \frac{\Var_{f_0}\bigl[\wc{T}\bigr]}{\bigl(\wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\bigr)^2} \\ 
 & \overset{(ii)}{\leq} 4 \frac{\Var_{f_0}\bigl[\wc{T}\bigr]}{(f_0^{\top} S^2 f_0)^2} \\
 & \overset{(iii)}{\leq} \frac{32}{f_0^{\top} S^2 f_0} + \frac{4}{b^2} \\
 & \overset{(iv)}{\leq} \frac{8}{b} \Biggl(\sum_{k = 1}^{n}\bigl(\lambda_k(S)\bigr)^4\Biggr)^{-1/2} + \frac{4}{b^2}
@@ -135,6 +137,7 @@ In the previous expression, $(i)$ and $(ii)$ follow since assumption \eqref{eqn:
 \begin{equation*}
 \wc{t}_b - \Ebb_{f_0}[\wc{T}] = f_0^{\top} S^2 f_0 - 2b\|{\bf \lambda}(S)\|_4^2 \geq \frac{1}{2}f_0^{\top} S^2 f_0
 \end{equation*}
+\sbcomment{I think the first equality should be the negative of what you wrote?}
 $(iii)$ follows from assumption \eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius} and the inequality \eqref{pf:linear_smoother_fixed_graph_testing_var}, and $(iv)$ follows from \eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius}. 
 
 \subsection{Analysis of Laplacian smoothing}
