@@ -23,7 +23,7 @@
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
 \newcommand{\green}[1]{\textcolor{green}{#1}}
 \newcommand{\sbcomment}[1]{{\bf{{\red{{SB --- #1}}}}}}
-\newcommand{\agcomment}[1]{{\bf{{\green{{AJG --- #1}}}}}}
+\newcommand{\agcomment}[1]{{\bf{{\green{{AG --- #1}}}}}}
 
 
 \usepackage{natbib}
@@ -336,7 +336,10 @@ For an integer $p \geq 1$, we use $\Leb^p(\Xset)$ for the set of functions $f$ s
 \begin{equation*}
 \norm{f}_{\Leb^p(\Xset)}^p := \int_{\Xset} |f(x)|^p \,dx < \infty,
 \end{equation*}
-and $C^p(\Xset)$ for the set of functions that are $p$ times continuously differentiable. For sequences $a_n,b_n$, we write $a_n \lesssim b_n$ to mean $a_n \leq Cb_n$ for a constant $C>0$ and large enough $n$, and $a_n \asymp b_n$ to mean $a_n \lesssim b_n$ and $b_n \lesssim a_n$. Lastly, we use $a \wedge b = \max\{a,b\}$. \sbcomment{This is wrong, should check where it appears.}
+and $C^p(\Xset)$ for the set of functions that are $p$ times continuously differentiable. For sequences $a_n,b_n$, we write $a_n \lesssim b_n$ to mean $a_n \leq Cb_n$ for a constant $C>0$ and large enough $n$, and $a_n \asymp b_n$ to mean $a_n \lesssim b_n$ and $b_n \lesssim a_n$. Lastly, we use $a \wedge b = \min\{a,b\}$.
+\\
+\sbcomment{This is wrong, should check where it appears.} \\
+\agcomment{Resolved.}
 
 \section{Background}
 \label{sec:problem_setup_and_background}
@@ -353,10 +356,12 @@ W_{ij} = K\Biggl(\frac{\|X_i - X_j\|_2}{r}\Biggr),
 with $\|\cdot\|_2$ denoting the $\ell_2$ norm on $\Rd$. Defining $D$ as the $n \times n$ diagonal matrix with entries \smash{$D_{ii} = \sum_{j = 1}^{n} W_{ij}$}, the graph Laplacian can then be written as
 \begin{equation}
 \label{eqn:graph_Laplacian}
-\Lap_{n,r} = D - W.
+\Lap = D - W.
 \end{equation}
-We add subscripts $n,r$ to $\Lap$ and $G$ to emphasize that they depend on the design points $X_1,\ldots,X_n$ and the radius $r$. To avoid any confusion: henceforth when we speak of \smash{$\wh{f}$} and \smash{$\wh{T}$}, we will always assume that they are fit using the neighborhood graph Laplacian \smash{$L = L_{n,r}$}. Writing its eigendecomposition as \smash{$L = \sum_{k = 1}^{n} \lambda_k v_k v_k^\top$}, we always assume, by convention, ordered eigenvalues $0 = \lambda_1 \leq \cdots \leq \lambda_n$, and unit-norm eigenvectors. %we will make reference to these objects later on. 
-\sbcomment{Don't understand why you're switching between $L$ and $L_{n,r}$?}
+We write the eigendecomposition of $L$ as \smash{$L = \sum_{k = 1}^{n} \lambda_k v_k v_k^\top$}, and we always assume, by convention, ordered eigenvalues $0 = \lambda_1 \leq \cdots \leq \lambda_n$, and unit-norm eigenvectors. \\
+\sbcomment{Don't understand why you're switching between $L$ and $L_{n,r}$?} \\
+\agcomment{Resolved.}
+
 
 \paragraph{Sobolev Spaces.}
 
@@ -396,13 +401,18 @@ Under conditions~\ref{asmp:domain}, \ref{asmp:density}, the minimax estimation r
 \inf_{\wh{f}} \sup_{f_0 \in H^1(\Xset, M)} \Ebb\Bigl[\norm{\wh{f} - f_0}_{L^2(\Xset)}^2\Bigr] \asymp M^{2d/(2 + d)} n^{-2/(2 + d)}.
 \end{equation}
 % RJT: This is a bit of a weird reference, because (as per my understanding) Tsybakov only proves the rate is tight for Holder classes, which are contained in the Sobolev class. So technically from Tsybakov alone we only know \gtrsim, not \asymp for this one. It's fine, I wouldn't change anything because it would involve explaining a lot more, I'm just pointing this out.
-(Throughout we assume $M \geq n^{-1/2}$, as otherwise the minimax rate is just the parametric rate $n^{-1}$.) \sbcomment{I don't think the second part of this comment is correct the way you've defined the Sobolev class.}
+(Throughout we assume $M \geq n^{-1/2}$, as otherwise the trivial estimator $\wh{f} = 0$ achieves smaller error than the parametric rate $n^{-1}$, and the problem doesn't fit well within the nonparametric setup.) 
+\\
+\sbcomment{I don't think the second part of this comment is correct the way you've defined the Sobolev class.} \\
+\agcomment{Resolved, as I suggested in my Slack post.}
 
 As minimax rates in nonparametric hypothesis testing are (comparatively) less familiar than those in nonparametric estimation, we briefly summarize the main idea before stating the optimal error rate. In the goodness-of-fit testing problem, we ask for a test function---formally, a Borel measurable function $\phi$ taking values in $\{0,1\}$---which can distinguish between the hypotheses
 \begin{equation}
 \mathbf{H}_0: f_0 = f_0^{\star}, ~~\textrm{versus}~~ \mathbf{H}_a: f_0 \in \mc{F} \setminus \{f_0^{\star}\}.
 \end{equation} 
-Typically, the null hypothesis $f_0 = f_0^{\star} \in \mc{F}$ reflects the absence of interesting structure, and $\mc{F} \setminus  \{f_0^{\star}\}$ is a set of smooth departures from this null. In this paper, as in \citet{ingster2009}, we focus on the problem of \emph{signal detection} in Sobolev spaces, where $f_0^{\star} = 0$ and $\mc{F} = H^1(\Xset,M)$ is a first-order Sobolev ball. \sbcomment{Why isn't this without loss of generality?}
+Typically, the null hypothesis $f_0 = f_0^{\star} \in \mc{F}$ reflects the absence of interesting structure, and $\mc{F} \setminus  \{f_0^{\star}\}$ is a set of smooth departures from this null. In this paper, as in \citet{ingster2009}, we focus on the problem of \emph{signal detection} in Sobolev spaces, where $f_0^{\star} = 0$ and $\mc{F} = H^1(\Xset,M)$ is a first-order Sobolev ball. \\
+\sbcomment{Why isn't this without loss of generality?}\\
+\agcomment{Don't know how to resolve.}
 
 \sbcomment{Define a level-$\alpha$ test. You use it in~\eqref{eqn:type_I_error} for example. I also wouldn't re-use $\alpha$ for both Type-I and Type-II error. Later on you seem to use $b$ for Type-I error. Maybe use $b$ for Type-II and $\alpha$ for Type-I.} The minimax critical radius is the smallest value of $\epsilon$ such that some level-${\alpha}$ test $\phi$ has power at least $1 - \alpha$ over all $\mc{F}_{\epsilon} := \mc{F} \cap \{f: \|f\|_{\Leb^2(\Xset)} \geq \epsilon\}$:
 \begin{equation*}
@@ -448,7 +458,7 @@ Under these conditions, the Laplacian smoothing estimator \smash{$\wh{f}$} achie
 Next we state Theorem~\ref{thm:laplacian_smoothing_estimation1}, our main estimation result. Its proof, as with all proofs of results in this paper, can be found in the appendix. 
 \begin{theorem}
 	\label{thm:laplacian_smoothing_estimation1}
-	Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ has dimension $d < 4$ and $M \leq n^{1/d}$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume the neighborhood graph \smash{$G_{n,r}$} is computed with a kernel $K$ satisfying \ref{asmp:kernel}. There are constants $N,C,C_1,c,c_1>0$ (not depending on $f_0$) such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_estimation}, the Laplacian smoothing estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$L = L_{n,r}$} and \smash{$\rho = M^{-4/(2 + d)} (nr^{d + 2})^{-1} n^{-2/(2 + d)}$}, 
+	Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ has dimension $d < 4$ and $M \leq n^{1/d}$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume the neighborhood graph \smash{$G_{n,r}$} is computed with a kernel $K$ satisfying \ref{asmp:kernel}. There are constants $N,C,C_1,c,c_1>0$ (not depending on $f_0$) such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_estimation}, the Laplacian smoothing estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing} with \smash{$\rho = M^{-4/(2 + d)} (nr^{d + 2})^{-1} n^{-2/(2 + d)}$}, 
 	with probability at least $1 - \delta -  C_1n\exp(-c_1nr^d) - \exp(-c (M^2n)^{d/(2 + d)})$, satisfies
 	\begin{equation*}
 	\bigl\|\wh{f} - f_0\bigr\|_n^2 \leq \frac{C}{\delta} M^{2d/(2 + d)} n^{-2/(2 + d)}.
@@ -462,10 +472,12 @@ To summarize: for $d = 1,2,$ or $3$, with high probability, the Laplacian smooth
 	\item The first-order Sobolev space $H^1(\Xset)$ does not continuously embed into $C^0(\Xset)$ when $d>1$ (in general, the $k$th order space $H^k(\Xset)$ does not continuously embed into $C^0(\Xset)$ except if $2k>d$). For this reason, one really cannot speak of pointwise evaluation of a Sobolev function $f_0 \in H^1(\Xset)$ when $d>1$ (as we do in Theorem~\ref{thm:laplacian_smoothing_estimation1} by defining our target of estimation to be $f_0(X_i)$, $i=1,\ldots,n$). We can resolve this by appealing to what are known as \emph{Lebesgue points}, as explained in Appendix~\ref{app:preliminaries}.
 	% RJT: Alden, please add a section to the supplement to explain this part.
 	% AJG: Added.
-	\item The assumption $M \leq n^{1/d}$ ensures that the upper bound provided in the theorem is meaningful (i.e., ensures it is of most a constant order).
+	\item The assumption $M \leq n^{1/d}$ ensures that the upper bound provided in the theorem is meaningful (i.e., ensures it is of at most a constant order).
 	\item The lower bound on $r$ imposed in condition \ref{asmp:ls_kernel_radius_estimation} is compatible with practice, where by far the most common choice of radius is the connectivity threshold \smash{$r \asymp (\log(n)/n)^{1/d}$}, which makes \smash{$G_{n,r}$} as sparse as possible while still being connected, for maximum computational efficiency. The upper bound may seem a bit more mysterious---we need it for technical reasons to ensure that \smash{$\wh{f}$} does not overfit, but we note that as a practical matter one rarely chooses $r$ to be so large anyway.
 	\item It is possible to extend \smash{$\wh{f}$} to be defined on all of $\Xset$ and then evaluate the error of such an extension (as measured against $f_0$) in $\Leb^2(\Xset)$ norm. When \smash{$\wh{f}$} and $f_0$ are suitably smooth, tools from empirical process theory (see e.g., Chapter 14 of \citet{wainwright2019}) or approximation theory (e.g., Section 15.5 of \citet{johnstone2011}) guarantee that the $\Leb^2(\Xset)$ error is not too much greater than its in-sample counterpart. In fact, as shown in Appendix~\ref{sec:graph_sobolev_seminorm}, if $f_0$ is Lipschitz smooth and we extend \smash{$\wh{f}$} to be piecewise constant over the Voronoi tesselation induced by $X_1,\ldots,X_n$, then the out-of-sample error \smash{$\|\wh{f}-f_0\|_{\Leb^2(\Xset)}$} is within a negligible factor of the in-sample error \smash{$\|\wh{f}-f_0\|_n$}. We leave analysis of the Sobolev case to future work.
-	\item When $f_0$ is Lipschitz smooth, we can also replace the factor of $\delta$ in the high probability bound by the sharper $\delta^2/n$. \sbcomment{Too mysterious a comment. Why is this sharper?}
+	\item When $f_0$ is Lipschitz smooth, we can also replace the factor of $\delta$ in the high probability bound by a factor of $\delta^2/n$, which is always smaller than $\delta$ when $\delta \in (0,1)$.\\
+	\sbcomment{Too mysterious a comment. Why is this sharper?} \\
+	\agcomment{Attempted to resolve.} 
 \end{itemize} 
 
 When $d = 4$, our analysis results in an upper bound for the error of Laplacian smoothing that is within a \smash{$(\log n)^{1/3}$} factor of the minimax error rate. But when $d \geq 5$, our upper bounds do not match the minimax rates.
@@ -483,7 +495,8 @@ When $d = 4$, our analysis results in an upper bound for the error of Laplacian 
 	% RJT: Alden, please verify what I wrote is correct, and fill in the result for d \geq 5.
 	% AJG: Verified and filled in.
 \end{theorem}
-\sbcomment{I removed some negative sign above. Pls check.}
+\sbcomment{I removed some negative sign above. Pls check.}\\
+\agcomment{Good, thanks.}\\
 This mirrors the conclusions of \citet{sadhanala16} who investigate estimation rates of Laplacian smoothing over the $d$-dimensional grid graph. These authors argue that their analysis is tight, and that it is likely the estimator, not the analysis, that is deficient when $d \geq 5$. Formalizing such a claim turns out to be harder in the random design setting than in the fixed design setting, and we leave it for future work. 
 
 However, we do investigate the matter empirically. In Figure~\ref{fig:fig1}, we study the (in-sample) mean squared error of the Laplacian smoothing estimator as the dimension $d$ grows. Here $X_1,\ldots,X_n$ are sampled uniformly over $\Xset = [-1,1]^d$, and the regression function is taken as \smash{$f_0(x) \propto \Pi_{i = 1}^{d} \cos(a \pi x_i)$}, where $a = 2$ for $d = 2$, and $a = 1$ for $d \geq 3$. This regression function $f_0$ is quite smooth, and for $d = 2$ and $d = 3$ Laplacian smoothing appears to achieve or exceed the minimax rate. When $d = 4$, Laplacian smoothing appears modestly suboptimal; this fits with our theoretical upper bound, which includes a \smash{$(\log n)^{1/3}$} factor that plays a non-negligible role for these problem sizes ($n=1000$ to $n=10000$). On the other hand, when $d = 5$, Laplacian smoothing seems to be decidedly suboptimal. 
@@ -525,7 +538,10 @@ The next theorem shows that this test also has small Type II error, uniformly ov
 	C_0\biggl(\frac{\log n}{n}\biggr)^{\frac{1}{d}} \leq r \leq c_0 \wedge M^{\frac{(d - 8)}{8 + 2d}} n^{\frac{d - 20}{32 + 8d}}.
 	\end{equation*}
 \end{enumerate}
-We will also require that the radius of the graph Sobolev class \sbcomment{What does the class have to do with graphs?} not be too large. Precisely, we will require $M \leq M_{\max}(d)$, where we define
+We will also require that the radius of the Sobolev class not be too large. \\
+\sbcomment{What does the class have to do with graphs?}  \\
+\agcomment{Resolved.} \\
+Precisely, we will require $M \leq M_{\max}(d)$, where we define
 \begin{equation*}
 M_{\max}(d) :=
 \begin{cases*}
@@ -537,7 +553,7 @@ n^{(4 - d)/(4d)} & \textrm{$d \geq 2$}.
 We now give Theorem~\ref{thm:laplacian_smoothing_testing}, our main testing result.
 \begin{theorem}
 	\label{thm:laplacian_smoothing_testing}
-	Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ with $d < 4$, and where $M \leq M_{\max}(d)$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume \smash{$G_{n,r}$} is computed with a kernel $K$ satisfying \ref{asmp:kernel}. There are constants $N,C,c>0$ such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_testing}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$L = L_{n,r}$} and \smash{$\rho = (nr^{d + 2})^{-1} n^{-4/(4 + d)} M^{-8/(4 + d)}$}, satisfies the following: for all $b \geq 1$, and all $f_0$ such that
+	Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ with $d < 4$, and where $M \leq M_{\max}(d)$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume \smash{$G_{n,r}$} is computed with a kernel $K$ satisfying \ref{asmp:kernel}. There are constants $N,C,c>0$ such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_testing}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$\rho = (nr^{d + 2})^{-1} n^{-4/(4 + d)} M^{-8/(4 + d)}$}, satisfies the following: for all $b \geq 1$, and all $f_0$ such that
 	\begin{equation}
 	\label{eqn:laplacian_smoothing_testing}
 	\bigl\|f_0\bigr\|_{\Leb^2(\Xset)}^2 \geq C b^2 M^{2d/(4 + d)} n^{-4/(4 + d)},
@@ -574,7 +590,7 @@ In the above, the limit is as $n \to \infty$ and $r \to 0$, $\Delta_P$ is the (w
 \begin{equation*}
 \Delta_Pf := -\frac{1}{p} \dive\bigl(p^2\nabla f),
 \end{equation*}
-and the second equality follows using integration by parts.\footnote{Assuming $f$ satisfies e.g., Dirichlet boundary conditions.} To be clear, this argument does not formally imply that $\wh{f}$ and $\wt{f}$ are close \sbcomment{Should remind people what these are, or refer to eqns where they are defined.} (for one, note that \eqref{eqn:seminorm_consistency} holds for $f \in C^2(\Xset)$, whereas the optimization in \eqref{eqn:thin_plate_spline} considers a much broader set of continuous functions with weak derivatives in $\Leb^2(\Xset)$). But it does seem to suggest that the two estimators should behave somewhat similarly. 
+and the second equality follows using integration by parts.\footnote{Assuming $f$ satisfies e.g., Dirichlet boundary conditions.} To be clear, this argument does not formally imply that the Laplacian eigenmaps estimator $\wh{f}$ and the thin-plate spline estimator $\wt{f}$ are close (for one, note that \eqref{eqn:seminorm_consistency} holds for $f \in C^2(\Xset)$, whereas the optimization in \eqref{eqn:thin_plate_spline} considers a much broader set of continuous functions with weak derivatives in $\Leb^2(\Xset)$). But it does seem to suggest that the two estimators should behave somewhat similarly. 
 
 Of course, we know this is not the case: \smash{$\wh{f}$} and \smash{$\wt{f}$} look very different when $d > 1$. What is driving this difference? The key point is that the discretization imposed by the graph $G_{n,r}$---which might seem problematic at first glance---turns out to be a blessing. The problem with~\eqref{eqn:thin_plate_spline} is that the class $H^1(\Xset)$, which fundamentally underlies the criterion, is far ``too big'' for $d > 1$. This is meant in various related senses. By the Sobolev embedding theorem, for $d>1$, the class $H^1(\Xset)$ does not continuously embed into any H\"{o}lder space; and in fact it does not even continuously embed into $C^0(\Xset)$. Thus we cannot really restrict the optimization to \emph{continuous} and weakly differentiable functions, as we could when $d=1$ (the smoothing spline case), without throwing out a substantial subset of functions in $H^1(\Xset)$. Even among continuous and differentiable functions $f$, as we explained previously, we can use ``bump'' functions (as in \citet{green93}) to construct $f$ that interpolates the pairs $(X_i,Y_i)$, $i=1,\ldots,n$ and achieves arbitrarily small penalty (and hence criterion) in \eqref{eqn:thin_plate_spline}. In this sense, any estimator resulting from solving \eqref{eqn:thin_plate_spline} will clearly be inconsistent. 
 
@@ -613,8 +629,9 @@ The bias and variance terms are each functions of the random graph \smash{$G_{n,
 	where \smash{$A_{n,r}(k) = \min\{nr^{d + 2}k^{2/d},nr^d\}$}.
 \end{lemma}
 
-Lemma~\ref{lem:graph_sobolev_seminorm} gives a direct upper bound on the bias term. Lemma~\ref{lem:neighborhood_eigenvalue} leads to a sufficiently tight upper bound on the variance term whenever the radius $r$ is sufficiently small; precisely, when $r$ is upper bounded as in \ref{asmp:ls_kernel_radius_estimation} for estimation, or \ref{asmp:ls_kernel_radius_testing} for testing. The parameter $\rho$ is then tuned to minimize the sum of bias and variance, in the usual manner.
-\sbcomment{Should probably say something about the rest of the proof, i.e. is it straightforward to put these together to get the two Theorems?}
+Lemma~\ref{lem:graph_sobolev_seminorm} gives a direct upper bound on the bias term. Lemma~\ref{lem:neighborhood_eigenvalue} leads to a sufficiently tight upper bound on the variance term whenever the radius $r$ is sufficiently small; precisely, when $r$ is upper bounded as in \ref{asmp:ls_kernel_radius_estimation} for estimation, or \ref{asmp:ls_kernel_radius_testing} for testing. The parameter $\rho$ is then chosen to minimize the sum of these upper bounds on bias and variance, as usual, and some straightforward calculations gives Theorems~\ref{thm:laplacian_smoothing_estimation1}-\ref{thm:laplacian_smoothing_testing}.\\
+\sbcomment{Should probably say something about the rest of the proof, i.e. is it straightforward to put these together to get the two Theorems?} \\
+\agcomment{Attempted to resolve.}
 
 It may be useful to give one more perspective on our approach. A common strategy in analyzing penalized least squares estimators is to assume two properties: first, that the regression function $f_0$ lies in (or near) a ball defined by the penalty operator; second, that this ball is reasonably small, e.g., as measured by metric entropy, or Rademacher complexity, etc. In contrast, in Laplacian smoothing, the penalty induces a ball
 \begin{equation*}
@@ -683,7 +700,7 @@ In a similar vein, we obtain results for manifold adaptive testing under the fol
 \begin{theorem}
 	\label{thm:laplacian_smoothing_testing_manifold}
 	As in Theorem \ref{thm:laplacian_smoothing_testing}, but where $\Xset \subseteq \Rd$ is a manifold with intrinsic dimension $m < 4$, $M \leq M_{\max}(m)$, and the design distribution $P$ obeys \ref{asmp:domain_manifold}, \ref{asmp:density_manifold}.
-	There are constants $N,C,c>0$ such that for any $n \geq N$, and any $r$ as in \ref{asmp:ls_kernel_radius_testing_manifold}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$L = L_{n,r}$} and \smash{$\rho = (nr^{m + 2})^{-1} n^{-4/(4 + m)} M^{-8/(4 + m)}$}, satisfies the following: for all $b \geq 1$, and $f_0$ such that
+	There are constants $N,C,c>0$ such that for any $n \geq N$, and any $r$ as in \ref{asmp:ls_kernel_radius_testing_manifold}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$\rho = (nr^{m + 2})^{-1} n^{-4/(4 + m)} M^{-8/(4 + m)}$}, satisfies the following: for all $b \geq 1$, and $f_0$ such that
 	\begin{equation}
 	\label{eqn:laplacian_smoothing_testing_manifold}
 	\bigl\|f_0\bigr\|_{\Leb^2(\Xset)}^2 \geq C b^2 M^{2m/(4 + m)} n^{-4/(4 + m)},
@@ -704,8 +721,9 @@ We emphasize that little about $\Xset$ needs be known for Theorems~\ref{thm:lapl
 \section{Discussion}
 \label{sec:discussion}
 
-We have shown that Laplacian smoothing, computed over a neighborhood graph, can be optimal for both estimation and goodness-of-fit testing over Sobolev spaces. There are many extensions worth pursuing, and several have already been mentioned. We conclude by mentioning a couple more. In practice, it is more common to use a $k$-nearest-neighbor (kNN) graph than a neighborhood graph, due to the guaranteed connectivity and sparsity of the former; we suspect that by building on the work of \citet{calder2019}, one can show that our main results all hold under the kNN graph as well. In another direction, one can also generalize Laplacian smoothing by replacing the penalty \smash{$f^\top \Lap_{n,r} f$} with \smash{$f^\top \Lap_{n,r}^k f$}, for an integer $k > 1$. The hope is that this would then achieve minimax optimal rates over the higher-order Sobolev class $H^k(\Xset)$. % In the very special case of $k = 2$ and $d \leq 2$, we can show that this is indeed the case, but the general story--for all combinations of $k$ and $d$---remains beyond our reach. 
-\sbcomment{Not a huge fan of using $k$ in adjacent lines to refer to completely different things.}
+We have shown that Laplacian smoothing, computed over a neighborhood graph, can be optimal for both estimation and goodness-of-fit testing over Sobolev spaces. There are many extensions worth pursuing, and several have already been mentioned. We conclude by mentioning a couple more. In practice, it is more common to use a $k$-nearest-neighbor (kNN) graph than a neighborhood graph, due to the guaranteed connectivity and sparsity of the former; we suspect that by building on the work of \citet{calder2019}, one can show that our main results all hold under the kNN graph as well. In another direction, one can also generalize Laplacian smoothing by replacing the penalty \smash{$f^\top \Lap_{n,r} f$} with \smash{$f^\top \Lap_{n,r}^{s} f$}, for an integer $s > 1$. The hope is that this would then achieve minimax optimal rates over the higher-order Sobolev class $H^s(\Xset)$. % In the very special case of $k = 2$ and $d \leq 2$, we can show that this is indeed the case, but the general story--for all combinations of $k$ and $d$---remains beyond our reach. 
+\sbcomment{Not a huge fan of using $k$ in adjacent lines to refer to completely different things.}\\
+\agcomment{Resolved.}
 
 \subsection*{Acknowledgements}
 AG and RJT were supported by ONR grant N00014-20-1-2787. AG and SB were supported by NSF grants DMS-1713003 and CCF-1763734.

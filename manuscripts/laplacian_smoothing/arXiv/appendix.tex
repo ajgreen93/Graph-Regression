@@ -95,7 +95,8 @@ The expectation $\Ebb_{f_0}[\wc{f}] = Sf_0$, and by the triangle inequality,
 \frac{1}{n}\bigl\|\wc{f} - f_0\bigr\|_2^2 & \leq \frac{2}{n}\Bigl(\bigl\|\wc{f} - \Ebb_{f_0}[\wc{f}]\bigr\|_2^2 + \bigl\|\Ebb_{f_0}[\wc{f}] - f_0\bigr\|_2^2\Bigr) \\ 
 & = \frac{2}{n}\Bigl(\bigl\|S\varepsilon\bigr\|_2^2 + \bigl\|(S - I)f_0\bigr\|_2^2\Bigr).
 \end{align*}
-\sbcomment{General comment. Please punctuate math. I've done it till this point but please check everywhere.}
+\sbcomment{General comment. Please punctuate math. I've done it till this point but please check everywhere.} \\
+\agcomment{Resolved, I hope.} \\
 Writing $\norm{S\varepsilon}_2^2 = \sum_{k = 1}^{n} \lambda_k(S)^2 Z_k^2$, the claim follows from the result of \citet{laurent00} on concentration of $\chi^2$-random variables, which for completeness we restate in Lemma~\ref{lem:chi_square_bound}. To be explicit, taking $t = \norm{\lambdavec(S)}_2^2$ in Lemma~\ref{lem:chi_square_bound} completes the proof of Lemma~\ref{lem:linear_smoother_fixed_graph_estimation}. 
 
 \paragraph{Proof of Lemma~\ref{lem:linear_smoother_fixed_graph_testing}.}
@@ -145,11 +146,9 @@ giving a sufficient upper bound on the first term. Now we upper bound the second
 \label{pf:linear_smoother_fixed_graph_testing3}
 \frac{8f_0^{\top}S^4f_0 }{\bigl(f_0^{\top}S^2f_0 - 2b \norm{\lambdavec(S)}_4^2\bigr)^2} \leq \frac{32 f_0^{\top}S^4f_0 }{\bigl(f_0^{\top}S^2f_0\bigr)^2} \leq \frac{8}{b \|\lambdavec(S)\|_4^2} \frac{f_0^{\top}S^4f_0 }{f_0^{\top}S^2f_0} \leq \frac{8}{b \|\lambdavec(S)\|_4^2},
 \end{equation}
-where the final inequality is satisfied because $S$ is a contraction. Plugging~\eqref{pf:linear_smoother_fixed_graph_testing2.5} and~\eqref{pf:linear_smoother_fixed_graph_testing3} back into~\eqref{pf:linear_smoother_fixed_graph_testing2} then gives the desired result.
-
-\sbcomment{I think the first equality should be the negative of what you wrote?}
-
-\agcomment{You were correct. However I also rewrote the proof a bit to make it (hopefully) easier to follow. We also need that $S$ is a contraction---a condition that I had and then deleted at some point by accident--- and I added this to the statement of the Lemma.}
+where the final inequality is satisfied because $S$ is a contraction. Plugging~\eqref{pf:linear_smoother_fixed_graph_testing2.5} and~\eqref{pf:linear_smoother_fixed_graph_testing3} back into~\eqref{pf:linear_smoother_fixed_graph_testing2} then gives the desired result.\\
+\sbcomment{I think the first equality should be the negative of what you wrote?} \\
+\agcomment{You were correct. However I also rewrote the proof a bit to make it (hopefully) easier to follow. We also need that $S$ is a contraction---a condition that I had and then deleted at some point by accident--- and I added this to the statement of the Lemma.} 
 \subsection{Analysis of Laplacian smoothing}
 
 Upper bounds on the mean squared error of $\wh{f}$, and Type I and Type II error of $\wh{T}$, follow from setting $S = (\rho L + I)^{-1}$ in Lemmas~\ref{lem:linear_smoother_fixed_graph_estimation} and~\ref{lem:linear_smoother_fixed_graph_testing}. We give these results in Lemma~\ref{lem:ls_fixed_graph_estimation} and~\ref{lem:ls_fixed_graph_testing}, and prove them immediately. Recall that $\lambda_1,\ldots,\lambda_n$ are the $n$ eigenvalues of $\Lap$ (sorted in ascending order).
@@ -358,9 +357,13 @@ We note that each of $\wt{\delta}, \theta$ and $\wt{\delta}/r$ are of at most co
 	a \lambda_k(G_{n,r}) \leq nr^{d+2} \lambda_k(\Delta_P) \leq A \lambda_k(G_{n,r}),~~\textrm{for all $1 \leq k \leq \ell$}
 	\end{equation}
 \end{theorem}
-We note that Theorem~\ref{thm:neighborhood_eigenvalue} is not a strong enough result to imply that $\lambda_{k}(G_{n,r})$ is a consistent estimate of $\lambda_k(\Delta_P)$, i.e. it does not imply that $|(nr^{d + 2})^{-1}\lambda_{k}(G_{n,r}) - \lambda_k(\Delta_P)| \to 0$ as $n \to \infty, r \to 0$. This is contrast to the results of~\citet{burago2014,trillos2019,calder2019}, whose results do imply consistency when the domain is assumed to be a manifold without boundary. While a more subtle analysis might imply consistency in our setting, the conclusion of Theorem~\ref{thm:neighborhood_eigenvalue}---that $\lambda_k(G_{n,r})/(nr^{d + 2}\lambda_k(\Delta_P))$ is bounded above and below by constants---suffices for our purposes.  
+Before moving forward to the proofs of Lemma~\ref{lem:neighborhood_eigenvalue} and Theorem~\ref{thm:neighborhood_eigenvalue}, it is worth being clear about the differences between Theorem~\ref{thm:neighborhood_eigenvalue} and the results of \citet{burago2014,trillos2019,calder2019}. First of all, the reason we cannot directly use the results of these works in the proof of Lemma~\ref{lem:neighborhood_eigenvalue} is that they all assume the domain $\mc{X}$ is without boundary, whereas for our results in Section~\ref{sec:minimax_optimal_laplacian_smoothing} we instead assume $\mc{X}$ has a (Lipschitz smooth) boundary. Fortunately, in this setting the high-level strategy shared by \citet{burago2014,trillos2019,calder2019} can still be used---indeed we follow it closely, as we summarize in Section~\ref{subsec:neighbrhood_eigenvalue_pf}. However, many calculations need to be redone, in order to account for points $x$ which are on or sufficiently near to the boundary of $\mc{X}$. For completeness and ease of reading, we provide a self-contained proof of Theorem~\ref{thm:neighborhood_eigenvalue}, but we comment where appropriate on connections between the technical results we use in this proof, and those derived in \citet{burago2014,trillos2019,calder2019}.
 
-The bulk of this section is devoted to the proof of Theorem~\ref{thm:neighborhood_eigenvalue}. First, however, we show that our regularity under our conditions on $p$ and $\Xset$, Lemma~\ref{lem:neighborhood_eigenvalue} is a simple consequence of Theorem~\ref{thm:neighborhood_eigenvalue}. The link between the two is Weyl's Law.
+On the other hand, we should also point out that unlike the results of~\citet{burago2014,trillos2019,calder2019}, Theorem~\ref{thm:neighborhood_eigenvalue} does not imply that $\lambda_{k}(G_{n,r})$ is a consistent estimate of $\lambda_k(\Delta_P)$, i.e. it does not imply that $|(nr^{d + 2})^{-1}\lambda_{k}(G_{n,r}) - \lambda_k(\Delta_P)| \to 0$ as $n \to \infty, r \to 0$. The key difficulty in proving consistency when $\mc{X}$ has a boundary can be summarized as follows: while at points $x \in \mc{X}$ satisfying $B(x,r) \subseteq \mc{X}$, the graph Laplacian $L$ is a reasonable approximation of the operator $\Delta_P$, at points $x$ near the boundary $L$ is known to approximate a different operator altogether \citep{belkin2012}. This is reminiscent of the boundary effects present in the analysis of kernel smoothing. We believe a more subtle analysis might imply convergence of eigenvalues in this setting. However, the conclusion of Theorem~\ref{thm:neighborhood_eigenvalue}---that $\lambda_k(G_{n,r})/(nr^{d + 2}\lambda_k(\Delta_P))$ is bounded above and below by constants that do not depend on $k$---suffices for our purposes.  
+
+\agcomment{Siva, I erred on the side of giving too much detail here, figuring it was easier for you/me to pare back if needed.}
+
+The bulk of the remainder of this section is devoted to the proof of Theorem~\ref{thm:neighborhood_eigenvalue}. First, however, we show that under our regularity conditions on $p$ and $\Xset$, Lemma~\ref{lem:neighborhood_eigenvalue} is a simple consequence of Theorem~\ref{thm:neighborhood_eigenvalue}. The link between the two is Weyl's Law.
 \begin{proposition}[Weyl's Law]
 	\label{prop:weyl}
 	Suppose the density $p$ and the domain $\Xset$ satisfy~\ref{asmp:domain} and~\ref{asmp:density}. Then there exist constants $a_2$ and $A_2$ such that
@@ -406,6 +409,7 @@ C_3 & := \max\biggl\{\frac{A_2}{a}, 4p_{\max}\biggr\},~~ && c_3 := \min\biggl\{\
 in the statement of that Lemma.
 
 \subsection{Proof of Theorem~\ref{thm:neighborhood_eigenvalue}}
+\label{subsec:neighbrhood_eigenvalue_pf}
 
 In this section we prove Theorem~\ref{thm:neighborhood_eigenvalue}, following closely the approach of \citet{burago2014,trillos2019,calder2019}. As in these works, we relate $\lambda_k(\Delta_P)$ and $\lambda_k(G_{n,r})$ by means of the Dirichlet energies
 \begin{equation*}
