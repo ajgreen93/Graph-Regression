@@ -524,7 +524,7 @@ The next theorem shows that this test also has small Type II error, uniformly ov
 	C_0\biggl(\frac{\log n}{n}\biggr)^{\frac{1}{d}} \leq r \leq c_0 \wedge M^{\frac{(d - 8)}{8 + 2d}} n^{\frac{d - 20}{32 + 8d}}.
 	\end{equation*}
 \end{enumerate}
-We will also require that the radius of the graph Sobolev class not be too large. Precisely, we will require $M \leq M_{\max}(d)$, where we define
+We will also require that the radius of the graph Sobolev class \sbcomment{What does the class have to do with graphs?} not be too large. Precisely, we will require $M \leq M_{\max}(d)$, where we define
 \begin{equation*}
 M_{\max}(d) :=
 \begin{cases*}
@@ -546,10 +546,11 @@ We now give Theorem~\ref{thm:laplacian_smoothing_testing}, our main testing resu
 	\Ebb_{f_0}\bigl[1 - \wh{\varphi} \bigr] \leq C\biggl(\frac{1}{b}\Bigl[1 + n^{-d/(4 + d)}M^{-2d/(4 + d)}\Bigr] + n\exp\bigl(-cnr^d\bigr)\biggr).
 	\end{equation*}
 \end{theorem}
+\sbcomment{Personally, I wouldn't emphasize the Type II error so much in the Theorem (it is not tight and it's not an interesting quantity anyway), and write \eqref{eqn:laplacian_smoothing_testing} more directly as an upper bound on the critical radius (which is the interesting quantity). Otherwise you've introduced that terminology for no reason.}
 
 Some remarks:
 \begin{itemize}
-	\item As mentioned earlier, Sobolev balls $H^1(\Xset,M)$ for $d \geq 4$ include quite irregular functions $f \not\in \Leb^4(\Xset)$. Proving tight lower bounds in this case is nontrivial, and as far as we understand such an analysis remains outstanding. On the other hand, if we explicitly assume that $f_0 \in \Leb^4(\Xset,M)$, then \citet{guerre02} show that the testing problem is characterized by a dimension-free lower bound $\epsilon^{2}(\Leb^4(\Xset,M)) \gtrsim n^{-1/2}$. Moreover, by training \smash{$\wh{f}$} to the interpolation limit, setting $\rho = 0$, the subsequent test \smash{$\wh{\varphi}$} will achieve (up to constants) this lower bound. That is, for any $f_0 \in \Leb^4(\Xset,M)$ such that \smash{$\|f_0\|_{\Leb^2(\Xset)}^2 \geq C b^2n^{-1/2}$}, we have both
+	\item As mentioned earlier, Sobolev balls $H^1(\Xset,M)$ for $d \geq 4$ include quite irregular functions $f \not\in \Leb^4(\Xset)$. Proving tight lower bounds in this case is nontrivial, and as far as we understand such an analysis remains outstanding. On the other hand, if we explicitly assume that $f_0 \in \Leb^4(\Xset,M)$, then \citet{guerre02} show that the testing problem is characterized by a dimension-free lower bound $\epsilon^{2}(\Leb^4(\Xset,M)) \gtrsim n^{-1/2}$. Moreover, by estimating \smash{$\wh{f}$}, setting $\rho = 0$, the subsequent test \smash{$\wh{\varphi}$} will achieve (up to constants) this lower bound. That is, for any $f_0 \in \Leb^4(\Xset,M)$ such that \smash{$\|f_0\|_{\Leb^2(\Xset)}^2 \geq C b^2n^{-1/2}$}, we have both
 	\begin{equation}
 	\label{eqn:laplacian_smoothing_testing_low_smoothness}
 	\Ebb_{f_0}\bigl[1 - \wh{\varphi}\bigr] \leq \frac{C(1 + M^4)}{b^2},
@@ -572,11 +573,11 @@ In the above, the limit is as $n \to \infty$ and $r \to 0$, $\Delta_P$ is the (w
 \begin{equation*}
 \Delta_Pf := -\frac{1}{p} \dive\bigl(p^2\nabla f),
 \end{equation*}
-and the second equality follows using integration by parts.\footnote{Assuming $f$ satisfies e.g., Dirichlet boundary conditions.} To be clear, this argument does not formally imply that $\wh{f}$ and $\wt{f}$ are close (for one, note that \eqref{eqn:seminorm_consistency} holds for $f \in C^2(\Xset)$, whereas the optimization in \eqref{eqn:thin_plate_spline} considers a much broader set of continuous functions with weak derivatives in $\Leb^2(\Xset)$). But it does seem to suggest that the two estimators should behave somewhat similarly. 
+and the second equality follows using integration by parts.\footnote{Assuming $f$ satisfies e.g., Dirichlet boundary conditions.} To be clear, this argument does not formally imply that $\wh{f}$ and $\wt{f}$ are close \sbcomment{Should remind people what these are, or refer to eqns where they are defined.} (for one, note that \eqref{eqn:seminorm_consistency} holds for $f \in C^2(\Xset)$, whereas the optimization in \eqref{eqn:thin_plate_spline} considers a much broader set of continuous functions with weak derivatives in $\Leb^2(\Xset)$). But it does seem to suggest that the two estimators should behave somewhat similarly. 
 
 Of course, we know this is not the case: \smash{$\wh{f}$} and \smash{$\wt{f}$} look very different when $d > 1$. What is driving this difference? The key point is that the discretization imposed by the graph $G_{n,r}$---which might seem problematic at first glance---turns out to be a blessing. The problem with~\eqref{eqn:thin_plate_spline} is that the class $H^1(\Xset)$, which fundamentally underlies the criterion, is far ``too big'' for $d > 1$. This is meant in various related senses. By the Sobolev embedding theorem, for $d>1$, the class $H^1(\Xset)$ does not continuously embed into any H\"{o}lder space; and in fact it does not even continuously embed into $C^0(\Xset)$. Thus we cannot really restrict the optimization to \emph{continuous} and weakly differentiable functions, as we could when $d=1$ (the smoothing spline case), without throwing out a substantial subset of functions in $H^1(\Xset)$. Even among continuous and differentiable functions $f$, as we explained previously, we can use ``bump'' functions (as in \citet{green93}) to construct $f$ that interpolates the pairs $(X_i,Y_i)$, $i=1,\ldots,n$ and achieves arbitrarily small penalty (and hence criterion) in \eqref{eqn:thin_plate_spline}. In this sense, any estimator resulting from solving \eqref{eqn:thin_plate_spline} will clearly be inconsistent. 
 
-On the other hand, problem \eqref{eqn:laplacian_smoothing} is finite-dimensional. As a result \smash{$\wh{f}$} has far less capacity to overfit than does \smash{$\wt{f}$}, for any given sample size $n$. Discretization is not the only way to make the problem \eqref{eqn:thin_plate_spline} more tractable: for instance, one can replace the penalty \smash{$\int_{\Xset} \|\nabla f(x)\|_2^2 \,dx$} with a stricter choice like \smash{$\esssup_{x \in \Xset} \|\nabla f(x)\|_2$}, or conduct the optimization over some finite-dimensional linear subspace of $H^1(\Xset)$ (i.e., use a sieve). While these solutions do improve the statistical properties of \smash{$\wt{f}$} for $d > 1$ (see e.g., \citet{birge1993,birge1998,vandergeer2000}), Laplacian smoothing is generally speaking much simpler and more computationally friendly. In addition, the other approaches are specifically tailored to the domain $\Xset$, in stark contrast to \smash{$\wh{f}$}.
+On the other hand, problem \eqref{eqn:laplacian_smoothing} is finite-dimensional. As a result \smash{$\wh{f}$} has far less capacity to overfit than does \smash{$\wt{f}$}, for any given sample size $n$. Discretization is not the only way to make the problem \eqref{eqn:thin_plate_spline} more tractable: for instance, one can replace the penalty \smash{$\int_{\Xset} \|\nabla f(x)\|_2^2 \,dx$} with a stricter choice like \smash{$\esssup_{x \in \Xset} \|\nabla f(x)\|_2$}, or conduct the optimization over some finite-dimensional linear subspace of $H^1(\Xset)$ (i.e., use a sieve). While these solutions do improve the statistical properties of \smash{$\wt{f}$} for $d > 1$ (see e.g., \citet{birge1993,birge1998,vandergeer2000}), Laplacian smoothing is generally speaking much simpler and more computationally friendly. In addition, the other approaches are usually specifically tailored to the domain $\Xset$, in stark contrast to~\smash{$\wh{f}$}.
 
 \paragraph{Overview of Analysis.}
 
@@ -612,6 +613,7 @@ The bias and variance terms are each functions of the random graph \smash{$G_{n,
 \end{lemma}
 
 Lemma~\ref{lem:graph_sobolev_seminorm} gives a direct upper bound on the bias term. Lemma~\ref{lem:neighborhood_eigenvalue} leads to a sufficiently tight upper bound on the variance term whenever the radius $r$ is sufficiently small; precisely, when $r$ is upper bounded as in \ref{asmp:ls_kernel_radius_estimation} for estimation, or \ref{asmp:ls_kernel_radius_testing} for testing. The parameter $\rho$ is then tuned to minimize the sum of bias and variance, in the usual manner.
+\sbcomment{Should probably say something about the rest of the proof, i.e. is it straightforward to put these together to get the two Theorems?}
 
 It may be useful to give one more perspective on our approach. A common strategy in analyzing penalized least squares estimators is to assume two properties: first, that the regression function $f_0$ lies in (or near) a ball defined by the penalty operator; second, that this ball is reasonably small, e.g., as measured by metric entropy, or Rademacher complexity, etc. In contrast, in Laplacian smoothing, the penalty induces a ball
 \begin{equation*}
@@ -626,7 +628,7 @@ The minimax rates $n^{-2/(2 + d)}$ and $n^{-4/(4 + d)}$, in estimation and testi
 
 % RJT: Again, would venture a guess that these are stated results for Holder classes, not Sobolev classes. So same comment as before, as when we referenced Tsybakov. Just checking my understanding ... not sure it's worth changing this at this point. 
 
-On the other hand, a theory has been developed \citep{belkin03,belkin05,niyogi2013} establishing that the neighborhood graph $G_{n,r}$ can ``learn'' the manifold $\Xset$ in various senses, so long as $\Xset$ is locally linear. We contribute to this line of work by showing that under the manifold hypothesis, Laplacian smoothing achieves the sharper minimax rates over $H^1(\Xset)$.
+On the other hand, a theory has been developed \citep{belkin03,belkin05,niyogi2013} establishing that the neighborhood graph $G_{n,r}$ can ``learn'' the manifold $\Xset$ in various senses, so long as $\Xset$ is locally linear. We contribute to this line of work by showing that under the manifold hypothesis, Laplacian smoothing achieves the tighter minimax rates over $H^1(\Xset)$.
 
 \paragraph{Error Rates Assuming the Manifold Hypothesis.}
 
@@ -666,7 +668,7 @@ Under the assumptions \ref{asmp:domain_manifold}, \ref{asmp:density_manifold}, a
 	% RJT: Alden, please verify that what I wrote is correct.
 	% AJG: Verified.
 \end{theorem}
-
+In a similar vein, we obtain results for manifold adaptive testing under the following condition on the graph radius parameter:
 \begin{enumerate}[label=(R\arabic*)]
 	\setcounter{enumi}{4}
 	\item 
@@ -692,19 +694,20 @@ Under the assumptions \ref{asmp:domain_manifold}, \ref{asmp:density_manifold}, a
 	% RJT: Alden, please verify that what I wrote is correct.
 	% AJG: Verified.
 \end{theorem}
+\sbcomment{Same comment as before on what to emphasize.}
 
 The proof of Theorems \ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} proceeds in a similar manner to that of Theorems \ref{thm:laplacian_smoothing_estimation1} and \ref{thm:laplacian_smoothing_testing}. The key difference is that in the manifold setting, the equations \eqref{eqn:graph_sobolev_seminorm} and \eqref{eqn:neighborhood_eigenvalue} used to upper bound bias and variance will hold with $d$ replaced by $m$.
 
-We emphasize that little about $\Xset$ needs be known for Theorems~\ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} to hold. Indeed, all that is needed is the intrinsic dimension $m$, to properly tune $r$ and $\rho$ (from a theoretical point of view), and otherwise \smash{$\wh{f}$} and \smash{$\wh{\varphi}$} are computed without regard to $\Xset$. In contrast, the penalty in \eqref{eqn:thin_plate_spline} would have to be specially tailored to work in this setting, revealing another advantage of the discrete approach to the variational one.
+We emphasize that little about $\Xset$ needs be known for Theorems~\ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} to hold. Indeed, all that is needed is the intrinsic dimension $m$, to properly tune $r$ and $\rho$ (from a theoretical point of view), and otherwise \smash{$\wh{f}$} and \smash{$\wh{\varphi}$} are computed without regard to $\Xset$. In contrast, the penalty in \eqref{eqn:thin_plate_spline} would have to be specially tailored to work in this setting, revealing another advantage of the discrete approach over the variational one.
 
 \section{Discussion}
 \label{sec:discussion}
 
 We have shown that Laplacian smoothing, computed over a neighborhood graph, can be optimal for both estimation and goodness-of-fit testing over Sobolev spaces. There are many extensions worth pursuing, and several have already been mentioned. We conclude by mentioning a couple more. In practice, it is more common to use a $k$-nearest-neighbor (kNN) graph than a neighborhood graph, due to the guaranteed connectivity and sparsity of the former; we suspect that by building on the work of \citet{calder2019}, one can show that our main results all hold under the kNN graph as well. In another direction, one can also generalize Laplacian smoothing by replacing the penalty \smash{$f^\top \Lap_{n,r} f$} with \smash{$f^\top \Lap_{n,r}^k f$}, for an integer $k > 1$. The hope is that this would then achieve minimax optimal rates over the higher-order Sobolev class $H^k(\Xset)$. % In the very special case of $k = 2$ and $d \leq 2$, we can show that this is indeed the case, but the general story--for all combinations of $k$ and $d$---remains beyond our reach. 
+\sbcomment{Not a huge fan of using $k$ in adjacent lines to refer to completely different things.}
 
 \subsection*{Acknowledgements}
-
-AG and RJT were supported by ONR grant N00014-20-1-2787. 
+AG and RJT were supported by ONR grant N00014-20-1-2787. AG and SB were supported by NSF grants DMS-1713003 and CCF-1763734.
 
 \bibliographystyle{plainnat}
 \bibliography{../../../graph_regression_bibliography} 
