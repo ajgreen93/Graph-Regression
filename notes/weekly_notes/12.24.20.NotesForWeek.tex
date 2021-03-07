@@ -242,7 +242,7 @@ For a kernel function $\eta(\cdot): [0,\infty) \to (-\infty,+\infty)$, bandwidth
 \begin{equation*}
 \bigl(T_{\varepsilon,Q}f)(x) := \frac{1}{d_Q(x)} \int_{\Omega} f(z)\eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dQ(z)
 \end{equation*}
-where $d_Q(x) = \int_{\Omega} \eta\bigl(\|z - x\|/\varepsilon\bigr) \,dQ(z)$. We denote $T_{\varepsilon,P_n}$ by $T_{\varepsilon,n}$, and $d_{P_n}$ by $d_n$. For convenience, we will assume that $\eta$ is normalized, $\int_{0}^{\infty} \eta(s) \,ds = 1$, and we will denote $K(\cdot) = (\eta(\cdot))^2$.
+where $d_Q(x) = \int_{\Omega} \eta\bigl(\|z - x\|/\varepsilon\bigr) \,dQ(z)$. We denote $T_{\varepsilon,P_n}$ by $T_{\varepsilon,n}$, and $d_{P_n}$ by $d_n$.
 
 The estimated function $\wh{f}$ we will consider is a kernel smoother passed over $\wh{\theta}$,
 \begin{equation}
@@ -253,7 +253,10 @@ In order to relate the out-of-sample error $\|\wh{f} - f^{\ast}\|_P$ to the in-s
 \begin{enumerate}[label=(A\arabic*)]
 	\item
 	\label{asmp:kernel}
-	The kernel function $\eta$ is supported on a subset of $[0,1]$, with $\eta(1/2) > 0$. Additionally, $\eta$ is \textcolor{red}{Lipschitz} on its support.
+	The kernel function $\eta$ is compactly supported on a subset of $[0,1]$. Additionally, $\eta$ is Lipschitz on its support. Finally, for convenience we will assume that $\eta$ is normalized, 
+	\begin{equation*}
+	\int_{0}^{\infty} \eta(s) \,ds = 1.
+	\end{equation*}
 	\item 
 	\label{asmp:domain} There exists $\alpha > 0$ such that for every $x \in \mc{X}$, $d_{\nu}(x) \geq \alpha \cdot \varepsilon^d$.
 	\item 
@@ -262,7 +265,7 @@ In order to relate the out-of-sample error $\|\wh{f} - f^{\ast}\|_P$ to the in-s
 	0 < p_{\min} \leq p(x) < p_{\max} < \infty.
 	\end{equation*}
 \end{enumerate}
-Under Assumption~\ref{asmp:kernel}, we automatically have that $d_\nu(x) = \varepsilon^d$ for all $x \in \mc{X}_{\varepsilon}$. Assumption~\ref{asmp:domain} is thus a condition on the boundary $\partial \Omega$, and is implied for all sufficiently small $\varepsilon$ if the boundary is Lipschitz. 
+Under Assumption~\ref{asmp:kernel}, we automatically have that $d_\nu(x) = \varepsilon^d$ for all $x \in \mc{X}_{\varepsilon}$. Assumption~\ref{asmp:domain} is thus a condition on the boundary $\partial \Omega$, and is implied for all sufficiently small $\varepsilon$ if the boundary is Lipschitz. Denoting $K(\cdot) = (\eta(\cdot))^2$, we note that Assumption~\ref{asmp:kernel} implies that $\eta$ is square-integrable, $\int_{0}^{\infty} K(s) \,ds < \infty$.
 \begin{lemma}
 	\label{lem:kernel_smoothing_laplacian_eigenmaps}
 	Suppose $f^{\ast} \in H^1(\mc{X})$ and $p \in C^1(\mc{X})$. Then with probability at least $1 - \delta - C\varepsilon^d\exp\{-Cn\varepsilon^d\}$, it holds that
@@ -279,6 +282,7 @@ Notice that the variance term in the above is smaller than the typical variance 
 	\end{equation*}
 \end{lemma}
 \begin{proof}[Proof (when dimension $d = 1$).]
+	\textcolor{red}{(TODO)}
 \end{proof}
 
 Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp n^{-1/(2r + d)}$) than is typical for kernel smoothing with noisy data, leads to an asymptotically negligible error ($n^{-2s/(2r + d)}$) compared to the minimax rate for estimating Sobolev functions. 
@@ -300,9 +304,9 @@ Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp
 	\end{equation}
 	the latter inequality holding with probability $1 - \delta$.
 	
-	\textit{Proof of \eqref{pf:kernel_smoothing_laplacian_eigenmaps_0}.} We will begin by assuming that $\eta(z) \geq 0$ for all $z$, and return to prove the claim in its full generality at the end.
+	\textit{Proof of \eqref{pf:kernel_smoothing_laplacian_eigenmaps_0}.} We will begin by assuming that $\eta$ is positive, $\eta(z) \geq 0$ for all $z$, and return to prove the claim in its full generality at the end.
 	
-	The left hand side of~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0} is equal to $\|T_{\varepsilon,n}(\wh{\theta}_{1:n} - f^{\ast}_{1:n})\|_P$, and~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0} is implied by showing that the operator $T_{\varepsilon,n}: L^2(X) \to L^2(\Omega)$ is (up to a constant) a contraction, meaning that for any $u \in L^2(X)$,
+	The left hand side of~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0} is equal to $\|T_{\varepsilon,n}(\wh{\theta}_{1:n} - f^{\ast}_{1:n})\|_P$, and~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0} is implied by showing that the operator $T_{\varepsilon,n}: L^2(X) \to L^2(\Omega)$ is (up to a constant) a contraction. We will show that for any $u \in L^2(X)$,
 	\begin{equation}
 	\label{pf:kernel_smoothing_laplacian_eigenmaps_1}
 	\|T_{\varepsilon,n}u\|_P^2 \leq \frac{1}{\alpha}\bigl(1 + o_P(1)\bigr) \|u\|_n^2.
@@ -318,11 +322,11 @@ Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp
 	\end{equation}
 	The degree estimate $d_n(x)$ is quite close to $p(x)$. As we show in Lemma~\ref{lem:measure_of_ball_estimate}, if $\varepsilon = \omega((\log n/n)^{1/d})$ then the empirical measure $d_n(x)$ concentrates around $d_P(x)$ uniformly over $x \in \Omega$, 
 	\begin{equation*}
-	\sup_{x \in \Omega}|d_n(x) - d_P(x)| = o_P(\varepsilon^d);
+	\sup_{x \in \Omega}|d_n(x) - d_P(x)| = o_P(\varepsilon^d).
 	\end{equation*}
-	moreover, it follows from Lipschitz continuity of $p$ that for any $x \in \Omega$,
+	Moreover, it follows from the Lipschitz continuity of $p$ that for any $x \in \Omega$,
 	\begin{equation*}
-	d_P(x) = \int_{\Omega} \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) p(x') \,dx' = p(x) d_{\nu}(x) + O(\varepsilon^{d + 1});
+	d_P(x) = \int_{\Omega} \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) p(x') \,dx' = p(x) d_{\nu}(x) + O(\varepsilon^{d + 1}),
 	\end{equation*}
 	and thus by the triangle inequality $\sup_{x \in \Omega}|d_n(x) - d_\nu(x) p(x)| = o_P(\varepsilon^d)$.
 	
@@ -498,6 +502,7 @@ We will apply Lemma~\ref{lem:l2p_error_fixed_design}, and then use our assumptio
 I put things here which do not belong in any other section.
 
 \subsection{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $d = 1$ and $p$ uniform}
+\label{subsec:kernel_smoothing_bias_pf_1d_uniform_p}
 Without loss of generality take the domain $\Omega = (0,1)$. Recall that we are interested in upper bounding
 \begin{equation*}
 \|T_{P,\varepsilon}u - u\|_{P}^2 = \int_{\Omega} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x) \leq C\varepsilon^{2k}
@@ -537,43 +542,86 @@ Additionally, we have that all $j = 1,\ldots,k - 1$,
 where the second equality follows because $\eta$ is a $k$th-order kernel. Consequently $L_{P,\varepsilon}$ depends only on the $k$th derivative of $u$: changing variables to $v = (z - x)/\varepsilon$, we have
 \begin{align*}
 L_{P,\varepsilon}u(x) & = \frac{1}{\varepsilon} \cdot \frac{1}{(k - 1)!} \int_{0}^{1} \int_{\Omega} (1 - t)^k (z - x)^k u^{(k)}(x + t(z - x)) \eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,dz \,dv \\
-& = \frac{\varepsilon^{k}}{(k - 1)!} \int_{0}^{1} \int_{B(0,1)} (1 - t)^k v^k u^{(k)}(x + t\varepsilon v) \eta(v) \,dv \,dt.
+& = \frac{\varepsilon^{k}}{(k - 1)!} \int_{0}^{1} \int_{B(0,1)} (1 - t)^k v^k u^{(k)}(x + t\varepsilon v) \eta(|v|) \,dv \,dt
 \end{align*} 
-This identity along with Jensen's inequality implies that
+and as a result
 \begin{equation*}
-\Bigl(L_{P,\varepsilon}u(x)\Bigr)^2 \leq \biggl(\frac{\varepsilon^{k}}{(k - 1)!}\biggr)^2 \cdot  \int_{0}^{1} \int_{B(0,1)} v^{2k} \bigl(u^{(k)}(x + t\varepsilon v)\bigr)^2 \eta(|v|) \,dv \,dt.
+\Bigl(L_{P,\varepsilon}u(x)\Bigr)^2 = \frac{\varepsilon^{2k}}{(k!)^2} {\sigma_\eta}^2 \bigl(u^{(k)}(x)\bigr)^2 + \frac{\varepsilon^{2k}}{((k - 1)!)^2}A_1(x)A_{2}(x),
 \end{equation*}
-Integrating over all $x \in \Omega_{\varepsilon}$ gives an upper bound on $I_1$. 
-From here, by changing the order of integration, substituting $\wt{x} = x + t\varepsilon v$, and noting that $\wt{x} \in \Omega$, we arrive at the desired bound:
+where $\sigma_\eta = \int v^k \eta(|v|) \,dv$ and 
 \begin{align*}
-I_1 & \leq \biggl(\frac{\varepsilon^{k}}{(k - 1)!}\biggr)^2 \int_{0}^{1} \int_{B(0,1)} \int_{\Omega_{\varepsilon}} v^{2k} \bigl(u^{(k)}(x + t\varepsilon v)\bigr)^2 \eta(|v|) \,dx \,dv \,dt \\
-& \leq \biggl(\frac{\varepsilon^{k}}{(k - 1)!}\biggr)^2 \int_{0}^{1} \int_{B(0,1)} \int_{\Omega} v^{2k} \bigl(u^{(k)}(\wt{x})\bigr)^2 \eta(|v|) \,d\wt{x} \,dv \,dt \\
-& = \biggl(\frac{\varepsilon^{k}}{(k - 1)!}\biggr)^2 |u|_{H^k(\Omega)}^2 \sigma_{\eta}.
+A_1(x) & := \int_{0}^{1} \int_{B(0,1)} (1 - t)^k v^k \bigl(u^{(k)}(x + t\varepsilon v) - u^{(k)}(x)\bigr) \eta(|v|) \,dv \,dt \\
+A_2(x) & := \int_{0}^{1} \int_{B(0,1)} (1 - t)^k v^k \bigl(u^{(k)}(x + t\varepsilon v) + u^{(k)}(x)\bigr) \eta(|v|) \,dv \,dt.
 \end{align*}
+Integrating over all $x \in \Omega_{\varepsilon}$, we have that
+\begin{align*}
+I_1 = \int_{\Omega_{\varepsilon}} \bigl(L_{P,\varepsilon}u(x)\bigr)^2 \,dx & = \frac{\varepsilon^{2k}}{(k!)^2} \sigma_\eta^2 \int_{\Omega_{\varepsilon}} \bigl(u^{(k)}(x)\bigr)^2 \,dx + \frac{\varepsilon^{2k}}{((k - 1)!)^2} \int_{\Omega_{\varepsilon}}A_1(x) A_2(x) \,dx \\
+& \leq \frac{\varepsilon^{2k}}{(k!)^2} \Bigl(\sigma_\eta^2 \|u^{(k)}\|_{P}^2 + k^2 \|A_1\|_P \|A_2\|_P\Bigr).
+\end{align*}
+It remains to show that $\|A_1\|_P\|A_2\|_P = o(1)$.
+
+\textcolor{red}{(TODO): Follow through on this calculation, referring to pages 192 - 195 of Tsybakov's book.}
 
 \paragraph{Upper bound on $I_2$.}
 We will prove the upper bound
-\begin{equation*}
-\int_{0}^{\varepsilon} \bigl|L_{P,\varepsilon}u(x)\bigr|^2 \,dx \leq C \varepsilon^{2k},
-\end{equation*}
+\begin{equation}
+\label{pf:kernel_smoothing_bias_1d_2}
+\int_{0}^{\varepsilon} \bigl|L_{P,\varepsilon}u(x)\bigr|^2 \,dx \leq C \varepsilon^{2k + 1}\|u^{(k)}\|_P^2,
+\end{equation}
 with the bound on $\int_{1 - \varepsilon}^{1} \bigl|L_{P,\varepsilon}u\bigr|^2$ following in a completely analogous fashion.
 
-Taking a Taylor expansion of $u$ around $0$ gives
+Unlike the previous case, when $x$ is near the boundary of $\Omega$ we cannot use the higher-order property of $\eta$ to cancel the order-$1$ up through order-$(k - 1)$ derivatives of $u$. Instead, we will use the zero-trace property to show that $u$ itself must be quite small. Taking a Taylor expansion of $u$ around $0$, we have that for any $x \in \Omega$,
+\begin{align}
+u(x) & = u(0) + \sum_{j = 1}^{k - 1} x^j u^{(j)}(0) + \frac{1}{(k - 1)!} \int_{0}^{x}u^{(k)}(s)(x - s)^{k - 1}\,ds \nonumber \\
+& = \frac{1}{(k - 1)!} \int_{0}^{x}u^{(k)}(s)(x - s)^{k - 1}\,ds. \label{pf:kernel_smoothing_bias_1d_3}
+\end{align}
+with the second inequality following since $u \in C_c^{\infty}(\Omega)$ implies $u(0) = 0$ as well as $u^{(j)}(0) = 0$ for $j = 1,\ldots,k - 1$. To make use of this upper bound on $u(x)$, we upper bound $|L_{P,\varepsilon}u(x)|^2$ using the Cauchy-Schwarz inequality,
 \begin{align*}
-u(x) - u(0) & = \sum_{j = 1}^{k - 1} x^j u^{(j)}(0) + \frac{1}{(k - 1)!} \int_{0}^{x}u^{(k)}(s)(x - s)^{k - 1}\,ds \\
-& = \frac{1}{(k - 1)!} \int_{0}^{x}u^{(k)}(s)(x - s)^{k - 1}\,ds,
+|L_{P,\varepsilon}u(x)|^2 & = \Biggl(\frac{1}{d_P(x)} \int_{\Omega} \bigl(u(x) - u(z)\bigr) \eta\biggl(\frac{|x - z|}{\varepsilon}\biggr) \,dz\Biggr)^2 \\
+& \leq \frac{1}{d_P(x)}\biggl(\int_{\Omega} K^{1/2}\biggl(\frac{x - z}{\varepsilon}\biggr) \,dz\biggr) \cdot \frac{1}{d_P(x)}\int_{\Omega} \bigl(u(x) - u(z)\bigr)^2 K^{1/2}\biggl(\frac{|x - z|}{\varepsilon}\biggr) \,dz \\
+& \leq 2\frac{\|\eta\|_{\infty}}{\alpha^2\varepsilon} \cdot \int_{\Omega} \bigl(u(x)^2 + u(z)^2\bigr) K^{1/2}\biggl(\frac{|x - z|}{\varepsilon}\biggr) \,dz,
 \end{align*}
-with the second inequality following since $u \in C_c^{\infty}(\Omega)$ implies $u^{(j)}(0) = 0$ for $j = 1,\ldots,k - 1$. From this identity along with Jensen's inequality, we have
+where in the final inequality we have used the estimates $d_P(x;K^{1/2}) \leq \|\eta\|_{\infty} \varepsilon$ and $d_P(x) \geq (\varepsilon\alpha)$. 
+
+We use these pointwise estimates to upper bound~\eqref{pf:kernel_smoothing_bias_1d_2}. Since $\eta$ is compactly supported, if $x \in (0,\varepsilon]$ and $\eta(|x - z|/\varepsilon) > 0$ then $z \in (0,2\varepsilon]$. As a result,
 \begin{align*}
-\int_{0}^{\varepsilon} \int_{\Omega} \bigl(u(x)\bigr)^2 \eta\biggl(\frac{z - x}{\varepsilon}\biggr) \,dz \,dx & = \int_{0}^{\varepsilon} d_{\nu}(x) \bigl(u(x)\bigr)^2 \,dx \\
-& \leq \varepsilon \int_{0}^{\varepsilon} \bigl(u(x)\bigr)^2 \,dx \\
-& \leq \varepsilon^{2k} \int_{0}^{\varepsilon} \int_{0}^{x} \bigl(u^{(k)}(s)\bigr)^2 \,ds \,dx. 
+\int_{0}^{\varepsilon} |L_{P,\varepsilon}u(x)|^2 \,dP(x) & \leq 2\frac{\|\eta\|_{\infty}}{\alpha^2\varepsilon} \int_{0}^{\varepsilon}  \int_{\Omega} \bigl(u(x)^2 + u(z)^2\bigr) K^{1/2}\biggl(\frac{|x - z|}{\varepsilon}\biggr) \,dz \,dx \\
+& \leq 2\frac{\|\eta\|_{\infty}}{\alpha^2\varepsilon} \int_{0}^{2\varepsilon}  \int_{0}^{2\varepsilon} \bigl(u(x)^2 + u(z)^2\bigr) K^{1/2}\biggl(\frac{|x - z|}{\varepsilon}\biggr) \,dz \,dx \\
+& \leq 4\frac{\|\eta\|_{\infty}^2}{\alpha^2} \int_{0}^{2\varepsilon} (u(x))^2 \,dx,
 \end{align*}
-From here, switching the order of integration and substituting $v = s/\varepsilon$ gives the desired result:
+where the last inequality follows by Fubini's Theorem.
+
+It remains to upper bound the $\Leb^2$ norm of $u$ over $(0,2\varepsilon]$. Here we use the bound~\eqref{pf:kernel_smoothing_bias_1d_3} and the Cauchy-Schwarz inequality to conclude that 
+\begin{equation*}
+\int_{0}^{2\varepsilon} \bigl(u(x)\bigr)^2 \,dx \leq \int_{0}^{2\varepsilon} \biggl(\int_{0}^{x} u^{(k)}(s)(x - s)^{k - 1} \,ds\biggr)^2 \,dx \leq \varepsilon^{2k - 1} \int_{0}^{2\varepsilon} \int_{0}^{x} \bigl(u^{(k)}(s)\bigr)^2 \,ds \,dx. 
+\end{equation*}
+Finally, switching the order of integration and substituting $v = s/(2\varepsilon)$ gives
 \begin{align*}
-I_1 & \leq \frac{\varepsilon^{2k - 1}}{\alpha} \int_{0}^{\varepsilon} \int_{s}^{\varepsilon} \bigl(u^{(k)}(s)\bigr)^2 \,dx \,ds \\
-& \leq \frac{\varepsilon^{2k + 1}}{\alpha} \int_{0}^{1} \bigl(u^{(k)}(v)\bigr)^2 \,dv \\
-& = \frac{\varepsilon^{2k + 1}}{\alpha} |u|_{H^k(\Omega)}^2
+\int_{0}^{2\varepsilon} \int_{0}^{x} \bigl(u^{(k)}(s)\bigr)^2 \,ds \,dx = \int_{0}^{2\varepsilon} \int_{x}^{2\varepsilon} \bigl(u^{(k)}(s)\bigr)^2 \,dx \,ds \leq 2\varepsilon \int_{0}^{2\varepsilon} \bigl(u^{(k)}(s)\bigr)^2 \,ds = 4\varepsilon^2 \|u^{(k)}\|_P^2,
 \end{align*}
+establishing~\eqref{pf:kernel_smoothing_bias_1d_2} upon choosing $C = \frac{16\|\eta\|_{\infty}^2}{\alpha^2}$ in the statement of the inequality.
+
+\subsection{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $d = 1$ and $p \in C^k$.}
+\label{subsec:kernel_smoothing_bias_pf_1d_smooth_p}
+As in~\ref{subsec:kernel_smoothing_bias_pf_1d_uniform_p}, we take $\Omega = (0,1)$, let
+\begin{equation*}
+\|L_{P,\varepsilon}u\|_{P}^2 = \underbrace{\int_{\Omega_{\varepsilon}} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_1} + \underbrace{\int_{\partial_{\varepsilon}\Omega} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_2},
+\end{equation*}
+and turn to separately upper bounding $I_1$ and $I_2$.
+
+\paragraph{Upper bound on $I_1$.}
+We will show that for all $x \in \Omega_{\varepsilon}$,
+\begin{equation*}
+L_{P,\varepsilon}u(x) = \varepsilon^{k} \frac{\sigma_\eta}{k!}\Bigl( \frac{d^k}{dx^k}(up)(x) - p^{(k)}(x)u(x) + r(x)\Bigr)
+\end{equation*}
+for a remainder term $r$ satisfying $\int_{\Omega_{\varepsilon}} \bigl(r(x)\bigr)^2 p(x) \,dx  = o(1)$ as $\varepsilon \to 0$. This in turn will imply
+\begin{align*}
+I_1 = \int_{\Omega_{\varepsilon}} |L_{P,\varepsilon}u(x)|^2 \,dx & = \varepsilon^{2k} \frac{\sigma_\eta^2}{(k!)^2}\Bigl(\int_{\Omega_{\varepsilon}} \Bigl( \frac{d^k}{dx^k}(up)(x) - p^{(k)}(x)u(x) + r(x)\Bigr)^2  p(x) \,dx \\
+& \leq 3 \varepsilon^{2k} \frac{\sigma_\eta^2}{(k!)^2} \bigl( |up|_{H^k(P)}^2 + |p^{(k)}u|_{\Leb^2(P)}^2 + o(1)\bigr) \\
+& \leq C \varepsilon^{2k} \frac{\sigma_\eta^2}{(k!)^2} \Bigl( \|p\|_{C^k(P)}^2\bigl(|u|_{H^k(P)}^2 + |u|_{\Leb^2(P)}^2\bigr) + o(1) \Bigr),
+\end{align*}
+with the last line following from Young's inequality.
+
+It remains to show the pointwise estimate \textcolor{red}{(...)}.
 
 \end{document}
