@@ -95,8 +95,8 @@ The expectation $\Ebb_{f_0}[\wc{f}] = Sf_0$, and by the triangle inequality,
 \frac{1}{n}\bigl\|\wc{f} - f_0\bigr\|_2^2 & \leq \frac{2}{n}\Bigl(\bigl\|\wc{f} - \Ebb_{f_0}[\wc{f}]\bigr\|_2^2 + \bigl\|\Ebb_{f_0}[\wc{f}] - f_0\bigr\|_2^2\Bigr) \\ 
 & = \frac{2}{n}\Bigl(\bigl\|S\varepsilon\bigr\|_2^2 + \bigl\|(S - I)f_0\bigr\|_2^2\Bigr).
 \end{align*}
-\sbcomment{General comment. Please punctuate math. I've done it till this point but please check everywhere.} \\
-\agcomment{Resolved, I hope.} \\
+%\sbcomment{General comment. Please punctuate math. I've done it till this point but please check everywhere.} \\
+%\agcomment{Resolved, I hope.} \\
 Writing $\norm{S\varepsilon}_2^2 = \sum_{k = 1}^{n} \lambda_k(S)^2 Z_k^2$, the claim follows from the result of \citet{laurent00} on concentration of $\chi^2$-random variables, which for completeness we restate in Lemma~\ref{lem:chi_square_bound}. To be explicit, taking $t = \norm{\lambdavec(S)}_2^2$ in Lemma~\ref{lem:chi_square_bound} completes the proof of Lemma~\ref{lem:linear_smoother_fixed_graph_estimation}. 
 
 \paragraph{Proof of Lemma~\ref{lem:linear_smoother_fixed_graph_testing}.}
@@ -147,8 +147,8 @@ giving a sufficient upper bound on the first term. Now we upper bound the second
 \frac{8f_0^{\top}S^4f_0 }{\bigl(f_0^{\top}S^2f_0 - 2b \norm{\lambdavec(S)}_4^2\bigr)^2} \leq \frac{32 f_0^{\top}S^4f_0 }{\bigl(f_0^{\top}S^2f_0\bigr)^2} \leq \frac{8}{b \|\lambdavec(S)\|_4^2} \frac{f_0^{\top}S^4f_0 }{f_0^{\top}S^2f_0} \leq \frac{8}{b \|\lambdavec(S)\|_4^2},
 \end{equation}
 where the final inequality is satisfied because $S$ is a contraction. Plugging~\eqref{pf:linear_smoother_fixed_graph_testing2.5} and~\eqref{pf:linear_smoother_fixed_graph_testing3} back into~\eqref{pf:linear_smoother_fixed_graph_testing2} then gives the desired result.\\
-\sbcomment{I think the first equality should be the negative of what you wrote?} \\
-\agcomment{You were correct. However I also rewrote the proof a bit to make it (hopefully) easier to follow. We also need that $S$ is a contraction---a condition that I had and then deleted at some point by accident--- and I added this to the statement of the Lemma.} 
+%\sbcomment{I think the first equality should be the negative of what you wrote?} \\
+%\agcomment{You were correct. However I also rewrote the proof a bit to make it (hopefully) easier to follow. We also need that $S$ is a contraction---a condition that I had and then deleted at some point by accident--- and I added this to the statement of the Lemma.} 
 \subsection{Analysis of Laplacian smoothing}
 
 Upper bounds on the mean squared error of $\wh{f}$, and Type I and Type II error of $\wh{T}$, follow from setting $S = (\rho L + I)^{-1}$ in Lemmas~\ref{lem:linear_smoother_fixed_graph_estimation} and~\ref{lem:linear_smoother_fixed_graph_testing}. We give these results in Lemma~\ref{lem:ls_fixed_graph_estimation} and~\ref{lem:ls_fixed_graph_testing}, and prove them immediately. Recall that $\lambda_1,\ldots,\lambda_n$ are the $n$ eigenvalues of $\Lap$ (sorted in ascending order).

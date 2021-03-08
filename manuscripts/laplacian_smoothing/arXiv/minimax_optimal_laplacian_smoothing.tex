@@ -477,8 +477,8 @@ To summarize: for $d = 1,2,$ or $3$, with high probability, the Laplacian smooth
 	\item The lower bound on $r$ imposed in condition \ref{asmp:ls_kernel_radius_estimation} is compatible with practice, where by far the most common choice of radius is the connectivity threshold \smash{$r \asymp (\log(n)/n)^{1/d}$}, which makes \smash{$G_{n,r}$} as sparse as possible while still being connected, for maximum computational efficiency. The upper bound may seem a bit more mysterious---we need it for technical reasons to ensure that \smash{$\wh{f}$} does not overfit, but we note that as a practical matter one rarely chooses $r$ to be so large anyway.
 	\item It is possible to extend \smash{$\wh{f}$} to be defined on all of $\Xset$ and then evaluate the error of such an extension (as measured against $f_0$) in $\Leb^2(\Xset)$ norm. When \smash{$\wh{f}$} and $f_0$ are suitably smooth, tools from empirical process theory (see e.g., Chapter 14 of \citet{wainwright2019}) or approximation theory (e.g., Section 15.5 of \citet{johnstone2011}) guarantee that the $\Leb^2(\Xset)$ error is not too much greater than its in-sample counterpart. In fact, as shown in Appendix~\ref{sec:graph_sobolev_seminorm}, if $f_0$ is Lipschitz smooth and we extend \smash{$\wh{f}$} to be piecewise constant over the Voronoi tesselation induced by $X_1,\ldots,X_n$, then the out-of-sample error \smash{$\|\wh{f}-f_0\|_{\Leb^2(\Xset)}$} is within a negligible factor of the in-sample error \smash{$\|\wh{f}-f_0\|_n$}. We leave analysis of the Sobolev case to future work.
 	\item When $f_0$ is Lipschitz smooth, we can also replace the factor of $\delta$ in the high probability bound by a factor of $\delta^2/n$, which is always smaller than $\delta$ when $\delta \in (0,1)$.\\
-	\sbcomment{Too mysterious a comment. Why is this sharper?} \\
-	\agcomment{Attempted to resolve.} 
+	%\sbcomment{Too mysterious a comment. Why is this sharper?} \\
+	%\agcomment{Attempted to resolve.} 
 \end{itemize} 
 
 When $d = 4$, our analysis results in an upper bound for the error of Laplacian smoothing that is within a \smash{$(\log n)^{1/3}$} factor of the minimax error rate. But when $d \geq 5$, our upper bounds do not match the minimax rates.
@@ -632,8 +632,8 @@ The bias and variance terms are each functions of the random graph \smash{$G_{n,
 \end{lemma}
 
 Lemma~\ref{lem:graph_sobolev_seminorm} gives a direct upper bound on the bias term. Lemma~\ref{lem:neighborhood_eigenvalue} leads to a sufficiently tight upper bound on the variance term whenever the radius $r$ is sufficiently small; precisely, when $r$ is upper bounded as in \ref{asmp:ls_kernel_radius_estimation} for estimation, or \ref{asmp:ls_kernel_radius_testing} for testing. The parameter $\rho$ is then chosen to minimize the sum of these upper bounds on bias and variance, as usual, and some straightforward calculations give Theorems~\ref{thm:laplacian_smoothing_estimation1}-\ref{thm:laplacian_smoothing_testing}.\\
-\sbcomment{Should probably say something about the rest of the proof, i.e. is it straightforward to put these together to get the two Theorems?} \\
-\agcomment{Attempted to resolve.}
+%\sbcomment{Should probably say something about the rest of the proof, i.e. is it straightforward to put these together to get the two Theorems?} \\
+%\agcomment{Attempted to resolve.}
 
 It may be useful to give one more perspective on our approach. A common strategy in analyzing penalized least squares estimators is to assume two properties: first, that the regression function $f_0$ lies in (or near) a ball defined by the penalty operator; second, that this ball is reasonably small, e.g., as measured by metric entropy, or Rademacher complexity, etc. In contrast, in Laplacian smoothing, the penalty induces a ball
 \begin{equation*}
@@ -648,7 +648,7 @@ The minimax rates $n^{-2/(2 + d)}$ and $n^{-4/(4 + d)}$, in estimation and testi
 
 % RJT: Again, would venture a guess that these are stated results for Holder classes, not Sobolev classes. So same comment as before, as when we referenced Tsybakov. Just checking my understanding ... not sure it's worth changing this at this point. 
 
-On the other hand, a theory has been developed \citep{niyogi2008finding,belkin03,belkin05,niyogi2013,balakrishnan2011minimax,balakrishnan2013cluster} establishing that the neighborhood graph $G_{n,r}$ can ``learn'' the manifold $\Xset$ in various senses, so long as $\Xset$ is locally linear. We contribute to this line of work by showing that under the manifold hypothesis, Laplacian smoothing achieves the tighter minimax rates over $H^1(\Xset)$.
+On the other hand, a theory has been developed \citep{niyogi2008finding,belkin03,belkin05,niyogi2013,balakrishnan2012minimax,balakrishnan2013cluster} establishing that the neighborhood graph $G_{n,r}$ can ``learn'' the manifold $\Xset$ in various senses, so long as $\Xset$ is locally linear. We contribute to this line of work by showing that under the manifold hypothesis, Laplacian smoothing achieves the tighter minimax rates over $H^1(\Xset)$.
 
 \paragraph{Error Rates Assuming the Manifold Hypothesis.}
 
@@ -730,7 +730,7 @@ We have shown that Laplacian smoothing, computed over a neighborhood graph, can 
 \subsection*{Acknowledgements}
 AG and RJT were supported by ONR grant N00014-20-1-2787. AG and SB were supported by NSF grants DMS-1713003 and CCF-1763734.
 
-\bibliographystyle{plainnat}
+\bibliographystyle{unsrtnat}
 \bibliography{../../../graph_regression_bibliography} 
 
 \appendix
