@@ -402,7 +402,6 @@ Under conditions~\ref{asmp:domain}, \ref{asmp:density}, the minimax estimation r
 \end{equation}
 % RJT: This is a bit of a weird reference, because (as per my understanding) Tsybakov only proves the rate is tight for Holder classes, which are contained in the Sobolev class. So technically from Tsybakov alone we only know \gtrsim, not \asymp for this one. It's fine, I wouldn't change anything because it would involve explaining a lot more, I'm just pointing this out.
 (Throughout we assume $M \geq n^{-1/2}$, as otherwise the trivial estimator $\wh{f} = 0$ achieves smaller error than the parametric rate $n^{-1}$, and the problem doesn't fit well within the nonparametric setup.) 
-\\
 %\sbcomment{I don't think the second part of this comment is correct the way you've defined the Sobolev class.} \\
 %\agcomment{Resolved, as I suggested in my Slack post.}
 
@@ -415,11 +414,17 @@ Typically, the null hypothesis $f_0 = f_0^{\star} \in \mc{F}$ reflects the absen
 %\sbcomment{Why isn't this without loss of generality?}\\
 %\agcomment{Don't know how to resolve.}
 
-\sbcomment{Define a level-$\alpha$ test. You use it in~\eqref{eqn:type_I_error} for example. I also wouldn't re-use $\alpha$ for both Type-I and Type-II error. Later on you seem to use $b$ for Type-I error. Maybe use $b$ for Type-II and $\alpha$ for Type-I.} The minimax critical radius is the smallest value of $\epsilon$ such that some level-${\alpha}$ test $\phi$ has power at least $1 - \alpha$ over all $\mc{F}_{\epsilon} := \mc{F} \cap \{f: \|f\|_{\Leb^2(\Xset)} \geq \epsilon\}$:
+%\sbcomment{Define a level-$\alpha$ test. You use it in~\eqref{eqn:type_I_error} for example. I also wouldn't re-use $\alpha$ for both Type-I and Type-II error. Later on you seem to use $b$ for Type-I error. Maybe use $b$ for Type-II and $\alpha$ for Type-I.}
+
+The Type I error of a test $\phi$ is $\mathbb{E}_0[\phi]$, and if $\mathbb{E}_0[\phi] \leq \alpha$ for a given $\alpha \in (0,1)$ we refer to $\phi$ as a level-$\alpha$ test. The worst-case risk of $\phi$ over $\mc{F}$ is
 \begin{equation*}
-\epsilon(\mc{F}) := \inf\biggl\{\epsilon > 0: \inf_{\phi} \sup_{f_0 \in \mc{F}_{\epsilon}} \Ebb_{f_0}[1 - \phi] \leq \alpha \biggr\},
+R_n(\phi, \mc{F}, \epsilon) := \sup\Bigl\{\mathbb{E}_{f_0}[1 - \phi]: f_0 \in \mc{F}, \|f_0\|_{\Leb^2(\mc{X})} > \epsilon\Bigr\},
+\end{equation*}
+and for a given constant $b \geq 1$, the minimax critical radius is the smallest value of $\epsilon$ such that some level-$\alpha$ test has worst-case risk of at most $1/b$. Formally,
+\begin{equation*}
+\epsilon(\mc{F}) := \inf\Bigl\{\epsilon > 0: \inf_{\phi} R_n(\phi,\mc{F},\epsilon) \leq 1/b \Bigr\},
 \end{equation*} 
-where in the above the infimum is over all level-$\alpha$ tests $\phi$, and $\Ebb_{f_0}[\cdot]$ is the expectation operator under the regression function $f_0$.\footnote{Of course, the minimax critical radius $\epsilon$ depends on $\alpha$. However, we adopt the typical convention of treating $\alpha$ as a small but fixed positive constant; hence it will not affect the testing error rates, and we suppress it notationally.} See \citet{ingster82,ingster87,ingster2012} for a more extended treatment of the minimax paradigm in nonparametric testing. 
+where in the above the infimum is over all level-$\alpha$ tests $\phi$, and $\Ebb_{f_0}[\cdot]$ is the expectation operator under the regression function $f_0$.\footnote{Clearly, the minimax critical radius $\epsilon$ depends on $\alpha$ and $b$. However, we adopt the typical convention of treating $\alpha$ and $b$ as small but fixed positive constants; hence it will not affect the testing error rates, and we suppress it notationally.} See \citet{ingster82,ingster87,ingster2012} for a more extended treatment of the minimax paradigm in nonparametric testing. 
 
 Testing $f_0=0$ is an easier problem than estimating $f_0$, and hence the minimax testing critical radius over $H^1(\Xset,M)$ is smaller than the minimax estimation rate, for $1 \leq d < 4$ (see \citet{ingster2009}):
 \begin{equation}
@@ -519,7 +524,7 @@ For $b \geq 1$, define a threshold \smash{$\wh{t}_b$} as
 \begin{equation*}
 \wh{t}_{b} = \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^2} + \frac{2b}{n}\sqrt{\sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^4}},
 \end{equation*}
-where we recall $\lambda_k$ is the $k$th smallest eigenvalue of \smash{$\Lap_{n,r}$}. The Laplacian smoothing test is then simply
+where we recall $\lambda_k$ is the $k$th smallest eigenvalue of \smash{$L$}. The Laplacian smoothing test is then simply
 \begin{equation*}
 \wh{\varphi} = \1\bigl\{\wh{T} \leq \wh{t}_b\bigr\}.
 \end{equation*} 
@@ -539,10 +544,7 @@ The next theorem shows that this test also has small Type II error, uniformly ov
 	C_0\biggl(\frac{\log n}{n}\biggr)^{\frac{1}{d}} \leq r \leq c_0 \wedge M^{\frac{(d - 8)}{8 + 2d}} n^{\frac{d - 20}{32 + 8d}}.
 	\end{equation*}
 \end{enumerate}
-We will also require that the radius of the Sobolev class not be too large. \\
-%\sbcomment{What does the class have to do with graphs?}  \\
-%\agcomment{Resolved.} \\
-Precisely, we will require $M \leq M_{\max}(d)$, where we define
+We will also require that the radius of the Sobolev class not be too large. Precisely, we will require $M \leq M_{\max}(d)$, where we define
 \begin{equation*}
 M_{\max}(d) :=
 \begin{cases*}
@@ -584,7 +586,7 @@ With some results in hand, let us pause to offer some explanation of why Laplaci
 \begin{equation}
 \label{eqn:seminorm_consistency}
 \begin{aligned}
-\lim \frac{1}{n^2 r^{d + 2}} f^\top \Lap_{n,r} f & = \int_{\Xset} f(x) \cdot \Delta_Pf(x) p(x) \,dx \\
+\lim \frac{1}{n^2 r^{d + 2}} f^\top L f & = \int_{\Xset} f(x) \cdot \Delta_Pf(x) p(x) \,dx \\
 & = \int_{\Xset} \|\nabla f(x)\|_2^2 p^2(x) \,dx.
 \end{aligned}
 \end{equation}
@@ -604,11 +606,11 @@ The comparison with thin-plate splines highlights some surprising differences be
 
 Instead we take a different approach, and directly analyze the error of \smash{$\wh{f}$} and \smash{$\wh{T}$} using a bias-variance decomposition (conditional on $X_1,\ldots,X_n$). A standard calculation shows that
 \begin{equation*}
-\bigl\|\wh{f} - f_0\bigr\|_n^2 \leq \underbrace{\vphantom{\sum_{k=1}^n}\frac{2\rho}{n} \bigl(f_0^\top \Lap_{n,r} f_0\bigr)}_{\textrm{bias}} + \underbrace{\frac{10}{n} \sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^2}}_{\textrm{variance}},
+\bigl\|\wh{f} - f_0\bigr\|_n^2 \leq \underbrace{\vphantom{\sum_{k=1}^n}\frac{2\rho}{n} \bigl(f_0^\top L f_0\bigr)}_{\textrm{bias}} + \underbrace{\frac{10}{n} \sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^2}}_{\textrm{variance}},
 \end{equation*}
 and likewise that $\wh{\varphi}$ has high power whenever
 \begin{equation*}
-\bigl\|f_0\bigr\|_n^2 \geq \underbrace{\vphantom{\sqrt{\sum_{k=1}^n}}\frac{2\rho}{n} \bigl(f_0^\top \Lap_{n,r} f_0\bigr)}_{\textrm{bias}} + \underbrace{\frac{4b}{n} \sqrt{\sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^4}}}_{\textrm{variance}}.
+\bigl\|f_0\bigr\|_n^2 \geq \underbrace{\vphantom{\sqrt{\sum_{k=1}^n}}\frac{2\rho}{n} \bigl(f_0^\top L f_0\bigr)}_{\textrm{bias}} + \underbrace{\frac{4b}{n} \sqrt{\sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^4}}}_{\textrm{variance}}.
 \end{equation*}
 The bias and variance terms are each functions of the random graph \smash{$G_{n,r}$}, and hence are themselves random. To upper bound them, we build on some recent works \citep{burago2014,trillos2019,calder2019} regarding the consistency of neighborhood graphs to establish the following lemmas. These lemmas assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and \ref{asmp:kernel} on the kernel used to compute the neighborhood graph \smash{$G_{n,r}$}. 
 
@@ -617,7 +619,7 @@ The bias and variance terms are each functions of the random graph \smash{$G_{n,
 	There are constants $N,C_2 > 0$ such that for $n \geq N$, $r \leq c_0$, and $f \in H^1(\Xset)$, with probability at least $1 - \delta$, it holds that
 	\begin{equation}
 	\label{eqn:graph_sobolev_seminorm}
-	f^\top \Lap_{n,r} f \leq \frac{C_2}{\delta} n^2 r^{d + 2} |f|_{H^1(\Xset)}^2.
+	f^\top L f \leq \frac{C_2}{\delta} n^2 r^{d + 2} |f|_{H^1(\Xset)}^2.
 	\end{equation}
 \end{lemma}
 
@@ -637,7 +639,7 @@ Lemma~\ref{lem:graph_sobolev_seminorm} gives a direct upper bound on the bias te
 
 It may be useful to give one more perspective on our approach. A common strategy in analyzing penalized least squares estimators is to assume two properties: first, that the regression function $f_0$ lies in (or near) a ball defined by the penalty operator; second, that this ball is reasonably small, e.g., as measured by metric entropy, or Rademacher complexity, etc. In contrast, in Laplacian smoothing, the penalty induces a ball
 \begin{equation*}
-H^1(G_{n,r},M) := \{f: f^\top \Lap_{n,r} f \leq M^2\}
+H^1(G_{n,r},M) := \{f: f^\top L f \leq M^2\}
 \end{equation*}
 that is data-dependent and random, and so we do not have access to either of the aforementioned properties a priori, and instead, must prove they hold with high probability. In this sense, our analysis is different than the typical one in nonparametric regression.
 
@@ -723,7 +725,7 @@ We emphasize that little about $\Xset$ needs be known for Theorems~\ref{thm:lapl
 \section{Discussion}
 \label{sec:discussion}
 
-We have shown that Laplacian smoothing, computed over a neighborhood graph, can be optimal for both estimation and goodness-of-fit testing over Sobolev spaces. There are many extensions worth pursuing, and several have already been mentioned. We conclude by mentioning a couple more. In practice, it is more common to use a $k$-nearest-neighbor (kNN) graph than a neighborhood graph, due to the guaranteed connectivity and sparsity of the former; we suspect that by building on the work of \citet{calder2019}, one can show that our main results all hold under the kNN graph as well. In another direction, one can also generalize Laplacian smoothing by replacing the penalty \smash{$f^\top \Lap_{n,r} f$} with \smash{$f^\top \Lap_{n,r}^{s} f$}, for an integer $s > 1$. The hope is that this would then achieve minimax optimal rates over the higher-order Sobolev class $H^s(\Xset)$. % In the very special case of $k = 2$ and $d \leq 2$, we can show that this is indeed the case, but the general story--for all combinations of $k$ and $d$---remains beyond our reach. 
+We have shown that Laplacian smoothing, computed over a neighborhood graph, can be optimal for both estimation and goodness-of-fit testing over Sobolev spaces. There are many extensions worth pursuing, and several have already been mentioned. We conclude by mentioning a couple more. In practice, it is more common to use a $k$-nearest-neighbor (kNN) graph than a neighborhood graph, due to the guaranteed connectivity and sparsity of the former; we suspect that by building on the work of \citet{calder2019}, one can show that our main results all hold under the kNN graph as well. In another direction, one can also generalize Laplacian smoothing by replacing the penalty \smash{$f^\top L f$} with \smash{$f^\top L^{s} f$}, for an integer $s > 1$. The hope is that this would then achieve minimax optimal rates over the higher-order Sobolev class $H^s(\Xset)$. % In the very special case of $k = 2$ and $d \leq 2$, we can show that this is indeed the case, but the general story--for all combinations of $k$ and $d$---remains beyond our reach. 
 %\sbcomment{Not a huge fan of using $k$ in adjacent lines to refer to completely different things.}\\
 %\agcomment{Resolved.}
 
