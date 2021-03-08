@@ -285,7 +285,7 @@ H^s(P;M) := \bigl\{f \in H^s(P): \|f\|_{H^s(P)} \leq M\bigr\}
 \end{itemize}
 
 \textbf{(2) Zero-trace and periodic conditions.}
-When $s \geq 1$, our results regarding Laplacian eigenmaps will require some boundary assumptions on $f_0$. In particular, we will assume that $f_0$ belongs to the set of zero trace Sobolev functions $H_0^{s}(P)$, meaning \textcolor{red}{roughly} that $f_0 \in H^s(P)$ additionally satisfies,
+When $s \geq 1$, our results regarding Laplacian eigenmaps will require that $f_0$ satisfy some boundary assumptions. In particular, we will assume that $f_0$ belongs to the set of zero trace Sobolev functions $H_0^{s}(P)$, meaning \textcolor{red}{roughly} that $f_0 \in H^s(P)$ additionally satisfies,
 \begin{equation}
 \label{eqn:zero_trace}
 D^jf(x) = 0,~~\textrm{for all $x \in \partial \mc{X}$ and $j = 0,\ldots,s - 1$.}
@@ -551,7 +551,7 @@ When $s = 1$, similar results have been shown in \textcolor{red}{(?)}. On the ot
 	\lambda_k \geq c \cdot \min\Bigl\{\lambda_k(\Delta_P), \frac{1}{r^{2}} \Bigr\}
 	\end{equation*}
 \end{proposition}
-By Weyl's Law, $c k^{2/d} \leq \lambda_{k}(\Delta_P) \leq Ck^{2/d}$, and as a result $\lambda_{K} \geq C\lambda_{K}(\Delta_P)$ as long as $r \geq \kappa^{-1/d}$. 
+By Weyl's Law, there exist constants $c_1$ and $C_1$ which do not depend on $k$, such that $c_1 k^{2/d} \leq \lambda_{k}(\Delta_P) \leq C_1 k^{2/d}$ for all $k \in \mathbb{N}$. As a result, $\lambda_{K} \geq c \lambda_{K}(\Delta_P)$ as long as $r \geq \kappa^{-1/d}$. 
 
 \textbf{(1.2) Traps we avoid.} It is tempting to use recent results regarding spectral convergence to analyze the estimator $\wh{f}$ and test $\wh{T}$. This suffers from an accumulation of error problem. 
 
@@ -642,8 +642,8 @@ To construct a minimax optimal test using $\wh{T}$, we choose $\varepsilon$ and 
 
 \begin{itemize}
 	\item \textbf{Proof strategy.} The proofs of Theorems~\ref{thm:laplacian_eigenmaps_estimation_manifold} and~\ref{thm:laplacian_eigenmaps_testing_manifold} follow very similarly to the full-dimensional setting. The difference is that when $\mc{X}$ is a manifold with intrinsic dimension $m$, we can prove analogous results to Propositions~\ref{prop:graph_seminorm} and~\ref{prop:graph_eigenvalue}, but with the ambient dimension $d$ replaced by the intrinsic dimension $m$. 
-	\item \textbf{Restriction on number of derivatives.} Unlike in the full-dimensional case, our upper bound on the estimation error of $\wh{f}$ matches the minimax rate $n^{-2s/(2s + m)}$ only when $s \leq 4$. At a high level, thinking of the graph $G$ as an estimate of the manifold $\mc{X}$, we incur some error by using Euclidean distance rather than geodesic distance to form the edges of $G$. By contrast, in the full-dimensional setting the Euclidean metric exactly coincides with the geodesic distance for all points $x,z \in \mc{X}$ that are sufficiently close to each other and far from the boundary of $\mc{X}$). This extra error incurred in the manifold setting dominates when $s > 4$. We give a more detailed explanation of this phenomenon in Appendix~\ref{sec:manifold_proofs}.
-	\item \textbf{Comparison with traditional spectral series estimators.} Traditional spectral series estimators achieve the minimax rate for all values of $s$ and $m$. On the other hand, as we have already discussed, these estimators assume a priori knowledge of the domain $\mc{X}$, which is arguably a particularly unrealistic assumption when $\mc{X}$ is assumed to be a manifold. It is not clear whether this gap between spectral series and Laplacian eigenmaps estimators---or more generally, between estimators which assume the manifold is known, and those which do not---is real, or a product of loose upper bounds. 
+	\item \textbf{Restriction on number of derivatives.} Unlike in the full-dimensional case, our upper bound on the estimation error of $\wh{f}$ matches the minimax rate $n^{-2s/(2s + m)}$ only when $s \leq 4$. We now explain this discrepancy. At a high level, thinking of the graph $G$ as an estimate of the manifold $\mc{X}$, we incur some error by using Euclidean distance rather than geodesic distance to form the edges of $G$. In contrast, in the full-dimensional setting the Euclidean metric exactly coincides with the geodesic distance for all points $x,z \in \mc{X}$ that are sufficiently close to each other and far from the boundary of $\mc{X}$. This extra error incurred in the manifold setting by using the ``wrong distance'' dominates when $s > 4$. As this explanation suggests, by building $G$ using the geodesic distance one could avoid this error, and would obtain superior rates of convergence. However this is not an option for us, as we assume $\mc{X}$---and in particular its geodesics---are unknown.
+	\item \textbf{Comparison with traditional spectral series estimators.} Traditional spectral series estimators achieve the minimax rate for all values of $s$ and $m$. On the other hand, as we have already discussed, these estimators assume a priori knowledge of the domain $\mc{X}$, which is a particularly unrealistic assumption when $\mc{X}$ is assumed to be a manifold. It is not clear whether this gap between spectral series and Laplacian eigenmaps estimators---or more generally, between estimators which assume the manifold is known, and those which do not---is real, or a product of loose upper bounds. 
 \end{itemize}
 
 \textcolor{red}{(TODO)}
@@ -653,46 +653,46 @@ To construct a minimax optimal test using $\wh{T}$, we choose $\varepsilon$ and 
 
 \section{Out-of-sample error}
 \label{sec:out_of_sample}
-To summarize, Sections~\ref{sec:minimax_optimal_laplacian_eigenmaps} and~\ref{sec:manifold_adaptivity} show that $\wh{f}$ is a minimax optimal estimator over Sobolev spaces. However, as mentioned previously we have measured loss \emph{in-sample}---that is, measured in $\Leb^2(P_n)$ norm---whereas \emph{out-of-sample} error---error measured in $L^2(P)$ norm---is the more typical metric in the random design setup.
+Sections~\ref{sec:minimax_optimal_laplacian_eigenmaps} and~\ref{sec:manifold_adaptivity} show that $\wh{f}$ is a minimax optimal estimator over Sobolev spaces. However, as mentioned previously we have measured loss \emph{in-sample}---that is, measured in $\Leb^2(P_n)$ norm---whereas \emph{out-of-sample} error---error measured in $L^2(P)$ norm---is the more typical metric in the random design setup.
 
 Of course, the Laplacian eigenmaps estimator is only defined at the observed design points $X_1,\ldots,X_n$, and to measure its error in $L^2(P)$ norm we must first extend it to the rest of $\Xset$. We propose a simple method, kernel smoothing, to do the job. The method can applied to any estimator defined at the design points, including Laplacian eigenmaps, and we show that a smoothed version $\wt{f}$ of our original estimator $\wh{f}$ has optimal $L^2(P)$ error. For simplicity, in this section we stick to the full-dimensional setting, but everything can be adapted to the manifold setting in a straightforward way.
 
 \paragraph{Extension by kernel smoothing.}
-We now formally define our approach to extending by kernel smoothing. For a kernel function $\psi(\cdot): [0,\infty) \to (-\infty,+\infty)$, bandwidth $h > 0$, and a distribution $Q$, the \emph{Nadaraya-Watson kernel smoother} $T_{\varepsilon,Q}$ is given by
+We now formally define our approach to extension by kernel smoothing. For a kernel function $\psi(\cdot): [0,\infty) \to (-\infty,+\infty)$, bandwidth $h > 0$, and a distribution $Q$, the \emph{Nadaraya-Watson kernel smoother} $T_{\varepsilon,Q}$ is given by
 \begin{equation*}
 \bigl(T_{h,Q}f)(x) := \frac{1}{d_Q(x)} \int_{\Omega} f(z)\psi\biggl(\frac{\|z - x\|}{h}\biggr) \,dQ(z)
 \end{equation*}
 where $d_Q(x) := \int_{\Omega} \psi\bigl(\|z - x\|/\varepsilon\bigr) \,dQ(z)$. We denote $T_{\varepsilon,P_n}$ by $T_{\varepsilon,n}$, and $d_{P_n}$ by $d_n$. 
 
-The estimated function $\wt{f}$ we will consider is a kernel smoother passed over $\wh{f}$, meaning
+The estimated function $\wt{f} \in L^2(P)$ we will consider is a kernel smoother passed over $\wh{f}$, meaning
 \begin{equation}
 \label{eqn:kernel_smoother_laplacian_eigenmaps}
 \wt{f}(x) := \bigl(T_{h,n}\wh{f}\bigr)(x).
 \end{equation}
-It is useful to make a few comments about $\wt{f}$. First of all, while in principle~\eqref{eqn:kernel_smoother_laplacian_eigenmaps} makes sense for any $x \in \Rd$, we will always think of $\wt{f}$ as a function on $\mc{X}$. Additionally, note we may use the same kernel for smoothing as was used to construct the graph, i.e. take $\psi = \eta$. Likewise, we can set $h = \varepsilon$. However, we will see that for theoretical purposes these are not always the best choices. 
+It is useful to make a few comments about $\wt{f}$. First of all, while in principle~\eqref{eqn:kernel_smoother_laplacian_eigenmaps} makes sense at any point $x \in \Rd$, we will always think of $\wt{f}$ as a function mapping $\mc{X}$ to $\Reals$. Additionally, note we may use the same kernel for smoothing as was used to construct the graph, i.e. take $\psi = \eta$. Likewise, we can set $h = \varepsilon$. However, we will see that for theoretical purposes these are not always the best choices. 
 
 \paragraph{Out-of-sample error of kernel smoothed Laplacian Eigenmaps.}
 
-In Lemma~\ref{lem:kernel_smoothing_laplacian_eigenmaps}, we consider an arbitrary estimator $\wc{f} \in L^2(P_n)$. We show that the out-of-sample error $\|T_{n,h}\wc{f} - f_0\|_P^2$ can be upper bounded by three terms--- (a constant times) the in-sample error of $\wc{f} - f_0$, and bias and variance terms associated with a noiseless version of kernel smoothing. We shall assume the following conditions on $\psi$.
+In Lemma~\ref{lem:kernel_smoothing_laplacian_eigenmaps}, we consider an arbitrary estimator $\wc{f} \in L^2(P_n)$. We show that the out-of-sample error $\|T_{n,h}\wc{f} - f_0\|_P^2$ can be upper bounded by three terms--- (a constant times) the in-sample error of $\wc{f} - f_0$, and variance and bias terms associated with a noiseless version of kernel smoothing. We shall assume the following conditions on $\psi$.
 \begin{enumerate}[label=(K\arabic*)]
 	\setcounter{enumi}{1}
 	\item
 	\label{asmp:kernel}
-	The kernel function $\psi$ is supported on a subset of $[0,1]$, with $\psi(1/2) > 0$. Additionally, $\psi$ is Lipschitz continuous on $[0,1]$. Finally, for convenience, we will assume that $\psi$ is normalized such that
+	The kernel function $\psi$ is supported on a subset of $[0,1]$. Additionally, $\psi$ is Lipschitz continuous on $[0,1]$, and is normalized so that
 	\begin{equation*}
 	\int_{-\infty}^{\infty} \psi(|s|) \,ds = 1.
 	\end{equation*}
 \end{enumerate}
 \begin{lemma}
 	\label{lem:kernel_smoothing_laplacian_eigenmaps}
-	Suppose $\wc{f} \in L^2(P_n)$, $f_0 \in H^1(\mc{X})$ and $p \in C^1(\mc{X})$. Under Assumptions~\ref{asmp:domain}, \ref{asmp:density}, and~\ref{asmp:kernel}, it holds that
+	Suppose $\wc{f} \in L^2(P_n)$, $f_0 \in H^1(P)$ and $p \in C^1(P)$. Under Assumptions~\ref{asmp:domain}, \ref{asmp:density}, and~\ref{asmp:kernel}, it holds that
 	\begin{equation}
 	\label{eqn:kernel_smoothing_laplacian_eigenmaps}
 	\|T_{n,h}\wc{f} - f_0\|_P^2 \leq C\biggl(\|\wc{f} - f_0\|_n^2 + \frac{1}{\delta} \cdot \frac{h^2}{nh^d} |f|_{H^1(\mc{X})}^2 + \frac{1}{\delta}\|T_{h,P}f_0 - f_0\|_P^2\biggr),
 	\end{equation}
 	with probability at least $1 - \delta - Ch^d\exp\{-Cnh^d\}$. 
 \end{lemma}
-Notice that the variance term in the above is smaller than the typical variance term for kernel smoothing of noisy data, by a factor of $h^2$. The bias term, on the other hand, is standard (at least when $f_0$ is assumed to be H\"{o}lder smooth), and can be tightly bounded using Taylor expansion when $\psi$ is an order-$s$ kernel. Recall that $\psi$ is an order-$s$ kernel if
+Notice that the variance term in the above is smaller than the typical variance term for kernel smoothing of noisy data, by a factor of $h^2$. The bias term, on the other hand, is standard. A standard analysis shows that the $\|T_{h,P}f_0 - f_0\|_P^2 \lesssim \varepsilon^{2s}$ when $\psi$ is an order-$s$ kernel, meaning
 \begin{equation*}
 \int_{-\infty}^{\infty} \psi(|s|) = 1,~~\int_{-\infty}^{\infty} t^j \psi(|t|) \,dt = 0~~\textrm{for $j = 1,\ldots,s - 1$},~~\textrm{and}~~\int_{-\infty}^{\infty} t^s \psi(|t|) \,dt < \infty.
 \end{equation*}
@@ -704,24 +704,35 @@ Notice that the variance term in the above is smaller than the typical variance 
 		\begin{equation*}
 		\|T_{h,P}f_0 - f_0\|_P^2 \leq C h^{2} |f|_{H^1(P)}^2.
 		\end{equation*}
-		\item If $f_0 \in H_0^{s}(P)$, $p \in C^{r}(\mc{X})$ for $r = s - 1$, and $\psi$ is an order-$s$ kernel, it follows that
+		\item If $f_0 \in H_0^{s}(P)$, $p \in C^{s}(\mc{X})$, and $\psi$ is an order-$s$ kernel, it follows that
 		\begin{equation*}
-		\|T_{h,P}f_0 - f_0\|_P^2 \leq C h^{2s} |f|_{H^s(\mc{X})}^2.
+		\|T_{h,P}f_0 - f_0\|_P^2 \leq C h^{2s} |f|_{H^s(P)}^2.
 		\end{equation*}
 	\end{itemize}
 \end{lemma}
-Choosing $h \asymp n^{-1/(2r + d)}$ for $r = s - 1$ balances the kernel smoothing bias and variance terms in~\eqref{eqn:kernel_smoothing_laplacian_eigenmaps}. Then, applying the bounds in Theorem~\ref{thm:laplacian_eigenmaps_estimation_fo} (when $s = 1$) or Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho} (when $s > 1$), we conclude that $\wt{f}$ is an optimal estimator, error measured in $L^2(P)$ norm.
+Choosing $h \asymp n^{-1/(2(s - 1) + d)}$ balances the kernel smoothing bias and variance terms in~\eqref{eqn:kernel_smoothing_laplacian_eigenmaps}. Then, applying the bounds in Theorem~\ref{thm:laplacian_eigenmaps_estimation_fo} (when $s = 1$) or Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho} (when $s > 1$), we conclude that $T_{h,n}\wh{f}$ is an optimal estimator, with respect to error measured in $L^2(P)$ norm.
 
+\begin{theorem}
+	\label{thm:laplacian_eigenmaps_estimation_out_of_sample}
+	Suppose we observe data $(X_1,Y_1),\ldots,(X_n,Y_n)$ according to~\eqref{eqn:model}. Suppose that for some $s \in \mathbb{N}$, the regression function $f_0 \in H^s(P;M)$ (if $s = 1$) or $H_0^s(P;M)$ (if $s > 1$). Suppose also that the distribution $P$ has support $\mc{X}$ which satisfies~\ref{asmp:domain} and density $p \in C^s(\mc{X};M)$ which satisfies~\ref{asmp:density}. Then if the Laplacian eigenmaps estimator $\wh{f}$ is computed with parameters $\varepsilon$ and $K$ that satisfy~\ref{asmp:parameters_estimation_ho}, then the out-of-sample extension $T_{h,n}\wh{f}$ computed with bandwidth $h \asymp n^{-1/(2(s - 1) + d)}$ satisfies
+	\begin{equation*}
+	\|T_{h,n}\wh{f} - f_0\|_P^2 \leq \frac{C}{\delta}M^{2d/(2s + d)}n^{-2s/(2s + d)},
+	\end{equation*}
+	with probability at least $1 - \delta - Cn\exp\{-Cn\varepsilon^d\} - Ch^d\exp\{-Cnh^d\}$. 
+\end{theorem}
 Some remarks:
 \begin{itemize}
-	\item \textbf{Tuning parameters by sample-splitting.}
-	\item \textbf{Other extensions.} Comment that there does not exist any canonical way to extend Laplacian based estimators such as $\wh{\theta}$ to an ambient domain. Point out that there exist various proposals to extend eigenvectors in the literature, such as $1$-nearest-neighbor regression (piecewise constant extrapolation over Voronoi cells), convolution with a specialized kernel, or Nystr\"{o}m extension. Explain that each of these is designed for a highly specialized purpose, such as suitability for mathematical analysis or computational efficiency, and in any case are suggested only for eigenvectors rather than a regression estimate. State explicitly that we choose kernel smoothing for its simplicity, ubiquity, and strong theoretical properties under our assumptions, but that considerations of extensions for specifically tailored to Laplacian based estimators could be of interest.
-	\item \textbf{Comparison with kernel smoothing.}
+	\item \textbf{Tuning parameters by sample-splitting.} 
+	\item \textbf{Other extensions.} We consider kernel smoothing because it is a simple and intuitive procedure that does not rely on knowledge of the domain $\mc{X}$ or distribution $P$. There exist (many) other approaches to extending (or interpolating) a function $f$ based on the evaluations $\{f(X_1),\ldots,f(X_n)\}$, and we now comment on a few of these. One approach is to perform minimum norm interpolation, where one defines a normed space $(\mc{F},\|\cdot\|_{\mc{F}})$ and then solves the optimization problem
+	\begin{equation*}
+	\min_{u \in \mc{F}} \|u\|_{\mc{F}},~~\textrm{such that}~~ u(X_i) =  f(X_i)~~\textrm{for $i = 1,\ldots,n$.}
+	\end{equation*}
+	A particularly popular version of this general approach is when $\mc{F}$ is an RKHS, which encompasses thin-plate spline interpolation $\mc{F} = H^s(\mc{X})$ for $s > d/2$ as a special case. This approach works well when $f$ is close to a function $u \in \mc{F}$ with reasonably small norm, which holds true by assumption  but as already discussed when $2s \leq d$ the Sobolev space $H^s(P)$ is not a Reproducing Kernel Hilbert Space. Another 
+	\item \textbf{Comparison with kernel smoothing.} 
 \end{itemize}
 
-
-\subsection{Why not just do kernel smoothing?}
-On the other hand, the allusion to kernel smoothing raises a very natural question: why should we prefer to first compute $\wh{\theta}$ and then smooth it out, as opposed to simply performing kernel smoothing over the original responses $Y$?
+\paragraph{Why not just kernel smoothing?}
+On the other hand, the allusion to kernel smoothing raises a very natural question: why should we prefer to first compute $\wh{f}$ and then smooth it out, as opposed to simply performing kernel smoothing over the original responses $Y$, that?
 
 We now answer this question, by \textcolor{red}{(...)}.
 

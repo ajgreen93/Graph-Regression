@@ -388,20 +388,30 @@ Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp
 	with probability at least $1 - \delta$, establishing~\eqref{pf:kernel_smoothing_laplacian_eigenmaps_0.5}.
 \end{proof}
 
+Recall the notation $d_P(x) = \int \eta(\|z - x\|/\varepsilon) \,dP(z)$, $d_n(x) = d_{P_n}(x)$. Recall also that $K(\cdot) = |\eta(\cdot)|^2$. 
 \begin{lemma}
 	\label{lem:measure_of_ball_estimate}
-	With probability at least $1 - C \varepsilon^{-d}\exp\{-Cn\varepsilon^d\}$, it holds that
+	Let $\eta$ be a kernel compactly supported and Lipschitz on $[0,1]$. There exists a constant $C$ that does not depend on $\varepsilon$ or $\eta$, such that
 	\begin{equation*}
 	\sup_{x \in \Omega}|d_n(x) - d_P(x)| \leq C \sqrt{\frac{\varepsilon^d}{n}},
 	\end{equation*}
 	and
 	\begin{equation*}
-	\sup_{x \in \Omega}|d_n(x;K^{1/2}) - d_P(x;K^{1/2})| \leq C \sqrt{\frac{\varepsilon^d}{n}}
+	\sup_{x \in \Omega}|d_n(x;K^{1/2}) - d_P(x;K^{1/2})| \leq C \sqrt{\frac{\varepsilon^d}{n}},
 	\end{equation*}
+	with probability at least $1 - \textcolor{red}{(?)}\exp\{-Cn\varepsilon^d\}$. 
 \end{lemma}
 
 \begin{proof}
-	\textcolor{red}{(TODO)}
+	Since $\eta$ is compactly supported on $[0,1]$, a standard computation implies that since for any $x \in \mc{X}$,
+	\begin{equation*}
+	\Var\bigl[d_n(x)\bigl] = \frac{1}{n} \Var[\eta(\|X - x\|/\varepsilon)] \leq \frac{1}{n}\|\eta\|_{\infty}^2 \nu_d \varepsilon^d,
+	\end{equation*}
+	where we note that $\|\eta\|_{\infty} < \infty$ follows from the assumption that $\eta$ is Lipschitz. It follows from Bernstein's inequality that 
+	\begin{equation*}
+	\Pbb\biggl(|d_n(x) - d_P(x)| \leq C \sqrt{\frac{\varepsilon^d}{n}} \biggr) \leq 2\exp\biggl\{-\frac{t^2 \varepsilon^d}{C(\varepsilon^d + \delta \sqrt{\varepsilon^d/n})}\biggr\}.
+	\end{equation*}
+	for $C = \|\eta\|_{\infty} \nu_d$. \textcolor{red}{(...)}
 \end{proof}
 
 \section{Nystr\"{o}m extension of Laplacian eigenvectors}
