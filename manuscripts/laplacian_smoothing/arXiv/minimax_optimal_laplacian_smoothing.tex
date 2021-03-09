@@ -638,7 +638,9 @@ that is data-dependent and random, and so we do not have access to either of the
 \section{Manifold Adaptivity}
 \label{sec:manifold_adaptivity}
 
-The minimax rates $n^{-2/(2 + d)}$ and $n^{-4/(4 + d)}$, in estimation and testing, suffer from the curse of dimensionality. However, in practice it can be often reasonable to assume a \emph{manifold hypothesis}: that the data $X_1,\ldots,X_n$ lie on a manifold $\Xset$ of $\Rd$ that has intrinsic dimension $m < d$. Under such an assumption, it is known \citep{bickel2007,ariascastro2018} that the optimal rates over $H^1(\Xset)$ are now $n^{-2/(2 + m)}$ (for estimation) and $n^{-4/(4 + m)}$ (for testing), which are much faster than the full-dimensional error rates when $m \ll d$. \sbcomment{I might point out that the Arias-Castro result is for density testing over Holder spaces, and that technically rates for regression testing on manifolds for Sobolev spaces are your contribution.}
+The minimax rates $n^{-2/(2 + d)}$ and $n^{-4/(4 + d)}$, in estimation and testing, suffer from the curse of dimensionality. However, in practice it can be often reasonable to assume a \emph{manifold hypothesis}: that the data $X_1,\ldots,X_n$ lie on a manifold $\Xset$ of $\Rd$ that has intrinsic dimension $m < d$. Under such an assumption, it is known \citep{bickel2007,ariascastro2018} that the optimal rates over $H^1(\Xset)$ are now $n^{-2/(2 + m)}$ (for estimation) and $n^{-4/(4 + m)}$ (for testing), which are much faster than the full-dimensional error rates when $m \ll d$. 
+
+% \sbcomment{I might point out that the Arias-Castro result is for density testing over Holder spaces, and that technically rates for regression testing on manifolds for Sobolev spaces are your contribution.}
 
 % RJT: Again, would venture a guess that these are stated results for Holder classes, not Sobolev classes. So same comment as before, as when we referenced Tsybakov. Just checking my understanding ... not sure it's worth changing this at this point. 
 
@@ -699,9 +701,9 @@ In a similar vein, we obtain results for manifold adaptive testing under the fol
 	There are constants $N,C,C_1,c_1>0$ such that for any $n \geq N$, and any $r$ as in \ref{asmp:ls_kernel_radius_testing_manifold}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$\rho = (nr^{m + 2})^{-1} n^{-4/(4 + m)} M^{-8/(4 + m)}$}, satisfies the following: for any $b \geq 1$, if
 	\begin{equation}
 	\label{eqn:laplacian_smoothing_testing_manifold}
-	\epsilon^2 \geq C M^{2d/(4 + d)} n^{-4/(4 + d)}\Bigl(b^2 + b\sqrt{\frac{1}{\alpha}}\Bigr) ,
+	\epsilon^2 \geq C M^{2m/(4 + m)} n^{-4/(4 + m)}\Bigl(b^2 + b\sqrt{\frac{1}{\alpha}}\Bigr) ,
 	\end{equation} 
-	then the worst-case risk is upper bounded, $R_n(\wh{\varphi},H^1(\mc{X},M), \epsilon) \leq C/b + C_1n\exp(-c_1nr^d)\bigr)$.
+	then the worst-case risk is upper bounded, $R_n(\wh{\varphi},H^1(\mc{X},M), \epsilon) \leq C/b + C_1n\exp(-c_1nr^m)\bigr)$.
 	% RJT: Alden, please verify that what I wrote is correct.
 	% AJG: Verified.
 \end{theorem}
