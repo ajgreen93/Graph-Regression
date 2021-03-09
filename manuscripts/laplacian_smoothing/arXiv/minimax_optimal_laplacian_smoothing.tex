@@ -466,7 +466,7 @@ Next we state Theorem~\ref{thm:laplacian_smoothing_estimation1}, our main estima
 	\label{thm:laplacian_smoothing_estimation1}
 	Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ has dimension $d < 4$ and $M \leq n^{1/d}$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume the neighborhood graph \smash{$G_{n,r}$} is computed with a kernel $K$ satisfying \ref{asmp:kernel}. There are constants $N,C,C_1,c,c_1>0$ (not depending on $f_0$) such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_estimation}, the Laplacian smoothing estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing} with \smash{$\rho = M^{-4/(2 + d)} (nr^{d + 2})^{-1} n^{-2/(2 + d)}$} satisfies
 	\begin{equation*}
-	\bigl\|\wh{f} - f_0\bigr\|_n^2 \leq \frac{C}{\delta} M^{2d/(2 + d)} n^{-2/(2 + d)}.
+	\bigl\|\wh{f} - f_0\bigr\|_n^2 \leq \frac{C}{\delta} M^{2d/(2 + d)} n^{-2/(2 + d)},
 	\end{equation*}
 	with probability at least $1 - \delta -  C_1n\exp(-c_1nr^d) - \exp(-c (M^2n)^{d/(2 + d)})$.
 	% RJT: Alden, please verify that what I wrote is correct (I reorganized the way we explained this, added for $n \geq N$ ...).
@@ -520,21 +520,16 @@ However, we do investigate the matter empirically. In Figure~\ref{fig:fig1}, we 
 
 \paragraph{Testing Error of Laplacian Smoothing.}
 
-For $b \geq 1$, define a threshold \smash{$\wh{t}_b$} as
+For a given $0 < \alpha < 1$, define a threshold \smash{$\wh{t}_{\alpha}$} as
 \begin{equation*}
-\wh{t}_{b} = \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^2} + \frac{2b}{n}\sqrt{\sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^4}},
+\wh{t}_{\alpha} = \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^2} + \frac{1}{n}\sqrt{\frac{2}{\alpha} \sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^4}},
 \end{equation*}
 where we recall $\lambda_k$ is the $k$th smallest eigenvalue of \smash{$L$}. The Laplacian smoothing test is then simply
 \begin{equation*}
-\wh{\varphi} = \1\bigl\{\wh{T} \leq \wh{t}_b\bigr\}.
+\wh{\varphi} = \1\bigl\{\wh{T} \leq \wh{t}_{\alpha}\bigr\}.
 \end{equation*} 
 %(Clearly \smash{$\wh{\varphi}$} depends on $b$, but we suppress this notationally.) 
-Here $b \geq 1$ is a tuning parameter selected by the user, with the choice driven by the tolerated Type I versus Type II error. In fact, the threshold \smash{$\wh{t}_b$} is precisely the right choice to control the Type I error of \smash{$\wh{\varphi}$}: we show in Appendix~\ref{sec:fixed_graph_error_bounds} that
-\begin{equation}
-\label{eqn:type_I_error}
-\Ebb_0\bigl[\wh{\varphi}\bigr] \leq \frac{1}{b^2}.
-\end{equation}
-The next theorem shows that this test also has small Type II error, uniformly over all $f_0$ that are separated from $0$ by at least the critical radius given in \eqref{eqn:sobolev_space_testing_critical_radius}. For this to hold, we will require a tighter range of scalings for the graph radius $r$.
+We show in Appendix~\ref{sec:fixed_graph_error_bounds} that $\wh{f}$ is a level-$\alpha$ test. In the next theorem, we upper bound the worst-case risk $R_n(\wh{\varphi},H^1(\mc{X},M),\epsilon)$ of $\wh{\varphi}$, whenever $\epsilon$ is at least (a constant times) the critical radius given in~\eqref{eqn:sobolev_space_testing_critical_radius}. For this to hold, we will require a tighter range of scalings for the graph radius $r$.
 \begin{enumerate}[label=(R\arabic*)]
 	\setcounter{enumi}{1}
 	\item 
@@ -556,17 +551,14 @@ n^{(4 - d)/(4d)} & \textrm{$d \geq 2$}.
 We now give Theorem~\ref{thm:laplacian_smoothing_testing}, our main testing result.
 \begin{theorem}
 	\label{thm:laplacian_smoothing_testing}
-	Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ with $d < 4$, and where $M \leq M_{\max}(d)$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume \smash{$G_{n,r}$} is computed with a kernel $K$ satisfying \ref{asmp:kernel}. There are constants $N,C,c>0$ such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_testing}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$\rho = (nr^{d + 2})^{-1} n^{-4/(4 + d)} M^{-8/(4 + d)}$}, satisfies the following: for all $b \geq 1$, and all $f_0$ such that
+	Given i.i.d.\ draws $(X_i,Y_i)$, $i=1,\ldots,n$ from \eqref{eqn:signal_plus_noise_model}, assume $f_0 \in H^1(\Xset,M)$ where $\Xset \subseteq \Rd$ with $d < 4$, and where $M \leq M_{\max}(d)$. Assume \ref{asmp:domain}, \ref{asmp:density} on the design distribution $P$, and assume \smash{$G_{n,r}$} is computed with a kernel $K$ satisfying \ref{asmp:kernel}. There are constants $N,C,C_1,c_1>0$ such that for any $n \geq N$, and any radius $r$ as in \ref{asmp:ls_kernel_radius_testing}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$\rho = (nr^{d + 2})^{-1} n^{-4/(4 + d)} M^{-8/(4 + d)}$}, satisfies the following: for any $b \geq 1$, if
 	\begin{equation}
 	\label{eqn:laplacian_smoothing_testing}
-	\bigl\|f_0\bigr\|_{\Leb^2(\Xset)}^2 \geq C b^2 M^{2d/(4 + d)} n^{-4/(4 + d)},
+	\epsilon^2 \geq C M^{2d/(4 + d)} n^{-4/(4 + d)}\Bigl(b^2 + b\sqrt{\frac{1}{\alpha}}\Bigr) ,
 	\end{equation} 
-	the Type II error is upper bounded by
-	\begin{equation*}
-	\Ebb_{f_0}\bigl[1 - \wh{\varphi} \bigr] \leq C\biggl(\frac{1}{b}\Bigl[1 + n^{-d/(4 + d)}M^{-2d/(4 + d)}\Bigr] + n\exp\bigl(-cnr^d\bigr)\biggr).
-	\end{equation*}
+	then the worst-case risk is upper bounded, $R_n(\wh{\varphi},H^1(\mc{X},M), \epsilon) \leq C/b + C_1n\exp(-c_1nr^d)\bigr)$.
 \end{theorem}
-\sbcomment{Personally, I wouldn't emphasize the Type II error so much in the Theorem (it is not tight and it's not an interesting quantity anyway), and write \eqref{eqn:laplacian_smoothing_testing} more directly as an upper bound on the critical radius (which is the interesting quantity). Otherwise you've introduced that terminology for no reason.}
+%\sbcomment{Personally, I wouldn't emphasize the Type II error so much in the Theorem (it is not tight and it's not an interesting quantity anyway), and write \eqref{eqn:laplacian_smoothing_testing} more directly as an upper bound on the critical radius (which is the interesting quantity). Otherwise you've introduced that terminology for no reason.}
 
 Some remarks:
 \begin{itemize}
@@ -704,21 +696,18 @@ In a similar vein, we obtain results for manifold adaptive testing under the fol
 \begin{theorem}
 	\label{thm:laplacian_smoothing_testing_manifold}
 	As in Theorem \ref{thm:laplacian_smoothing_testing}, but where $\Xset \subseteq \Rd$ is a manifold with intrinsic dimension $m < 4$, $M \leq M_{\max}(m)$, and the design distribution $P$ obeys \ref{asmp:domain_manifold}, \ref{asmp:density_manifold}.
-	There are constants $N,C,c>0$ such that for any $n \geq N$, and any $r$ as in \ref{asmp:ls_kernel_radius_testing_manifold}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$\rho = (nr^{m + 2})^{-1} n^{-4/(4 + m)} M^{-8/(4 + m)}$}, satisfies the following: for all $b \geq 1$, and $f_0$ such that
+	There are constants $N,C,C_1,c_1>0$ such that for any $n \geq N$, and any $r$ as in \ref{asmp:ls_kernel_radius_testing_manifold}, the Laplacian smoothing test \smash{$\wh{\varphi}$} based on the estimator \smash{$\wh{f}$} in \eqref{eqn:laplacian_smoothing}, with \smash{$\rho = (nr^{m + 2})^{-1} n^{-4/(4 + m)} M^{-8/(4 + m)}$}, satisfies the following: for any $b \geq 1$, if
 	\begin{equation}
 	\label{eqn:laplacian_smoothing_testing_manifold}
-	\bigl\|f_0\bigr\|_{\Leb^2(\Xset)}^2 \geq C b^2 M^{2m/(4 + m)} n^{-4/(4 + m)},
+	\epsilon^2 \geq C M^{2d/(4 + d)} n^{-4/(4 + d)}\Bigl(b^2 + b\sqrt{\frac{1}{\alpha}}\Bigr) ,
 	\end{equation} 
-	the Type II error is upper bounded by
-	\begin{equation*}
-	\Ebb_{f_0}\bigl[1 - \wh{\varphi} \bigr] \leq C\biggl(\frac{1}{b}\Bigl[1 + n^{-m/(4 + m)}M^{-2m/(4 + m)}\Bigr] + n\exp\bigl(-cnr^m\bigr)\biggr).
-	\end{equation*}
+	then the worst-case risk is upper bounded, $R_n(\wh{\varphi},H^1(\mc{X},M), \epsilon) \leq C/b + C_1n\exp(-c_1nr^d)\bigr)$.
 	% RJT: Alden, please verify that what I wrote is correct.
 	% AJG: Verified.
 \end{theorem}
-\sbcomment{Same comment as before on what to emphasize.}
+% \sbcomment{Same comment as before on what to emphasize.}
 
-The proof of Theorems \ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} proceeds in a similar manner to that of Theorems \ref{thm:laplacian_smoothing_estimation1} and \ref{thm:laplacian_smoothing_testing}. The key difference is that in the manifold setting, the equations \eqref{eqn:graph_sobolev_seminorm} and \eqref{eqn:neighborhood_eigenvalue} used to upper bound bias and variance will hold with $d$ replaced by $m$.
+The proofs of Theorems \ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} proceed in a similar manner to that of Theorems \ref{thm:laplacian_smoothing_estimation1} and \ref{thm:laplacian_smoothing_testing}. The key difference is that in the manifold setting, the equations \eqref{eqn:graph_sobolev_seminorm} and \eqref{eqn:neighborhood_eigenvalue} used to upper bound bias and variance will hold with $d$ replaced by $m$.
 
 We emphasize that little about $\Xset$ needs be known for Theorems~\ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} to hold. Indeed, all that is needed is the intrinsic dimension $m$, to properly tune $r$ and $\rho$ (from a theoretical point of view), and otherwise \smash{$\wh{f}$} and \smash{$\wh{\varphi}$} are computed without regard to $\Xset$. In contrast, the penalty in \eqref{eqn:thin_plate_spline} would have to be specially tailored to work in this setting, revealing another advantage of the discrete approach over the variational one.
 

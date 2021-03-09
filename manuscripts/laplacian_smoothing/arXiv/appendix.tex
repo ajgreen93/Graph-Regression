@@ -9,7 +9,7 @@ First, however, as promised in our main text we clarify what is meant by pointwi
 \begin{equation*}
 f^{\star}(x) = 
 \begin{dcases*}
-\lim_{\varepsilon \to 0} \frac{1}{\nu(B(x,\varepsilon))} \int_{B(x,\varepsilon)} f(x) dx,&~~\textrm{if the limit exists,} \\
+\lim_{\varepsilon \to 0} \frac{1}{\nu(B(x,\varepsilon))} \int_{B(x,\varepsilon)} f(z) dz,&~~\textrm{if the limit exists,} \\
 0,&~~\textrm{otherwise.}
 \end{dcases*}
 \end{equation*}
@@ -64,27 +64,27 @@ Here we have written $\Pbb_{f_0}(\cdot)$ for the probability law under the regre
 In Lemma~\ref{lem:linear_smoother_fixed_graph_testing}, we upper bound the error of a test involving the statistic $\|\wc{f}\|_2^2 = {\bf Y}^{\top} S^2 {\bf Y}$. We will require that $S$ be a \emph{contraction}, meaning that it has operator norm no greater than $1$, $\|Sv\|_2 \leq \|v\|_2$ for all $v \in \Reals^n$.
 \begin{lemma}
 	\label{lem:linear_smoother_fixed_graph_testing}
-	Let $\wc{T} = {\bf Y}^{\top} S^2 {\bf Y}$ for a square, symmetric matrix $S \in \Reals^{n \times n}$. Suppose $S$ is a contraction. Define the threshold $\wc{t}_b$ to be 
+	Let $\wc{T} = {\bf Y}^{\top} S^2 {\bf Y}$ for a square, symmetric matrix $S \in \Reals^{n \times n}$. Suppose $S$ is a contraction. Define the threshold $\wc{t}_{\alpha}$ to be 
 	\begin{equation}
 	\label{eqn:linear_smoother_fixed_graph_threshold}
-	\wc{t}_{b} := \norm{\lambdavec(S)}_2^2 + 2b \norm{\lambdavec(S)}_4^2.
+	\wc{t}_{\alpha} := \norm{\lambdavec(S)}_2^2 + \sqrt{\frac{2}{\alpha}} \norm{\lambdavec(S)}_4^2.
 	\end{equation}
 	It holds that:
 	\begin{itemize}
 		\item \textbf{Type I error.}
 		\begin{equation}
 		\label{eqn:linear_smoother_fixed_graph_testing_typeI}
-		\Pbb_0\bigl(\wc{T} > \wc{t}_b\bigr) \leq \frac{1}{b^2}.
+		\Pbb_0\bigl(\wc{T} > \wc{t}_{\alpha}\bigr) \leq \alpha.
 		\end{equation}
 		\item \textbf{Type II error.} Under the further assumption
 		\begin{equation}
 		\label{eqn:linear_smoother_fixed_graph_testing_critical_radius}
-		f_0^{\top} S^2 f_0 \geq 4b \norm{\lambdavec(S)}_4^2,
+		f_0^{\top} S^2 f_0 \geq \Bigl(2\sqrt{\frac{2}{\alpha}} + 2b\Bigr) \cdot \norm{\lambdavec(S)}_4^2,
 		\end{equation}
 		then
 		\begin{equation}
 		\label{eqn:linear_smoother_fixed_graph_testing_typeII}
-		\Pbb_{f_0}\bigl(\wc{T} \leq \wc{t}_b\bigr) \leq \frac{4}{b^2} + \frac{8}{b \norm{\lambdavec(S)}_4^{2}}.
+		\Pbb_{f_0}\bigl(\wc{T} \leq \wc{t}_{\alpha}\bigr) \leq \frac{1}{b^2} + \frac{16}{b \norm{\lambdavec(S)}_4^{2}}.
 		\end{equation}
 	\end{itemize}
 \end{lemma}
@@ -125,26 +125,26 @@ implying
 
 \textit{Bounding Type I and Type II error.} The upper bound \eqref{eqn:linear_smoother_fixed_graph_testing_typeI} on Type I error follows immediately from \eqref{pf:linear_smoother_fixed_graph_testing_mean}, \eqref{pf:linear_smoother_fixed_graph_testing_var}, and Chebyshev's inequality.
 
-We now establish the upper bound~\eqref{eqn:linear_smoother_fixed_graph_testing_typeII} on Type II error. From assumption~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius}, we see that $f_0^{\top} S^2 f_0^{\top} - \wc{t}_b \leq 0$. As a result,
+We now establish the upper bound~\eqref{eqn:linear_smoother_fixed_graph_testing_typeII} on Type II error. From assumption~\eqref{eqn:linear_smoother_fixed_graph_testing_critical_radius}, we see that $f_0^{\top} S^2 f_0^{\top} - \wc{t}_{\alpha} \leq 0$. As a result,
 \begin{align*}
-\Pbb_{f_0}\Bigl(\wc{T} \leq \wc{t}_b\Bigr) & = \Pbb_{f_0}\Bigl(\wc{T} - \Ebb_{f_0}\bigl[\wc{T}\bigr] \leq \wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr) \\ 
-& \leq \Pbb_{f_0}\Bigl(\Bigl|\wc{T} - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr| \geq \Bigl|\wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr|\Bigr) \\ 
-& \leq \frac{\Var_{f_0}\bigl[\wc{T}\bigr]}{\bigl(\wc{t}_b - \Ebb_{f_0}\bigl[\wc{T}\bigr]\bigr)^2},
+\Pbb_{f_0}\Bigl(\wc{T} \leq \wc{t}_{\alpha}\Bigr) & = \Pbb_{f_0}\Bigl(\wc{T} - \Ebb_{f_0}\bigl[\wc{T}\bigr] \leq \wc{t}_{\alpha} - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr) \\ 
+& \leq \Pbb_{f_0}\Bigl(\Bigl|\wc{T} - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr| \geq \Bigl|\wc{t}_{\alpha} - \Ebb_{f_0}\bigl[\wc{T}\bigr]\Bigr|\Bigr) \\ 
+& \leq \frac{\Var_{f_0}\bigl[\wc{T}\bigr]}{\bigl(\wc{t}_{\alpha} - \Ebb_{f_0}\bigl[\wc{T}\bigr]\bigr)^2},
 \end{align*}
-where the last line follows from Chebyshev's inequality. Plugging in the expressions~\eqref{pf:linear_smoother_fixed_graph_testing_mean} and~\eqref{pf:linear_smoother_fixed_graph_testing_var} for the mean and variance of $\wc{T}$, as well as the definition of $\wc{t}_b$ in~\eqref{eqn:linear_smoother_fixed_graph_threshold}, we obtain that
+where the last line follows from Chebyshev's inequality. Plugging in the expressions~\eqref{pf:linear_smoother_fixed_graph_testing_mean} and~\eqref{pf:linear_smoother_fixed_graph_testing_var} for the mean and variance of $\wc{T}$, as well as the definition of $\wc{t}_{\alpha}$ in~\eqref{eqn:linear_smoother_fixed_graph_threshold}, we obtain that
 \begin{equation}
 \label{pf:linear_smoother_fixed_graph_testing2}
-\Pbb_{f_0}\Bigl(\wc{T} \leq \wc{t}_b\Bigr) \leq \frac{4\|\lambdavec(S)\|_4^4}{\bigl(f_0^{\top}S^2f_0 - 2b \norm{\lambdavec(S)}_4^2\bigr)^2} + \frac{8f_0^{\top}S^4f_0 }{\bigl(f_0^{\top}S^2f_0 - 2b \norm{\lambdavec(S)}_4^2\bigr)^2}.
+\Pbb_{f_0}\Bigl(\wc{T} \leq \wc{t}_{\alpha}\Bigr) \leq \frac{4\|\lambdavec(S)\|_4^4}{\bigl(f_0^{\top}S^2f_0 - \sqrt{2/\alpha} \norm{\lambdavec(S)}_4^2\bigr)^2} + \frac{8f_0^{\top}S^4f_0 }{\bigl(f_0^{\top}S^2f_0 - \sqrt{2/\alpha} \norm{\lambdavec(S)}_4^2\bigr)^2}.
 \end{equation}
-We now use the assumed lower bound $f_0^{\top} S^2 f_0 \geq 4b \norm{\lambdavec(S)}_4^2$ to separately upper bound each of the two terms on the right hand side of~\eqref{pf:linear_smoother_fixed_graph_testing2}. It follows immediately that
+We now use the assumed lower bound $f_0^{\top} S^2 f_0 \geq (2\sqrt{2/\alpha} + 2b) \norm{\lambdavec(S)}_4^2$ to separately upper bound each of the two terms on the right hand side of~\eqref{pf:linear_smoother_fixed_graph_testing2}. It follows immediately that
 \begin{equation}
 \label{pf:linear_smoother_fixed_graph_testing2.5}
-\frac{4 \|\lambdavec(S)\|_4^4}{\bigl(f_0^{\top}S^2f_0 - 2b \norm{\lambdavec(S)}_4^2\bigr)^2} \leq \frac{1}{b^2},
+\frac{4 \|\lambdavec(S)\|_4^4}{\bigl(f_0^{\top}S^2f_0 - \sqrt{2/\alpha} \norm{\lambdavec(S)}_4^2\bigr)^2} \leq \frac{1}{b^2},
 \end{equation}
 giving a sufficient upper bound on the first term. Now we upper bound the second term,
 \begin{equation}
 \label{pf:linear_smoother_fixed_graph_testing3}
-\frac{8f_0^{\top}S^4f_0 }{\bigl(f_0^{\top}S^2f_0 - 2b \norm{\lambdavec(S)}_4^2\bigr)^2} \leq \frac{32 f_0^{\top}S^4f_0 }{\bigl(f_0^{\top}S^2f_0\bigr)^2} \leq \frac{8}{b \|\lambdavec(S)\|_4^2} \frac{f_0^{\top}S^4f_0 }{f_0^{\top}S^2f_0} \leq \frac{8}{b \|\lambdavec(S)\|_4^2},
+\frac{8f_0^{\top}S^4f_0 }{\bigl(f_0^{\top}S^2f_0 - \sqrt{2/\alpha} \norm{\lambdavec(S)}_4^2\bigr)^2} \leq \frac{32 f_0^{\top}S^4f_0 }{\bigl(f_0^{\top}S^2f_0\bigr)^2} \leq \frac{16}{b \|\lambdavec(S)\|_4^2} \frac{f_0^{\top}S^4f_0 }{f_0^{\top}S^2f_0} \leq \frac{16}{b \|\lambdavec(S)\|_4^2},
 \end{equation}
 where the final inequality is satisfied because $S$ is a contraction. Plugging~\eqref{pf:linear_smoother_fixed_graph_testing2.5} and~\eqref{pf:linear_smoother_fixed_graph_testing3} back into~\eqref{pf:linear_smoother_fixed_graph_testing2} then gives the desired result.\\
 %\sbcomment{I think the first equality should be the negative of what you wrote?} \\
@@ -163,7 +163,7 @@ Upper bounds on the mean squared error of $\wh{f}$, and Type I and Type II error
 \end{lemma}
 Recall that 
 \begin{equation*}
-\wh{t}_b := \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k + 1\bigr)^2} + \frac{2b}{n}\sqrt{\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k + 1\bigr)^4}}.
+\wh{t}_{\alpha} := \frac{1}{n}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k + 1\bigr)^2} + \frac{1}{n}\sqrt{\frac{2}{\alpha}\sum_{k = 1}^{n} \frac{1}{\bigl(\rho \lambda_k + 1\bigr)^4}}.
 \end{equation*}
 \begin{lemma}
 	\label{lem:ls_fixed_graph_testing}
@@ -172,17 +172,17 @@ Recall that
 		\item \textbf{Type I error.}
 		\begin{equation}
 		\label{eqn:ls_fixed_graph_testing_typeI}
-		\Pbb_0\Bigl(\wh{T} > \wh{t}_b\Bigr) \leq \frac{1}{b^2}.
+		\Pbb_0\Bigl(\wh{T} > \wh{t}_{\alpha}\Bigr) \leq \alpha.
 		\end{equation}
 		\item \textbf{Type II error.} If
 		\begin{equation}
 		\label{eqn:ls_fixed_graph_testing_critical_radius}
-		\frac{1}{n}\norm{f_0}_2^2 \geq \frac{2 \rho}{n} \bigl(f_0^{\top} \Lap f_0\bigr) + \frac{4b}{n} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{1/2},
+		\frac{1}{n}\norm{f_0}_2^2 \geq \frac{2 \rho}{n} \bigl(f_0^{\top} \Lap f_0\bigr) + \frac{2\sqrt{2/\alpha} + 2b}{n} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{1/2},
 		\end{equation}
 		then
 		\begin{equation}
 		\label{eqn:ls_fixed_graph_testing_typeII}
-		\Pbb_{f_0}\Bigl(\wh{T}(G) \leq \wh{t}_b\Bigr) \leq \frac{4}{b^2} + \frac{8}{b} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{-1/2}.
+		\Pbb_{f_0}\Bigl(\wh{T}(G) \leq \wh{t}_{\alpha}\Bigr) \leq \frac{1}{b^2} + \frac{16}{b} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{-1/2}.
 		\end{equation}
 	\end{itemize}
 \end{lemma}
@@ -201,14 +201,14 @@ We deduce the following upper bound on the bias term,
 & \leq f_0^{\top} \Lap f_0 \cdot \rho.
 \end{aligned}
 \end{equation*} 
-In the above, we have written $\Lap^{-1/2}$ for the square root of the pseudoinverse of $\Lap$, and the maximum is over all indices $k$ such that $\lambda_k > 0$. The claim of the Lemma then follows from Lemma~\ref{lem:linear_smoother_fixed_graph_estimation}.
+In the above, we have written $\Lap^{-1/2}$ for the square root of the pseudoinverse of $\Lap$, the maximum is over all indices $k$ such that $\lambda_k > 0$, and the last inequality follows from the basic algebraic identity $1 - 1/(1 + x)^2 \leq 2 x$ for any $x > 0$. The claim of the Lemma then follows from Lemma~\ref{lem:linear_smoother_fixed_graph_estimation}.
 
 \paragraph{Proof of Lemma~\ref{lem:ls_fixed_graph_testing}.}
 Let $\wh{S} := (I + \rho L)^{-1}$, so that $\wh{T} = \frac{1}{n}{\bf Y}^{\top} \wh{S}^2 {\bf Y}$. Note that $\wh{S}$ is a contraction, so that we may invoke Lemma~\ref{lem:linear_smoother_fixed_graph_testing}. The bound on Type I error \eqref{eqn:ls_fixed_graph_testing_typeI} follows immediately from \eqref{eqn:linear_smoother_fixed_graph_testing_typeI}. 
 To establish the bound on Type II error, we must lower bound $f_0^{\top} \wh{S}^2 f_0$. We first note that by assumption \eqref{eqn:ls_fixed_graph_testing_critical_radius},
 \begin{align*}
 f_0^{\top} \wh{S}^2 f_0 & = \bigl\|f_0\bigr\|_2^2 - f_0^{\top}(I - \wh{S}^2)f_0 \\
-& \geq 2 \rho \bigl(f_0^{\top} \Lap f_0\bigr) - f_0^{\top}\bigl(I - \wh{S}^2\bigr)f_0 + 4b \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{-1/2}.
+& \geq 2 \rho \bigl(f_0^{\top} \Lap f_0\bigr) - f_0^{\top}\bigl(I - \wh{S}^2\bigr)f_0 +  \Bigl(2\sqrt{\frac{2}{\alpha}} + 2b\Bigr) \cdot \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{-1/2}.
 \end{align*}
 Upper bounding $f_0^{\top}\bigl(I - \wh{S}^2\bigr)f_0$ as follows:
 \begin{equation*}
@@ -219,9 +219,9 @@ f_0^{\top} \Bigl(\Id - \wh{S}^2\Bigr) f_0  & = f_0^{\top} \Lap^{1/2} \Lap^{-1/2}
 & \leq f_0^{\top} \Lap f_0 \cdot 2\rho,
 \end{aligned}
 \end{equation*}
----where in the above the maximum is over all indices $k$ such that $\lambda_k > 0$, and the last inequality follows from the basic algebraic identity $1 - 1/(1 + x)^2 \leq 2 x$ for any $x > 0$ \sbcomment{You've used this before, so maybe move this comment earlier?}---we deduce that
+---where in the above the maximum is over all indices $k$ such that $\lambda_k > 0$---we deduce that
 \begin{equation*}
-f_0^{\top} \wh{S}^2 f_0 \geq 4b \biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \biggr)^{-1/2}.
+f_0^{\top} \wh{S}^2 f_0 \geq  \Bigl(2\sqrt{\frac{2}{\alpha}} + 2b\Bigr) \cdot \biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \biggr)^{-1/2}.
 \end{equation*} 
 The upper bound on Type II error \eqref{eqn:ls_fixed_graph_testing_typeII} then follows from Lemma~\ref{lem:linear_smoother_fixed_graph_testing}.
 
@@ -1244,26 +1244,26 @@ The proof of Theorem~\ref{thm:laplacian_smoothing_estimation_manifold} follows e
 \paragraph{Proof of Theorem~\ref{thm:laplacian_smoothing_testing}.}
 Let $\delta = 1/b$. Recall that we have shown that the inequalities \eqref{eqn:graph_sobolev_seminorm} and \eqref{eqn:neighborhood_eigenvalue} are satisfied with probability at least $1 - 1/b - C_1n\exp(-c_1nr^d)$, and throughout this proof we take as granted that both of these inequalities hold. 
 
-Now, we would like to invoke Lemma~\ref{lem:ls_fixed_graph_testing}, and in order to do so, we must show that the inequality \eqref{eqn:ls_fixed_graph_testing_critical_radius} is satisfied with respect to $G = G_{n,r}$. First, we upper bound the right hand side of this inequality. Set $\wt{\rho} = M^{-8/(4 + d)}n^{-4/(4 + d)}$ as prescribed by Theorem~\ref{thm:laplacian_smoothing_testing}, it follows from \eqref{eqn:graph_sobolev_seminorm} and \eqref{eqn:neighborhood_eigenvalue} that
+Now, we would like to invoke Lemma~\ref{lem:ls_fixed_graph_testing}, and in order to do so, we must show that the inequality \eqref{eqn:ls_fixed_graph_testing_critical_radius} is satisfied with respect to $G = G_{n,r}$. First, we upper bound the right hand side of this inequality. Setting $\wt{\rho} = M^{-8/(4 + d)}n^{-4/(4 + d)}$ as prescribed by Theorem~\ref{thm:laplacian_smoothing_testing}, it follows from \eqref{eqn:graph_sobolev_seminorm} and \eqref{eqn:neighborhood_eigenvalue} that
 \begin{align*}
-\frac{2 \rho}{n} \bigl(f_0^{\top} \Lap f_0\bigr) + \frac{4b}{n} \biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \biggr)^{1/2} & \leq C_2b\wt{\rho}M^2 + \frac{4b}{n}\Biggl[1 + \frac{1}{c_3^2}\biggl(\sum_{k = 2}^{n} \frac{1}{(\wt{\rho}k^{2/d} + 1)^4} \biggr)^{1/2} + \frac{r^4n^{1/2}}{c_3^2\wt{\rho}^2}\Biggr] \\
-& \leq C_2b\wt{\rho}M^2 + \frac{4b}{n}\biggl(1 + \frac{\sqrt{2}}{c_3^{2}}\wt{\rho}^{-d/4} + \frac{r^4n^{1/2}}{c_3^2\wt{\rho}^2}\biggr) \\ 
-& \leq \Bigl(C_2 + 4 + \frac{4\sqrt{2}}{c_3^{2}} + \frac{4}{c_3^2}\Bigr)bM^{2d/(4 + d)} n^{-4/(4 + d)}.
+\frac{2 \rho}{n} \bigl(f_0^{\top} \Lap f_0\bigr) + \frac{2\sqrt{2/\alpha} + 2b}{n} \biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \biggr)^{1/2} & \leq C_2b\wt{\rho}M^2 + \frac{2\sqrt{2/\alpha} + 2b}{n}\Biggl[1 + \frac{1}{c_3^2}\biggl(\sum_{k = 2}^{n} \frac{1}{(\wt{\rho}k^{2/d} + 1)^4} \biggr)^{1/2} + \frac{r^4n^{1/2}}{c_3^2\wt{\rho}^2}\Biggr] \\
+& \leq C_2b\wt{\rho}M^2 + \frac{2\sqrt{2/\alpha} + 2b}{n}\biggl(1 + \frac{\sqrt{2}}{c_3^{2}}\wt{\rho}^{-d/4} + \frac{r^4n^{1/2}}{c_3^2\wt{\rho}^2}\biggr) \\ 
+& \leq \Bigl(C_2 + 2 + \frac{2\sqrt{2}}{c_3^{2}} + \frac{2}{c_3^2}\Bigr)\cdot \Bigl(\sqrt{\frac{2}{\alpha}} + b\Bigr) \cdot M^{2d/(4 + d)} n^{-4/(4 + d)}.
 \end{align*}
 The second inequality in the above is justified by Lemma~\ref{lem:variance_term_testing}, keeping in mind that $M \leq M_{\max}(d)$ implies that $\wt{\rho}^{-d/2} \leq n$. The third inequality follows from the upper bound on $r$ assumed in~\ref{asmp:ls_kernel_radius_testing} as well as the fact that $M \geq n^{-1/2}$.
 
-Next we lower bound the left hand side of the inequality \eqref{eqn:ls_fixed_graph_testing_critical_radius}---i.e. we lower bound the empirical norm $\|f_0\|_n^2$---using Lemma~\ref{lem:empirical_norm_sobolev}. Recall that by assumption, $M \leq M_{\max}(d)$. Therefore, taking $C \geq C_6$ in \eqref{eqn:laplacian_smoothing_testing}, implies that the lower bound on $\|f\|_{\Leb^2(\mc{X})}$ in \eqref{eqn:empirical_norm_sobolev_1} is satisfied. As a result, it follows from \eqref{eqn:empirical_norm_sobolev} that
+Next we lower bound the left hand side of the inequality \eqref{eqn:ls_fixed_graph_testing_critical_radius}---i.e. we lower bound the empirical norm $\|f_0\|_n^2$---using Lemma~\ref{lem:empirical_norm_sobolev}. Recall that by assumption, $M \leq M_{\max}(d)$. Therefore, taking $C \geq C_6$ in \eqref{eqn:laplacian_smoothing_testing} implies that the lower bound on $\|f\|_{\Leb^2(\mc{X})}$ in \eqref{eqn:empirical_norm_sobolev_1} is satisfied. As a result, it follows from \eqref{eqn:empirical_norm_sobolev} that
 \begin{equation*}
-\|f\|_n^2 \geq \frac{\mathbb{E}[\|f\|_n^2]}{b} \geq \frac{p_{\min}}{b} \|f\|_{\Leb^2(\Xset)}^2 \geq CbM^{2d/(4 + d)}n^{-4/(4 + d)},
+\|f\|_n^2 \geq \frac{\mathbb{E}[\|f\|_n^2]}{b} \geq \frac{p_{\min}}{b} \|f\|_{\Leb^2(\Xset)}^2 \geq C\Bigl(\sqrt{\frac{1}{\alpha}} + b\Bigr)M^{2d/(4 + d)}n^{-4/(4 + d)},
 \end{equation*}
-with probability at least $1 - 5/b$. Taking $C \geq C_2 + 4 + (4\sqrt{2})/c_3^{2} + 4/c_3^2$ in \eqref{eqn:laplacian_smoothing_testing} thus implies \eqref{eqn:ls_fixed_graph_testing_critical_radius}, and we may therefore use Lemma~\ref{lem:ls_fixed_graph_testing} to upper bound the type II error the Laplacian smoothing test $\wh{\varphi}$. Observe that by \eqref{eqn:neighborhood_eigenvalue} and the lower bound in Lemma~\ref{lem:variance_term_testing}, 
+with probability at least $1 - 5/b$. Taking $C \geq C_2 + 2 + (2\sqrt{2})/c_3^{2} + 2/c_3^2$ in \eqref{eqn:laplacian_smoothing_testing} thus implies \eqref{eqn:ls_fixed_graph_testing_critical_radius}, and we may therefore use Lemma~\ref{lem:ls_fixed_graph_testing} to upper bound the type II error the Laplacian smoothing test $\wh{\varphi}$. Observe that by \eqref{eqn:neighborhood_eigenvalue} and the lower bound in Lemma~\ref{lem:variance_term_testing}, 
 \begin{equation*}
 \sum_{k = 1}^{n} \biggl(\frac{1}{\rho \lambda_k + 1}\biggr)^4 \geq 1 + \frac{1}{C_3^4}\sum_{k = 2}^{n}\biggl(\frac{1}{\wt{\rho}k^{2/d} + 1}\biggr)^4 \geq \frac{1}{32C_3^4}\wt{\rho}^{-d/2}.
 \end{equation*}
 We conclude that
 \begin{align*}
-\Pbb_{f_0}\bigl(\wh{T} \leq \wh{t}_b\bigr) & \leq \frac{6}{b} + \frac{4}{b^2} + \frac{8}{b} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{-1/2} + C_1n\exp(-c_1nr^d)\\
-& \leq \frac{10}{b} + \frac{32\sqrt{2}}{b} C_3^{2}\wt{\rho}^{d/4} + C_1n\exp(-c_1nr^d),
+\Pbb_{f_0}\bigl(\wh{T} \leq \wh{t}_{\alpha}\bigr) & \leq \frac{6}{b} + \frac{1}{b^2} + \frac{16}{b} \Biggl(\sum_{k = 1}^{n} \frac{1}{(\rho\lambda_k + 1)^4} \Biggr)^{-1/2} + C_1n\exp(-c_1nr^d)\\
+& \leq \frac{7}{b} + \frac{64\sqrt{2}}{b} C_3^{2}\wt{\rho}^{d/4} + C_1n\exp(-c_1nr^d),
 \end{align*}
 establishing the claim of Theorem~\ref{thm:laplacian_smoothing_testing}.
 
@@ -1271,7 +1271,7 @@ establishing the claim of Theorem~\ref{thm:laplacian_smoothing_testing}.
 The proof of Theorem~\ref{thm:laplacian_smoothing_testing_manifold} follows exactly the same steps as the proof of Theorem~\ref{thm:laplacian_smoothing_testing}, replacing the references to Lemma~\ref{lem:graph_sobolev_seminorm} and~\ref{lem:neighborhood_eigenvalue} by references to Propositions~\ref{prop:garciatrillos19_1} and \eqref{eqn:neighborhood_eigenvalue_manifold}, and the ambient dimension $d$ by the intrinsic dimension $m$.
 
 \paragraph{Proof of \eqref{eqn:laplacian_smoothing_testing_low_smoothness}.}
-When $\rho = 0$, the Laplacian smoother $\wh{f} = \mathbf{Y}$, the test statistic $\wh{T} = \frac{1}{n}\|\mathbf{Y}\|_2^2$, and the threshold $\wh{t}_b = 1 + 2bn^{-1/2}$. The expectation of $\wh{T}$ is 
+When $\rho = 0$, the Laplacian smoother $\wh{f} = \mathbf{Y}$, the test statistic $\wh{T} = \frac{1}{n}\|\mathbf{Y}\|_2^2$, and the threshold $\wh{t}_{\alpha} = 1 + 2bn^{-1/2}$. The expectation of $\wh{T}$ is 
 \begin{equation*}
 \Ebb\bigl[\wh{T}\bigr] = \mathbb{E}\bigl[f_0^2(X)\bigr] + 1 \geq p_{\min} \norm{f_0}_{\Leb^2(\Xset)}^2 + 1.
 \end{equation*}
@@ -1283,9 +1283,9 @@ Now, let us assume that
 \begin{equation*}
 \norm{f_0}_{\Leb^2(X)}^2 \geq \frac{4b}{p_{\min}} n^{-1/2},
 \end{equation*}
-so that $E[\wh{T}] - \wh{t}_b \geq E[f_0^2(X)]/2$. Hence, by Chebyshev's inequality
+so that $E[\wh{T}] - \wh{t}_{\alpha} \geq E[f_0^2(X)]/2$. Hence, by Chebyshev's inequality
 \begin{align*}
-\mathbb{P}_{f_0}\Bigl(\wh{T} \leq \wh{t}_b \Bigr) & \leq 4 \frac{\Var_{f_0}\bigl[\wh{T}\bigr]}{\mathbb{E}[f_0^2(X)]^2} \\
+\mathbb{P}_{f_0}\Bigl(\wh{T} \leq \wh{t}_{\alpha} \Bigr) & \leq 4 \frac{\Var_{f_0}\bigl[\wh{T}\bigr]}{\mathbb{E}[f_0^2(X)]^2} \\
 & \leq \frac{4}{n} \cdot \frac{ 3 + p_{\max}\bigl(M^4 + \|f_0\|_{\Leb^2(\Xset)}^2 \bigr)}{p_{\min}^2 \|f_0\|_{\Leb^2(\Xset)}^4} \\
 & \leq \frac{1}{16b^2}\Bigl(3 + \frac{4bp_{\max}}{p_{\min}n^{1/2}} + p_{\max}M^4\Bigr).
 \end{align*}
