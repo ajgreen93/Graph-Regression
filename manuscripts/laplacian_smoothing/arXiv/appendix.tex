@@ -228,26 +228,26 @@ The upper bound on Type II error \eqref{eqn:ls_fixed_graph_testing_typeII} then 
 \section{Neighborhood graph Sobolev semi-norm}
 \label{sec:graph_sobolev_seminorm}
 
-In this section, we prove Lemma~\ref{lem:graph_sobolev_seminorm}, which states an upper bound on $f^{\top} \Lap_{n,r} f$ that holds when $f$ is bounded in Sobolev norm. We also establish stronger bounds in the case when $f$ has a bounded Lipschitz constant; this latter result justifies one of our remarks after Theorem~\ref{thm:laplacian_smoothing_estimation1}. 
+In this section, we prove Lemma~\ref{lem:graph_sobolev_seminorm}, which states an upper bound on $f^{\top} L f$ that holds when $f$ is bounded in Sobolev norm. We also establish stronger bounds in the case when $f$ has a bounded Lipschitz constant; this latter result justifies one of our remarks after Theorem~\ref{thm:laplacian_smoothing_estimation1}. 
 
 Throughout this proof, we will assume that $f \in H^1(\Xset)$ has zero-mean, meaning $\int_{\Xset} f(x) \,dx = 0$. This is without loss of generality---assuming for the moment that \eqref{eqn:graph_sobolev_seminorm} holds for zero-mean functions, for any $f \in H^1(\Xset)$, taking $a = \int_{\Xset} f(x) \,dx$ and $g = f - a$, we have that
 \begin{equation*}
-f^{\top} L_{n,r} f = g^{\top} L_{n,r} g \leq \frac{C_2}{\delta} n^2 r^{d + 2} |g|_{H^1(\mc{X})}^2 = \frac{C_2}{\delta} n^2 r^{d + 2} |f|_{H^1(\mc{X})}^2.
+f^{\top} L f = g^{\top} L g \leq \frac{C_2}{\delta} n^2 r^{d + 2} |g|_{H^1(\mc{X})}^2 = \frac{C_2}{\delta} n^2 r^{d + 2} |f|_{H^1(\mc{X})}^2.
 \end{equation*} 
 Now, for any zero-mean function $f \in H^1(\mc{X})$ it follows by the Poincare inequality (see Section 5.8, Theorem 1 of \citet{evans10}) that $\|f\|_{H^1(\mc{X})}^2 \leq C_8 |f|_{H^1(\mc{X})}^2$, for some constant $C_8$ that does not depend on $f$. Therefore, to prove Lemma~\ref{lem:graph_sobolev_seminorm}, it suffices to show that
 \begin{equation*}
-\Ebb\Bigl[f^{\top} \Lap_{n,r} f\Bigr] \leq C n^2 r^{d + 2} \|f\|_{H^1(\Xset)}^2,
+\Ebb\Bigl[f^{\top} L f\Bigr] \leq C n^2 r^{d + 2} \|f\|_{H^1(\Xset)}^2,
 \end{equation*}
-since the high-probability upper bound then follows immediately by Markov's inequality. (Recall that $\Lap_{n,r}$ is positive semi-definite, and therefore $f^{\top} \Lap_{n,r} f$ is a non-negative random variable).
+since the high-probability upper bound then follows immediately by Markov's inequality. (Recall that $L$ is positive semi-definite, and therefore $f^{\top} L f$ is a non-negative random variable).
 
 Since
 \begin{equation*}
-f^{\top} \Lap_{n,r} f = \frac{1}{2}\sum_{i, j = 1}^{n} \bigl(f(X_i) - f(X_j)\bigr)^2 W_{ij},
+f^{\top} L f = \frac{1}{2}\sum_{i, j = 1}^{n} \bigl(f(X_i) - f(X_j)\bigr)^2 W_{ij},
 \end{equation*}
 it follows that
 \begin{equation}
 \label{pf:first_order_graph_sobolev_seminorm_1}
-\Ebb\Bigl[f^{\top} \Lap_{n,r} f\Bigr] = \frac{n(n - 1)}{2} \Ebb\biggl[\Bigl(f(X') - f(X)\Bigr)^2 K\biggl(\frac{\|X' - X\|}{r}\biggr)\biggr],
+\Ebb\Bigl[f^{\top} L f\Bigr] = \frac{n(n - 1)}{2} \Ebb\biggl[\Bigl(f(X') - f(X)\Bigr)^2 K\biggl(\frac{\|X' - X\|}{r}\biggr)\biggr],
 \end{equation}
 where $X$ and $X'$ are random variables independently drawn from $P$.
 
@@ -284,19 +284,19 @@ proving the claim of Lemma~\ref{lem:graph_sobolev_seminorm} upon taking $C_2 := 
 
 \subsection{Stronger bounds under Lipschitz assumption}
 
-Suppose $f$ satisfies $|f(x') - f(x)| \leq M \|x - x\|$ for all $x,x' \in \mc{X}$. Then we can strengthen the high probability bound in Lemma~\ref{lem:graph_sobolev_seminorm} from $1 - \delta$ to $1 - \delta^2/n$, at the cost of only a constant factor in the upper bound on $f^{\top} \Lap_{n,r} f$.
+Suppose $f$ satisfies $|f(x') - f(x)| \leq M \|x - x\|$ for all $x,x' \in \mc{X}$. Then we can strengthen the high probability bound in Lemma~\ref{lem:graph_sobolev_seminorm} from $1 - \delta$ to $1 - \delta^2/n$, at the cost of only a constant factor in the upper bound on $f^{\top} L f$.
 \begin{proposition}
 	\label{prop:graph_sobolev_seminorm_lipschitz}
 	Let $r \geq C_0(\log n/n)^{1/d}$. For any $f$ such that $|f(x') - f(x)| \leq M \|x - x\|$ for all $x,x' \in \mc{X}$, with probability at least $1 - C\delta^2/n$ it holds that
 	\begin{equation*}
-	f^{\top} \Lap_{n,r} f \leq \biggl(\frac{1}{\delta} + C_2\biggr) n^2 r^{d + 2} M^2.
+	f^{\top} L f \leq \biggl(\frac{1}{\delta} + C_2\biggr) n^2 r^{d + 2} M^2.
 	\end{equation*}
 \end{proposition}
 
 \paragraph{Proof of Proposition~\ref{prop:graph_sobolev_seminorm_lipschitz}.}
-We will prove Proposition~\ref{prop:graph_sobolev_seminorm_lipschitz} using Chebyshev's inequality, so the key step is to upper bound the variance of $f^{\top}\Lap_{n,r}f$. Putting $\varDelta_{ij} := K(\|X_i - X_j\|/r) \cdot (f(X_i) - f(X_j))^2$, we can write the variance of $f^{\top} \Lap_{n,r} f$ as a sum of covariances,
+We will prove Proposition~\ref{prop:graph_sobolev_seminorm_lipschitz} using Chebyshev's inequality, so the key step is to upper bound the variance of $f^{\top}Lf$. Putting $\varDelta_{ij} := K(\|X_i - X_j\|/r) \cdot (f(X_i) - f(X_j))^2$, we can write the variance of $f^{\top} L f$ as a sum of covariances,
 \begin{equation*}
-\Var\bigl[f^{\top} \Lap_{n,r} f\bigr] = \frac{1}{4} \sum_{i, j = 1}^{n} \sum_{\ell,m = 1}^{n} \Cov\bigl[\varDelta_{ij},\varDelta_{\ell m}\bigr].
+\Var\bigl[f^{\top} L f\bigr] = \frac{1}{4} \sum_{i, j = 1}^{n} \sum_{\ell,m = 1}^{n} \Cov\bigl[\varDelta_{ij},\varDelta_{\ell m}\bigr].
 \end{equation*}
 Clearly $\Cov\bigl[\varDelta_{ij},\varDelta_{\ell m}\bigr]$ depends on the cardinality of $I := \{i,j,k,\ell\}$; we divide into cases, and upper bound the covariance in each case.
 \begin{enumerate}
@@ -319,24 +319,24 @@ Clearly $\Cov\bigl[\varDelta_{ij},\varDelta_{\ell m}\bigr]$ depends on the cardi
 \end{enumerate}
 Therefore
 \begin{equation*}
-\Var\bigl[f^{\top} \Lap_{n,r} f\bigr] \leq n^3 p_{\max}^3 M^4 r^{4 + 2d} + n^2 p_{\max}^2 M^4 r^{4 + d} K(0) \leq C M^4 n^3r^{4 + 2d},
+\Var\bigl[f^{\top} L f\bigr] \leq n^3 p_{\max}^3 M^4 r^{4 + 2d} + n^2 p_{\max}^2 M^4 r^{4 + d} K(0) \leq C M^4 n^3r^{4 + 2d},
 \end{equation*}
 where the latter inequality follows since $nr^d \gg 1$. For any $\delta > 0$, it follows from Chebyshev's inequality that
 \begin{equation*}
-\Pbb\biggl(\Bigl|f^{\top} \Lap_{n,r} f - \Ebb\bigl[f^{\top} \Lap_{n,r} f\bigr]\Bigr| \geq \frac{M^2}{\delta}n^2 r^{d + 2}\biggr) \leq C\frac{\delta^2}{n},
+\Pbb\biggl(\Bigl|f^{\top} L f - \Ebb\bigl[f^{\top} L f\bigr]\Bigr| \geq \frac{M^2}{\delta}n^2 r^{d + 2}\biggr) \leq C\frac{\delta^2}{n},
 \end{equation*}
-and since we have already upper bounded $\Ebb\bigl[f^{\top} \Lap_{n,r} f\bigr] \leq C_2 M^2 n^2 r^{d + 2}$, the proposition follows. 
+and since we have already upper bounded $\Ebb\bigl[f^{\top} L f\bigr] \leq C_2 M^2 n^2 r^{d + 2}$, the proposition follows. 
 
 Note that the bound on $\Var[\varDelta_{i j}]$ follows as long as we can control $\|\nabla f\|_{\Leb^4(\Xset)}$; this implies the Lipschitz assumption---which gives us control of $\|\nabla f\|_{\Leb^{\infty}(\Xset)}$---can be weakened. However, the Sobolev assumption---which gives us control only over $\|\nabla f\|_{\Leb^2(\Xset)}$---will not do the job. 
 
 \section{Bounds on neighborhood graph eigenvalues}
 \label{sec:graph_eigenvalues}
 
-In this section, we prove Lemma~\ref{lem:neighborhood_eigenvalue}, following the lead of~\citet{burago2014,trillos2019,calder2019}, who establish similar results with respect to a manifold without boundary. To prove this lemma, in  Theorem~\ref{thm:neighborhood_eigenvalue} we give estimates on the difference between eigenvalues of the graph Laplacian $L_{n,r}$ and eigenvalues of the weighted Laplace-Beltrami operator $\Delta_P$. We recall $\Delta_P$ is defined as
+In this section, we prove Lemma~\ref{lem:neighborhood_eigenvalue}, following the lead of~\citet{burago2014,trillos2019,calder2019}, who establish similar results with respect to a manifold without boundary. To prove this lemma, in  Theorem~\ref{thm:neighborhood_eigenvalue} we give estimates on the difference between eigenvalues of the graph Laplacian $L$ and eigenvalues of the weighted Laplace-Beltrami operator $\Delta_P$. We recall $\Delta_P$ is defined as
 \begin{equation*}
 \Delta_Pf(x) := -\frac{1}{p(x)} \dive\bigl(p^2\nabla f\bigr)(x).
 \end{equation*}
-To avoid confusion, in this section we write $\lambda_k(G_{n,r})$ for the $k$th smallest eigenvalue of the graph Laplacian matrix $\Lap_{n,r}$ and $\lambda_k(\Delta_P)$ for the $k$th smallest eigenvalue of $\Delta_P$ \footnote{Under the assumptions~\ref{asmp:domain} and~\ref{asmp:density}, the operator $\Delta_P$ has a discrete spectrum; see \citet{garciatrillos18} \sbcomment{Fix this reference, typos.} for more details.}. Some other notation: throughout this section, we will write $A, A_0, A_1,\ldots$ and $a,a_0,a_1,\ldots$ for constants which may depend on $\Xset$, $d$, $K$, and $p$, but do not depend on $n$; we keep track of all such constants explicitly in our proofs. We let $L_K$ denote the Lipschitz constant of the kernel $K$. Finally, for notational ease we set $\theta$ and $\wt{\delta}$ to be the following (small) positive numbers:
+To avoid confusion, in this section we write $\lambda_k(G_{n,r})$ for the $k$th smallest eigenvalue of the graph Laplacian matrix $L$ and $\lambda_k(\Delta_P)$ for the $k$th smallest eigenvalue of $\Delta_P$ \footnote{Under the assumptions~\ref{asmp:domain} and~\ref{asmp:density}, the operator $\Delta_P$ has a discrete spectrum; see \citet{garciatrillos18} for more details.}. Some other notation: throughout this section, we will write $A, A_0, A_1,\ldots$ and $a,a_0,a_1,\ldots$ for constants which may depend on $\Xset$, $d$, $K$, and $p$, but do not depend on $n$; we keep track of all such constants explicitly in our proofs. We let $L_K$ denote the Lipschitz constant of the kernel $K$. Finally, for notational ease we set $\theta$ and $\wt{\delta}$ to be the following (small) positive numbers:
 \begin{equation}
 \label{asmp:smallness}
 \wt{\delta} := \max\Biggl\{n^{-1/d}, \min\biggl\{\frac{1}{2^{d + 3}A_0}, \frac{1}{A_3}, \frac{K(1)}{8L_KA_0}, \frac{1}{8\max\{A_1,A\}c_0}\biggr\}r\Biggr\},~~\textrm{and}~~
@@ -360,9 +360,6 @@ We note that each of $\wt{\delta}, \theta$ and $\wt{\delta}/r$ are of at most co
 Before moving forward to the proofs of Lemma~\ref{lem:neighborhood_eigenvalue} and Theorem~\ref{thm:neighborhood_eigenvalue}, it is worth being clear about the differences between Theorem~\ref{thm:neighborhood_eigenvalue} and the results of \citet{burago2014,trillos2019,calder2019}. First of all, the reason we cannot directly use the results of these works in the proof of Lemma~\ref{lem:neighborhood_eigenvalue} is that they all assume the domain $\mc{X}$ is without boundary, whereas for our results in Section~\ref{sec:minimax_optimal_laplacian_smoothing} we instead assume $\mc{X}$ has a (Lipschitz smooth) boundary. Fortunately, in this setting the high-level strategy shared by \citet{burago2014,trillos2019,calder2019} can still be used---indeed we follow it closely, as we summarize in Section~\ref{subsec:neighbrhood_eigenvalue_pf}. However, many calculations need to be redone, in order to account for points $x$ which are on or sufficiently close to the boundary of $\mc{X}$. For completeness and ease of reading, we provide a self-contained proof of Theorem~\ref{thm:neighborhood_eigenvalue}, but we comment where appropriate on connections between the technical results we use in this proof, and those derived in \citet{burago2014,trillos2019,calder2019}.
 
 On the other hand, we should also point out that unlike the results of~\citet{burago2014,trillos2019,calder2019}, Theorem~\ref{thm:neighborhood_eigenvalue} does not imply that $\lambda_{k}(G_{n,r})$ is a consistent estimate of $\lambda_k(\Delta_P)$, i.e. it does not imply that $|(nr^{d + 2})^{-1}\lambda_{k}(G_{n,r}) - \lambda_k(\Delta_P)| \to 0$ as $n \to \infty, r \to 0$. The key difficulty in proving consistency when $\mc{X}$ has a boundary can be summarized as follows: while at points $x \in \mc{X}$ satisfying $B(x,r) \subseteq \mc{X}$, the graph Laplacian $L$ is a reasonable approximation of the operator $\Delta_P$, at points $x$ near the boundary $L$ is known to approximate a different operator altogether \citep{belkin2012}. This is reminiscent of the boundary effects present in the analysis of kernel smoothing. We believe a more subtle analysis might imply convergence of eigenvalues in this setting. However, the conclusion of Theorem~\ref{thm:neighborhood_eigenvalue}---that $\lambda_k(G_{n,r})/(nr^{d + 2}\lambda_k(\Delta_P))$ is bounded above and below by constants that do not depend on $k$---suffices for our purposes.  
-
-\agcomment{Siva, I erred on the side of giving too much detail here, figuring it was easier for you/me to pare back if needed.}
-\sbcomment{It is extremely insightful actually. I would consider including some of the second paragraph in the main paper too.}
 
 The bulk of the remainder of this section is devoted to the proof of Theorem~\ref{thm:neighborhood_eigenvalue}. First, however, we show that under our regularity conditions on $p$ and $\Xset$, Lemma~\ref{lem:neighborhood_eigenvalue} is a simple consequence of Theorem~\ref{thm:neighborhood_eigenvalue}. The link between the two is Weyl's Law.
 \begin{proposition}[Weyl's Law]
@@ -414,7 +411,7 @@ in the statement of that Lemma.
 
 In this section we prove Theorem~\ref{thm:neighborhood_eigenvalue}, following closely the approach of \citet{burago2014,trillos2019,calder2019}. As in these works, we relate $\lambda_k(\Delta_P)$ and $\lambda_k(G_{n,r})$ by means of the Dirichlet energies
 \begin{equation*}
-b_r(u) := \frac{1}{n^2 r^{d+ 2}}u^{\top} \Lap_{n,r} u 
+b_r(u) := \frac{1}{n^2 r^{d+ 2}}u^{\top} L u 
 \end{equation*}
 and
 \begin{equation*}
@@ -538,7 +535,7 @@ Therefore $\wt{\mc{P}}$ is injective over $W$, and $\wt{\mc{P}}W$ has dimension 
 \end{align*}
 establishing the lower bound in \eqref{eqn:eigenvalue_bound}.
 
-The upper bound follows from essentially parallel reasoning. Recalling that $v_1,\ldots,v_k$ denote the first $k$ eigenvectors of $\Lap_{n,r}$, set $U := \mathrm{span}\{v_1,\ldots,v_k\}$, so that $nr^{d + 2} b_r(u) \leq \lambda_k(G_{n,r}) \|u\|_n^2$. By Proposition~\ref{prop:isometry}, Part (2), we have that for every $u \in U$,
+The upper bound follows from essentially parallel reasoning. Recalling that $v_1,\ldots,v_k$ denote the first $k$ eigenvectors of $L$, set $U := \mathrm{span}\{v_1,\ldots,v_k\}$, so that $nr^{d + 2} b_r(u) \leq \lambda_k(G_{n,r}) \|u\|_n^2$. By Proposition~\ref{prop:isometry}, Part (2), we have that for every $u \in U$,
 \begin{align*}
 \bigl\|\wt{\mc{I}}u\bigr\|_{P}^2 & \geq \|u\|_n^2 - A_6 r \|u\|_n \sqrt{b_r(u)} - A_7\bigl(\theta + \wt{\delta}\bigr)\|u\|_n^2 \\
 & \geq \|u\|_n^2 - A_6 r \|u\|_n^2 \sqrt{\frac{\lambda_{k}(G_{n,r})}{nr^{d + 2}}} - A_7\bigl(\theta + \wt{\delta}\bigr)\|u\|_n^2 \\
@@ -1081,7 +1078,7 @@ Proposition~\ref{prop:garciatrillos19_1} follows from Lemma~5 of~\citet{trillos2
 	\label{prop:garciatrillos19_1}
 	For any $f \in H^1(\Xset)$, with probability at least $1 - \delta$,
 	\begin{equation*}
-	f^{\top} \Lap_{n,r} f \leq \frac{C}{\delta} n^2 r^{m + 2} |f|_{H^1(\Xset)}^2.
+	f^{\top} L f \leq \frac{C}{\delta} n^2 r^{m + 2} |f|_{H^1(\Xset)}^2.
 	\end{equation*}
 \end{proposition}
 
@@ -1271,7 +1268,7 @@ establishing the claim of Theorem~\ref{thm:laplacian_smoothing_testing}.
 The proof of Theorem~\ref{thm:laplacian_smoothing_testing_manifold} follows exactly the same steps as the proof of Theorem~\ref{thm:laplacian_smoothing_testing}, replacing the references to Lemma~\ref{lem:graph_sobolev_seminorm} and~\ref{lem:neighborhood_eigenvalue} by references to Propositions~\ref{prop:garciatrillos19_1} and \eqref{eqn:neighborhood_eigenvalue_manifold}, and the ambient dimension $d$ by the intrinsic dimension $m$.
 
 \paragraph{Proof of \eqref{eqn:laplacian_smoothing_testing_low_smoothness}.}
-When $\rho = 0$, the Laplacian smoother $\wh{f} = \mathbf{Y}$, the test statistic $\wh{T} = \frac{1}{n}\|\mathbf{Y}\|_2^2$, and the threshold $\wh{t}_{\alpha} = 1 + 2bn^{-1/2}$. The expectation of $\wh{T}$ is 
+When $\rho = 0$, the Laplacian smoother $\wh{f} = \mathbf{Y}$, the test statistic $\wh{T} = \frac{1}{n}\|\mathbf{Y}\|_2^2$, and the threshold $\wh{t}_{\alpha} = 1 + n^{-1/2}\sqrt{2/\alpha}$. The expectation of $\wh{T}$ is 
 \begin{equation*}
 \Ebb\bigl[\wh{T}\bigr] = \mathbb{E}\bigl[f_0^2(X)\bigr] + 1 \geq p_{\min} \norm{f_0}_{\Leb^2(\Xset)}^2 + 1.
 \end{equation*}
@@ -1281,13 +1278,13 @@ When $f_0 \in \Leb^4(\Xset,M)$, the variance can be upper bounded
 \end{equation*}
 Now, let us assume that
 \begin{equation*}
-\norm{f_0}_{\Leb^2(X)}^2 \geq \frac{4b}{p_{\min}} n^{-1/2},
+\norm{f_0}_{\Leb^2(X)}^2 \geq \frac{2\sqrt{2/\alpha} + 2b}{p_{\min}} n^{-1/2},
 \end{equation*}
 so that $E[\wh{T}] - \wh{t}_{\alpha} \geq E[f_0^2(X)]/2$. Hence, by Chebyshev's inequality
 \begin{align*}
 \mathbb{P}_{f_0}\Bigl(\wh{T} \leq \wh{t}_{\alpha} \Bigr) & \leq 4 \frac{\Var_{f_0}\bigl[\wh{T}\bigr]}{\mathbb{E}[f_0^2(X)]^2} \\
 & \leq \frac{4}{n} \cdot \frac{ 3 + p_{\max}\bigl(M^4 + \|f_0\|_{\Leb^2(\Xset)}^2 \bigr)}{p_{\min}^2 \|f_0\|_{\Leb^2(\Xset)}^4} \\
-& \leq \frac{1}{16b^2}\Bigl(3 + \frac{4bp_{\max}}{p_{\min}n^{1/2}} + p_{\max}M^4\Bigr).
+& \leq \frac{1}{b^2}\Bigl(3 + \frac{4bp_{\max}}{p_{\min}n^{1/2}} + p_{\max}M^4\Bigr).
 \end{align*}
 
 \subsection{Two convenient estimates}

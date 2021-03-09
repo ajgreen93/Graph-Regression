@@ -213,7 +213,6 @@
 
 \end{center}
 
-
 \begin{abstract}
 	In this paper we study the statistical properties of Laplacian smoothing, a graph-based approach to nonparametric regression. Under standard regularity conditions, we establish upper bounds on the error of the Laplacian smoothing estimator \smash{$\wh{f}$}, and a goodness-of-fit test also based on \smash{$\wh{f}$}. These upper bounds match the minimax optimal estimation and testing rates of convergence over the first-order Sobolev class $H^1(\Xset)$, for $\Xset \subseteq \Rd$ and $1 \leq d < 4$; in the estimation problem, for $d = 4$, they are optimal modulo a $\log n$ factor. Additionally, we prove that Laplacian smoothing is manifold-adaptive: if $\Xset \subseteq \Reals^d$ is an $m$-dimensional manifold with $m < d$, then the error rate of Laplacian smoothing (in either estimation or testing) depends only on $m$, in the same way it would if $\Xset$ were a full-dimensional set in $\Reals^m$.
 \end{abstract}
@@ -262,6 +261,7 @@ The random design perspective bears a more natural connection with nonparametric
 This is no small question---arguably, it is \emph{the} central question of nonparametric regression---and without an answer one cannot fully compare the statistical properties of Laplacian smoothing to alternative methods. It also seems difficult to answer: as we discuss next, there is a fundamental gap between the \emph{discrete} smoothness imposed by the penalty $f^\top \Lap f$ in problem \eqref{eqn:laplacian_smoothing} and the \emph{continuum} smoothness assumed on $f_0$, and in order to obtain sharp upper bounds we will need to bridge this gap in a suitable sense.
 
 \section{Summary of Results}
+\label{sec:summary}
 
 \paragraph{Advantages of the Discrete Approach.} 
 
@@ -270,7 +270,7 @@ In light of the potential difficulty in bridging the gap between discrete and co
 \label{eqn:thin_plate_spline}
 \wt{f} = \argmin_{f : \Xset \to \Reals} \; \sum_{i = 1}^{n} \bigl(Y_i - f(X_i)\bigr)^2 + \rho \hspace{-2pt} \int_{\Xset} \|\nabla f(x)\|_2^2 \,dx,
 \end{equation}
-where the optimization is performed over all functions for which the criterion is well-defined and finite (continuous functions $f$ that have a weak derivative $\nabla f$ in $L^2(\Xset)$). Analogously, for testing, we could use:
+where the optimization is performed over all continuous functions $f$ that have a weak derivative $\nabla f$ in $L^2(\Xset)$. Analogously, for testing, we could use:
 \begin{equation}
 \label{eqn:thin_plate_spline_test}
 \wt{T} = \| \wt{f} \|_n^2 := \frac{1}{n} \sum_{i=1}^n \wt{f}(X_i)^2.
@@ -279,7 +279,7 @@ The penalty term in \eqref{eqn:thin_plate_spline} leverages the assumption that 
 
 However, as we shall see the actual story is quite different: remarkably, Laplacian smoothing enjoys optimality properties even in settings where the thin-plate spline estimator \eqref{eqn:thin_plate_spline} is not well-posed (to be explained shortly); Tables~\ref{tbl:estimation_rates} and~\ref{tbl:testing_rates} summarize. As we establish in Theorems~\ref{thm:laplacian_smoothing_estimation1}-\ref{thm:laplacian_smoothing_testing_manifold}, when computed over an appropriately formed neighborhood graph, Laplacian smoothing estimators and tests are minimax optimal over first-order \emph{continuum} Sobolev balls. This holds true either when $\Xset \subseteq \Rd$ is a full-dimensional domain and $d = 1,2,$ or $3$, or when $\Xset$ is a manifold embedded in $\Rd$ of intrinsic dimension $m = 1,2,$ or $3$. Additionally, the estimator \smash{$\wh{f}$} is nearly minimax optimal (to within a \smash{$(\log n)^{1/3}$} factor) when $d=4$ (or $m=4$ in the manifold case). 
 
-By contrast, smoothing splines are optimal only when $d=1$. When $d>1$, thin-plate spline estimator \eqref{eqn:thin_plate_spline} is not even well-posed, in the following sense: for any $(X_1,Y_1),\ldots,(X_n,Y_n)$ and any $\delta>0$, there exists (e.g., \citet{green93} give a construction using ``bump'' functions) a differentiable function $f$ such that $f(X_i) = Y_i$, $i=1,\ldots,n$, and
+By contrast, smoothing splines are optimal only when $d=1$. When $d>1$, the thin-plate spline estimator \eqref{eqn:thin_plate_spline} is not even well-posed, in the following sense: for any $(X_1,Y_1),\ldots,(X_n,Y_n)$ and any $\delta>0$, there exists (e.g., \citet{green93} give a construction using ``bump'' functions) a differentiable function $f$ such that $f(X_i) = Y_i$, $i=1,\ldots,n$, and
 \begin{equation*}
 \int_{\Xset} \|\nabla f(x)\|_2^2 \leq \delta.
 \end{equation*}
@@ -296,7 +296,7 @@ In other words, $f$ achieves perfect (zero) data loss and arbitrarily small pena
 			$d \geq 5$  & $(\log n/n)^{4/(3d)}$ &\textcolor{red}{$1$} \\
 		\end{tabular}
 	\end{center}
-	\caption{Summary of estimation rates over first-order Sobolev balls. Black font marks new results from this paper, red font marks previously-known results; bold font marks minimax optimal rates. Although we suppress it for simplicity, in all cases the dependence of the error rate on the radius of the Sobolev ball is also optimal. We use ``$1$'' to indicate inconsistency (error not converging to 0). Furthermore, when $\Xset$ is an $m$-dimensional manifold embedded in $\Rd$, all Laplacian smoothing results hold with $d$ replaced by $m$, without any change to the method itself.}
+	\caption{Summary of estimation rates over first-order Sobolev balls. Black font marks new results from this paper, red font marks previously-known results; bold font marks minimax optimal rates. Although we suppress it for simplicity, in all cases the dependence of the error rate on the radius of the Sobolev ball is also optimal. Rates for thin-plate splines with $d \geq 2$ assume the estimator $\wt{f}$ interpolates the responses, $\wt{f}(X_i) = Y_i$ for $i = 1,\ldots,n$; see the discussion in Section~\ref{sec:summary}. We use ``$1$'' to indicate inconsistency (error not converging to 0). Furthermore, when $\Xset$ is an $m$-dimensional manifold embedded in $\Rd$, all Laplacian smoothing results hold with $d$ replaced by $m$, without any change to the method itself.}
 	\label{tbl:estimation_rates}
 \end{table}
 
@@ -310,7 +310,7 @@ In other words, $f$ achieves perfect (zero) data loss and arbitrarily small pena
 			$d \geq 4$ & $\bm{n^{-1/2}}$ & \textcolor{red}{$\bm{n^{-1/2}}$}
 		\end{tabular}
 	\end{center}
-	\caption{Summary of testing rates over first-order Sobolev balls; black, red, and bold fonts are used as in Table~\ref{tbl:estimation_rates}. Rates for $d \geq 4$ assume that $f_0 \in \Leb^4(\Xset,M)$. When $\Xset$ is an $m$-dimensional manifold embedded in $\Rd$, all rates hold with $d$ replaced by $m$.}
+	\caption{Summary of testing rates over first-order Sobolev balls; black, red, and bold fonts are used as in Table~\ref{tbl:estimation_rates}. Rates for thin-plate splines with $d \geq 2$ assume the test statistic $\wt{T}$ is computed with respect to an estimator $\wt{f}$ that interpolates the responses, $\wt{f}(X_i) = Y_i$ for $i = 1,\ldots,n$.  Rates for $d \geq 4$ assume that $f_0 \in \Leb^4(\Xset,M)$. When $\Xset$ is an $m$-dimensional manifold embedded in $\Rd$, all rates hold with $d$ replaced by $m$.}
 	\label{tbl:testing_rates}
 \end{table}
 %\footnotetext{Assuming $f_0 \in \Leb^4(\Xset,M)$.}
@@ -337,7 +337,6 @@ For an integer $p \geq 1$, we use $\Leb^p(\Xset)$ for the set of functions $f$ s
 \norm{f}_{\Leb^p(\Xset)}^p := \int_{\Xset} |f(x)|^p \,dx < \infty,
 \end{equation*}
 and $C^p(\Xset)$ for the set of functions that are $p$ times continuously differentiable. For sequences $a_n,b_n$, we write $a_n \lesssim b_n$ to mean $a_n \leq Cb_n$ for a constant $C>0$ and large enough $n$, and $a_n \asymp b_n$ to mean $a_n \lesssim b_n$ and $b_n \lesssim a_n$. Lastly, we use $a \wedge b = \min\{a,b\}$.
-\\
 %\sbcomment{This is wrong, should check where it appears.} \\
 %\agcomment{Resolved.}
 
@@ -358,7 +357,7 @@ with $\|\cdot\|_2$ denoting the $\ell_2$ norm on $\Rd$. Defining $D$ as the $n \
 \label{eqn:graph_Laplacian}
 \Lap = D - W.
 \end{equation}
-We write the eigendecomposition of $L$ as \smash{$L = \sum_{k = 1}^{n} \lambda_k v_k v_k^\top$}, and we always assume, by convention, ordered eigenvalues $0 = \lambda_1 \leq \cdots \leq \lambda_n$, and unit-norm eigenvectors. \\
+We write the eigendecomposition of $L$ as \smash{$L = \sum_{k = 1}^{n} \lambda_k v_k v_k^\top$}, and we always assume, by convention, ordered eigenvalues $0 = \lambda_1 \leq \cdots \leq \lambda_n$, and unit-norm eigenvectors.
 %\sbcomment{Don't understand why you're switching between $L$ and $L_{n,r}$?} \\
 %\agcomment{Resolved.}
 
@@ -420,7 +419,7 @@ The Type I error of a test $\phi$ is $\mathbb{E}_0[\phi]$, and if $\mathbb{E}_0[
 \begin{equation*}
 R_n(\phi, \mc{F}, \epsilon) := \sup\Bigl\{\mathbb{E}_{f_0}[1 - \phi]: f_0 \in \mc{F}, \|f_0\|_{\Leb^2(\mc{X})} > \epsilon\Bigr\},
 \end{equation*}
-and for a given constant $b \geq 1$, the minimax critical radius is the smallest value of $\epsilon$ such that some level-$\alpha$ test has worst-case risk of at most $1/b$. Formally,
+and for a given constant $b \geq 1$, the minimax critical radius $\epsilon(\mc{F})$ is the smallest value of $\epsilon$ such that some level-$\alpha$ test has worst-case risk of at most $1/b$. Formally,
 \begin{equation*}
 \epsilon(\mc{F}) := \inf\Bigl\{\epsilon > 0: \inf_{\phi} R_n(\phi,\mc{F},\epsilon) \leq 1/b \Bigr\},
 \end{equation*} 
@@ -562,12 +561,11 @@ We now give Theorem~\ref{thm:laplacian_smoothing_testing}, our main testing resu
 
 Some remarks:
 \begin{itemize}
-	\item As mentioned earlier, Sobolev balls $H^1(\Xset,M)$ for $d \geq 4$ include quite irregular functions $f \not\in \Leb^4(\Xset)$. Proving tight lower bounds in this case is nontrivial, and as far as we understand such an analysis remains outstanding. On the other hand, if we explicitly assume that $f_0 \in \Leb^4(\Xset,M)$, then \citet{guerre02} show that the testing problem is characterized by a dimension-free lower bound $\epsilon^{2}(\Leb^4(\Xset,M)) \gtrsim n^{-1/2}$. Moreover, by estimating \smash{$\wh{f}$}, setting $\rho = 0$, the subsequent test \smash{$\wh{\varphi}$} will achieve (up to constants) this lower bound. That is, for any $f_0 \in \Leb^4(\Xset,M)$ such that \smash{$\|f_0\|_{\Leb^2(\Xset)}^2 \geq C b^2n^{-1/2}$}, we have both
+	\item As mentioned earlier, Sobolev balls $H^1(\Xset,M)$ for $d \geq 4$ include quite irregular functions $f \not\in \Leb^4(\Xset)$. Proving tight lower bounds in this case is nontrivial, and as far as we understand such an analysis remains outstanding. On the other hand, if we explicitly assume that $f_0 \in \Leb^4(\Xset,M)$, then \citet{guerre02} show that the testing problem is characterized by a dimension-free lower bound $\epsilon^{2}(\Leb^4(\Xset,M)) \gtrsim n^{-1/2}$. Moreover, by setting $\rho = 0$ so that the resulting estimator $\wh{f}$ interpolates the responses $Y_1,\ldots,Y_n$, the subsequent test \smash{$\wh{\varphi}$} will achieve (up to constants) this lower bound. That is, for any $f_0 \in \Leb^4(\Xset,M)$ such that \smash{$\|f_0\|_{\Leb^2(\Xset)}^2 \geq C(b^2 + \sqrt{1/\alpha})n^{-1/2}$}, we have that \smash{$\Ebb_0[\wh{\varphi}] \leq \alpha$} and
 	\begin{equation}
 	\label{eqn:laplacian_smoothing_testing_low_smoothness}
-	\Ebb_{f_0}\bigl[1 - \wh{\varphi}\bigr] \leq \frac{C(1 + M^4)}{b^2},
+	\Ebb_{f_0}\bigl[1 - \wh{\varphi}\bigr] \leq \frac{C(1 + M^4)}{b^2}.
 	\end{equation} 
-	and \smash{$\Ebb_0[\wh{\varphi}] \leq 1/b^2$}. Note that the same results apply to \smash{$\wt{T}$}, since the thin-plate spline estimator \smash{$\wt{f}$} interpolates the responses $Y_1,\ldots,Y_n$ for $d>1$.
 	\item To compute the data-dependent threshold \smash{$\wh{t}_b$}, one must know all of the eigenvalues $\lambda_1,\ldots,\lambda_n$. Computing all these eigenvalues is far more expensive (cubic-time) than computing \smash{$\wh{T}$} in the first place (nearly-linear-time). But in practice we would not recommend using \smash{$\wh{t}_b$} anyway, and would instead we make the standard recommendation to calibrate via a permutation test \citep{hoeffding1952}. Recent work \cite{kim2020minimax}, has shown that in a variety of closely related settings, calibration of a test statistic via the permutation test often retains minimax-optimal power, and we expect similar results to hold for the Laplacian smoothing-based test statistic.
 
 \end{itemize}
