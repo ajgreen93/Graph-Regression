@@ -924,29 +924,29 @@ where $(iv)$ follows from Lemma~\ref{lem:first_order_graph_sobolev_seminorm_disc
 
 \paragraph{Proof of Proposition~\ref{prop:isometry}.}
 \textit{Proof of (1).}
-We begin by upper bounding $\bigl\|\wt{P}f\bigr\|_{n}$. By the Cauchy-Schwarz inequality and the bound on $\|\wt{p}_n - p\|_{\infty}$ in \eqref{eqn:optimal_transport_2},
+We begin by upper bounding $\bigl\|\wt{\mc{P}}f\bigr\|_{n}$. By the Cauchy-Schwarz inequality and the bound on $\|\wt{p}_n - p\|_{\infty}$ in \eqref{eqn:optimal_transport_2},
 \begin{align*}
-\Bigl|\wt{P}f(X_i)\Bigr|^2 & = n^2 \Bigl|\int_{U_i} f(x) \wt{p}_n(x) \,dx\Bigr|^2 \\
+\Bigl|\wt{\mc{P}}f(X_i)\Bigr|^2 & = n^2 \Bigl|\int_{U_i} f(x) \wt{p}_n(x) \,dx\Bigr|^2 \\
 & \leq n \int_{U_i} \bigl|f(x)\bigr|^2 \wt{p}_n(x) \,dx \\
 & \leq n \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr)\biggl[\int_{U_i} \bigl|f(x)\bigr|^2 p(x) \,dx + A_1(\theta + \wt{\delta}) \int_{U_i} \bigl|f(x)\bigr|^2 p(x) \,dx\biggr],
 \end{align*}
 and summing over $i = 1,\ldots,n$, we obtain
 \begin{equation}
 \label{pf:prop_isometry_1}
-\bigl\|\wt{P}f\bigr\|_{n}^2 \leq \biggl(1 + A_1(\theta + \wt{\delta})\biggr) \bigl\|f\bigr\|_{P}^2.
+\bigl\|\wt{\mc{P}}f\bigr\|_{n}^2 \leq \biggl(1 + A_1(\theta + \wt{\delta})\biggr) \bigl\|f\bigr\|_{P}^2.
 \end{equation}
-Now, noticing that $\bigl\|\wt{P}f\bigr\|_{n} = \bigl\|\wt{P}^{\star}\wt{P}f\bigr\|_{\wt{P}_n}$, we can use the upper bound \eqref{pf:prop_isometry_1} to show that
+Now, noticing that $\bigl\|\wt{\mc{P}}f\bigr\|_{n} = \bigl\|\wt{P}^{\star}\wt{P}f\bigr\|_{\wt{P}_n}$, we can use the upper bound \eqref{pf:prop_isometry_1} to show that
 \begin{align}
-\Bigl|\bigl\|\wt{P}f\bigr\|_{n}^2 - \bigl\|f\bigr\|_{P}^2\Bigr| & \leq \Bigl|\bigl\|\wt{P}f\bigr\|_{n}^2 - \bigl\|f\bigr\|_{\wt{P}_n}^2\Bigr| + \Bigl|\bigl\|f\bigr\|_{\wt{P}_n}^2 - \bigl\|f\bigr\|_{P}^2\Bigr| \nonumber \\
-& \overset{(i)}{\leq} \Bigl|\bigl\|\wt{P}f\bigr\|_{n}^2 - \bigl\|f\bigr\|_{\wt{P}_n}^2\Bigr|  + A_1(\theta + \wt{\delta}) \bigl\|f\bigr\|_{P}^2 \\
-& \overset{(ii)}{\leq} 2 \sqrt{1 + A_1(\theta + \wt{\delta})} \Bigl|\bigl\|\wt{P}f\bigr\|_{n} - \bigl\|f\bigr\|_{\wt{P}_n}\Bigr| \cdot \bigl\|f\bigr\|_{P} + A_1(\theta + \wt{\delta}) \bigl\|f\bigr\|_{P}^2 \nonumber \\
-& \leq 2 \sqrt{1 + A_1(\theta + \wt{\delta})} \bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\wt{P}_n} \cdot \bigl\|f\bigr\|_{P} + A_1(\theta + \wt{\delta}) \bigl\|f\bigr\|_{P}^2, \label{pf:prop_isometry_2}
+\Bigl|\bigl\|\wt{\mc{P}}f\bigr\|_{n}^2 - \bigl\|f\bigr\|_{P}^2\Bigr| & \leq \Bigl|\bigl\|\wt{\mc{P}}f\bigr\|_{n}^2 - \bigl\|f\bigr\|_{\wt{P}_n}^2\Bigr| + \Bigl|\bigl\|f\bigr\|_{\wt{P}_n}^2 - \bigl\|f\bigr\|_{P}^2\Bigr| \nonumber \\
+& \overset{(i)}{\leq} \Bigl|\bigl\|\wt{\mc{P}}f\bigr\|_{n}^2 - \bigl\|f\bigr\|_{\wt{P}_n}^2\Bigr|  + A_1(\theta + \wt{\delta}) \bigl\|f\bigr\|_{P}^2 \\
+& \overset{(ii)}{\leq} 2 \sqrt{1 + A_1(\theta + \wt{\delta})} \Bigl|\bigl\|\wt{\mc{P}}f\bigr\|_{n} - \bigl\|f\bigr\|_{\wt{P}_n}\Bigr| \cdot \bigl\|f\bigr\|_{P} + A_1(\theta + \wt{\delta}) \bigl\|f\bigr\|_{P}^2 \nonumber \\
+& \leq 2 \sqrt{1 + A_1(\theta + \wt{\delta})} \bigl\|\wt{\mc{P}}^{\star}\wt{\mc{P}}f - f\bigr\|_{\wt{P}_n} \cdot \bigl\|f\bigr\|_{P} + A_1(\theta + \wt{\delta}) \bigl\|f\bigr\|_{P}^2, \label{pf:prop_isometry_2}
 \end{align}
 where $(i)$ follows from \eqref{eqn:calder19_2} and $(ii)$ follows from \eqref{eqn:calder19_2} and  \eqref{pf:prop_isometry_1}. 
 
-It remains to upper bound $\bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\wt{P}_n}^2$. Noting that $\wt{P}^{\star}\wt{P}f$ is piecewise constant over the cells $U_i$, we have
+It remains to upper bound $\bigl\|\wt{\mc{P}}^{\star}\wt{\mc{P}}f - f\bigr\|_{\wt{P}_n}^2$. Noting that $\wt{\mc{P}}^{\star}\wt{\mc{P}}f$ is piecewise constant over the cells $U_i$, we have
 \begin{equation*}
-\bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\wt{P}_n}^2 = \sum_{i = 1}^{n} \int_{U_i} \biggl(f(x) - n\cdot\int_{U_i} f(x') \wt{p}_n(x') \,dx'\biggr)^2 \wt{p}_n(x) \,dx.
+\bigl\|\wt{\mc{P}}^{\star}\wt{\mc{P}}f - f\bigr\|_{\wt{P}_n}^2 = \sum_{i = 1}^{n} \int_{U_i} \biggl(f(x) - n\cdot\int_{U_i} f(x') \wt{p}_n(x') \,dx'\biggr)^2 \wt{p}_n(x) \,dx.
 \end{equation*}
 From Lemma~\ref{lem:poincare}, we have that for each $i = 1,\ldots,n$,
 \begin{equation*}
@@ -954,7 +954,7 @@ From Lemma~\ref{lem:poincare}, we have that for each $i = 1,\ldots,n$,
 \end{equation*}
 Summing up over $i$ on both sides of the inequality gives
 \begin{equation*}
-\bigl\|\wt{P}^{\star}\wt{P}f - f\bigr\|_{\wt{P}_n}^2 \leq A_3r^2 \wt{E}_r(f,\Xset) \leq  A_3 \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \Bigl(\frac{C_5 p_{\max}^2}{p_{\min}^2}\Bigr) \cdot \sigma_{K}r^2 D_2(f),
+\bigl\|\wt{\mc{P}}^{\star}\wt{\mc{P}}f - f\bigr\|_{\wt{P}_n}^2 \leq A_3r^2 \wt{E}_r(f,\Xset) \leq  A_3 \Bigl(1 + A_1(\theta + \wt{\delta})\Bigr) \cdot \Bigl(\frac{C_5 p_{\max}^2}{p_{\min}^2}\Bigr) \cdot \sigma_{K}r^2 D_2(f),
 \end{equation*}
 where the latter inequality follows from the proof of Proposition~\ref{prop:dirichlet_energies}, Part (2). Then Proposition~\ref{prop:isometry}, Part (1) follows by plugging this inequality into \eqref{pf:prop_isometry_2} and taking 
 \begin{equation*}
