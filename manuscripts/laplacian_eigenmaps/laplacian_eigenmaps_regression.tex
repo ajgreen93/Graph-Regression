@@ -18,7 +18,7 @@
 \usepackage{tikz}
 
 \usepackage{natbib}
-\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibname}{References}
 \renewcommand{\bibsection}{\subsubsection*{\bibname}}
 
 \DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
@@ -316,7 +316,7 @@ We now turn to reviewing the minimax estimation and goodness-of-fit testing rate
 	\label{asmp:sobolev_radius}
 	The radius $M$ of the Sobolev class satisfies $M = M(n) \gtrsim n^{-1/2}$.
 \end{enumerate}
-Under assumptions~\ref{asmp:domain}-\ref{asmp:sobolev_radius}, the minimax estimation rate over $\mc{H} = H^s(\mc{X};M)$ or $\mc{H} = H_0^s(\mc{X};M)$) is (see e.g. \citet{tsybakov2008_book})
+Under assumptions~\ref{asmp:domain}-\ref{asmp:sobolev_radius}, the minimax estimation rate over $\mc{H} = H^s(\mc{X};M)$ or $\mc{H} = H_0^s(\mc{X};M)$) is (see e.g. \citet{tsybakov08})
 \begin{equation}
 \label{eqn:minimax_estimation_rate}
 \inf_{\wh{f}} \sup_{f_0 \in \mc{H}} \|f_0 - f\|_P^2 \asymp M^{2d/(2s + d)}n^{-2s/(2s + d)};
@@ -342,7 +342,7 @@ When $4s \geq d$ the functions in $H^s(\Xset)$ are very irregular---formally spe
 
 \textcolor{red}{(TODO)}
 \begin{itemize}
-	\item Is there a better citation than \citet{tsybakov2008_book} for the minimax rate of estimation~\eqref{eqn:minimax_estimation_rate}? Tsybakov considers the univariate case with fixed, equispaced design.
+	\item Is there a better citation than \citet{tsybakov08} for the minimax rate of estimation~\eqref{eqn:minimax_estimation_rate}? Tsybakov considers the univariate case with fixed, equispaced design.
 	\item I copy pasted the testing part directly from our AISTATS paper, then made a few necessary changes. Is that bad?
 	\item I have stated the rate in~\eqref{eqn:sobolev_space_testing_critical_radius} over $\mc{H}$. In reality,~\citep{ingster2009} make some kind of boundary assumptions and I cannot remember exactly what. Is it ok to state it as is, or do I need to be more precise?
 \end{itemize}
@@ -489,7 +489,7 @@ In this section, we now assume that the regression function displays some higher
 \end{theorem}
 Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho}, in combination with Theorem~\ref{thm:laplacian_eigenmaps_estimation_fo}, implies that in the flat Euclidean setting Laplacian eigenmaps is a rate-optimal estimator over Sobolev classes, for all scalings of $s$ and $d$. Some other remarks:
 \begin{itemize}
-	\item \textbf{(1.1) Optimal rates, no RKHS.} It is worth pointing out that we do not require that the regularity of the Sobolev space satisfy $2s > d$, a condition often seen in the literature. In the ``sub-critical'' regime $2s < d$, the Sobolev space $H^s(\mc{X})$ is quite irregular. For instance, it is not a Reproducing Kernel Hilbert Space, nor does it embed into any H\"{o}lder space. As a result, certain versions of the nonparametric regression problem are ill-posed---for instance when loss is measured in $\Leb^{\infty}$ norm, or when the design points $\{X_1,\ldots,X_n\}$ are assumed to be fixed. Likewise, certain estimators are ``off the table'', most notably RKHS-based methods such as smoothing splines. Nevertheless, for random design regression with error measured in $\Leb^2(P)$-norm, spectral series estimators obtain the minimax rates for all values of $s$ and $d$. Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho} shows that the same is true with respect to Laplacian eigenmaps, with error measured in $\Leb^2(P_n)$ norm.
+	\item \textbf{(1.1) Optimal rates, no RKHS.} It is worth pointing out that we do not require that the regularity of the Sobolev space satisfy $2s > d$, a condition often seen in the literature. In the ``sub-critical'' regime $2s < d$, the Sobolev space $H^s(\mc{X})$ is quite irregular. For instance, it is not a Reproducing Kernel Hilbert Space (RKHS), nor does it embed into any H\"{o}lder space. As a result, certain versions of the nonparametric regression problem are ill-posed---for instance when loss is measured in $\Leb^{\infty}$ norm, or when the design points $\{X_1,\ldots,X_n\}$ are assumed to be fixed. Likewise, certain estimators are ``off the table'', most notably RKHS-based methods such as smoothing splines. Nevertheless, for random design regression with error measured in $\Leb^2(P)$-norm, spectral series estimators obtain the minimax rates for all values of $s$ and $d$. Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho} shows that the same is true with respect to Laplacian eigenmaps, with error measured in $\Leb^2(P_n)$ norm.
 	\item \textbf{(1.2) The zero-trace condition.} The zero-trace condition can likely be weakened. However, requiring some boundary condition on $f_0$ and its first through $(k -1 )$th-order derivatives is unavoidable. \textcolor{red}{Explain why: graphs are implicitly boundaryless objects, and the eigenvectors of $L$ converge to those eigenvectors of $\Delta_P$ which satisfy boundary conditions. Repeat that this is a standard assumption made when analyzing spectral series estimators}.
 	\item \textbf{(1.3) The bounded norm and smooth density conditions.} We require that $f_0$ be bounded in the Sobolev norm $\|f_0\|_{H^s(\mc{X})}$---as opposed to the semi-norm $|f_0|_{H^s(\mc{X})}$--- and that $p \in C^{s - 1}(\mc{X})$. Both requirements are related and fundamental, as we shall now explain. As previously mentioned, $L$ converges to a weighted-version of the Laplace operator $\Delta_P$ (also known as the Fokker-Planck) operator. The operator $\Delta_P$ includes both first and second-order derivatives,
 	\begin{equation}
@@ -500,7 +500,7 @@ Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho}, in combination with Theorem
 	\item \textbf{(1.4) Both of the remarks after Theorem~\ref{thm:laplacian_eigenmaps_estimation_fo} continue to apply.}
 \end{itemize}
 
-\textbf{(1.4) Rates for testing with higher-order smoothness assumptions.} For testing, we can get the optimal rate $n^{-4s/(4s + d)}$ when $d \leq 4$. When $4 < d \leq 4s$, we get the rate~\textcolor{red}{(...)} Recall that the rate $n^{-4s/(4s + d)}$ is optimal whenever $d \leq 4s$. Thus when $4s > d$, our upper bounds do not imply that $\varphi$ is an optimal test. We do not know whether this is due to looseness in our proof techniques, or a problem with the test itself, and leave this for future work.
+\textbf{(1.4) Rates for testing with higher-order smoothness assumptions.} For testing, we can get the optimal rate $n^{-4s/(4s + d)}$ when $d \leq 4$. When $4 < d \leq 4s$, we get the rate~\textcolor{red}{(...)} Recall that the rate $n^{-4s/(4s + d)}$ is optimal whenever $d \leq 4s$. Thus when $4 < d < 4s$, our upper bounds do not imply that $\varphi$ is an optimal test. We do not know whether this is due to looseness in our proof techniques, or a problem with the test itself, and leave this for future work.
 
 \subsection{Analysis}
 \label{subsec:analysis}
@@ -722,19 +722,22 @@ Choosing $h \asymp n^{-1/(2(s - 1) + d)}$ balances the kernel smoothing bias and
 \end{theorem}
 Some remarks:
 \begin{itemize}
-	\item \textbf{Tuning parameters by sample-splitting.} 
-	\item \textbf{Other extensions.} We consider kernel smoothing because it is a simple and intuitive procedure that does not rely on knowledge of the domain $\mc{X}$ or distribution $P$. There exist (many) other approaches to extending (or interpolating) a function $f$ based on the evaluations $\{f(X_1),\ldots,f(X_n)\}$, and we now comment on a few of these. One approach is to perform minimum norm interpolation, where one defines a normed space $(\mc{F},\|\cdot\|_{\mc{F}})$ and then solves the optimization problem
+	\item \textbf{Tuning parameters by sample-splitting.} By extending the estimator $\wh{f}$ to be defined out-of-sample, extension of Laplacian Eigenmaps by kernel smoothing gives us the option of selecting the parameters $\varepsilon$ and $K$ in a data-dependent manner---e.g. by sample splitting or cross-validation. This is by far more the most common practical recommendation for selecting hyper-parameters \textcolor{red}{(references)}, and addresses a serious limitation of Laplacian Eigenmaps. Moreover, it is known \textcolor{red}{(references)} that choosing hyper-parameters by sample splitting results in estimators that optimality adapt to the order of regularity $s$---that is, that are rate-optimal (up to $\log$ factors), even when $s$ is unknown. We believe that similar arguments will imply that $T_{h,n}\wh{f}$ is adaptive in this sense, though we do not pursue the details.
+	\item \textbf{Other extensions.} We consider extension by kernel smoothing because it is a simple and statistically optimal procedure that does not require any knowledge of the domain $\mc{X}$ or distribution $P$. There exist (many) other approaches to extending (or interpolating) a function $f$ based on the evaluations $\{f(X_1),\ldots,f(X_n)\}$, and we now comment on a few of these. One approach is to perform minimum norm interpolation, where one defines a normed space $(\mc{F},\|\cdot\|_{\mc{F}})$ and then solves the optimization problem
 	\begin{equation*}
 	\min_{u \in \mc{F}} \|u\|_{\mc{F}},~~\textrm{such that}~~ u(X_i) =  f(X_i)~~\textrm{for $i = 1,\ldots,n$.}
 	\end{equation*}
-	A particularly popular version of this general approach is when $\mc{F}$ is an RKHS, which encompasses thin-plate spline interpolation $\mc{F} = H^s(\mc{X})$ for $s > d/2$ as a special case. This approach works well when $f$ is close to a function $u \in \mc{F}$ with reasonably small norm, which holds true by assumption  but as already discussed when $2s \leq d$ the Sobolev space $H^s(P)$ is not a Reproducing Kernel Hilbert Space. Another 
-	\item \textbf{Comparison with kernel smoothing.} 
+	A particularly popular version of this general approach takes $\mc{F}$ to be an RKHS, which encompasses thin-plate spline interpolation (where $\mc{F} = H^s(P)$ for $s > d/2$) as a special case. Naturally, this approach works well when $f$ is close to a function $u \in \mc{F}$ with reasonably small norm.  This holds true when $f \in H^s(P;M)$ and $s > d/2$, but as already discussed when $s \leq d/2$ the Sobolev space $H^s(P)$ is not an RKHS, and in fact when $s \leq d/2$ thin-plate spline interpolation is an ill-posed problem \citep{green93}. Another, arguably simpler approach is to extend $\wh{f}$ to be piecewise constant on the Voronoi tessellation induced by $X_1,\ldots,X_n$, or equivalently to perform $1$-nearest neighbors regression on $\wh{f}$. However, this approach is theoretically optimal only when the regression function $f_0 \in C^1(P)$, in contrast to the kernel smoothing method we propose and study.
+	%Finally, the Nystr\"{o}m method extends  eigenvectors $v_k$ to functions $f_k: \mc{X} \to \Reals$ as follows,
+	%\begin{equation*}
+	%L_{n,\varepsilon}f_k = \lambda_k f_k~~\textrm{on $\mc{X}$, such that}~~f_k(X_i) = %v_k(X_i)~~\textrm{for $i = 1,\ldots,n$.}
+	%\end{equation*}
+	%Here $L_{n,\varepsilon}$ should be thought of as an operator acting on functions $f \in C(\mc{X})$ as follows,
+	%\begin{equation*}
+	%L_{n,\varepsilon}f(x) = \sum_{i = 1}^{n} (f(x) - f(X_i))\eta\Bigl(\frac{\|X_i - x\|}{\varepsilon}\Bigr)
+	%\end{equation*}
+	% The Nystr\"{o}m approach to extension makes intriguing (re-)use of the graph Laplacian $L_{n,\varepsilon}$ and its eigenvectors $v_k$. Similar methods have been analyzed in the context of kernel ridge regression (references), but little is known about its application to graph Laplacians.	
 \end{itemize}
-
-\paragraph{Why not just kernel smoothing?}
-On the other hand, the allusion to kernel smoothing raises a very natural question: why should we prefer to first compute $\wh{f}$ and then smooth it out, as opposed to simply performing kernel smoothing over the original responses $Y$, that?
-
-We now answer this question, by \textcolor{red}{(...)}.
 
 \section{Experiments}
 \label{sec:experiments}
@@ -743,6 +746,11 @@ We now answer this question, by \textcolor{red}{(...)}.
 
 \section{Discussion}
 \label{sec:discussion}
+
+\paragraph{Comparison with kernel smoothing.}
+It is natural to ask whether the two stage estimator $T_{h,n}\wh{f}$ defined in Section~\ref{sec:out_of_sample} has any advantage over the simpler approach of directly kernel smoothing the responses, i.e. using the estimator $T_{h,n}Y$ (possibly for a different choice of $h$.) In Appendix~\textcolor{red}{(?)}, we answer this question in the affirmative, by giving a simple example of a sequence of densities and regression functions $\{(p^{(n)}, f_0^{(n)}: n \in \mathbb{N}\}$ such that $\|f_0 - T_{h,n}\wh{f}\|_P^2 \ll \inf_{h'} \|f_0 - T_{h',n}Y\|_P^2$. This is possible because Laplacian eigenmaps induces a completely different bias than kernel smoothing, which depends on the relationship between $f_0$ and $p$. When $f_0$ and $p$ satisfy the so-called \emph{cluster} assumption--- i.e. $f_0$ is piecewise constant in high-density regions of $p$--- then the bias of Laplacian smoothing can much smaller than that of kernel smoothing (for equivalent levels of variance). 
+
+We emphasize that this does not contradict the well-known fact that kernel smoothing is rate-optimal for nonparametric regression. It simply reflects that in the standard nonparametric regression setup---which we adopt in the main part of this paper, and in which $P$ is assumed to be equivalent to Lebesgue measure--the biases of Laplacian eigenmaps and kernel smoothing are, up to constants, equivalent. There has been some work \textcolor{red}{(Wasserman, Niyogi, El Alaoui)} analyzing semi-supervised learning in the case where $p$ is very non-uniform, and $f_0$ ``adheres to'' $p$ in some way, such as the cluster assumption. However, a comprehensive analysis of the biases induced by Laplacian method as a function of $p$, how they differ with other approaches to estimation, and the consequences for nonparametric regression, remain outstanding. 
 
 \textbf{(1) Future items:}
 \begin{itemize}
