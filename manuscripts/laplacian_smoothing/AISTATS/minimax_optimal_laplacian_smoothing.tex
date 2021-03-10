@@ -397,9 +397,9 @@ and for a given constant $b \geq 1$, the minimax critical radius $\epsilon(\mc{F
 \begin{equation*}
 \epsilon(\mc{F}) := \inf\Bigl\{\epsilon > 0: \inf_{\phi} R_n(\phi,\mc{F},\epsilon) \leq 1/b \Bigr\},
 \end{equation*} 
-where in the above the infimum is over all level-$\alpha$ tests $\phi$, and $\Ebb_{f_0}[\cdot]$ is the expectation operator under the regression function $f_0$.\footnote{Clearly, the minimax critical radius $\epsilon$ depends on $\alpha$ and $b$. However, we adopt the typical convention of treating $\alpha \in (0,1)$ and $b \geq 1$ as fixed positive constants; hence they will not affect the testing error rates, and we suppress them notationally.} See \citet{ingster82,ingster87,ingster2012} for a more extended treatment of the minimax paradigm in nonparametric testing. 
+where in the above the infimum is over all level-$\alpha$ tests $\phi$, and $\Ebb_{f_0}[\cdot]$ is the expectation operator under the regression function $f_0$.\footnote{Clearly, the minimax critical radius $\epsilon(\mc{F})$ depends on $\alpha$ and $b$. However, we adopt the typical convention of treating $\alpha \in (0,1)$ and $b \geq 1$ as fixed positive constants; hence they will not affect the testing error rates, and we suppress them notationally.} See \citet{ingster82,ingster87,ingster2012} for a more extended treatment of the minimax paradigm in nonparametric testing. 
 
-Testing $f_0 = 0$ is an easier problem than estimating $f_0$, and hence the minimax testing critical radius over $H^1(\Xset,M)$ is smaller than the minimax estimation rate, for $1 \leq d < 4$ (see \citet{ingster2009}):
+Testing $f_0 = 0$ is an easier problem than estimating $f_0$, and hence the minimax testing rate over $H^1(\Xset,M)$ is smaller than the minimax estimation rate. For $1 \leq d < 4$, the squared critical radius is (see \citet{ingster2009}):
 \begin{equation}
 \label{eqn:sobolev_space_testing_critical_radius}
 \epsilon^2\bigl(H^1(\Xset,M)\bigr) \asymp M^{2d/(4 + d)}n^{-4/(4 + d)}.
@@ -502,7 +502,7 @@ where we recall $\lambda_k$ is the $k$th smallest eigenvalue of \smash{$L$}. The
 \wh{\varphi} = \1\bigl\{\wh{T} > \wh{t}_{\alpha}\bigr\}.
 \end{equation*} 
 %(Clearly \smash{$\wh{\varphi}$} depends on $b$, but we suppress this notationally.) 
-We show in the supplement that \smash{$\wh{f}$} is a level-$\alpha$ test. In the next theorem, we upper bound the worst-case risk \smash{$R_n(\wh{\varphi},H^1(\mc{X},M),\epsilon)$} of \smash{$\wh{\varphi}$}, whenever $\epsilon$ is at least (a constant times) the critical radius given in~\eqref{eqn:sobolev_space_testing_critical_radius}. For this to hold, we will require a tighter range of scalings for the graph radius $r$.
+We show in the supplement that \smash{$\wh{f}$} is a level-$\alpha$ test. In the next theorem, we upper bound the worst-case risk \smash{$R_n(\wh{\varphi},H^1(\mc{X},M),\epsilon)$} of \smash{$\wh{\varphi}$}, whenever $\epsilon^2$ is at least (a constant times) the squared critical radius given in~\eqref{eqn:sobolev_space_testing_critical_radius}. For this to hold, we will require a tighter range of scalings for the graph radius $r$.
 \begin{enumerate}[label=(R\arabic*)]
 	\setcounter{enumi}{1}
 	\item 
@@ -683,7 +683,7 @@ In a similar vein, we obtain results for manifold adaptive testing under the fol
 
 The proofs of Theorems \ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} proceed in a similar manner to that of Theorems \ref{thm:laplacian_smoothing_estimation1} and \ref{thm:laplacian_smoothing_testing}. The key difference is that in the manifold setting, the equations \eqref{eqn:graph_sobolev_seminorm} and \eqref{eqn:neighborhood_eigenvalue} used to upper bound bias and variance will hold with $d$ replaced by $m$.
 
-We emphasize that little about $\Xset$ needs be known for Theorems~\ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} to hold. Indeed, all that is needed is the intrinsic dimension $m$, to properly tune $r$ and $\rho$ (from a theoretical point of view), and otherwise \smash{$\wh{f}$} and \smash{$\wh{\varphi}$} are computed without regard to $\Xset$. In contrast, the penalty in \eqref{eqn:thin_plate_spline} would have to be specially tailored to work in this setting, revealing another advantage of the discrete approach over the variational one.
+We emphasize that little about $\Xset$ need be known for Theorems~\ref{thm:laplacian_smoothing_estimation_manifold} and \ref{thm:laplacian_smoothing_testing_manifold} to hold. Indeed, all that is needed is the intrinsic dimension $m$, to properly tune $r$ and $\rho$ (from a theoretical point of view), and otherwise \smash{$\wh{f}$} and \smash{$\wh{\varphi}$} are computed without regard to $\Xset$. In contrast, the penalty in \eqref{eqn:thin_plate_spline} would have to be specially tailored to work in this setting, revealing another advantage of the discrete approach over the variational one.
 
 \section{DISCUSSION}
 \label{sec:discussion}
