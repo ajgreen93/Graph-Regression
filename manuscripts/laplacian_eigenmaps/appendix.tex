@@ -1,0 +1,63 @@
+\noindent 
+
+\section{Graph-dependent error bounds}
+\label{sec:fixed_graph_error_bounds}
+In this section, we adopt the fixed design perspective; or equivalently, condition on $X_i = x_i$ for $i = 1,\ldots,n$. Let $G = \bigl([n],W\bigr)$ be a fixed graph on $\{1,\ldots,n\}$ with Laplacian matrix $L = \sum_{k = 1}^{n}\lambda_k v_k v_k^{\top}$. The randomness thus all comes from the responses 
+\begin{equation}
+\label{eqn:fixed_graph_regression_model}
+Y_i = f_{0}(x_i) + \varepsilon_i
+\end{equation}
+where the noise variables $\varepsilon_i$ are independent $N(0,1)$. In the rest of this section, we will mildly abuse notation and write $f_0 = (f_0(x_1),\ldots,f_0(x_n)) \in \Reals^n$. We will also write ${\bf Y} = (Y_1,\ldots,Y_n)$.
+
+Let $\wh{T} = \sum_{k = 1}^{K} \dotp{{\bf Y}}{v_k}_n^2$, and let $\varphi = \1\{\wh{T} \geq t_a\}$. In the following Lemma, we upper bound the Type I and Type II error of the test $\varphi$.
+
+\begin{lemma}
+	Suppose we observe $(Y_1,x_1),\ldots,(Y_n,x_n)$ according to~\eqref{eqn:fixed_graph_regression_model}.
+	\begin{itemize}
+		\item If $f_0 = 0$, then $\Ebb_0[\varphi] \leq a$.
+		\item Suppose $f_0 \neq 0$ satisfies
+		\begin{equation*}
+		\sum_{k = 1}^{K} \dotp{f_0}{v_k}_n^2 \geq 16\frac{\sqrt{2K}}{n}\biggl(\sqrt{\frac{1}{a}} + \frac{1}{b}\biggr).
+		\end{equation*}
+		Then $\Ebb_{f_0}[1 - \phi] \leq b$.
+	\end{itemize}
+\end{lemma}
+
+\section{Proofs in Manifold Setting}
+\label{sec:manifold_proofs}
+
+\paragraph{Discussion of requirements that $s \leq 3$.}
+Recall from our discussion in Section~\ref{subsec:analysis} that an essential step in the proof of Lemma~\textcolor{red}{(?)}---which establishes a high-probability upper bound on $\dotp{L_{n,\varepsilon}^sf_0}{f_0}_n$---is relating the iterated non-local operator $L_{P,\varepsilon}^j$ to the weighted Laplace-Beltrami operator $\Delta_P^j$, for $j = \floor{s/2}$. Suppose for the moment $s = 3$, and $f \in C^3(\mc{X};1)$ and $p$ is uniform. In this case $\floor{s/2} = 1$, and the relation between $L_{P,\varepsilon}$ to $\Delta_P$ has been worked out by \textcolor{red}{(Burago2013, GarciaTrillos2019, Calder2019, GarciaTrillos2020)}. This relation is accomplished by means of an intermediary nonlocal operator, as described by the following chain of estimates:
+\begin{align*}
+L_{P,\varepsilon} f(x) & = \frac{1}{\varepsilon^{m + 2}}\int_{\mc{X}} \bigl(f(z) - f(x)\bigr)\eta\biggl(\frac{\|z - x\|}{\varepsilon}\biggr) \,d\mu(z) \\
+& \overset{(i)}{=} \frac{1}{\varepsilon^{m + 2}} \int_{\mc{X}} \bigl(f(z) - f(x)\bigr)\eta\biggl(\frac{d_{\mc{X}}(z,x)}{\varepsilon}\biggr) \,d\mu(z) + O(\varepsilon) \\
+& = \frac{1}{\varepsilon^{m + 2}} \int_{T_x(\mc{X})} \Bigl(f\bigl(\exp_x(v)\bigr) - f\bigl(\exp_x(0)\bigr)\Bigr)\eta\biggl(\frac{d_{\mc{X}}\bigl(\exp_x(v),\exp_x(0)\bigr)}{\varepsilon}\biggr) J_x(v) \,dv + O(\varepsilon) \\
+& \overset{(ii)}{=} \frac{1}{\varepsilon^{m + 2}} \int_{T_x(\mc{X})} \Bigl(f\bigl(\exp_x(v)\bigr) - f\bigl(\exp_x(0)\bigr)\Bigr)\eta\biggl(\frac{d_{\mc{X}}\bigl(\exp_x(v),\exp_x(0)\bigr)}{\varepsilon}\biggr) \,dv + O(\varepsilon) \\
+& = \frac{1}{\varepsilon^{m + 2}} \int_{T_x(\mc{X})} \Bigl(f\bigl(\exp_x(v)\bigr) - f\bigl(\exp_x(0)\bigr)\Bigr)\eta\biggl(\frac{\|v\|}{\varepsilon}\biggr) \,dv + O(\varepsilon) \\
+& \overset{(iii)}{=} \Delta_Pf(x) + O(\varepsilon)
+\end{align*}
+Here, $d_{\mc{X}}(\cdot,\cdot)$ is the geodesic distance on $\mc{X}$, $J_x(v)$ denotes the Jacobian of the exponential map $\exp_x$ evaluated at $v \in T_x(\mc{M})$, and $h = f \circ \exp_x$. Then $(i)$ follows because $\bigl|d_{\mc{X}}(x,z)  - \|z - x\|\bigr| = O(\varepsilon^3)$ and $\eta$ is a Lipschitz function with bounded Lipschitz constant, $(ii)$ follows because the Jacobian $J_x(v)$ satisfies $|J_x(v)| = 1 + O(\varepsilon^2)$ for all $v \in B(0,\varepsilon) \subset T_x(\mc{X})$, and $(iii)$ follows since the function $h$ admits the Taylor expansion
+\begin{equation*}
+h(v) = h(0) + \dotp{\nabla h(0)}{v} + \frac{1}{2} \dotp{\nabla^2 h(0) v}{v} + O(\varepsilon^3),~~\textrm{for all $v \in B(0,\varepsilon) \subset T_x(\mc{X})$.}
+\end{equation*}
+Then, using the upper bound on $\max_{i = 1,\ldots,n}|L_{n,\varepsilon}f(X_i) - L_{P,\varepsilon}(X_i)| = O_\Pbb((n\varepsilon^{m + 4})^{-1})$ given in \textcolor{red}{(?)}, and the fact that $\Delta_Pf \in C^1(\mc{X};1)$, we have that,
+\begin{align*}
+\dotp{L_{n,\varepsilon}^3f}{f}_n & = \frac{1}{n^2 \varepsilon^{m + 2}} \sum_{i,j = 1}^{n} \bigl(L_{n,\varepsilon}f(X_i) - L_{n,\varepsilon}f(X_j)\bigr)^2 \eta\biggl(\frac{\|X_i - X_j\|}{\varepsilon}\biggr) \\
+& = \frac{1}{n^2 \varepsilon^{m + 2}} \sum_{i,j = 1}^{n} \bigl(L_{P,\varepsilon}f(X_i) - L_{P,\varepsilon}f(X_j)\bigr)^2 \eta\biggl(\frac{\|X_i - X_j\|}{\varepsilon}\biggr) + O_{\Pbb}\biggl(\frac{1}{n\varepsilon^{m + 4}}\biggr) \\
+& = \frac{1}{n^2 \varepsilon^{m + 2}} \sum_{i,j = 1}^{n} \bigl(\Delta_Pf(X_i) - \Delta_Pf(X_j)\bigr)^2 \eta\biggl(\frac{\|X_i - X_j\|}{\varepsilon}\biggr) + O_{\Pbb}\biggl(\frac{1}{n\varepsilon^{m + 4}}\biggr) + O_{\Pbb}(1) \\
+& = O_{\Pbb}\biggl(\frac{1}{n\varepsilon^{m + 4}}\biggr) + O_{\Pbb}(1) = O_{\Pbb}(1),
+\end{align*}
+with the last equality following when $\varepsilon = \Omega(n^{-1/(m + 4)})$.
+
+On the other hand when $s = 4$, and thus $j = 2$, we have only that
+\begin{equation*}
+L_{P,\varepsilon}^2f(x) = L_{P,\varepsilon}(\Delta_Pf + O(\varepsilon)) = \Delta_P^2f(x) + O(1/\varepsilon),
+\end{equation*}
+which is useless when $\varepsilon \to 0$. The bottom line is that in the manifold case, the $O(\varepsilon^3)$ error incurred by going between Euclidean norm and geodesic distance is negligible only when $j = 1$. 
+
+\section{Comparison of Laplacian eigenmaps and kernel smoothing in non-uniform density setting}
+
+\textcolor{red}{(TODO)}
+\begin{itemize}
+	\item \textcolor{red}{Mention the relationship between the estimation problem under consideration and classification with a margin (Tsybakov noise) condition.}
+\end{itemize}
