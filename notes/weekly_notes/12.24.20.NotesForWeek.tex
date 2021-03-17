@@ -613,25 +613,117 @@ establishing~\eqref{pf:kernel_smoothing_bias_1d_2} upon choosing $C = \frac{16\|
 
 \subsection{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $d = 1$ and $p \in C^k$.}
 \label{subsec:kernel_smoothing_bias_pf_1d_smooth_p}
-As in~\ref{subsec:kernel_smoothing_bias_pf_1d_uniform_p}, we take $\Omega = (0,1)$, let
+As in Section~\ref{subsec:kernel_smoothing_bias_pf_1d_uniform_p}, we take $\Omega = (0,1)$, let
 \begin{equation*}
-\|L_{P,\varepsilon}u\|_{P}^2 = \underbrace{\int_{\Omega_{\varepsilon}} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_1} + \underbrace{\int_{\partial_{\varepsilon}\Omega} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_2},
+\|L_{P,\varepsilon}u\|_{P}^2 = \underbrace{\int_{\Omega_{\varepsilon}} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_1} + \underbrace{\int_{\partial_{\varepsilon}\Omega} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_2}.
 \end{equation*}
-and turn to separately upper bounding $I_1$ and $I_2$.
+We upper bound $I_2$ immediately, using~\eqref{pf:kernel_smoothing_bias_1d_2}, the equivalent upper bound when $p$ is uniform, to determine that
+\begin{equation*}
+I_2 \leq p_{\max}\int_{\partial_{\varepsilon}\Omega} |L_{P,\varepsilon}u(x)|^2 \,dx \leq C\varepsilon^{2k + 1}\|u^{(k)}\|_P^2.
+\end{equation*}
+It therefore remains only to upper bound $I_1$. 
 
 \paragraph{Upper bound on $I_1$.}
-We will show that for all $x \in \Omega_{\varepsilon}$,
+The $k$th order Taylor expansion of $u$ is
+\begin{equation}
+\label{pf:kernel_smoothing_bias_1d_smooth_p_1}
+u(z) - u(x) = \sum_{j = 1}^{k - 1}\frac{1}{j!} u^{(j)}(x) (z - x)^j + (z - x)^k r_z^{(k)}(x;u).
+\end{equation}
+The $k-1$st order Taylor expansion of $p$ is
+\begin{equation}
+\label{pf:kernel_smoothing_bias_1d_smooth_p_2}
+p(z) = \sum_{j = 0}^{k - 2}\frac{1}{j!} p^{(j)}(x) (z - x)^j + (z - x)^{k - 1} r_z^{(k - 1)}(x;p).
+\end{equation}
+Note that we adopt the convention that if $i > j$, then $\sum_{i}^{j} a_i = 0$, to cover the case when $k = 1$. Also, for a given $j \in \mathbb{N}$ and $j$ times differentiable function $f$, we have written $r_z^{(j)}(x;f)$ for the $j$th order remainder term,
 \begin{equation*}
-L_{P,\varepsilon}u(x) = \varepsilon^{k} \frac{\sigma_\eta}{k!}\Bigl( \frac{d^k}{dx^k}(up)(x) - p^{(k)}(x)u(x) + r(x)\Bigr)
+r_z^{(j)}(x;f) = \frac{1}{j!}\int_{0}^{1} (1 - t)^{j - 1} f^{(j)}(x + t(z - x)) \,dt.
 \end{equation*}
-for a remainder term $r$ satisfying $\int_{\Omega_{\varepsilon}} \bigl(r(x)\bigr)^2 p(x) \,dx  = o(1)$ as $\varepsilon \to 0$. This in turn will imply
-\begin{align*}
-I_1 = \int_{\Omega_{\varepsilon}} |L_{P,\varepsilon}u(x)|^2 \,dx & = \varepsilon^{2k} \frac{\sigma_\eta^2}{(k!)^2}\Bigl(\int_{\Omega_{\varepsilon}} \Bigl( \frac{d^k}{dx^k}(up)(x) - p^{(k)}(x)u(x) + r(x)\Bigr)^2  p(x) \,dx \\
-& \leq 3 \varepsilon^{2k} \frac{\sigma_\eta^2}{(k!)^2} \bigl( |up|_{H^k(P)}^2 + |p^{(k)}u|_{\Leb^2(P)}^2 + o(1)\bigr) \\
-& \leq C \varepsilon^{2k} \frac{\sigma_\eta^2}{(k!)^2} \Bigl( \|p\|_{C^k(P)}^2\bigl(|u|_{H^k(P)}^2 + |u|_{\Leb^2(P)}^2\bigr) + o(1) \Bigr),
-\end{align*}
-with the last line following from Young's inequality.
+Now, we plug the expressions~\eqref{pf:kernel_smoothing_bias_1d_smooth_p_1} and~\eqref{pf:kernel_smoothing_bias_1d_smooth_p_2} in to the definition of $L_{P,\varepsilon}u(x)$ as follows (let $\ell = k - 1$ for simplicity):
+\begin{align}
+d_P(x) \cdot L_{P,\varepsilon}u(x) & = \int_{\Omega} (u(z) - u(x)) \eta\biggl(\frac{z - x}{\varepsilon}\biggr) p(z) \,dz \nonumber \\
+& = \sum_{j = 1}^{\ell} u^{(j)}(x) \int_{\Omega} (z - x)^j \eta\biggl(\frac{z - x}{\varepsilon}\biggr) p(z) \,dz + \int_{\Omega} (z - x)^{k} r_z^{(k)}(x;u) \eta\biggl(\frac{z - x}{\varepsilon}\biggr) p(z) \,dx \nonumber \\
+& = \sum_{j_1 = 1}^{\ell} \sum_{j_2 = 0}^{\ell - 1} \frac{u^{(j_1)}(x) p^{(j_2)}(x)}{j_1!j_2!} \int_{\Omega} (z - x)^{j_1 + j_2} \eta\biggl(\frac{z - x}{\varepsilon}\biggr) p(z) \,dz + \sum_{j = 1}^{\ell} u^{(j)}(x) \int_{\Omega} (z - x)^{j + \ell} r_z^{(\ell)}(x;p) \,dz \nonumber \\
+& ~~ + \int_{\Omega} (z - x)^{k} r_z^{(k)}(x;u) \eta\biggl(\frac{z - x}{\varepsilon}\biggr) p(z) \nonumber \\
+& =: T_1(x) + T_2(x) + T_3(x). \label{pf:kernel_smoothing_bias_1d_smooth_p_3}
+\end{align}
 
-It remains to show the pointwise estimate \textcolor{red}{(...)}.
+By Assumptions~\ref{asmp:domain} and~\ref{asmp:density}, we have that $|d_P(x)| \geq p_{\min} \alpha\varepsilon$ for all $x \in \Omega$. It will therefore suffice to show the following upper bounds
+\begin{equation}
+\label{pf:kernel_smoothing_bias_1d_smooth_p_4}
+\|T_i\|_{\Omega_{\varepsilon}}^2 \leq C_i \varepsilon^{2(k + 1)} \|u\|_{H^{k}(P)}^2
+\end{equation}
+for $i = 1,2,3$, since along with~\eqref{pf:kernel_smoothing_bias_1d_smooth_p_3} this will imply
+\begin{equation*}
+I_1 \leq \frac{3p_{\max}}{\alpha^2 p_{\min}^2 \varepsilon^2} \sum_{i = 1}^{3} C_i \varepsilon^{2(k + 1)} \|u\|_{H^{k}(P)}^2 = C \varepsilon^{2k} \|u\|_{H^k(P)}^2.
+\end{equation*}
+We now establish~\eqref{pf:kernel_smoothing_bias_1d_smooth_p_4} for each of $i = 1,2,3$.
+
+\textit{Upper bound on $\|T_1\|_{\Omega_{\varepsilon}}^2$.}
+We introduce some notation to keep our formulae as readable as possible. Let $[k] = \{1,\ldots,k\}$ and let $\mathbf{J} := \bigl\{(j_1,j_2): j_1 \in [\ell], j_2 \in [\ell - 1] \cup \{0\}, j_1 + j_2 \geq k\bigr\}$. Note that if $j_1 \in [\ell]$ and $j_2 \in [\ell - 1] \cup \{0\}$ do not satisfy $(j_1,j_2) \in \mathbf{J}$, then the order-$s$ property of $\eta$ combined with the fact $B(x,\varepsilon) \in \Omega$ implies that
+\begin{equation*}
+\int_{\Omega} (z - x)^{j_1 + j_2} \eta\biggl(\frac{z - x}{\varepsilon}\biggr) p(z) \,dz = 0.
+\end{equation*}
+On the other hand if $(j_1,j_2) \in \mathbf{J}$ then by a change of variables
+\begin{equation*}
+\int_{\Omega} (z - x)^{j_1 + j_2} \eta\biggl(\frac{z - x}{\varepsilon}\biggr) p(z) \,dz = \varepsilon^{j_1 + j_2} \int_{B(0,1)} v^{j_1 + j_2 + 1} \eta(|v|) \,dv =: \varepsilon^{j_1 + j_2 + 1} \sigma_\eta^{(j_1 + j_2)},
+\end{equation*}
+with Assumption~\ref{asmp:kernel} guaranteeing that $\sigma_\eta^{(j)} < \infty$ for all $j \in \mathbb{N}$. Therefore,
+\begin{equation*}
+T_1(x) = \sum_{(j_1,j_2) \in \mathbf{J}} \frac{\varepsilon^{j_1 + j_2 + 1}}{j_1!j_2!} u^{(j_1)}(x) p^{(j_2)}(x) .
+\end{equation*}
+Next, we note that by H\"{o}lder's inequality, $\|u^{(j_1)} p^{(j_2)} \|_{\Omega_{\varepsilon}}^2 \leq  \|p^{(j_2)}\|_{L^{\infty}(\Omega_{\varepsilon})}^2 \|u^{(j_1)}\|_{\Omega_{\varepsilon}}^2 \leq \|u\|_{H^k(\Omega)}^2$. As a result,
+\begin{equation*}
+\|T_1\|_{\Omega_{\varepsilon}}^2 \leq |\mathbf{J}| \cdot \sum_{(j_1,j_2) \in \mathbf{J}} \frac{\varepsilon^{2(j_1 + j_2 + 1)}}{(j_1!j_2!)^2} \|p^{(j_1)}  u^{(j_2)}\|_{\Omega_{\varepsilon}}^2 \leq \frac{1}{(k - 1)!} \varepsilon^{2(k + 1)} \|u\|_{H^k(\Omega)}^2,
+\end{equation*}
+and thus~\eqref{pf:kernel_smoothing_bias_1d_smooth_p_3} follows with $C_1 = 1/(k - 1)!$. 
+
+\textit{Upper bound on $\|T_2\|_{\Omega_{\varepsilon}}^2$.}
+Note that if $k = 1$ then $T_2(x) = 0$, so that we need only cover the case where $k > 1$. In this case, observe that since $p \in C^{\ell}(P;1)$, it follows that $|r_z^{(\ell)}(x;p)| \leq 1/\ell!$ for all $z \in B(x,\varepsilon)$, and thus by H\"{o}lder's inequality,
+\begin{equation*}
+\biggl|\int_{\Omega} (z - x)^{j + \ell} r_z^{(\ell)}(x;p) \eta\biggl(\frac{z - x}{\varepsilon}\biggr) \,dz\biggr| \leq \varepsilon^{j + \ell}\int_{\Omega} \biggl| \eta\biggl(\frac{z - x}{\varepsilon}\biggr) \biggr| \,dz \leq \|\eta\|_{\infty} \nu_1 \varepsilon^{j + \ell + 1} 
+\end{equation*}
+for any $j \in \mathbb{N}$. An upper bound on $|T_2(x)|$ follows immediately,
+\begin{equation*}
+|T_2(x)| \leq \sum_{j = 1}^{\ell} \biggl|\frac{u^{(j)}(x)}{j!}\biggr| \biggl|\int_{\Omega} (z - x)^{j + \ell} r_z^{(\ell)}(x;p) \eta\biggl(\frac{z - x}{\varepsilon}\biggr) \,dz\biggr| \leq \|\eta\|_{\infty} \nu_1 \varepsilon^{k + 1} \sum_{j = 1}^{\ell} \frac{|u^{(j)}(x)|}{j!\ell!}.
+\end{equation*}
+and calculations similar to above imply that
+\begin{equation*}
+\|T_2\|_{\Omega_{\varepsilon}}^2 \leq \biggl(\frac{\|\eta\|_{\infty} \nu_1}{(\ell - 1)!}\biggr)^2 \varepsilon^{2(k + 1)} \|u\|_{H^k(\Omega)}^2,
+\end{equation*}
+and thus~\eqref{pf:kernel_smoothing_bias_1d_smooth_p_3} follows with $C_2 = \|\eta\|_{\infty} \nu_1/(\ell - 1)!$. 
+
+\textit{Upper bound on $\|T_3\|_{\Omega_{\varepsilon}}^2$.}
+We begin by upper bounding $|T_3(x)|$ for any $x \in \Omega_{\varepsilon}$. Using the change of variables $v = (z - x)/\varepsilon$, we determine that
+\begin{equation*}
+|T_3(x)| \leq \int_{\Omega} \biggl| (z - x)^{k} r_z^{(k)}(x;u) \eta\biggl(\frac{z - x}{\varepsilon}\biggr)  p(z) \biggr|\,dz  \leq \varepsilon^{k + 1} \|\eta\|_{\infty} p_{\max} \int_{B(0,1)} \Bigl|r_{x + \varepsilon v}^{(k)}(x;u)\Bigr| \,dv.
+\end{equation*}
+From here, using the Cauchy-Schwarz inequality twice, we obtain the following upper bound on $\|T_3\|_{\Omega_{\varepsilon}}^2$,
+\begin{align*}
+\|T_3\|_{\Omega_{\varepsilon}}^2 & \leq (\|\eta\|_{\infty} p_{\max})^2 \varepsilon^{2(k + 1)} \int_{\Omega_{\varepsilon}}\biggl(\int_{B(0,1)} \Bigl|r_{x + \varepsilon v}^{(k)}(x;u)\Bigr| \,dv\biggr)^2 \,dx \\
+& \leq (\|\eta\|_{\infty} p_{\max} \nu_1)^2 \varepsilon^{2(k + 1)} \int_{\Omega_{\varepsilon}} \int_{B(0,1)}\Bigl|r_{x + \varepsilon v}^{(k)}(x;u)\Bigr|^2 \,dv \,dx \\
+& \leq \biggl(\frac{\|\eta\|_{\infty} p_{\max} \nu_1}{(k - 1)!}\biggr)^2 \varepsilon^{2(k + 1)} \int_{\Omega_{\varepsilon}} \int_{B(0,1)} \int_{0}^{1} \bigl|u^{(k)}\bigl(x + t\varepsilon v\bigr)\bigr|^2 \,dv \,dx.
+\end{align*}
+Finally, exchanging the order of integration gives
+\begin{equation*}
+\|T_3\|_{\Omega_{\varepsilon}}^2 \leq \biggl(\frac{\|\eta\|_{\infty} p_{\max}}{(k - 1)!}\biggr)^2 \nu_1 \varepsilon^{2(k + 1)} \|u\|_{H^k(\Omega)}^2,
+\end{equation*}
+and thus~\eqref{pf:kernel_smoothing_bias_1d_smooth_p_3} follows with $C_3 = (\|\eta\|_{\infty} p_{\max}/(k - 1)!)^2 \nu_1$. 
+
+\textcolor{red}{(TODO)}
+\begin{itemize}
+	\item \textcolor{red}{Equation~\eqref{pf:kernel_smoothing_bias_1d_smooth_p_3} is not well formatted}.
+	\item \textcolor{red}{Need to define the norm used on the left hand side of  Equation~\eqref{pf:kernel_smoothing_bias_1d_smooth_p_4}}.
+\end{itemize}
+
+\section{Proof of Lemma~\ref{lem:kernel_smoothing_bias}}
+Letting $\Omega_{\varepsilon} = \{x: B(x,\varepsilon) \subset \Omega\}$ and $\partial_{\varepsilon}\Omega = \Omega \setminus \Omega_{\varepsilon}$, we have that 
+\begin{equation*}
+\|L_{P,\varepsilon}u\|_P^2 = \underbrace{\int_{\Omega_{\varepsilon}} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_1} + \underbrace{\int_{\partial_{\varepsilon}\Omega} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_2}
+\end{equation*}
+We will separately upper bound $I_1$---using the higher order property of $\eta$---and $I_2$---using the zero-trace property of $u$ and its $1$st up through $j - 1$st order derivatives.
+
+\paragraph{Upper bound on $I_1$.}
+
+\paragraph{Upper bound on $I_2$.}
 
 \end{document}
