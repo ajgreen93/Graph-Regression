@@ -3,7 +3,7 @@ library(ggplot2)
 library(gridExtra)
 
 ### Plot. ###
-save_directory <- "data/20210318210219" # Please change this to whichever directory you prefer.
+save_directory <- "data/AISTATS/cosine/d5_largesample" # Please change this to whichever directory you prefer.
 plot_directory <- file.path(save_directory,"plots")
 dir.create(plot_directory)
 
@@ -15,7 +15,7 @@ load(file.path(save_directory,"thetas.R"))
 load(file.path(save_directory,"mse.R"))
 load(file.path(save_directory,"Xs.R"))
 load(file.path(save_directory,"f0s.R"))
-load(file.path(save_directory,"Ys.R"))
+# load(file.path(save_directory,"Ys.R"))
 
 # Plot of mse by tuning parameter.
 pdf(file.path(plot_directory,"mse.pdf"))
@@ -72,7 +72,7 @@ if(d == 1)
 {
   for(ii in 1:length(ns))
   {
-    pdf(file.path(plot_directory,paste0("regression_function_",ii,".pdf")))
+    png(file.path(plot_directory,paste0("regression_function_",ii,".png")))
     plot_df <- data.frame(x = Xs[[ii]],f0 = f0s[[ii]], y = Ys[[ii]])
     plot(x = plot_df$x,y = plot_df$y, 
          col = col, 
@@ -91,8 +91,8 @@ if(d == 1)
   {
     for(ii in 1:length(ns))
     {
-      plot_name <- paste0(names(methods)[jj],"_estimate_",ii,".pdf")
-      pdf(file.path(plot_directory,plot_name))
+      plot_name <- paste0(names(methods)[jj],"_estimate_",ii,".png")
+      png(file.path(plot_directory,plot_name))
       plot_df <- data.frame(x = Xs[[ii]], y = Ys[[ii]],fhat = best_fits_by_method[[ii]][[jj]])
       plot(x = plot_df$x,y = plot_df$y, 
            col = col,
@@ -107,8 +107,8 @@ if(d == 1)
 }
 
 # Plot of mse---for best choice of tuning parameter---by sample size
-pdf(file.path(plot_directory,"mse_by_sample_size.pdf"))
-par(mar = c(5.1,4.5,4.1,4.1)) # The left hand side was getting cut off a tad.
+png(file.path(plot_directory,"mse_by_sample_size.png"))
+par(mar = c(5.1,6,4.1,4.1)) # The left hand side was getting cut off a tad.
 plot_dfs_best_mse <- vector(mode = "list", length = length(methods))
 names(plot_dfs_best_mse) <- names(methods)
 fitted_slopes <- numeric(length(methods))
@@ -156,7 +156,8 @@ ltys <- c(2,3)
 
 # shadow plot
 plot(x = ns, xlim = xlims, ylim = ylims,
-     log = "xy", xlab = "Sample size", ylab = "Mean squared error", main = title, cex.main = 2, cex.lab = 2, cex.axis = 1.5)
+     log = "xy", xlab = "Sample size", ylab = "Mean squared error", main = title, 
+     cex.main = 2.5, cex.lab = 2.5, cex.axis = 2)
 
 # add points and lines
 for(jj in 1:length(methods))
