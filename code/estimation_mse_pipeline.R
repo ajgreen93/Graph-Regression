@@ -7,7 +7,7 @@ source("graph.R")
 source("estimators.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/estimation_mse_config3.R")
+source("configs/estimation_wigglycosine1d.R")
 
 #----------------------------------------------------#
 # This is the pipeline for running regression estimation experiments.
@@ -18,6 +18,7 @@ best_fits_by_method <- vector(mode = "list",length = length(ns))
 mse <- vector(mode = "list",length = length(ns))
 Xs <- vector(mode = "list", length = length(ns))
 f0s <- vector(mode = "list", length = length(ns))
+Ys <- vector(mode = "list", length = length(ns))
 thetas <- vector(mode = "list", length = length(ns))
 
 for(ii in 1:length(ns))
@@ -84,6 +85,7 @@ for(ii in 1:length(ns))
   # Taking the last iteration X, it doesn't matter. 
   Xs[[ii]] <- X
   f0s[[ii]] <- f0_evaluations
+  Ys[[ii]] <- Y
 }
 
 ### Save. ###
@@ -102,4 +104,5 @@ save(best_fits_by_method, file = paste0(save_directory, '/best_fits_by_method.R'
 save(thetas, file = paste0(save_directory, '/thetas.R'))
 save(mse, file = paste0(save_directory, '/mse.R'))
 save(Xs, file = paste0(save_directory, '/Xs.R'))
+save(Ys, file = paste0(save_directory, '/Ys.R'))
 save(f0s, file = paste0(save_directory, '/f0s.R'))

@@ -1,8 +1,27 @@
+make_sample_gaussian <- function(d)
+{
+  sample_X <- function(n){
+    X <- matrix(NA,nrow = n,ncol = d)
+    while(any(is.na(X))){
+      X[which(is.na(X))] <- rnorm(sum(is.na(X)))
+      X[abs(X) > 1] <- NA
+    }
+    return(X)
+  }
+}
+
 make_sample_uniform <- function(d)
 {
   sample_X <- function(n){
     X <- matrix(runif(n*d,-1,1),ncol = d)
     return(X)
+  }
+}
+
+make_wiggly_gaussian <- function(d,n)
+{
+  f0 <- function(x){
+    return(prod((1/dnorm(x)) * cos(2*pi*x/dnorm(x)^{1.5})))
   }
 }
 
