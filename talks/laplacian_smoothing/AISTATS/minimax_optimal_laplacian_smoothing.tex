@@ -2,14 +2,17 @@
 
 % Packages
 \usepackage{bm}
+\usepackage{wasysym}
 
 
 %% Theme related.
 \usetheme{default}
+\setbeamerfont{author}{size = \large}
+\setbeamerfont{institute}{size=\large}
+\setbeamerfont{footline}{series = \bfseries}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{frametitle}[default][center]
 \setbeamertemplate{itemize items}[circle]
-
 \definecolor{Red}{rgb}{.9,.05,.05}
 \setbeamercolor{alerted text}{fg=Red}
 \usefonttheme[onlymath]{serif}
@@ -25,18 +28,28 @@
 \newcommand{\red}[1]{\textcolor{red}{#1}}
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
 
-\title{Laplacian Smoothing on Neighborhood Graphs}
+\title{Minimax Optimality of Laplacian Smoothing}
+\subtitle{\small (Full title: Minimax Optimal Regression over Sobolev Spaces via Laplacian Regularization on Neighborhood Graphs)}
 
 \author{Alden Green}
 \institute{Department of Statistics and Data Science \\
-		   Carnegie Mellon Unviersity}
+\includegraphics[width=.5 \textwidth]{figures/cmu.png}}
 \date{}
 
 \begin{document}
 	
 \begin{frame}
 \titlepage
+\centering \emph{Co-authors: Sivaraman Balakrishnan, Ryan Tibshirani}
 \end{frame}
+
+\addtobeamertemplate{navigation symbols}{}{
+	\usebeamerfont{footline}
+	\usebeamercolor[fg]{footline}
+	\hspace{1em}
+	\insertframenumber
+}
+\addtocounter{framenumber}{-1}
 
 \begin{frame}{Basic problem setup}
 \alert{Nonparametric regression, random design}: We observe $(X_1,Y_1),\ldots,(X_n,Y_n)$, where $X_1,\ldots,X_n$ are sampled independently from density $p$, and
@@ -47,7 +60,7 @@ Goal is to learn the unknown regression function $f_0$, which is assumed to be \
 \begin{equation*}
 \|f_0\|_{H^1}^2 := \int \|\nabla f_0(x)\|^2 \,dx \quad \text{is small.}
 \end{equation*}
-Either \alert{estimate} $f_0$ with some $\hat{f}$, or \alert{test} whether $f_0 = 0$.
+Either \alert{estimate} $f_0$ with some $\wh{f}$, or \alert{test} whether $f_0 = 0$.
 \end{frame}
 
 \begin{frame}{Laplacian smoothing}
@@ -59,7 +72,8 @@ Laplacian smoothing solves a discrete, penalized least squares problem on a grap
 	\end{equation*}
 	\item The \alert{Laplacian smoothing} estimator is
 	\begin{equation*}
-	\wh{f} = \argmin_{f \in \Reals^n} \|Y - f\|_n^2 + \frac{\lambda}{2} f^{\top} L f, \end{equation*}
+	\wh{f} = \argmin_{f \in \Reals^n} \|Y - f\|_n^2 + \frac{\rho}{2} f^{\top} L f,\quad\textrm{with test statistic}\quad\wh{T} = \|\wh{f}\|_n^2. 
+	\end{equation*}
 	%with corresponding test statistic $\wh{T} = \|\wh{f}\|_n^2$.
 \end{enumerate}
 \begin{figure}
@@ -76,13 +90,13 @@ Why Laplacian smoothing?
 	\item \emph{Generality.} Makes sense whenever one can form a graph $G$. 
 	\item \emph{Weak supervision.} Naturally extends to semi- and unsupervised problems.
 \end{itemize}
-Intuition: when $n$ large, $r$ small and $f$ smooth, \textcolor{blue}{(Bousquet et al.)} show
+Intuition: when $n$ large, $r$ small and $f$ smooth, {(Bousquet et al. 2004)} show
 \begin{equation*}
 f^T L f = \frac{1}{2}\sum_{i,j = 1}^{n} \bigl(f(X_i) - f(X_j)\bigr)^2 W_{i,j} \approx n^2 r^{d + 2} \int \|\nabla f\|_2^2 p^2(x) \,dx.
 \end{equation*}
-So $\wh{f}$ seems like a noisy approximation of a very classical estimator $\wt{f}$: aka \alert{smoothing spline} ($d = 1$), or \alert{thin-plate spline} ($d \geq 2$), defined as
+So $\wh{f}$ seems like a noisy and discrete approximation to a very classical estimator $\wt{f}$: aka \alert{smoothing spline} ($d = 1$), or \alert{thin-plate spline} ($d \geq 2$), defined as
 \begin{equation*}
-\widetilde{f} = \argmin_{f \in H^1} \|Y - f\|_n^2 + \lambda \int \|\nabla f(x)\|_2^2  \,dx.
+\widetilde{f} = \argmin_{f \in H^1} \|Y - f\|_n^2 + \rho \int \|\nabla f(x)\|_2^2  \,dx.
 \end{equation*}
 Similarly $\wh{T}$ approximates $\wt{T} = \|\wt{f}\|_n^2$. 
 \end{frame}
@@ -139,11 +153,11 @@ Well-posedness of smoothing splines (when $d = 1$) vs. ill-posedness of thin-pla
 	\item In $1d$, every function in $H^1$ is continuous. 
 	\item When $d \geq 2$, this is no longer the case.
 \end{itemize}
-As a result the criterion underlying $\wt{f}$ is \alert{not continuous} with respect to $H^1$ norm. \blue{(Green and Silverman)} construct sequences of ``bump functions'' $f_1,f_2,\ldots$ such that
+As a result the criterion underlying $\wt{f}$ is \alert{not continuous} with respect to $H^1$ norm. (Green and Silverman 1994) construct sequences of ``bump functions'' $f_1,f_2,\ldots$ such that
 \begin{equation*}
 f_k(X_i) = Y_i \quad \text{for all $i = 1,\ldots,n$, but} \quad \|f_k\|_{H^1} \to 0.
 \end{equation*}
-\alert{Bottom line}: The continuum thin-plate spline problem assigns (much) higher loss + penalty to the regression function $f_0$ than to bump functions $f_k$.
+\alert{Bottom line}: The continuum thin-plate spline problem assigns (much) higher loss + penalty to the regression function $f_0$ than to bump functions $f_k$. \red{\frownie} 
 \end{frame}
 
 \begin{frame}{Explanation: Success of Laplacian Smoothing}
@@ -156,20 +170,20 @@ f_k(X_i) = Y_i \quad \text{for all $i = 1,\ldots,n$, but} \quad \|f_k\|_{H^1} \t
 	\item If $f_0$ is Sobolev smooth, then $f_0^{\top} L f_0 \lesssim n^2r^{d + 2}$.
 	\item Thus for $\lambda \gg (nr^{d + 2})^{-1} r^{-2}$, we have
 	\begin{equation*}
-	\|Y - f_k\|_n^2 + \lambda f_k^{\top} L f_k \gg \|Y - f_0\|_n^2 + \lambda f_0^{\top} L f_0.
+	\|Y - f_k\|_n^2 + \rho f_k^{\top} L f_k \gg \|Y - f_0\|_n^2 + \rho f_0^{\top} L f_0.
 	\end{equation*}
 \end{itemize}
-\alert{Bottom line}: the discrete problem assigns (much) higher loss + penalty to bump functions $f_k$ than to regression function $f_0$.
+\alert{Bottom line}: the discrete problem assigns (much) higher loss + penalty to bump functions $f_k$ than to regression function $f_0$. \blue{\smiley}
 \end{frame}
 
 
 \begin{frame}{What about $d > 4$?}
-\alert{Estimation}: the class $H^1(G;M) = \{f: f^{\top}Lf \leq M\}$ is too large to show $\wh{f}$ is optimal. Similar phenomena in ERM over H\"{o}lder classes when $d > 2$ \blue{(Birge and Massart)}, and fixed (grid) graphs \blue{(Sadhanala et al.)}. Empirically, we see that for $f_0$ simple $\cos$ function,
+\alert{Estimation}: the class $H^1(G;M) = \{f: f^{\top}Lf \leq M\}$ is too large to show $\wh{f}$ is optimal. Similar phenomena in ERM over H\"{o}lder classes when $d > 2$ {(Birge and Massart 1993)}, and fixed (grid) graphs {(Sadhanala et al. 2016)}. Empirically, we see that for $f_0$ simple $\cos$ function,
 \begin{figure}[tb]
-	\includegraphics[width=.24\textwidth]{figures/cosine/mse_by_sample_size_2d.pdf}
-	\includegraphics[width=.24\textwidth]{figures/cosine/mse_by_sample_size_3d.pdf} 
-	\includegraphics[width=.24\textwidth]{figures/cosine/mse_by_sample_size_4d.pdf}
-	\includegraphics[width=.24\textwidth]{figures/cosine/mse_by_sample_size_5d.pdf}
+	\includegraphics[width=.24\textwidth]{figures/cosine/mse_by_sample_size_2d.png}
+	\includegraphics[width=.24\textwidth]{figures/cosine/mse_by_sample_size_3d.png} 
+	\includegraphics[width=.24\textwidth]{figures/cosine/mse_by_sample_size_4d.png}
+	\includegraphics[width=.24\textwidth]{figures/cosine/mse_by_sample_size_5d.png}
 \end{figure}
 
 \alert{Testing}: Sobolev class $H^1$ does not embed into $L^4$ (Sobolev Embedding Theorem). Usual test statistics may not have a variance.
@@ -201,6 +215,19 @@ Several different directions.
 \end{frame}
 
 \begin{frame}{Analysis}
+We use a conditional-on-design \alert{bias-variance} decomposition, based on the eigenvalues $\lambda_k$ of $L$. \newline
+
+For estimation,
+\begin{equation*}
+\|\wh{f} - f_0\|_n^2 \lesssim \frac{f_0^{\top} L f_0}{n\lambda_k} + \frac{1}{n} \sum_{k = 1}^{n} \frac{1}{(\rho \lambda_k + 1)^2}.
+\end{equation*}
+
+For testing, level-$\alpha$ test $\varphi = 1\{\wh{T} \geq t_{\alpha}\}$ has negligible Type II error when
+\begin{equation*}
+\|f_0\|_n^2 \gtrsim \frac{f_0^{\top} L f_0}{n\lambda_k} + \frac{1}{n} \sum_{k = 1}^{n} \sqrt{\frac{1}{(\rho \lambda_k + 1)^4}}.
+\end{equation*}
+
+Then we make use of some recent results (Burago et al. 2014, Garcia Trillos et al. 2019) on convergence of eigenvalues $\lambda_k$, and derive some of our own.
 \end{frame}
 
 
