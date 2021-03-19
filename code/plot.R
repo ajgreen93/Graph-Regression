@@ -15,6 +15,7 @@ load(file.path(save_directory,"thetas.R"))
 load(file.path(save_directory,"mse.R"))
 load(file.path(save_directory,"Xs.R"))
 load(file.path(save_directory,"f0s.R"))
+# load(file.path(save_directory,"Ys.R"))
 
 # Plot of mse by tuning parameter.
 pdf(file.path(plot_directory,"mse.pdf"))
@@ -55,35 +56,59 @@ for(jj in 1:length(methods))
 }
 dev.off()
 
+# Plot of true regression function
+
+# Parameters
+xlim = c(-1,1)
+ylim = c(min(unlist(Ys)),max(unlist(Ys)))
+col = "grey34"
+cex = .6
+lwd = 1.1
+cex.main = 2.5
+cex.lab = 2.5
+cex.axis = 2
+
+if(d == 1)
+{
+  for(ii in 1:length(ns))
+  {
+    png(file.path(plot_directory,paste0("regression_function_",ii,".png")))
+    plot_df <- data.frame(x = Xs[[ii]],f0 = f0s[[ii]], y = Ys[[ii]])
+    plot(x = plot_df$x,y = plot_df$y, 
+         col = col, 
+         cex = cex, cex.main = cex.main, cex.lab = cex.lab, cex.axis = cex.axis,
+         xlim = xlim, ylim = ylim, lwd = lwd,
+         xlab = "",ylab = "", main = "True function")
+    lines(x = plot_df$x[order(plot_df$x)],y = plot_df$f0[order(plot_df$x)],lwd = 1.5)
+    dev.off()
+  }
+}
+
 # Plot of fitted values for best choice of tuning parameter.
 if(d == 1)
 {
-  pdf(file.path(plot_directory,"estimates.pdf"))
   for(jj in 1:length(methods))
   {
-    fitted_value_plots <- vector(mode = "list",length = length(ns))
     for(ii in 1:length(ns))
     {
-      plot_df <- data.frame(x = Xs[[ii]],f = f0s[[ii]], fhat = best_fits_by_method[[ii]][[jj]])
-      fitted_value_plots[[ii]] <- 
-        ggplot(data = plot_df,aes(x = x)) + 
-        geom_line(aes(y = f)) +
-        geom_point(aes(y = fhat), color = "red") +
-        labs(x = "X", y = "f0", 
-             title = paste0("Fitted values (red) and f0 (black) for sample size = ", 
-                            ns[ii], ".")
-        ) +
-        theme_bw()
+      plot_name <- paste0(names(methods)[jj],"_estimate_",ii,".png")
+      png(file.path(plot_directory,plot_name))
+      plot_df <- data.frame(x = Xs[[ii]], y = Ys[[ii]],fhat = best_fits_by_method[[ii]][[jj]])
+      plot(x = plot_df$x,y = plot_df$y, 
+           col = col,
+           cex = cex, cex.main = cex.main, cex.lab = cex.lab, cex.axis = cex.axis,
+           xlim = xlim, ylim = ylim, lwd = lwd,
+           xlab = "",ylab = "", main = "Laplacian smoothing")
+      lines(x = plot_df$x[order(plot_df$x)],y = plot_df$fhat[order(plot_df$x)],lwd = 1.5,
+            col = "blue")
+      dev.off()
     }
-    ncol_plots <- floor(sqrt(length(ns)))
-    do.call("grid.arrange", c(fitted_value_plots, ncol=ncol_plots))
   }
-  dev.off()
 }
 
 # Plot of mse---for best choice of tuning parameter---by sample size
-pdf(file.path(plot_directory,"mse_by_sample_size.pdf"))
-par(mar = c(5.1,4.5,4.1,4.1)) # The left hand side was getting cut off a tad.
+png(file.path(plot_directory,"mse_by_sample_size.png"))
+par(mar = c(5.1,6,4.1,4.1)) # The left hand side was getting cut off a tad.
 plot_dfs_best_mse <- vector(mode = "list", length = length(methods))
 names(plot_dfs_best_mse) <- names(methods)
 fitted_slopes <- numeric(length(methods))
@@ -131,7 +156,8 @@ ltys <- c(2,3)
 
 # shadow plot
 plot(x = ns, xlim = xlims, ylim = ylims,
-     log = "xy", xlab = "Sample size", ylab = "Mean squared error", main = title, cex.main = 2, cex.lab = 2, cex.axis = 1.5)
+     log = "xy", xlab = "Sample size", ylab = "Mean squared error", main = title, 
+     cex.main = 2.5, cex.lab = 2.5, cex.axis = 2)
 
 # add points and lines
 for(jj in 1:length(methods))

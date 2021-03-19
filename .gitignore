@@ -8,6 +8,9 @@
 *.txt
 *.log
 *.pdf
+*.nav
+*.snm
+*.toc
 
 
 
