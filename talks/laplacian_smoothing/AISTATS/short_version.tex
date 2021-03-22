@@ -55,15 +55,10 @@
 \begin{equation*}
 Y_i = f_0(X_i) + \varepsilon_i, \quad \varepsilon_i \sim N(0,1).
 \end{equation*}
-Goal is to learn the unknown regression function $f_0$, which is assumed to be \alert{Sobolev} smooth, i.e.
+Goal is to estimate the unknown regression function $f_0$, which is assumed to be \alert{Sobolev} smooth, i.e.
 \begin{equation*}
 \|f_0\|_{H^1}^2 := \int \|\nabla f_0(x)\|^2 \,dx \quad \text{is small.}
 \end{equation*}
-By ``learn'', we mean either
-\begin{itemize}
-	\item \alert{Estimate} $f_0$ with some $\wh{f}$ such that $\|\wh{f} - f_0\|_n^2 = \frac{1}{n}\|\wh{f} - f_0\|_2^2$ is small, or
-	\item \alert{Test} whether $f_0 = 0$, or equivalently $\|f_0\|_{L^2}^2 = 0$.
-\end{itemize}
 \end{frame}
 
 \begin{frame}{Laplacian smoothing}
@@ -77,7 +72,7 @@ Laplacian smoothing solves a discrete, penalized least squares problem on a grap
 	\pause
 	\item The \alert{Laplacian smoothing} estimator is
 	\begin{equation*}
-	\wh{f} = \argmin_{f \in \Reals^n} \|Y - f\|_n^2 + \frac{\rho}{2} f^{\top} L f,\quad\textrm{with test statistic}\quad\wh{T} = \|\wh{f}\|_n^2. 
+	\wh{f} = \argmin_{f \in \Reals^n} \|Y - f\|_n^2 + \frac{\rho}{2} f^{\top} L f.
 	\end{equation*}
 	%with corresponding test statistic $\wh{T} = \|\wh{f}\|_n^2$.
 \end{enumerate}
@@ -98,12 +93,11 @@ So $\wh{f}$ seems like a noisy and discrete approximation to $\wt{f}$,
 \begin{equation*}
 \widetilde{f} := \argmin_{f \in H^1} \|Y - f\|_n^2 + \rho \int \|\nabla f(x)\|_2^2  \,dx.
 \end{equation*}
-Very classical estimator! Aka \alert{smoothing spline} ($d = 1$), or \alert{thin-plate spline} ($d \geq 2$). \newline 
-Similarly $\wh{T}$ approximates $\wt{T} = \|\wt{f}\|_n^2$. 
+Very classical estimator! Aka \alert{smoothing spline} ($d = 1$), or \alert{thin-plate spline} ($d \geq 2$).
 \end{frame}
 
 \begin{frame}{Main Question}
-In $1d$, smoothing splines achieve the minimax optimal rate \blue{$n^{-2/3}$} (estimation) or \blue{$n^{-4/5}$} (testing) over Sobolev functions.
+In $1d$, smoothing splines achieve the minimax optimal rate \blue{$n^{-2/3}$} (estimation) over Sobolev functions.
 \pause
 \begin{block}{{\bf Question}}
 	Does Laplacian smoothing enjoy the same optimality properties as smoothing/thin plate splines?
@@ -112,8 +106,8 @@ In $1d$, smoothing splines achieve the minimax optimal rate \blue{$n^{-2/3}$} (e
 \begin{block}{{\bf Answer}}
 	They actually do better! When properly tuned:
 	\begin{itemize}
-		\item Laplacian smoothing has error of \blue{$n^{-2/3}$} (estimation) and \blue{$n^{-4/5}$} (testing) when $d = 1$, matching smoothing splines.
-		\item Laplacian smoothing also achieves optimal error \blue{$n^{-2/(2 + d)}$} (estimation) and \blue{$n^{-4/(4 + d)}$} (testing) when $d = 2,3,4$ (up to $\log n$ factor when $d = 4$).
+		\item Laplacian smoothing has error of \blue{$n^{-2/3}$}  when $d = 1$, matching smoothing splines.
+		\item Laplacian smoothing also achieves optimal error \blue{$n^{-2/(2 + d)}$} when $d = 2,3,4$ (up to $\log n$ factor when $d = 4$).
 		\item On the other hand $\wt{f}$ is \alert{not even well-defined} when $d > 1$. Well known in spline/semi-supervised learning communities.
 	\end{itemize}
 \end{block}
@@ -134,57 +128,14 @@ In $1d$, smoothing splines achieve the minimax optimal rate \blue{$n^{-2/3}$} (e
 		\end{tabular}
 	\end{center}
 \end{table}
-\pause
-{\large Testing rates, assuming $f_0 \in H^1(M)$ ($d < 4$) or $f_0 \in L^4(M)$ ($d \geq 4$)}
-\begin{table}
-	\begin{center}
-		\begin{tabular}{p{.25\textwidth} | p{.25\textwidth} p{.25\textwidth} }
-			Dimension & Laplacian smoothing & Smoothing/Thin-plate splines \\
-			\hline
-			$d = 1$ & \blue{\bm{${n^{-4/5}}$}} & \blue{${n^{-4/5}}$} \\
-			$d = 2,3$ & \blue{\bm{${n^{-4/(4 + d)}}$}} & \red{NA}\\
-			$d \geq 4$ & $\blue{\bm{{n^{-1/2}}}}$ & \red{NA} \\
-		\end{tabular}
-	\end{center}
-\end{table}
-\end{frame}
-
-\begin{frame}{Explanation: Failure of Thin-plate Splines}
-Well-posedness of smoothing splines (when $d = 1$) vs. ill-posedness of thin-plate splines ($d \geq 2$) explained by \alert{Sobolev Embedding Theorem}.
-\begin{itemize}
-	\item In $1d$, every function in $H^1$ is continuous. 
-	\item When $d \geq 2$, this is no longer the case.
-\end{itemize}
-As a result the criterion underlying $\wt{f}$ is \alert{not continuous} with respect to $H^1$ norm. (Green and Silverman 1994) construct sequences of ``bump functions'' $f_1,f_2,\ldots$ such that
-\begin{equation*}
-f_k(X_i) = Y_i \quad \text{for all $i = 1,\ldots,n$, but} \quad \int \|\nabla f_k(x)\|_2^2\,dx \to 0
-\end{equation*}
-\alert{Bottom line}: The continuum thin-plate spline problem assigns (much) higher loss + penalty to the regression function $f_0$ than to bump functions $f_k$. \red{\frownie} 
-\end{frame}
-
-\begin{frame}{Explanation: Non-failure of Laplacian Smoothing}
-\alert{Discretization} is a blessing!  
-\begin{itemize}
-	\item Previous construction of ``bump functions'' $f_1,f_2,\ldots$ will satisfy
-	\begin{equation*}
-	f_k^{\top} L f_k = \sum_{i,j = 1}^{n} (Y_i - Y_j)^2 K(\|X_i - X_j\|/r) \asymp n^2r^{d}.
-	\end{equation*}
-	\item If $f_0$ is Sobolev smooth, then $f_0^{\top} L f_0 \lesssim n^2r^{d + 2}$.
-	\item Thus for $\rho \gg (nr^{d + 2})^{-1} r^{-2}$, we have
-	\begin{equation*}
-	\|Y - f_k\|_n^2 + \rho f_k^{\top} L f_k \gg \|Y - f_0\|_n^2 + \rho f_0^{\top} L f_0.
-	\end{equation*}
-\end{itemize}
-\alert{Bottom line}: the discrete problem assigns (much) higher loss + penalty to bump functions $f_k$ than to regression function $f_0$. \blue{\smiley}
 \end{frame}
 
 \begin{frame}{Extensions}
 Several different directions.
 \begin{itemize}
+	\item \alert{Goodness-of-fit testing}: Use statistic $\wh{T} = \|\wh{f}\|_n^2$ to test whether $f_0 = 0$. Do we achieve optimal rates \blue{$n^{-4/(4 + d)}$}? \blue{(Yes! See paper.)}
 	\item \alert{Manifold adaptivity}: When $p$ has support on a manifold of dimension $m < d$, optimal rates are \blue{$n^{-2/(2 + m)}$} (estimation) and \blue{$n^{-4/(4 + m)}$} (testing). Does Laplacian smoothing automatically adapt? \blue{(Yes! See paper.)} 
 	\item \alert{Out-of-sample estimation}: Can we extend estimator $\wh{f}$ to have optimal out-of-sample mean squared error? \blue{(Yes, if $f_0$ is Lipschitz! See paper.)}
-	\item \alert{Smoothness adaptivity}: When $f_0$ has $s$ bounded derivatives, optimal rates are \blue{$n^{-2s/(2s + m)}$} (estimation) and \blue{$n^{-4s/(4s + m)}$} (testing). Does Laplacian smoothing adapt? (Future work...)
-	\item \alert{Different methods}: Spectral cutoff? $k$NN graph? Normalized Laplacian? (Future work...)
 \end{itemize}
 \end{frame}
 
