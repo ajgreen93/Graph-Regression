@@ -281,9 +281,7 @@ Notice that the variance term in the above is smaller than the typical variance 
 	\|T_{\varepsilon,P}f^{\ast} - f^{\ast}\|_P^2 \leq C \varepsilon^{2s}.
 	\end{equation*}
 \end{lemma}
-\begin{proof}[Proof (when dimension $d = 1$).]
-	\textcolor{red}{(TODO)}
-\end{proof}
+For the proof of this claim see Section~\ref{sec:kernel_smoothing_bias_pf}.
 
 Thus balancing bias and variance, using a smaller bandwidth ($\varepsilon \asymp n^{-1/(2r + d)}$) than is typical for kernel smoothing with noisy data, leads to an asymptotically negligible error ($n^{-2s/(2r + d)}$) compared to the minimax rate for estimating Sobolev functions. 
 
@@ -716,14 +714,221 @@ and thus~\eqref{pf:kernel_smoothing_bias_1d_smooth_p_3} follows with $C_3 = (\|\
 \end{itemize}
 
 \section{Proof of Lemma~\ref{lem:kernel_smoothing_bias}}
+\label{sec:kernel_smoothing_bias_pf}
 Letting $\Omega_{\varepsilon} = \{x: B(x,\varepsilon) \subset \Omega\}$ and $\partial_{\varepsilon}\Omega = \Omega \setminus \Omega_{\varepsilon}$, we have that 
 \begin{equation*}
-\|L_{P,\varepsilon}u\|_P^2 = \underbrace{\int_{\Omega_{\varepsilon}} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_1} + \underbrace{\int_{\partial_{\varepsilon}\Omega} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_2}
+\|L_{P,\varepsilon}u\|_P^2 = \underbrace{\int_{\Omega_{\varepsilon}} \bigl(L_{P,\varepsilon}u(x)\bigr)^2 \,dP(x)}_{:=I_1} + \underbrace{\int_{\partial_{\varepsilon}\Omega} \bigl(L_{\varepsilon,P}u(x)\bigr)^2 \,dP(x)}_{:=I_2}
 \end{equation*}
-We will separately upper bound $I_1$---using the higher order property of $\eta$---and $I_2$---using the zero-trace property of $u$ and its $1$st up through $j - 1$st order derivatives.
+We will separately upper bound $I_1$---using the higher order property of $\eta$---and $I_2$---using the zero-trace property of $u$ and its $1$st up through $(j - 1)$st order derivatives. 
+
+\subsection{Upper bound on $I_1$.}
+\paragraph{Taylor expansions, and relevant facts.}
+Suppose $x \in \mc{X}_{\varepsilon}$ and $x' \in B(x,\varepsilon)$. We take a Taylor expansion of $u(x')$ around $x' = x$,
+\begin{equation*}
+u(x') - u(x) = \sum_{j = 1}^{s - 1} \frac{1}{j!}\bigl(d_x^{j}u\bigr)(x' - x) + r_{x'}^{s}(x;u)
+\end{equation*}
+We likewise take an order $k$ Taylor expansion of $p(x')$ around $x'  = x$ (where $k = 1$ if $s = 1$, and otherwise $k = s - 1$,)
+\begin{equation*}
+p(x') = p(x) + \sum_{j = 1}^{k - 1}\frac{1}{j!}\bigl(d_x^{j}p\bigr)(x' - x) + r_{x'}^{k}(x;p).
+\end{equation*}
+Here for a given $z \in \Rd$ and $j$-times differentiable function $f: \mc{X} \to \Reals$, we use the notation $\bigl(d_x^jf\bigr)(z) := \sum_{\abs{\alpha} = j} D^{\alpha}f(x) z^{\alpha}$. The remainder term $r_{x'}$ is given by
+\begin{equation*}
+r_{x'}^j(x;f) = \frac{1}{(j - 1)!} \int_{0}^{1}(1 - t)^{j - 1} \bigl(d_{x + t(x' - x)}^{j}f\bigr)(x' - x) \,dt,
+\end{equation*}
+where we note that $x + t(x' - x) \in B(x,\varepsilon) \subseteq \mc{X}$. Finally, we have adopted the convention that $\sum_{j = 1}^{0} a_j = 0$.
+
+We now recall some standard facts regarding Taylor expansions. First, remember that that $\bigl(d_x^{j}f\bigr)(z)$ is a degree-$j$ polynomial---and thus a $j$-homogeneous function---in $z$. On the other hand, for any degree-$j$ polynomial $q_j(z)$ and order-$s$ kernel $\eta$, if $j < s$ by converting to polar coordinates we can verify that
+\begin{equation*}
+\int_{B(0,1)} q_j(z) \eta(\|z\|) \,dz = 0.
+\end{equation*}
+We now give estimates on the remainder term in both sup-norm and $L^2(\mc{X}_{\varepsilon})$ norm, each of which hold for any $z \in B(0,1)$. In sup-norm, we have that 
+\begin{equation*}
+\sup_{x \in \mc{X}_{\varepsilon}}|r_{x + \varepsilon z}^j(x;f)| \leq C \varepsilon^j \|f\|_{C^j(\mc{X})},
+\end{equation*}
+whereas in $L^2(\mc{X}_{\varepsilon})$ norm we have,
+\begin{equation}
+\label{eqn:sobolev_remainder_term}
+\int_{\mc{X}_{\varepsilon}} \bigl|r_{x + t \varepsilon z}^j(x;f)\bigr|^2 \,dx \leq \varepsilon^{2j} \int_{\mc{X}_{\varepsilon}} \int_{0}^{1} |d_{x + t\varepsilon z}^jf(z)|^2 \,dt \,dx \leq \varepsilon^{2j} \|d^jf\|_{\Leb^2(\mc{X})}^2.
+\end{equation}
 
 \paragraph{Upper bound on $I_1$.}
+Taking a Taylor expansion of $u(x')$ around $x' = x$, we see that
+\begin{equation*}
+d_P(x) \cdot L_{P,\varepsilon}u(x) = \sum_{j = 1}^{s - 1} \int \bigl(d_x^ju\bigr)(x' - x) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') + \int r_{x'}^j(x;u) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x')
+\end{equation*}
+Next we take a Taylor expansion of $p(x')$ around $x' = x$ and represent $L_{P,\varepsilon}u(x)$ as the sum of three terms,
+\begin{equation}
+\label{pf:kernel_smoothing_bias_1}
+\begin{aligned}
+d_P(x) \cdot L_{P,\varepsilon}u(x) & = \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{k - 1} \int \bigl(d_x^{j_1}u\bigr)(x' - x) \bigl(d_x^{j_2}p\bigr)(x' - x) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \quad + \\
+& \quad \sum_{j = 1}^{s - 1} \int \bigl(d_x^ju\bigr)(x' - x)  r_{x'}^{k}(x;p) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \quad  + \\
+& \quad \int r_{x'}^j(x;u) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \\
+& := J_1(x) + J_2(x) + J_3(x).
+\end{aligned}
+\end{equation}
+Note immediately that by Assumption~\ref{asmp:density}, we have that $\inf_{x \in \mc{X}_{\varepsilon}}|d_{P}(x)| \geq p_{\min} \varepsilon^d.$ We will additionally show that for each of $m = 1,2,3$, 
+\begin{equation*}
+\int_{\Omega_{\varepsilon}} |J_m(x)|^2 \,dP(x) \leq C \varepsilon^{2(s + d)} \|u\|_{H^s(\mc{X})}^2,
+\end{equation*}
+for a constant $C$ that does not depend on $u$. Plugging these bounds back into~\eqref{pf:kernel_smoothing_bias_1} will imply that
+\begin{equation*}
+I_1 \leq C \varepsilon^{2s} \|u\|_{H^s(\mc{X})}^2.
+\end{equation*}
+
+\underline{\textit{Upper bound on $J_1(x)$}}.
+Recalling that $d_x^jf(\cdot)$ is a $j$-homogeneous function, we have that
+\begin{align*}
+J_1(x) & = \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{k - 1} \int_{\mc{X}} \bigl(d_x^{j_1}u\bigr)(x' - x) \cdot \bigl(d_x^{j_2}p\bigr)(x' - x) \cdot \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \\
+& = \varepsilon^d \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{k - 1} \int_{B(0,1)} \bigl(d_{x }^{j_1}u\bigr)(\varepsilon z) \cdot \bigl(d_{x}^{j_2}p\bigr)(\varepsilon z) \cdot \eta\bigl(\|z\|\bigr) \,dz \\
+& = \varepsilon^d \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{k - 1} \varepsilon^{j_1 + j_2} \int_{B(0,1)} \bigl(d_{x}^{j_1}u\bigr)(z) \cdot \bigl(d_{x}^{j_2}p\bigr)(z) \cdot \eta\bigl(\|z\|\bigr) \,dz.
+\end{align*}
+Noting $d_{x}^{j_1}u \cdot d_x^{j_2}p$ is a degree $j_1 + j_2$ polynomial, we note that for all terms in the above sum such that $j_1 + j_2 < s$,
+\begin{equation*}
+\int_{B(0,1)} \bigl(d_{x}^{j_1}u\bigr)(z) \cdot \bigl(d_{x}^{j_2}p\bigr)(z) \cdot \eta\bigl(\|z\|\bigr) \,dx' = 0.
+\end{equation*}
+On the other hand if $j_1 + j_2 \geq s$, we have that
+\begin{align*}
+\biggl|\int_{B(0,1)} \bigl(d_{x}^{j_1}u\bigr)(z) \cdot \bigl(d_{x}^{j_2}p\bigr)(z) \cdot \eta\bigl(\|z\|\bigr) \,dz\biggr| \leq \|d^jp\|_{L^{\infty}} \int_{B(0,1)} \Bigl|\bigl(d_x^{j}u\bigr)(z)\Bigr| \cdot \Bigl|\eta(\|z\|)\Bigr| \,dz.  
+\end{align*}
+Consequently, applying these bounds for each $x \in \mc{X}_{\varepsilon}$ and integrating, we obtain
+\begin{align*}
+\int |J_1(x)|^2 \,dP(x) & \leq C \varepsilon^{2(s + d)} \|p\|_{C^k(\mc{X})} \sum_{j = 1}^{s - 1}  \int_{\mc{X}_{\varepsilon}} \biggl(\int_{B(0,1)} \Bigl|\bigl(d_x^{j}u\bigr)(z)\Bigr| \cdot \Bigl|\eta(\|z\|)\Bigr| \,dz\biggr)^2 \,dx \\
+& \leq C \varepsilon^{2(s + d)} \|p\|_{C^k(\mc{X})} \sum_{j = 1}^{s - 1} \|d_ju\|_{L^2(\mc{X}_{\varepsilon})}^2 \\
+& \leq  C \varepsilon^{2(s + d)} \|p\|_{C^k(\mc{X})} \|u\|_{H^s(\mc{X})}^2,
+\end{align*}
+where we show the middle inequality in~\eqref{pf:kernel_smoothing_bias_3}, below.
+
+
+\underline{\textit{Upper bound on $J_2(x)$}}.
+Recalling that $|r_{x + z\varepsilon}^{k}(x; p)| \leq C\varepsilon^{k}\|p\|_{C^{k}(\mc{X})}$ for any $z \in B(0,1)$, and that $d_x^jf(\cdot)$ is a $j$-homogeneous function, we have that
+\begin{align}
+|J_2(x)| & \leq \sum_{j = 1}^{s - 1} \frac{1}{j!}\int \Bigl|\bigl(d_x^{j}u\bigr)(x' - x)\Bigr| \cdot \Bigl|r_{x'}^{k}(x;p)\Bigr| \cdot \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr)\biggr| \,dx' \nonumber \\
+& = \varepsilon^{d} \sum_{j = 1}^{s - 1} \frac{1}{j!}\int_{B(0,1)} \Bigl|\bigl(d_x^{j}u\bigr)(\varepsilon z)\Bigr| \cdot |r_{x + z\varepsilon}^{k}(x;p)| \cdot \Bigl|\eta(\|z\|)\Bigr| \,dz \nonumber \\
+& \leq C\varepsilon^{k + 1 + d}\|p\|_{C^{k}(\mc{X})} \sum_{j = 1}^{s - 1} \frac{1}{j!} \int_{B(0,1)} \Bigl|\bigl(d_x^{j}u\bigr)(z)\Bigr| \cdot \Bigl|\eta(\|z\|)\Bigr| \,dz \label{pf:kernel_smoothing_bias_2}
+\end{align}
+Furthermore, for each $j = 1,\ldots,s - 1$ convolution of $d_x^ju$ with $\eta$ increases the $\Leb^2(\mc{X}_{\varepsilon})$ norm by at most a constant, meaning 
+\begin{equation}
+\label{pf:kernel_smoothing_bias_3}
+\begin{aligned}
+\int_{\mc{X}_{\varepsilon}} \biggl(\int_{B(0,1)} \Bigl|\bigl(d_x^{j}u\bigr)(z)\Bigr| \cdot \Bigl|\eta(\|z\|)\Bigr| \,dz\biggr)^2 \,dx & \leq \int_{\mc{X}_{\varepsilon}} \biggl(\int_{B(0,1)} \Bigl[\bigl(d_x^ju\bigr)(z)\Bigr]^2 \,dz \biggr) \cdot \biggl(\int_{B(0,1)} K(\|z\|) \,dz \biggr) \,dx \\
+& \leq \|\eta\|_{\infty}^2  \int_{B(0,1)} \int_{\mc{X}_{\varepsilon}} \Bigl[\bigl(d_x^ju\bigr)(z)\Bigr]^2 \,dx \,dz \\
+& \leq \|\eta\|_{\infty}^2 \nu_d \cdot \|d^ju\|_{\Leb^2(\mc{X_{\varepsilon}})}^2.
+\end{aligned}
+\end{equation}
+Combining this with~\eqref{pf:kernel_smoothing_bias_2}, we conclude that
+\begin{align*}
+\int_{\mc{X}_{\varepsilon}} |J_2(x)|^2 \,dP(x) & \leq C p_{\max} \|p\|_{C^{k}(\mc{X})}^2 \varepsilon^{2(k + 1 + d)} \sum_{j = 1}^{s - 1} \biggl(\frac{1}{j!} \int_{B(0,1)} \Bigl|\bigl(d_x^{j}u\bigr)(z)\Bigr| \cdot \Bigl|\eta(\|z\|)\Bigr| \,dz\biggr) \\
+& \leq  C p_{\max} \|p\|_{C^{k}(\mc{X})}^2 \|\eta\|_{\infty}^2 \nu_d \varepsilon^{2(k + 1 + d)} \sum_{j = 1}^{s - 1} \cdot \|d^ju\|_{\Leb^2(\mc{X_{\varepsilon}})}^2 \\
+& \leq C \varepsilon^{2(k + 1 + d)} \|u\|_{H^s(\mc{X})}^2,
+\end{align*}
+whence the claim follows since by assumption either $k + 1 > s$ (when $s = 1$), or $k + 1 = s$ (when $s \geq 2$).
+
+\underline{\textit{Upper bound on $J_3(x)$}}.
+We begin with a pointwise upper bound on $|J_3(x)|$, 
+\begin{align*}
+|J_3(x)| & \leq p_{\max} \int_{\mc{X}} \bigl|r_{x'}^s(x;u)\bigr| \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr)\biggr| \,dx' \\
+& = p_{\max} \varepsilon^d \int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;u)\bigr| \bigl|\eta(\|z\|)\bigr| \,dz,
+\end{align*}
+and applying the Cauchy-Schwarz inequality, we deduce a pointwise upper bound on $|J_3(x)|^2$,
+\begin{align*}
+|J_3(x)|^2 & \leq p_{\max}^2 \varepsilon^{2d} \biggl(\int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;u)\bigr|^2 \,dz\biggr) \cdot \biggl(\int_{B(0,1)} \bigl|\eta(\|z\|)\bigr| \,dz\biggr) \\
+& \leq p_{\max}^2 \|\eta\|_{\infty}^2 \nu_d \varepsilon^{2d}  \int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;u)\bigr|^2 \,dz.
+\end{align*}
+Applying this pointwise over all $x \in \mc{X}_{\varepsilon}$ and integrating, we obtain
+\begin{align*}
+\int_{\mc{X}_{\varepsilon}} |J_3(x)|^2 \,dP(x) & \leq p_{\max}^3 \|\eta\|_{\infty}^2 \nu_d \varepsilon^{2d} \int_{\mc{X}_{\varepsilon}} \int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;u)\bigr|^2 \,dz \\
+& = p_{\max}^3 \|\eta\|_{\infty}^2 \nu_d \varepsilon^{2d} \int_{B(0,1)} \int_{\mc{X}_{\varepsilon}} \bigl|r_{x + \varepsilon z}^s(x;u)\bigr|^2 \,dz \\
+& \leq p_{\max}^3 \|\eta\|_{\infty}^2 \nu_d^2 \varepsilon^{2(s + d)} \|d^sf\|_{L^2(\mc{X}_{\varepsilon})},
+\end{align*}
+with the last inequality following from~\eqref{eqn:sobolev_remainder_term}.
 
 \paragraph{Upper bound on $I_2$.}
+We begin by demonstrating that $I_2$ is upper bounded by $C\|u\|_{\Leb^2(\partial_{2\varepsilon}\mc{X})}^2$. Recall that by assumption $d_P(x) \geq \alpha p_{\min} \varepsilon^d$ for each $x \in \mc{X}$. On the other hand, at every $x \in \mc{X}$ we have that
+\begin{align*}
+\bigl|d_P(x) \cdot L_{P,\varepsilon}u(x)\bigr|^2 & \leq p_{\max}^2 \biggl[\int \Bigl(|u(x)|^2 + |u(x')|^2\Bigr) K^{1/2}\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx'\biggr] \cdot \biggl[\int K^{1/2}\biggl(\frac{\|x' - x|}{\varepsilon}\biggr) \,dx\biggr] \\
+& \leq 2 p_{\max}^2 \|\eta\|_{\infty} \varepsilon^d \int \Bigl(|u(x)|^2 + |u(x')|^2\Bigr) K^{1/2}\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx'.
+\end{align*}
+It follows that
+\begin{align*}
+I_2 & = \int_{\partial_{\varepsilon}\mc{X}} \bigl|L_{P,\varepsilon}u(x)\bigr|^2 \,dP(x) \\
+& \leq \frac{2p_{\max}^2 |\eta\|_{\infty}}{p_{\min}^2 \alpha \varepsilon^d} \int_{\partial_{\varepsilon}\mc{X}} \int_{\mc{X}} \Bigl(|u(x)|^2 + |u(x')|^2\Bigr) K^{1/2}\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \\ 
+& \leq \frac{4p_{\max}^2 \|\eta\|_{\infty}^2}{p_{\min}^2 \alpha} \int_{\partial_{2\varepsilon}\mc{X}} |u(x)|^2 \,dx.
+\end{align*}
+We will now use the zero-trace property of $u$ to show that there exists a number $c$, which depends only on $\mc{X}$ such that for all $\varepsilon \leq c$,
+\begin{equation}
+\label{pf:kernel_smoothing_bias_5}
+\int_{\partial_{\varepsilon}\mc{X}} |u(x)|^2 \,dx \leq C\varepsilon^{2s}.
+\end{equation}
+We will build to this result by a series of intermediate steps. Many of these steps are related to the proof of Theorem 18.1 in \textcolor{red}{(Leoni)}. 
+
+\underline{\textit{Step 1: Local Patch.}}
+To begin, we assume that for some $c_0 > 0$ and a Lipschitz mapping $\phi: \Reals^{d - 1} \to [-c_0,c_0]$, we have that $u \in C_c^{\infty}(U_{\phi}(c_0))$, where 
+\begin{equation*}
+U_{\phi}(c_0) = \Bigl\{y \in Q(0,c_0): \phi(y_{-d}) \leq y_d\Bigr\}, 
+\end{equation*}
+and here $Q(0,c_0)$ is the $d$-dimensional cube of side length $c_0$, centered at $0$. We will show that for all $0 < \varepsilon < c_0$, and for the tubular neighborhood $V_{\phi}(\varepsilon) = \{y \in Q(0,c_0): \phi(y_{-d}) \leq y_d \leq \phi(y_{-d}) + \varepsilon\}$, we have that
+\begin{equation*}
+\int_{V_{\phi}(\varepsilon)} |u(x)|^2 \,dx \leq C\varepsilon^{2s} \|u\|_{H^s(U_{\phi}(c_0))}^2.
+\end{equation*}
+For a given $y = (y',y_d) \in V_{\phi}(\varepsilon)$, let $y_0 = (y',\phi(y'))$. Taking the Taylor expansion of $u(y)$ around $y = y_0$ because $u$ is compactly supported in $V_{\phi}$ it follows that,
+\begin{align*}
+u(y) & = u(y_0) + \sum_{j = 1}^{s - 1} \frac{1}{j!} D^{je_d}u(y_0) \bigl(y_d - \phi(y')\bigr)^j + \frac{1}{(s - 1)!}\int_{\phi(y')}^{y_d} (1 - t)^{s - 1} D^{se_d}u(y',z) \bigl(y_d - z\bigr)^{s - 1} \,dz \Longrightarrow\\
+|u(y)| & \leq C\varepsilon^{s - 1}\int_{\phi(y')}^{y_d} \bigl|D^{se_d}u(y',z)\bigr| \,dz. 
+\end{align*}
+Consequently, by squaring both sides and applying Cauchy-Schwarz, we have that
+\begin{equation*}
+|u(y)|^2 \leq C\varepsilon^{2(s - 1)} \biggl(\int_{\phi(y')}^{y_d} \bigl|D^{se_d}u(y',z)\bigr| \,dz\biggr)^2 \leq C\varepsilon^{2s - 1} \int_{\phi(y')}^{y_d} \bigl|D^{se_d}u(y',z)\bigr|^2 \,dz.
+\end{equation*}
+Applying this bound for each $y \in V_{\phi}(\varepsilon)$, and then integrating, we obtain
+\begin{align}
+\int_{V_{\phi}(\varepsilon)} |u(y)|^2 \,dy & \leq \int_{Q_{d - 1}(c_0)} \int_{\phi(y')}^{\phi(y') + \varepsilon} |u(y',y_d)|^2 \,dy_d \,dy' \nonumber \\
+& \leq C\varepsilon^{2s - 1}\int_{Q_{d - 1}(c_0)}  \int_{\phi(y')}^{\phi(y') + \varepsilon} \int_{\phi(y')}^{y_d} \bigl|D^{se_d}u(y',z)\bigr|^2 \,dz \,dy_d \,dy' \label{pf:kernel_smoothing_bias_4}
+\end{align}
+where we have written $Q_{d - 1}(0,c_0)$ for the $d - 1$ dimensional cube of side length $c_0$, centered at $0$. Exchanging the order of the inner two integrals then gives
+\begin{align*}
+\int_{\phi(y')}^{\phi(y') + \varepsilon} \int_{\phi(y')}^{y_d} \bigl|D^{se_d}u(y',z)\bigr|^2 \,dz \,dy_d & = \int_{\phi(y')}^{\phi(y') + \varepsilon} \int_{z}^{\varepsilon} \bigl|D^{se_d}u(y',z)\bigr|^2 \,dy_d \,dz \\
+& \leq C \varepsilon \int_{\phi(y')}^{\phi(y') + \varepsilon} \bigl|D^{se_d}u(y',z)\bigr|^2 \,dz \\
+& \leq C \varepsilon \int_{\phi(y')}^{c_0} \bigl|D^{se_d}u(y',z)\bigr|^2 \,dz.
+\end{align*}
+Finally, plugging back into~\eqref{pf:kernel_smoothing_bias_4}, we conclude that
+\begin{equation*}
+\int_{V_{\phi}(\varepsilon)} |u(y)|^2 \,dy \leq C \varepsilon^{2s} \int_{Q_{d - 1}(0,c_0)} \int_{\phi(y')}^{c_0} \bigl|D^{se_d}u(y',z)\bigr|^2 \,dz \,dy' \leq C \varepsilon^{2s} |u|_{H^s(U_{\phi}(c_0))}^2.
+\end{equation*}
+
+\underline{\textit{Step 2: Rigid motion of local patch.}} Now, suppose that at a point $x_0 \in \partial \mc{X}$, there exists a rigid motion $T: \Rd \to \Rd$ for which $T(x_0) = 0$, and a number $C_0$ such that for all $\varepsilon \cdot C_0 \leq c_0$, 
+\begin{equation*}
+T\bigl(Q_{T}(x_0,c_0) \cap \partial_{\varepsilon}\mc{X}\bigr) \subseteq V_{\phi}\bigl(C_0\varepsilon\bigr) \quad\textrm{and}\quad T\bigl(Q_T(x_0,c_0) \cap \mc{X}\bigr) = U_{\phi}(c_0).
+\end{equation*}
+Here $Q_{T}(x_0,c_0))$ is a (not necessarily coordinate-axis-aligned) cube of side length $c_0)$, centered at $x_0$. Define $v(y) := u(T^{-1}(y))$ for $y \in U_{\phi}(c_0)$. If $u \in C_c^{\infty}(\mc{X})$, then $v \in C_c^{\infty}(U_{\phi}(c_0))$, and moreover $\|v\|_{H^s(U_{\phi}(c_0))}^2 = \|u\|_{H^s(Q_{T}(x_0,c_0) \cap \mc{X})}^2$. Therefore, using the upper bound that we derived in Step 1,
+\begin{equation*}
+\int_{V_{\phi}(C_0 \cdot \varepsilon)} |v(y)|^2 \,dy \leq C \varepsilon^{2s} \|v\|_{H^s(U_{\phi}(c_0))}^2,
+\end{equation*}
+we conclude that
+\begin{align*}
+\int_{Q_{T}(x_0,c_0) \cap \partial_{\varepsilon}\mc{X}} |u(x)|^2 \,dx & = \int_{T(Q_T(x_0,c_0)) \cap \partial_{\varepsilon}\mc{X})} |v(y)|^2 \,dy \\
+& \leq \int_{V_{\phi}(C_0 \cdot \varepsilon)} |v(y)|^2 \,dy \\
+& \leq C \varepsilon^{2s} \|v\|_{H^s(U_{\phi}(c_0))}^2 = C \varepsilon^{2s} \|u\|_{H^s(Q_{T}(x_0,c_0)) \cap \mc{X})}^2 \leq C \varepsilon^{2s} \|u\|_{H^s(\mc{X})}^2.
+\end{align*}
+
+\underline{\textit{Step 3: Lipschitz domain}}.
+Finally, we deal with the case where $\mc{X}$ is assumed to be an open, bounded subset of $\Rd$, with Lipschitz boundary. In this case, at every $x_0 \in \partial \mc{X}$, there exists a rigid motion $T_{x_0}: \Rd \to \Rd$ such that $T_{x_0}(x_0) = 0$, a number $c_0(x_0)$, a Lipschitz function $\phi_{x_0}:\Reals^{d - 1} \to [-c_0,c_0]$, and a number $C_0(x_0)$, such that for all $\varepsilon \cdot C_0(x_0) \leq c_0(x_0)$,
+\begin{equation*}
+T\bigl(Q_{T}(x_0,c_0(x_0)) \cap \partial_{\varepsilon}\mc{X}\bigr) \subseteq V_{\phi}\bigl(C_0(x_0) \cdot \varepsilon\bigr) \quad\textrm{and}\quad T\bigl(Q_T(x_0,c_0(x_0)) \cap \mc{X}\bigr) = U_{\phi}(c_0(x_0)).
+\end{equation*}
+Therefore for every $x_0 \in \partial \mc{X}$, it follows from the previous step that
+\begin{equation*}
+\int_{Q_{T_{x_0}}(x_0,c_0(x_0)) \cap \partial_{\varepsilon}\mc{X}} |u(x)|^2 \,dx \leq C(x_0) \varepsilon^{2s} \|u\|_{H^s(\mc{X})}^2,
+\end{equation*}
+where on the right hand side $C(x_0)$ is a constant that may depend on $x_0$, but not on $u$ or $\varepsilon$.
+
+We conclude by taking a collection of cubes that covers $\partial_{\varepsilon}\mc{X}$ for all $\epsilon$ sufficiently small. First, we note that by a compactness argument there exists a finite subset of the collection of cubes $\{Q_{T_{x_0}}(x_0,c_0(x_0)/2): x_0 \in \partial\mc{X} \}$ which covers $\partial \mc{X}$, say $Q_{T_{x_1}}(x_1,c_0(x_1)/2),\ldots, Q_{T_{x_N}}(x_N,c_0(x_N)/2)$. Then, for any $\varepsilon \leq \min_{i = 1,\ldots,N} c_0(x_i)/2$, it follows from the triangle inequality that
+\begin{equation*}
+\partial_{\varepsilon}\mc{X} \subseteq \bigcup_{i = 1}^{N} Q_{T_{x_i}}(x_i, c_0(x_i)).
+\end{equation*}
+As a result,
+\begin{equation*}
+\int_{\partial_{\varepsilon}\mc{X}} |u(x)|^2 \leq \sum_{i = 1}^{N} \int_{Q_{T_{x_i}}(x_i, c_0(x_i)) \cap \partial_{\varepsilon}(\mc{X})} |u(x)|^2 \leq  \varepsilon^{2s} \|u\|_{H^s(\mc{X})}^2 \sum_{i = 1}^{N}C_0(x_i),
+\end{equation*}
+which proves the claim of~\eqref{pf:kernel_smoothing_bias_5}.
 
 \end{document}
