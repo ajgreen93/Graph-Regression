@@ -23,8 +23,11 @@ Let $\wh{T} = \sum_{k = 1}^{K} \dotp{{\bf Y}}{v_k}_n^2$, and let $\varphi = \1\{
 	\end{itemize}
 \end{lemma}
 
-\section{Proofs in Manifold Setting}
-\label{sec:manifold_proofs}
+\section{Graph quadratic form, flat Euclidean domain}
+\label{sec:graph_quadratic_form_euclidean}
+
+\section{Graph quadratic form, manifold domain}
+\label{sec:graph_quadratic_form_manifold}
 
 \paragraph{Discussion of requirements that $s \leq 3$.}
 Recall from our discussion in Section~\ref{subsec:analysis} that an essential step in the proof of Lemma~\textcolor{red}{(?)}---which establishes a high-probability upper bound on $\dotp{L_{n,\varepsilon}^sf_0}{f_0}_n$---is relating the iterated non-local operator $L_{P,\varepsilon}^j$ to the weighted Laplace-Beltrami operator $\Delta_P^j$, for $j = \floor{s/2}$. Suppose for the moment $s = 3$, and $f \in C^3(\mc{X};1)$ and $p$ is uniform. In this case $\floor{s/2} = 1$, and the relation between $L_{P,\varepsilon}$ to $\Delta_P$ has been worked out by \textcolor{red}{(Burago2013, GarciaTrillos2019, Calder2019, GarciaTrillos2020)}. This relation is accomplished by means of an intermediary nonlocal operator, as described by the following chain of estimates:
@@ -55,9 +58,40 @@ L_{P,\varepsilon}^2f(x) = L_{P,\varepsilon}(\Delta_Pf + O(\varepsilon)) = \Delta
 \end{equation*}
 which is useless when $\varepsilon \to 0$. The bottom line is that in the manifold case, the $O(\varepsilon^3)$ error incurred by going between Euclidean norm and geodesic distance is negligible only when $j = 1$. 
 
-\section{Comparison of Laplacian eigenmaps and kernel smoothing in non-uniform density setting}
+\section{Lower bound on empirical norm}
+\label{sec:empirical_norm}
+In this Section we prove Proposition~\ref{prop:empirical_norm_sobolev} (in Section~\ref{subsec:empirical_norm_sobolev}). We also prove an analogous result when $\mc{X}$ is a manifold as in Model~\ref{def:model_manifold} (in Section~\ref{subsec:empirical_norm_sobolev_manifold}), and we prove some sharper estimates in the case where the function is bounded in H\"{o}lder norm, in Section~\ref{subsec:empirical_norm_holder}.
+
+\subsection{Proof of Proposition~\ref{prop:empirical_norm_sobolev}}
+\label{subsec:empirical_norm_sobolev}
+\textcolor{red}{(TODO)}
+
+\subsection{Analysis of empirical norm in manifold setting}
+\label{subsec:empirical_norm_soboolev_manifold}
+
+\subsection{Better bounds assuming H\"{o}lder smoothness}
+\label{subsec:empirical_norm_holder}
+
+\section{Analysis of kernel smoothing}
+\label{subsec:kernel_smoothing}
+In this section we prove Lemma~\ref{lem:kernel_smoothing_laplacian_eigenmaps} (in Section~\ref{subsec:pf_kernel_smoothing_laplacian_eigenmaps}) and Lemma~\ref{lem:kernel_smoothing_bias} (in Section~\ref{subsec:pf_kernel_smoothing_bias}). In Section~\ref{subsec:eigenmaps_beats_kernel_smoothing}, we give a sequence $\{p^{(n)}(x), f_0^{(n)}(x)\}_{n \in \mathbb{N}}$ for which the estimator $T_{h,n}\wc{f}$ (kernel extension of Laplacian eigenmaps) dominates direct kernel smoothing of the responses, in the sense that
+\begin{equation*}
+\lim_{n \to \infty} \sup_{h'} \frac{\|T_{h_n,n}\wc{f} - f_0\|_P^2}{\|T_{h',n}Y - f_0\|_P^2 } = 0,\quad \textrm{with probability $1$.}
+\end{equation*}
+
+\subsection{Proof of Lemma~\ref{lem:kernel_smoothing_laplacian_eigenmaps}}
+\label{subsec:pf_kernel_smoothing_laplacian_eigenmaps}
+
+\subsection{Proof of Lemma~\ref{lem:kernel_smoothing_bias}}
+\label{subsec:pf_kernel_smoothing_bias}
+
+\subsection{Comparison of Laplacian eigenmaps to kernel smoothing}
+\label{subsec:eigenmaps_beats_kernel_smoothing}
 
 \textcolor{red}{(TODO)}
 \begin{itemize}
 	\item \textcolor{red}{Mention the relationship between the estimation problem under consideration and classification with a margin (Tsybakov noise) condition.}
 \end{itemize}
+
+\section{Miscellaneous}
+Here we give some helpful Lemmas used at various points in the above proofs. We also prove that spectral sparsification does not change the rate of convergence of $\wh{f}$. 
