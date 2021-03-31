@@ -23,8 +23,289 @@ Let $\wh{T} = \sum_{k = 1}^{K} \dotp{{\bf Y}}{v_k}_n^2$, and let $\varphi = \1\{
 	\end{itemize}
 \end{lemma}
 
-\section{Graph quadratic form, flat Euclidean domain}
+\section{Graph Sobolev semi-norm, flat Euclidean domain}
 \label{sec:graph_quadratic_form_euclidean}
+In this section we prove Proposition~\ref{prop:graph_seminorm_ho}. The proposition will follow from several intermediate results.
+\begin{enumerate}
+	\item~In Section~\ref{subsec:decomposition_graph_seminorm}, we show that
+	\begin{equation}
+	\label{pf:graph_seminorm_ho_1}
+	\dotp{L_{n,\varepsilon}^sf}{f}_n \leq \frac{1}{\delta} \dotp{L_{P,\varepsilon}^sf}{f}_{P} + \frac{C\varepsilon^2}{n\varepsilon^{2 + d}}M^2.
+	\end{equation}
+	with probability at least $1 - \delta$. 
+	
+	We term the first term on the right hand side the \emph{non-local Sobolev semi-norm}, as it is a kernelized approximation to the Sobolev semi-norm $\dotp{\Delta_P^sf}{f}_{P}$. The second term on the right hand side is a pure bias term, which as we will see is negligible compared to the non-local quadratic form as long as $\varepsilon \ll n^{-1/(2(s -1 + d))}$. 
+	\item~In Section~\ref{subsec:approximation_error_nonlocal_laplacian}, we show that when $x$ is sufficiently in the interior of $\mc{X}$, then $L_{P,\varepsilon}^kf(x)$ is a good approximation to $\Delta_P^kf(x)$, as long as $f \in H^{s}(\mc{X})$ and $p \in C^{s - 1}(\mc{X})$ for some $s \geq 2k + 1$. 
+	\item~In Section~\ref{subsec:boundary_behavior_nonlocal_laplacian}, we show that when $x$ is sufficiently near the boundary of $\mc{X}$, then $L_{P,\varepsilon}^kf(x)$ is close to $0$, as long as $f \in H_0^{s}(\mc{X})$ for some $s \geq 2k$.
+	\item~In Section~\ref{subsec:estimate_nonlocal_seminorm}, we use the results of the preceding two sections to show that if $f \in H_0^s(\mc{X};M)$ and $p \in C^{s - 1}(\mc{X})$, there exists a constant $C$ which does not depend on $f$ such that
+	\begin{equation}
+	\label{pf:graph_seminorm_ho_2}
+	\dotp{L_{P,\varepsilon}^sf}{f}_{P} \leq CM^2.
+	\end{equation}
+\end{enumerate}
+Finally, in Section~\ref{subsec:integrals} we provide some assorted estimates used in Sections~\ref{subsec:decomposition_graph_seminorm}. 
+
+\paragraph{Proof (of Proposition~\ref{prop:graph_seminorm_ho}).}
+Proposition~\ref{prop:graph_seminorm_ho} follows immediately from~\eqref{pf:graph_seminorm_ho_1} and~\eqref{pf:graph_seminorm_ho_2}.
+
+\subsection{Decomposition of graph Sobolev semi-norm}
+\label{subsec:decomposition_graph_seminorm}
+\textcolor{red}{(TODO)}
+
+\subsection{Approximation error of non-local Laplacian}
+\label{subsec:approximation_error_nonlocal_laplacian}
+
+In this section, we establish the convergence $L_{P,\varepsilon}^kf \to \sigma_{\eta}^k\Delta_P^kf$ as $\varepsilon \to 0$. More precisely, we give an upper bound on the squared difference between $L_{P,\varepsilon}^kf$ and  $\sigma_{\eta}^k\Delta_P^kf$ as a function of $\varepsilon$. The bound holds for all $x \in \mc{X}_{k\varepsilon}$, and $f \in H^{s}(\mc{X})$, as long as $s \geq 2k + 1$.  \textcolor{red}{(TODO): Make sure that $\sigma_{\eta}$ is defined somewhere.}
+\begin{lemma}
+	\label{lem:approximation_error_nonlocal_laplacian}
+	Assume Model~\ref{def:model_flat_euclidean}. Let $s \in \mathbb{N} \setminus \{0,1\}$, suppose that $f \in H^s(\mc{X};M)$, and if $s > 1$ suppose that $p \in C^{s - 1}(\mc{X})$. Let $L_{P,\varepsilon}$ be define with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exist constants $C_1$ and $C_2$ that do not depend on $f$, such that each of the following statements hold.
+	\begin{itemize}
+		\item If $s$ is odd and $k = (s - 1)/2$, then
+		\begin{equation}
+		\label{eqn:approximation_error_nonlocal_laplacian_1}
+		\|L_{P,\varepsilon}^kf - \Delta_P^kf\|_{L^2(\mc{X}_{k\varepsilon})} \leq C_1 M \varepsilon
+		\end{equation}
+		\item If $s$ is even and $k = (s - 2)/2$, then
+		\begin{equation}
+		\label{eqn:approximation_error_nonlocal_laplacian_2}
+		\|L_{P,\varepsilon}^kf - \Delta_P^kf\|_{L^2(\mc{X}_{k\varepsilon})} \leq C_2 M \varepsilon^2.
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+We remark that when $k = 1$ and $f \in C^3(\mc{X})$ or $C^4(\mc{X})$, statements of this kind are well known \textcolor{red}{(references)}, and indeed stronger results---with $L^{\infty}(\mc{X})$ norm replacing $L^2(\mc{X})$ norm---hold. When dealing with the iterated Laplacian, and functions $f$ which are regular only in the Sobolev sense, the proof is somewhat more lengthy, but the spirit of the result is largely the same.
+ 
+\paragraph{Proof (of Lemma~\ref{lem:approximation_error_nonlocal_laplacian}).}
+Throughout this proof, we shall assume that $f$ and $p$ are smooth functions, meaning they belong to $C^{\infty}(\mc{X})$. This is without loss of generality, since $C^{\infty}(\mc{X})$ is dense in both $H^s(\mc{X})$ and $C^{s - 1}(\mc{X})$, and since both sides of the inequalities~\eqref{eqn:approximation_error_nonlocal_laplacian_1} and~\eqref{eqn:approximation_error_nonlocal_laplacian_2} are continuous with respect to $\|\cdot\|_{H^s(\mc{X})}$ and $\|\cdot\|_{C^{s - 1}(\mc{X})}$ norms.
+
+We will actually prove a more general set of statements than contained in Lemma~\ref{lem:approximation_error_nonlocal_laplacian}, more general in the sense that they give estimates for all $k$, rather than simply the particular choices of $k$ given above. In particular, we will prove that the following two statements hold for any $s \in \mathbb{N}$ and any $k \in \mathbb{N} \setminus \{0\}$. 
+\begin{itemize}
+	\item If $k \geq s/2$, then for every $x \in \mc{X}_{k\varepsilon}$, 
+	\begin{equation}
+	\label{pf:approximation_error_nonlocal_laplacian_0}
+	L_{P,\varepsilon}^kf(x) = g_s(x) \varepsilon^{s - 2k}
+	\end{equation}
+	for a function $g_s$ that satisfies
+	\begin{equation}
+	\label{pf:approximation_error_nonlocal_laplacian_0.5}
+	\|g_s\|_{L^2(\mc{X}_{k\varepsilon})} \leq C \|p\|_{C^{q}(\mc{X})}^k M 
+	\end{equation}
+	where $q = 1$ if $s =0$ or $s = 1$, and otherwise $q = s - 1$. 
+	\item If $k < s/2$, then for every $x \in \mc{X}_{k\varepsilon}$,
+	\begin{equation}
+	\label{pf:approximation_error_nonlocal_laplacian_1}
+	L_{P,\varepsilon}^kf(x) = \sigma_{\eta}^k \cdot \Delta_{P}^kf(x) + \sum_{j = 1}^{\floor{(s - 1)/2} - k} g_{2(j + k)}(x)\varepsilon^{2j} + g_{s}(x) \varepsilon^{s - 2k}.
+	\end{equation}
+	for functions $g_j$ that satisfy
+	\begin{equation}
+	\label{pf:approximation_error_nonlocal_laplacian_1.5}
+	\|g_j\|_{H^{s - j}(\mc{X}_{k\varepsilon})} \leq C \|p\|_{C^{s - 1}(\mc{X})}^k M.
+	\end{equation}
+\end{itemize}
+In the statement above, recall that $H^0(\mc{X}_{k\varepsilon}) = L^2(\mc{X}_{k\varepsilon})$. Additionally, note that we may speak of the pointwise behavior of derivatives of $f$ because we have assumed that $f$ is a smooth function. Observe that~\eqref{eqn:approximation_error_nonlocal_laplacian_1} follows upon taking $k = \floor{(s - 1)/2}$ in~\eqref{pf:approximation_error_nonlocal_laplacian_1}, whence we have
+\begin{equation*}
+\bigl(L_{P,\varepsilon}^kf(x) - \sigma_{\eta}^k \Delta_{P}^kf(x)\bigr)^2 = \varepsilon^2 \bigl(g_s(x)\bigr)^2
+\end{equation*}
+for some $g_s \in \Leb^2(\mc{X}_{k\varepsilon},C \cdot M \cdot \|p\|_{C^{s - 1}(\mc{X})})$, and integrating over $\mc{X}_{k\varepsilon}$ gives the desired result. \eqref{eqn:approximation_error_nonlocal_laplacian_2} follows from~\eqref{pf:approximation_error_nonlocal_laplacian_1} in an identical fashion. 
+
+It thus remains establish~\eqref{pf:approximation_error_nonlocal_laplacian_1}, and~\eqref{pf:approximation_error_nonlocal_laplacian_0} which is an important part of proving~\eqref{pf:approximation_error_nonlocal_laplacian_1}. We will do so by induction on $k$. Note that throughout, we will let $g_j$ refer to functions which may change from line to line, but which always satisfy~\eqref{pf:approximation_error_nonlocal_laplacian_1.5}. 
+
+\underline{\textit{Proof of~\eqref{pf:approximation_error_nonlocal_laplacian_0} and~\eqref{pf:approximation_error_nonlocal_laplacian_1}, base case.}}
+
+We begin with the base case, where $k = 1$. Again, we point out that although desired result is known when $s = 3$ or $s = 4$, and $f$ is regular in the H\"{o}lder sense, we require estimates for all $s \in \mathbb{N}$ when $f$ is regular in the Sobolev sense.
+
+When $s = 0$, the inequality~\eqref{pf:approximation_error_nonlocal_laplacian_0} is implied by Lemma~\ref{lem:l2estimate_nonlocal_laplacian}.  When $s \geq 1$, we proceed using Taylor expansion. For any $x \in \mc{X}_{\varepsilon}$, we have that $B(x,\varepsilon) \subseteq \mc{X}$. Thus for any $x' \in B(x,\varepsilon)$, we may take an order $s$ Taylor expansion of $f$ around $x' = x$, and an order $q$ Taylor expansion of $p$ around $x' = x$, where $q = 1$ if $s = 1$, and otherwise $q = s - 1$. (See Section~\ref{subsec:taylor_expansion} for a review of the notation we use for Taylor expansions, as well as some properties that we make use of shortly.) This allows us to express $L_{P,\varepsilon}f(x)$ as the sum of three terms,
+\begin{align*}
+L_{P,\varepsilon}f(x) & = \frac{1}{\varepsilon^{d + 2}}\sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1}\frac{1}{j_1!j_2!}  \int_{\mc{X}} \bigl(d_x^{j_1}f\bigr)(x' - x) \bigl(d_x^{j_2}p\bigr)(x' - x) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \quad + \\
+& \quad \frac{1}{\varepsilon^{d + 2}}\sum_{j = 1}^{s - 1} \frac{1}{j!} \int_{\mc{X}} \bigl(d_x^jf\bigr)(x' - x)  r_{x'}^{q}(x;p) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \quad  + \\
+& \quad \frac{1}{\varepsilon^{d + 2}} \int_{\mc{X}} r_{x'}^j(x;f) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \\
+& := G_1(x) + G_2(x) + G_3(x).
+\end{align*}
+We now separately consider each of $G_1(x),G_2(x)$ and $G_3(x)$. We will establish that if $s = 1$ or $s = 2$, then $G_1(x) = 0$, and otherwise if $s \geq 3$ that
+\begin{equation*}
+G_1(x) = \sigma_{\eta}\Delta_Pf(x) + \sum_{j = 1}^{\floor{(s - 1)/2} - 1}g_{2(j + 1)}(x)\varepsilon^{2j} + g_{s}(x)\varepsilon^{s - 2}.
+\end{equation*}
+On the other hand, we will establish that if $s = 1$ then $G_2(x) = 0$, and otherwise for $s \geq 2$
+\begin{equation*}
+\|G_2\|_{\Leb^2(\mc{X}_{\varepsilon})} \leq C \varepsilon^{s - 2} M \|p\|_{C^{s - 1}(\mc{X})};
+\end{equation*}
+this same estimate will hold for $G_3$ for all $s \geq 1$. Together these will imply~\eqref{pf:approximation_error_nonlocal_laplacian_0} and~\eqref{pf:approximation_error_nonlocal_laplacian_1}. 
+
+\emph{Estimate on $G_1(x)$.}
+If $s = 1$, then $s - 1 = 0$, and so $G_1(x) = 0$. We may therefore suppose $s \geq 2$. In this case, a change of variables gives
+\begin{align}
+L_{P,\varepsilon}f(x) & = \frac{1}{\varepsilon^{d + 2}} \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1} \frac{1}{j_1!j_2!}  \int_{\mc{X}} \bigl(d_x^{j_1}f\bigr)(x' - x) \bigl(d_x^{j_2}p\bigr)(x' - x) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \nonumber \\
+& = \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1} \frac{\varepsilon^{j_1 + j_2 - 2}}{j_1!j_2!}  \underbrace{\int_{B(0,1)} d_x^{j_1}f(z) d_x^{j_2}p(z) \eta(\|z\|) \,dz}_{:= g_{j_1,j_2}(x)} \label{pf:approximation_error_nonlocal_laplacian_3}
+\end{align}
+The nature of $g_{j_1,j_2}(x)$ depends on the sum $j_1 + j_2$. Since $d_x^{j_1}f d_x^{j_2}$ is an order $j_1 + j_2$ (multivariate) monomial, we have (see Section~\ref{subsec:taylor_expansion}) that whenever $j_1 + j_2$ is odd,
+\begin{equation*}
+g_{j_1,j_2}(x) = \int_{\mc{X}} d_x^{j_1}f(z) d_x^{j_2}p(z) \eta(\|z\|) \,dz = 0.
+\end{equation*}
+In particular this is the case when $j_1 = 1$ and $j_2 = 0$, which means that if $s = 2$, then $G_1(x) = 0$. On the other hand if $s \geq 3$, then the lowest order term in~\eqref{pf:approximation_error_nonlocal_laplacian_3} is when $j_1 + j_2 = 2$, so that either $j_1 = 1$ and $j_2 = 1$, or $j_1 = 2$ and $j_2 = 0$. It follows that
+\begin{align*}
+g_{1,1}(x) + \frac{1}{2}g_{2,0}(x) & = \int_{\mc{X}} d_x^{1}f(z) d_x^{1}p(z) \eta(\|z\|) \,dz + \frac{p(x)}{2} \int_{\mc{X}} d_x^{2}f(z) \eta(\|z\|) \,dz \\
+& = \sum_{i_1 = 1}^{d} \sum_{i_2 = 1}^{d} D^{e_{i_1}}f(x) D^{e_{i_2}}p(x) \int_{\mc{X}} z^{e_{i_1} + e_{i_2}} \eta(\|z\|) \,dz + \frac{p(x)}{2} \sum_{i_1 = 1}^{d} \sum_{i_2 = 1}^{d}D^{e_{i_2}+e_{i_2}}f(x)\int_{\mc{X}} z^{e_{i_1} + e_{i_2}} \eta(\|z\|) \,dz\\
+& = \sum_{i = 1}^{d} D^{e_{i}}f(x) D^{e_{i}}p(x) \int_{\mc{X}} z^2 \eta(\|z\|) \,dz + \frac{p(x)}{2} \sum_{i = 1}^{d} D^{2e_{i}}f(x)\int_{\mc{X}} z^2 \eta(\|z\|) \,dz\\ 
+& = \sigma_{\eta}\Delta_Pf(x).
+\end{align*}
+Now it remains only to deal with the higher-order terms, where $j_1 + j_2 > 2$, and where it suffices to show that each function $g_{j_1,j_2}$ satisfies~\eqref{pf:approximation_error_nonlocal_laplacian_1.5} for $j = \min\{j_1 + j_2 - 2,s - 2\}$. Now it is helpful to write $g_{j_1,j_2}$ using multi-index notation, 
+\begin{align*}
+g_{j_1,j_2}(x) = \sum_{|\alpha_1| = j_1} \sum_{|\alpha_2| = j_2} D^{\alpha_1}f(x) D^{\alpha_2}p(x) \int_{B(0,1)} z^{\alpha_1 + \alpha_2} \eta(\|z\|) \,dz,
+\end{align*}
+where we note that $|\int_{B(0,1)} z^{\alpha_1 + \alpha_2} \eta(\|z\|) \,dz| < \infty$ for all $\alpha_1, \alpha_2$, by the assumption that $\eta$ is Lipschitz on its support. Finally, by H\"{o}lder's inequality we have that
+\begin{align*}
+\|D^{\alpha_1}f D^{\alpha_2}p\|_{H^{s - (j + 2)}(\mc{X})} & \leq \|D^{\alpha_1}f\|_{H^{s - (j + 2)}(\mc{X})} \|D^{\alpha_2}p\|_{C^{s - (j + 2)}(\mc{X})} \\
+& \leq \|D^{\alpha_1}f\|_{H^{s - j_1}(\mc{X})} \|D^{\alpha_2}p\|_{C^{s - (j_2 + 1)}(\mc{X})} \\
+& \leq M \cdot \|p\|_{C^{s - 1}(\mc{X})},
+\end{align*}
+and summing over all $|\alpha_1| = j_1$ and $|\alpha_2| = j_2$ establishes that $g_{j_1,j_2}$ satisfies~\eqref{pf:approximation_error_nonlocal_laplacian_1.5}.
+
+\emph{Estimate on $G_2(x)$.}
+Note immediately that $G_2(x) = 0$ if $s = 1$. Otherwise if $s \geq 2$, then $q = s - 1$.Recalling that $|r_{x + z\varepsilon}^{s - 1}(x; p)| \leq C\varepsilon^{s - 1}\|p\|_{C^{s - 1}(\mc{X})}$ for any $z \in B(0,1)$, and that $d_x^jf(\cdot)$ is a $j$-homogeneous function, we have that
+\begin{align}
+|G_2(x)| & \leq \frac{1}{\varepsilon^{d + 2}}\sum_{j = 1}^{s - 1} \frac{1}{j!}\int_{\mc{X}} \Bigl|\bigl(d_x^{j}f\bigr)(x' - x)\Bigr| \cdot \Bigl|r_{x'}^{s - 1}(x;p)\Bigr| \cdot \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \nonumber \\
+& = \frac{1}{\varepsilon^2} \sum_{j = 1}^{s - 1} \frac{1}{j!}\int_{B(0,1)} \Bigl|\bigl(d_x^{j}f\bigr)(\varepsilon z)\Bigr| \cdot |r_{x + z\varepsilon}^{s - 1}(x;p)| \cdot \eta(\|z\|) \,dz \nonumber \\
+& \leq C\varepsilon^{s - 2}\|p\|_{C^{s - 1}(\mc{X})} \sum_{j = 1}^{s - 1} \frac{1}{j!} \int_{B(0,1)} \Bigl|\bigl(d_x^{j}f\bigr)(z)\Bigr| \cdot \eta(\|z\|) \,dz \label{pf:approximation_error_nonlocal_laplacian_4}.
+\end{align}
+Furthermore, for each $j = 1,\ldots,s - 1$ convolution of $d_x^jf$ with $\eta$ only decreases the $\Leb^2(\mc{X}_{\varepsilon})$ norm, meaning
+\begin{equation}
+\label{pf:approximation_error_nonlocal_laplacian_5}
+\begin{aligned}
+\int_{\mc{X}_{\varepsilon}} \biggl(\int_{B(0,1)} \Bigl|\bigl(d_x^{j}f\bigr)(z)\Bigr| \cdot \eta(\|z\|) \,dz\biggr)^2 \,dx & \leq \int_{\mc{X}_{\varepsilon}} \biggl(\int_{B(0,1)} \Bigl|\bigl(d_x^jf\bigr)(z)\Bigr|^2 \eta(\|z\|)\,dz \biggr) \cdot \biggl(\int_{B(0,1)} \eta(\|z\|) \,dz \biggr) \,dx \\
+& \leq \int_{B(0,1)} \int_{\mc{X}_{\varepsilon}} \Bigl[\bigl(d^jf\bigr)(x)\Bigr]^2 \eta(\|z\|) \,dx  \,dz \\
+& \leq \|d^jf\|_{\Leb^2(\mc{X_{\varepsilon}})}^2.
+\end{aligned}
+\end{equation}
+In the above, we have used that $|d_x^jf(z)| \leq |d^jf(x)|$ for all $z \in B(0,1)$, and the normalization $\int \eta(\|z\|) \,dz = 1$. 
+Combining this with~\eqref{pf:approximation_error_nonlocal_laplacian_4}, we conclude that
+\begin{align*}
+\int_{\mc{X}_{\varepsilon}} |G_2(x)|^2 \,dx & \leq C \Bigl(\varepsilon^{s - 2}\|p\|_{C^{s - 1}(\mc{X})}\Bigr)^2 \sum_{j = 1}^{s - 1} \int_{\mc{X}_{\varepsilon}}\biggl(\frac{1}{j!} \int_{B(0,1)} \Bigl|\bigl(d_x^{j}f\bigr)(z)\Bigr| \cdot \Bigl|\eta(\|z\|)\Bigr| \,dz\biggr)^2 \,dx \\
+& \leq C \Bigl(\varepsilon^{s - 2}\|p\|_{C^{s - 1}(\mc{X})} \sum_{j = 1}^{s - 1}\Bigr)^2 \|d^ju\|_{\Leb^2(\mc{X_{\varepsilon}})}^2,
+\end{align*}
+establishing the desired estimate.
+
+\emph{Estimate on $G_3(x)$.}
+We begin with a pointwise upper bound on $|J_3(x)|$, 
+\begin{align*}
+|G_3(x)| & \leq \frac{p_{\max}}{\varepsilon^{2 + d}} \int_{\mc{X}} \bigl|r_{x'}^s(x;f)\bigr| \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \\
+& = \frac{p_{\max}}{\varepsilon^2} \int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;f)\bigr| \eta(\|z\|) \,dz,
+\end{align*}
+and applying the Cauchy-Schwarz inequality, we deduce a pointwise upper bound on $|G_3(x)|^2$,
+\begin{align*}
+|G_3(x)|^2 & \leq \biggl(\frac{p_{\max}}{\varepsilon^2}\biggr)^2 \cdot \biggl(\int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;u)\bigr|^2 \eta(\|z\|)\,dz\biggr) \cdot \biggl(\int_{B(0,1)} \eta(\|z\|) \,dz\biggr) \\
+& \leq \biggl(\frac{p_{\max}}{\varepsilon^2}\biggr)^2 \int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;u)\bigr|^2 \eta(\|z\|) \,dz.
+\end{align*}
+Applying this pointwise over all $x \in \mc{X}_{\varepsilon}$ and integrating, we obtain
+\begin{align*}
+\int_{\mc{X}_{\varepsilon}} |G_3(x)|^2 \,dx & \leq \biggl(\frac{p_{\max}}{\varepsilon^2}\biggr)^2 \int_{\mc{X}_{\varepsilon}} \int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;f)\bigr|^2 \eta(\|z\|) \,dz \,dx \\
+& = \biggl(\frac{p_{\max}}{\varepsilon^2}\biggr)^2 \int_{B(0,1)} \int_{\mc{X}_{\varepsilon}} \bigl|r_{x + \varepsilon z}^s(x;f)\bigr|^2 \eta(\|z\|) \,dx \,dz \\
+& \leq \biggl(\frac{p_{\max}\varepsilon^s}{\varepsilon^2}\biggr)^2  \|d^sf\|_{L^2(\mc{X}_{\varepsilon})}^2,
+\end{align*}
+with the last inequality following from~\eqref{eqn:sobolev_remainder_term}. Noting that $p_{\max} = \|p\|_{C^0(\mc{X})} \leq \|p\|_{C^{s - 1}(\mc{X})}$, we see that this is a sufficient bound on $\|G_3\|_{\Leb^2(\mc{X}_{\varepsilon})}$.
+
+\underline{\textit{Proof of~\eqref{pf:approximation_error_nonlocal_laplacian_0} and~\eqref{pf:approximation_error_nonlocal_laplacian_1}, induction step.}}
+We now assume that~\eqref{pf:approximation_error_nonlocal_laplacian_0} and~\eqref{pf:approximation_error_nonlocal_laplacian_1} hold for all order up to some $k$, and show that they then hold for order $k + 1$ as well. The proof is relatively straightforward, once we introduce a bit of notation. Namely, for any $\ell,j \in \mathbb{N}$ such that $1 \leq j \leq \ell \leq$, we will use $g_j^{\ell}$ to refer to a function satisfying
+\begin{equation}
+\label{pf:approximation_error_nonlocal_laplacian_6}
+\|g_j^{\ell}\|_{H^{\ell - j}(\mc{X}_{(k + 1)\varepsilon})} \leq C \|p\|_{C^{q}(\mc{X})}^{k + 1} M.
+\end{equation}
+Note that $g_j^{\ell}(x) = g_{(s - \ell) + j}(x)$, so that $g_j^{s}(x) = g_j(x)$. As before, the functions $g_j^{\ell}$ may change from line to line, but will always satisfy~\eqref{pf:approximation_error_nonlocal_laplacian_6}. We immediately illustrate the purpose of this notation. Suppose $g \in H^{\ell}(\mc{X}_{k\varepsilon}; C \|p\|_{C^{q}(\mc{X})}^k M)$ for some $\ell \leq s$. If $\ell \leq 2$, then by the inductive hypothesis, it follows that for any $x \in \mc{X}_{(k + 1)\varepsilon}$
+\begin{equation}
+\label{pf:approximation_error_nonlocal_laplacian_7}
+L_{P,\varepsilon}g(x) = g_{\ell}^{\ell}(x) \varepsilon^{\ell - 2}.
+\end{equation} 
+On the other hand if $2 < \ell \leq s$, then by the inductive hypothesis, it follows that for any $x \in \mc{X}_{(k + 1)\varepsilon}$,
+\begin{equation}
+\label{pf:approximation_error_nonlocal_laplacian_8}
+L_{P,\varepsilon}g(x) = \sigma_{\eta} \Delta_Pg(x) + \sum_{j = 1}^{\floor{(\ell - 1)/2} - 1} g_{2j + 2}^{\ell}(x) \varepsilon^{2j} + g_{\ell}^{\ell}(x) \varepsilon^{\ell - 2}.
+\end{equation}
+
+\emph{Proof of \eqref{pf:approximation_error_nonlocal_laplacian_0}.} If $s \leq 2(k + 1)$, then by the inductive hypothesis it follows that for all $x \in \mc{X}_{k\varepsilon}$, we have $L_{P,\varepsilon}^kf(x) = g_{s}(x) \cdot \varepsilon^{s - 2k}$, for some $g_s \in L^2(\mc{X}_{k\varepsilon}, C\|p\|_{C^{s - 1}(\mc{X})}^k M)$. Note that we may know more about $L_P^kf(x)$ than simply that it is bounded in $L^2$-norm, but a bound in $L^2$-norm suffices. In particular, from such a bound along with~\eqref{pf:approximation_error_nonlocal_laplacian_7} we deduce that for any $x \in \mc{X}_{(k + 1)\varepsilon}$,
+\begin{equation}
+\label{pf:approximation_error_nonlocal_laplacian_8.5}
+L_{P,\varepsilon}^{k + 1}f(x) = \bigl(L_{P,\varepsilon} \circ L_{P,\varepsilon}^k f)(x)= L_{P,\varepsilon} g_s(x)\varepsilon^{s - 2k} = g_{s}^{s}(x) \varepsilon^{s - 2(k + 1)},
+\end{equation}
+establishing~\eqref{pf:approximation_error_nonlocal_laplacian_0}. 
+
+\emph{Proof of \eqref{pf:approximation_error_nonlocal_laplacian_1}.} If $s > 2(k + 1)$, then by the inductive hypothesis we have that for all $x \in \mc{X}_{k\varepsilon}$, 
+\begin{equation*}
+L_{P,\varepsilon}^kf(x) = \sigma_{\eta}^k \Delta_P^kf(x) + \sum_{j = 1}^{\floor{(s - 1)/2} - k} g_{2(j + k)}(x) \varepsilon^{2j} + g_s(x) \varepsilon^{s - 2k}.
+\end{equation*}
+Thus for any $x \in \mc{X}_{(k + 1)\varepsilon}$, 
+\begin{equation*}
+L_{P,\varepsilon}^{k + 1}f(x) = \bigl(L_{P,\varepsilon} \circ L_{P,\varepsilon}^k f\bigr)(x) = \sigma_{\eta}^k L_{P,\varepsilon}\Delta_P^kf(x) + \sum_{j = 1}^{\floor{(s - 1)/2} - k} L_{P,\varepsilon}g_{2(j + k)}(x) \varepsilon^{2j} + L_{P,\varepsilon}g_s(x) \varepsilon^{s - 2k}
+\end{equation*}
+There are three terms on the right hand side of this equality, and we now analyze each separately.
+\begin{enumerate}
+	\item Noting that $\Delta_P^kf \in H^{s - 2k}(\mc{X}; C\|p\|_{C^{s - 1}(\mc{X})}^kM)$, we use~\eqref{pf:approximation_error_nonlocal_laplacian_8} to derive that
+	\begin{align}
+	L_{P,\varepsilon}\Delta_P^kf(x) & = \sigma_{\eta} \Delta_P^{k + 1}f(x) + \sum_{j = 1}^{(s - 2k - 1)/2 - } g_{2j + 2}^{s - 2k}(x)\varepsilon^{2j} + g_{s - 2k}^{s - 2k}(x) \varepsilon^{s - 2k - 2} \nonumber \\
+	& = \sigma_{\eta} \Delta_P^{k + 1}f(x) + \sum_{j = 1}^{(s - 1)/2 - (k + 1)} g_{2(k + 1 + j)}(x)\varepsilon^{2j} + g_{s}(x) \varepsilon^{s - 2(k + 1)}, \label{pf:approximation_error_nonlocal_laplacian_9}
+	\end{align}
+	where in the second equality we have simply used the fact $g_j^{\ell}(x) = g_{(s - \ell) + j}(x)$ to rewrite the equation.
+	\item Suppose $j < \floor{(s - 1)/2} - k$. Then we use~\eqref{pf:approximation_error_nonlocal_laplacian_8} to derive that
+	\begin{align*}
+	L_{P,\varepsilon}g_{2(j + k)}(x) & = \sigma_{\eta}\Delta_P g_{2(j + k)}(x) + \sum_{i = 1}^{\floor{(s - 2j - 2k - 1)/2} - 1} g_{2(i + 1)}^{s - 2(j + k)}(x)\varepsilon^{2i} + g_{s - 2(j + k)}^{s - 2(j + k)}(x) \varepsilon^{s - 2(j + k + 1)} \\
+	& = g_{2(j + k + 1)}(x) + \sum_{i = 1}^{\floor{(s - 1)/2} - (j + k + 1)} g_{2(i + j + k + 1)}(x)\varepsilon^{2i} + g_{s}(x) \varepsilon^{s - 2(j + k + 1)},
+	\end{align*}
+	where in the second equality we have again used $g_j^{\ell}(x) = g_{(s - \ell) + j}(x)$, and also written $\sigma_{\eta} \Delta_Pf = g_{2}^{s - 2(j + k)} = g_{2(j + k + 1)}$, since the particular dependence on the Laplacian $\Delta_P$ will not matter. From here, multiplying by $\varepsilon^{2j}$, we conclude that
+	\begin{align}
+	\varepsilon^{2j} L_{P,\varepsilon}g_{2(j + k)}(x) & = g_{2(j + k + 1)}(x) \varepsilon^{2j} + \sum_{i = 1}^{\floor{(s - 1)/2} - (j + k + 1)} g_{2(i + j + k + 1)}(x)\varepsilon^{2(i + j)} + g_{s}(x) \varepsilon^{s - 2(k + 1)} \nonumber \\ 
+	& = g_{2(j + k + 1)}(x) \varepsilon^{2j} + \sum_{m = 1}^{\floor{(s - 1)/2} - (k + 1)}  g_{2(m + k + 1)}(x)\varepsilon^{2m} + g_{s}(x) \varepsilon^{s - 2(k + 1)} \label{pf:approximation_error_nonlocal_laplacian_10},
+	\end{align}
+	with the second equality following upon changing variables to $m = i + j$. 
+	
+	On the other hand if $j = \floor{(s - 1)/2} - k$, then the calculation is much simpler,
+	\begin{equation}
+	\label{pf:approximation_error_nonlocal_laplacian_11}
+	\varepsilon^{2j} L_{P,\varepsilon}g_{2(j + k)}(x) = g_{s - 2(j + k)}^{s - 2(j + k)}(x) \varepsilon^{2j} \varepsilon^{s - 2(j + k) - 2} = g_s(x) \varepsilon^{s - 2(k + 1)}.
+	\end{equation}
+	\item Finally, it follows immediately from~\eqref{pf:approximation_error_nonlocal_laplacian_8} that
+	\begin{equation}
+	\label{pf:approximation_error_nonlocal_laplacian_12}
+	L_{P,\varepsilon}g_s(x) \varepsilon^{s - 2k} = g_{s}(x) \varepsilon^{s - 2(k + 1)}.
+	\end{equation}
+\end{enumerate}
+Plugging~\eqref{pf:approximation_error_nonlocal_laplacian_9}-\eqref{pf:approximation_error_nonlocal_laplacian_12} back into~\eqref{pf:approximation_error_nonlocal_laplacian_8.5} proves the claim.
+
+\subsection{Boundary behavior of non-local Laplacian}
+\label{subsec:boundary_behavior_nonlocal_laplacian}
+
+\subsection{Estimate of non-local Sobolev seminorm}
+\label{subsec:estimate_nonlocal_seminorm}
+
+\subsection{Assorted integrals}
+\label{subsec:integrals}
+
+\begin{lemma}
+	\label{lem:l2estimate_nonlocal_laplacian}
+	Assume Model~\ref{def:model_flat_euclidean}. Suppose $f \in L^2(\mc{X};M)$, and let $L_{P,\varepsilon}$ be defined with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exists a constant $C$ which does not depend on $f$ such that
+	\begin{equation}
+	\label{eqn:l2estimate_nonlocal_laplacian}
+	\|L_{P,\varepsilon}f\|_{\Leb^2(\mc{X})} \leq C p_{\max} M \varepsilon^{-2}
+	\end{equation}
+\end{lemma}
+\paragraph{Proof (of Lemma~\ref{lem:l2estimate_nonlocal_laplacian}).}
+We fix a version of $f \in \Leb^2(\mc{X})$, so that we may speak of its pointwise values.
+
+At a given point $x \in \mc{X}$, we can upper bound $|L_{P,\varepsilon}f(x)|^2$ using the Cauchy-Schwarz inequality as follows,
+\begin{align*}
+|L_{P,\varepsilon}f(x)|^2 & \leq \biggl(\frac{p_{\max}}{\varepsilon^{2 + d}}\biggr)^2 \Biggl(\int_\mc{X} \bigl(|f(x')| + |f(x)|\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx'\Biggr)^2 \\
+& \leq \biggl(\frac{p_{\max}}{\varepsilon^{2 + d}}\biggr)^2 \Biggl(\int_\mc{X} \bigl(|f(x')| + |f(x)|\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \cdot \int \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \Biggr) \\
+& = \frac{p_{\max}^2}{\varepsilon^{4 + d}} \int_\mc{X} \bigl(|f(x')| + |f(x)|\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx'.
+\end{align*}
+The equality follows by the assumption $\int_{\Rd} \eta(\|z\|)\,dx = 1$ in~\ref{asmp:kernel_flat_euclidean}. Integrating over all $x \in \mc{X}$, it follows from the triangle inequality that
+\begin{align}
+\|L_{P,\varepsilon}\|_{\Leb^2(\mc{X})}^2 & \leq \frac{2 p_{\max}^2}{\varepsilon^{4 + d}} \int_{\mc{X}} \int_{\mc{X}} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx \nonumber \\
+& \leq \frac{2 p_{\max}^2}{\varepsilon^{4 + d}} \int_{\mc{X}} \int_{\mc{X}} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx. \label{pf:approximation_error_nonlocal_laplacian_2}
+\end{align}
+Finally, using Fubini's Theorem we determine that
+\begin{equation*}
+\int_{\mc{X}} \int{\mc{X}} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx = 2 \int_{\mc{X}} \int_{\mc{X}} |f(x)|^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx \leq 2 \varepsilon^d \int_{\mc{X}} |f(x)|^2 \,dx = 2\varepsilon^d \|f\|_{\Leb^2(\mc{X})}^2
+\end{equation*}
+and in combination with \eqref{pf:approximation_error_nonlocal_laplacian_2} we conclude that
+\begin{equation*}
+\|L_{P,\varepsilon}\|_{\Leb^2(\mc{X})}^2 \leq \frac{4p_{\max}^2}{\varepsilon^4} \|f\|_{\Leb^2(\mc{X})}^2. 
+\end{equation*}
 
 \section{Graph quadratic form, manifold domain}
 \label{sec:graph_quadratic_form_manifold}
@@ -94,4 +375,41 @@ In this section we prove Lemma~\ref{lem:kernel_smoothing_laplacian_eigenmaps} (i
 \end{itemize}
 
 \section{Miscellaneous}
-Here we give some helpful Lemmas used at various points in the above proofs. We also prove that spectral sparsification does not change the rate of convergence of $\wh{f}$. 
+Here we give some helpful Lemmas used at various points in the above proofs. We also prove that spectral sparsification does not change the rate of convergence of $\wh{f}$. Finally, we review notation and relevant facts regarding Taylor expansion.
+
+\subsection{Taylor expansion}
+\label{subsec:taylor_expansion}
+Let $u$ be a function which is $s$ times continuously differentiable at all $x \in \mc{X}$, for $k \in \mathbb{N}\setminus\{0\}$. Suppose that for some $h > 0$, $x \in \mc{X}_{h}$ and $x' \in B(x,h)$. We write the order-$s$ Taylor expansion of $u(x')$ around $x' = x$ as
+\begin{equation*}
+u(x') = u(x) + \sum_{j = 1}^{s - 1} \frac{1}{j!}\bigl(d_x^{j}u\bigr)(x' - x) + r_{x'}^{s}(x;u)
+\end{equation*}
+For notational convenience we have adopted the convention that $\sum_{j = 1}^{0} a_j = 0$. For a given $z \in \Rd$ and $j$-times differentiable function $f: \mc{X} \to \Reals$, we have used the notation $\bigl(d_x^jf\bigr)(z) := \sum_{\abs{\alpha} = j} D^{\alpha}f(x) z^{\alpha}$. Thus $\bigl(d_x^{j}f\bigr)(z)$ is a degree-$j$ polynomial---and so a $j$-homogeneous function---in $z$, meaning for any $t \in \Reals$,
+\begin{equation*}
+\bigl(d_x^{j}f\bigr)(tz) = t^{j} \cdot \bigl(d_x^{j}f\bigr)(z).
+\end{equation*}
+The remainder term $r_{x'}$ is given by
+\begin{equation*}
+r_{x'}^s(x;f) = \frac{1}{(j - 1)!} \int_{0}^{1}(1 - t)^{j - 1} \bigl(d_{x + t(x' - x)}^{s}f\bigr)(x' - x) \,dt,
+\end{equation*}
+where we point out that the integral makes sense because $x + t(x' - x) \in B(x,h) \subseteq \mc{X}$. We now give estimates on the remainder term in both sup-norm and $L^2(\mc{X}_{h})$ norm, each of which hold for any $z \in B(0,1)$. In sup-norm, we have that 
+\begin{equation*}
+\sup_{x \in \mc{X}_{h}}|r_{x + hz}^j(x;f)| \leq C h^j \|f\|_{C^j(\mc{X})},
+\end{equation*}
+whereas in $L^2(\mc{X}_{h})$ norm we have,
+\begin{equation}
+\label{eqn:sobolev_remainder_term}
+\int_{\mc{X}_{h}} \bigl|r_{x + thz}^j(x;f)\bigr|^2 \,dx \leq h^{2j} \int_{\mc{X}_{h}} \int_{0}^{1} |d_{x + thz}^jf(z)|^2 \,dt \,dx \leq h^{2j} \|d^jf\|_{\Leb^2(\mc{X})}^2.
+\end{equation}
+
+Finally, we recall some facts regarding the interaction between smoothing kernels and polynomials.  Let $q_j(z)$ be an arbitrary degree-$j$ (multivariate) polynomial. If $\eta$ is a radially symmetric kernel and $j$ is odd, then by symmetry it follows that
+\begin{equation*}
+\int_{B(0,1)} q_j(z) \eta(\|z\|) \,dz = 0.
+\end{equation*}
+On the other hand, if $\psi$ is an order-$s$ kernel for some $s > j$, then by converting to polar coordinates we can verify that
+\begin{equation*}
+\int_{B(0,1)} q_j(z) \eta(\|z\|) \,dz = 0.
+\end{equation*}
+
+\textcolor{red}{(TODO): Check with Ryan and Siva that (i) they believe these facts, and (ii) these facts do not require additional justification.}
+
+ 
