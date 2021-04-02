@@ -30,13 +30,13 @@ In this section we prove Proposition~\ref{prop:graph_seminorm_ho}. The propositi
 	\item~In Section~\ref{subsec:decomposition_graph_seminorm}, we show that
 	\begin{equation}
 	\label{pf:graph_seminorm_ho_1}
-	\dotp{L_{n,\varepsilon}^sf}{f}_n \leq \frac{1}{\delta} \dotp{L_{P,\varepsilon}^sf}{f}_{P} + \frac{C\varepsilon^2}{n\varepsilon^{2 + d}}M^2.
+	\dotp{L_{n,\varepsilon}^sf}{f}_n \leq \frac{1}{\delta} \dotp{L_{P,\varepsilon}^sf}{f}_{P} + \frac{C\varepsilon^2}{\delta n\varepsilon^{2 + d}}M^2.
 	\end{equation}
-	with probability at least $1 - \delta$. 
+	with probability at least $1 - 2\delta$. 
 	
-	We term the first term on the right hand side the \emph{non-local Sobolev semi-norm}, as it is a kernelized approximation to the Sobolev semi-norm $\dotp{\Delta_P^sf}{f}_{P}$. The second term on the right hand side is a pure bias term, which as we will see is negligible compared to the non-local quadratic form as long as $\varepsilon \ll n^{-1/(2(s -1 + d))}$. 
+	We term the first term on the right hand side the \emph{non-local Sobolev semi-norm}, as it is a kernelized approximation to the Sobolev semi-norm $\dotp{\Delta_P^sf}{f}_{P}$. The second term on the right hand side is a pure bias term, which as we will see is negligible compared to the non-local Sobolev semi-norm as long as $\varepsilon \ll n^{-1/(2(s -1 + d))}$. 
 	\item~In Section~\ref{subsec:approximation_error_nonlocal_laplacian}, we show that when $x$ is sufficiently in the interior of $\mc{X}$, then $L_{P,\varepsilon}^kf(x)$ is a good approximation to $\Delta_P^kf(x)$, as long as $f \in H^{s}(\mc{X})$ and $p \in C^{s - 1}(\mc{X})$ for some $s \geq 2k + 1$. 
-	\item~In Section~\ref{subsec:boundary_behavior_nonlocal_laplacian}, we show that when $x$ is sufficiently near the boundary of $\mc{X}$, then $L_{P,\varepsilon}^kf(x)$ is close to $0$, as long as $f \in H_0^{s}(\mc{X})$ for some $s \geq 2k$.
+	\item~In Section~\ref{subsec:boundary_behavior_nonlocal_laplacian}, we show that when $x$ is sufficiently near the boundary of $\mc{X}$, then $L_{P,\varepsilon}^kf(x)$ is close to $0$, as long as $f \in H_0^{s}(\mc{X})$ for some $s > 2k$.
 	\item~In Section~\ref{subsec:estimate_nonlocal_seminorm}, we use the results of the preceding two sections to show that if $f \in H_0^s(\mc{X};M)$ and $p \in C^{s - 1}(\mc{X})$, there exists a constant $C$ which does not depend on $f$ such that
 	\begin{equation}
 	\label{pf:graph_seminorm_ho_2}
@@ -46,7 +46,9 @@ In this section we prove Proposition~\ref{prop:graph_seminorm_ho}. The propositi
 Finally, in Section~\ref{subsec:integrals} we provide some assorted estimates used in Sections~\ref{subsec:decomposition_graph_seminorm}. 
 
 \paragraph{Proof (of Proposition~\ref{prop:graph_seminorm_ho}).}
-Proposition~\ref{prop:graph_seminorm_ho} follows immediately from~\eqref{pf:graph_seminorm_ho_1} and~\eqref{pf:graph_seminorm_ho_2}.
+Proposition~\ref{prop:graph_seminorm_ho} follows immediately from~\eqref{pf:graph_seminorm_ho_1} and~\eqref{pf:graph_seminorm_ho_2}. \qed
+
+One note regarding notation: suppose a function $g \in H^{\ell}(U)$, where $\ell \in \mathbb{N}$ and $U$ is an open set. Let $V$ be another open set, compactly contained within $U$. Then we will use the notation $g \in H^{\ell}(V)$ to mean that the restriction $\restr{g}{V}$ of $g$ to $V$ belongs to $H^{\ell}(V)$.
 
 \subsection{Decomposition of graph Sobolev semi-norm}
 \label{subsec:decomposition_graph_seminorm}
@@ -270,41 +272,201 @@ Plugging~\eqref{pf:approximation_error_nonlocal_laplacian_9}-\eqref{pf:approxima
 \subsection{Boundary behavior of non-local Laplacian}
 \label{subsec:boundary_behavior_nonlocal_laplacian}
 
+In Lemma~\ref{lem:approximation_error_nonlocal_laplacian_boundary}, we establish that if $f$ is Sobolev smooth of order $s > 2k$ and zero-trace, then near the boundary of $\mc{X}$ the non-local Laplacian $L_{P,\varepsilon}^kf$ is close to $0$ in the $\Leb^2$-sense.
+\begin{lemma}
+	\label{lem:approximation_error_nonlocal_laplacian_boundary}
+	Assume Model~\ref{def:model_flat_euclidean}. Let $s,k \in \mathbb{N}$. Suppose that $f \in H_0^{s}(\mc{X};M)$. Then there exist numbers $c,C > 0$ that do not depend on $M$, such that for all $\varepsilon < c$, 
+	\begin{equation*}
+	\|L_{P,\varepsilon}^kf\|_{L^2(\partial_{k\varepsilon}\mc{X})}^2 \leq C \varepsilon^{2(s - 2k)}M^2.
+	\end{equation*}
+\end{lemma}
+
+\paragraph{Proof (of Lemma~\ref{lem:approximation_error_nonlocal_laplacian_boundary})}
+Applying Lemma~\ref{lem:l2estimate_nonlocal_laplacian}, we have that
+\begin{equation*}
+\|L_{P,\varepsilon}^kf\|_{L^2(\partial_{k\varepsilon}(\mc{X}))}^2 \leq \frac{(Cp_{\max})^{2}}{\varepsilon^4} \|L_{P,\varepsilon}^{k - 1}f\|_{L^2(\partial_{k\varepsilon}(\mc{X}))}^2 \leq \cdots \leq \frac{(Cp_{\max})^{2}}{\varepsilon^{4k}} \|f\|_{L^2(\partial_{k\varepsilon}(\mc{X}))}^2   
+\end{equation*}
+Thus it remains to show that for all $\varepsilon < c$,
+\begin{equation}
+\label{pf:approximation_error_nonlocal_laplacian_boundary_0}
+\|f\|_{L^2(\partial_{k\varepsilon}(\mc{X}))}^2 = \int_{\partial_{k\varepsilon}(\mc{X})} \bigl(f(x)\bigr)^2 \,dx \leq C_1 \varepsilon^{2s} \|f\|_{H^s(\mc{X})}^2.
+\end{equation}
+We will build to~\eqref{pf:approximation_error_nonlocal_laplacian_boundary_0} by a series of intermediate steps, following the same rough structure as the proof of Theorem 18.1 in \citet{leoni2017}. For simplicity, we will take $k = 1$; the exact same proof applies to the general case upon assuming $\varepsilon < c/k$.
+
+\underline{\textit{Step 1: Local Patch.}}
+To begin, we assume that for some $c_0 > 0$ and a Lipschitz mapping $\phi: \Reals^{d - 1} \to [-c_0,c_0]$, we have that $f \in C_c^{\infty}(U_{\phi}(c_0))$, where 
+\begin{equation*}
+U_{\phi}(c_0) = \Bigl\{y \in Q(0,c_0): \phi(y_{-d}) \leq y_d\Bigr\}, 
+\end{equation*}
+and here $Q(0,c_0)$ is the $d$-dimensional cube of side length $c_0$, centered at $0$. We will show that for all $0 < \varepsilon < c_0$, and for the tubular neighborhood $V_{\phi}(\varepsilon) = \{y \in Q(0,c_0): \phi(y_{-d}) \leq y_d \leq \phi(y_{-d}) + \varepsilon\}$, we have that
+\begin{equation*}
+\int_{V_{\phi}(\varepsilon)} |f(x)|^2 \,dx \leq C\varepsilon^{2s} \|f\|_{H^s(U_{\phi}(c_0))}^2.
+\end{equation*}
+For a given $y = (y',y_d) \in V_{\phi}(\varepsilon)$, let $y_0 = (y',\phi(y'))$. Taking the Taylor expansion of $f(y)$ around $y = y_0$ because $u$ is compactly supported in $V_{\phi}$ it follows that,
+\begin{align*}
+f(y) & = f(y_0) + \sum_{j = 1}^{s - 1} \frac{1}{j!} D^{je_d}f(y_0) \bigl(y_d - \phi(y')\bigr)^j + \frac{1}{(s - 1)!}\int_{\phi(y')}^{y_d} (1 - t)^{s - 1} D^{se_d}f(y',z) \bigl(y_d - z\bigr)^{s - 1} \,dz \Longrightarrow\\
+|f(y)| & \leq C\varepsilon^{s - 1}\int_{\phi(y')}^{y_d} \bigl|D^{se_d}f(y',z)\bigr| \,dz. 
+\end{align*}
+Consequently, by squaring both sides and applying Cauchy-Schwarz, we have that
+\begin{equation*}
+|f(y)|^2 \leq C\varepsilon^{2(s - 1)} \biggl(\int_{\phi(y')}^{y_d} \bigl|D^{se_d}f(y',z)\bigr| \,dz\biggr)^2 \leq C\varepsilon^{2s - 1} \int_{\phi(y')}^{y_d} \bigl|D^{se_d}f(y',z)\bigr|^2 \,dz.
+\end{equation*}
+Applying this bound for each $y \in V_{\phi}(\varepsilon)$, and then integrating, we obtain
+\begin{align}
+\int_{V_{\phi}(\varepsilon)} |f(y)|^2 \,dy & \leq \int_{Q_{d - 1}(c_0)} \int_{\phi(y')}^{\phi(y') + \varepsilon} |f(y',y_d)|^2 \,dy_d \,dy' \nonumber \\
+& \leq C\varepsilon^{2s - 1}\int_{Q_{d - 1}(c_0)}  \int_{\phi(y')}^{\phi(y') + \varepsilon} \int_{\phi(y')}^{y_d} \bigl|D^{se_d}f(y',z)\bigr|^2 \,dz \,dy_d \,dy' \label{pf:approximation_error_nonlocal_laplacian_boundary_1}
+\end{align}
+where we have written $Q_{d - 1}(0,c_0)$ for the $d - 1$ dimensional cube of side length $c_0$, centered at $0$. Exchanging the order of the inner two integrals then gives
+\begin{align*}
+\int_{\phi(y')}^{\phi(y') + \varepsilon} \int_{\phi(y')}^{y_d} \bigl|D^{se_d}f(y',z)\bigr|^2 \,dz \,dy_d & = \int_{\phi(y')}^{\phi(y') + \varepsilon} \int_{z}^{\varepsilon} \bigl|D^{se_d}f(y',z)\bigr|^2 \,dy_d \,dz \\
+& \leq C \varepsilon \int_{\phi(y')}^{\phi(y') + \varepsilon} \bigl|D^{se_d}f(y',z)\bigr|^2 \,dz \\
+& \leq C \varepsilon \int_{\phi(y')}^{c_0} \bigl|D^{se_d}f(y',z)\bigr|^2 \,dz.
+\end{align*}
+Finally, plugging back into~\eqref{pf:approximation_error_nonlocal_laplacian_boundary_1}, we conclude that
+\begin{equation*}
+\int_{V_{\phi}(\varepsilon)} |f(y)|^2 \,dy \leq C \varepsilon^{2s} \int_{Q_{d - 1}(0,c_0)} \int_{\phi(y')}^{c_0} \bigl|D^{se_d}f(y',z)\bigr|^2 \,dz \,dy' \leq C \varepsilon^{2s} |u|_{H^s(U_{\phi}(c_0))}^2.
+\end{equation*}
+
+\underline{\textit{Step 2: Rigid motion of local patch.}} Now, suppose that at a point $x_0 \in \partial \mc{X}$, there exists a rigid motion $T: \Rd \to \Rd$ for which $T(x_0) = 0$, and a number $C_0$ such that for all $\varepsilon \cdot C_0 \leq c_0$, 
+\begin{equation*}
+T\bigl(Q_{T}(x_0,c_0) \cap \partial_{\varepsilon}\mc{X}\bigr) \subseteq V_{\phi}\bigl(C_0\varepsilon\bigr) \quad\textrm{and}\quad T\bigl(Q_T(x_0,c_0) \cap \mc{X}\bigr) = U_{\phi}(c_0).
+\end{equation*}
+Here $Q_{T}(x_0,c_0))$ is a (not necessarily coordinate-axis-aligned) cube of side length $c_0)$, centered at $x_0$. Define $v(y) := f(T^{-1}(y))$ for $y \in U_{\phi}(c_0)$. If $u \in C_c^{\infty}(\mc{X})$, then $v \in C_c^{\infty}(U_{\phi}(c_0))$, and moreover $\|v\|_{H^s(U_{\phi}(c_0))}^2 = \|f\|_{H^s(Q_{T}(x_0,c_0) \cap \mc{X})}^2$. Therefore, using the upper bound that we derived in Step 1,
+\begin{equation*}
+\int_{V_{\phi}(C_0 \cdot \varepsilon)} |v(y)|^2 \,dy \leq C \varepsilon^{2s} \|v\|_{H^s(U_{\phi}(c_0))}^2,
+\end{equation*}
+we conclude that
+\begin{align*}
+\int_{Q_{T}(x_0,c_0) \cap \partial_{\varepsilon}\mc{X}} |f(x)|^2 \,dx & = \int_{T(Q_T(x_0,c_0)) \cap \partial_{\varepsilon}\mc{X})} |v(y)|^2 \,dy \\
+& \leq \int_{V_{\phi}(C_0 \cdot \varepsilon)} |v(y)|^2 \,dy \\
+& \leq C \varepsilon^{2s} \|v\|_{H^s(U_{\phi}(c_0))}^2 = C \varepsilon^{2s} \|f\|_{H^s(Q_{T}(x_0,c_0)) \cap \mc{X})}^2 \leq C \varepsilon^{2s} \|f\|_{H^s(\mc{X})}^2.
+\end{align*}
+
+\underline{\textit{Step 3: Lipschitz domain}}.
+Finally, we deal with the case where $\mc{X}$ is assumed to be an open, bounded subset of $\Rd$, with Lipschitz boundary. In this case, at every $x_0 \in \partial \mc{X}$, there exists a rigid motion $T_{x_0}: \Rd \to \Rd$ such that $T_{x_0}(x_0) = 0$, a number $c_0(x_0)$, a Lipschitz function $\phi_{x_0}:\Reals^{d - 1} \to [-c_0,c_0]$, and a number $C_0(x_0)$, such that for all $\varepsilon \cdot C_0(x_0) \leq c_0(x_0)$,
+\begin{equation*}
+T\bigl(Q_{T}(x_0,c_0(x_0)) \cap \partial_{\varepsilon}\mc{X}\bigr) \subseteq V_{\phi}\bigl(C_0(x_0) \cdot \varepsilon\bigr) \quad\textrm{and}\quad T\bigl(Q_T(x_0,c_0(x_0)) \cap \mc{X}\bigr) = U_{\phi}(c_0(x_0)).
+\end{equation*}
+Therefore for every $x_0 \in \partial \mc{X}$, it follows from the previous step that
+\begin{equation*}
+\int_{Q_{T_{x_0}}(x_0,c_0(x_0)) \cap \partial_{\varepsilon}\mc{X}} |f(x)|^2 \,dx \leq C(x_0) \varepsilon^{2s} \|f\|_{H^s(\mc{X})}^2,
+\end{equation*}
+where on the right hand side $C(x_0)$ is a constant that may depend on $x_0$, but not on $u$ or $\varepsilon$.
+
+We conclude by taking a collection of cubes that covers $\partial_{\varepsilon}\mc{X}$ for all $\epsilon$ sufficiently small. First, we note that by a compactness argument there exists a finite subset of the collection of cubes $\{Q_{T_{x_0}}(x_0,c_0(x_0)/2): x_0 \in \partial\mc{X} \}$ which covers $\partial \mc{X}$, say $Q_{T_{x_1}}(x_1,c_0(x_1)/2),\ldots, Q_{T_{x_N}}(x_N,c_0(x_N)/2)$. Then, for any $\varepsilon \leq \min_{i = 1,\ldots,N} c_0(x_i)/2$, it follows from the triangle inequality that
+\begin{equation*}
+\partial_{\varepsilon}\mc{X} \subseteq \bigcup_{i = 1}^{N} Q_{T_{x_i}}(x_i, c_0(x_i)).
+\end{equation*}
+As a result,
+\begin{equation*}
+\int_{\partial_{\varepsilon}\mc{X}} |f(x)|^2 \leq \sum_{i = 1}^{N} \int_{Q_{T_{x_i}}(x_i, c_0(x_i)) \cap \partial_{\varepsilon}(\mc{X})} |f(x)|^2 \leq  \varepsilon^{2s} \|f\|_{H^s(\mc{X})}^2 \sum_{i = 1}^{N}C_0(x_i),
+\end{equation*}
+which proves the claim of~\eqref{pf:approximation_error_nonlocal_laplacian_boundary_0}.
+
 \subsection{Estimate of non-local Sobolev seminorm}
 \label{subsec:estimate_nonlocal_seminorm}
+
+Now, we use the results of the preceding two sections to prove~\eqref{pf:graph_seminorm_ho_2}. We will divide our analysis in two cases, depending on whether $s$ is odd or even, but before we do this we state some facts that will be applicable to both cases. First, we  recall that $L_{P,\varepsilon}$ is self-adjoint in $L^2(P)$, meaning $\dotp{L_{P,\varepsilon}f}{g}_{P} = \dotp{f}{L_{P,\varepsilon}g}_{P}$ for all $f, g \in L^2(P)$. We will also use the fact that when $s = 1$, the non-local seminorm is a \emph{non-local Dirichlet energy},
+\begin{equation*}
+\dotp{L_{P,\varepsilon}f}{f}_{P} = \frac{1}{\varepsilon^{d + 2}}\int_{\mc{X}} \int_{\mc{X}} \bigl(f(x) - f(x')\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x) =: E_{P,\varepsilon}(f;\mc{X}).
+\end{equation*}
+Finally, we recall a result of \textcolor{blue}{(Green 21)}: there exist constants $c_0$ and $C_0$ which do not depend on $M$, such that for all $\varepsilon < c_0$ and for any $f \in H^1(\mc{X};M)$,
+\begin{equation}
+\label{pf:estimate_nonlocal_seminorm_1}
+E_{P,\varepsilon}(f;\mc{X}) \leq C_0 M^2.
+\end{equation}
+\paragraph{Case 1: $s$ odd.}
+Suppose $s$ is odd, so that $s \geq 3$. Taking $k = (s - 1)/2$, we use the self-adjointness of $L_{P,\varepsilon}$ to relate the non-local semi-norm $\dotp{L_{P,\varepsilon}^sf}{f}_{P}$ to a non-local Dirichlet energy,
+\begin{equation*}
+\dotp{L_{P,\varepsilon}^sf}{f}_P = \dotp{L_{P,\varepsilon}^{k + 1}f}{L_{P,\varepsilon}^{k}f}_P = E_{P,\varepsilon}(L_{P,\varepsilon}^{k};\mc{X}).
+\end{equation*}
+We now separate this energy into integrals over $\mc{X}_{k\varepsilon}$ and $\partial_{k\varepsilon}(\mc{X})$,
+\begin{align}
+E_{P,\varepsilon}(L_{P,\varepsilon}^{k};\mc{X}) & = \frac{1}{\varepsilon^{d + 2}}\Biggl\{\int_{\mc{X}_{k\varepsilon}} \int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^kf(x) - L_{P,\varepsilon}^kf(x')\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x) \nonumber \\
+& \quad + \int_{\partial_{k\varepsilon}\mc{X}} \int_{\partial_{k\varepsilon}\mc{X}} \bigl(L_{P,\varepsilon}^kf(x) - L_{P,\varepsilon}^kf(x')\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x)\Biggr\} \nonumber \\
+& := E_{P,\varepsilon}(L_{P,\varepsilon}^{k};\mc{X}_{k\varepsilon}) + E_{P,\varepsilon}(L_{P,\varepsilon}^{k};\partial_{k\varepsilon}\mc{X}) \label{pf:estimate_nonlocal_seminorm_1.5}
+\end{align}
+and upper bound each energy separately. For the first term, we add and substract $\sigma_{\eta}^k\Delta_P^kf(x)$ and $\sigma_{\eta}^k\Delta_P^kf(x')$ within the integrand, then use the triangle inequality and \textcolor{red}{the symmetry between $x$ and $x'$} to deduce that
+\begin{equation}
+\label{pf:estimate_nonlocal_seminorm_2}
+E_{P,\varepsilon}(L_{P,\varepsilon}^{k};\mc{X}_{k\varepsilon}) \leq 3 \sigma_{\eta}^{2k} E_{P,\varepsilon}(\Delta_P^kf;\mc{X}_{k\varepsilon}) + \frac{2}{\varepsilon^{d + 2}}\int_{\mc{X}_{k\varepsilon}} \int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^kf(x) - \sigma_{\eta}^k \Delta_P^kf(x)\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x).
+\end{equation}
+Noticing that $\Delta_P^kf \in H^1(\mc{X};\|p\|_{C^{s - 1}(\mc{X})}^kM)$, we use~\eqref{pf:estimate_nonlocal_seminorm_1} to conclude that $E_{P,\varepsilon}(\Delta_P^kf;\mc{X}_{k\varepsilon}) \leq C_0M^2$. On the other hand, it follows from Assumption~\ref{asmp:kernel_flat_euclidean} and~\eqref{eqn:approximation_error_nonlocal_laplacian_1} that
+\begin{align*}
+\frac{2}{\varepsilon^{d + 2}}\int_{\mc{X}_{k\varepsilon}} \int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^kf(x) - \sigma_{\eta}^k \Delta_P^kf(x)\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x) & \leq \frac{2p_{\max}}{\varepsilon^{2}}\int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^kf(x) - \sigma_{\eta}^k \Delta_P^kf(x)\bigr)^2 \,dP(x) \\
+& \leq C_1M^2.
+\end{align*}
+Plugging these two bounds into~\eqref{pf:estimate_nonlocal_seminorm_2} gives the desired upper bound on $E_{P,\varepsilon}(L_{P,\varepsilon}^{k};\mc{X}_{k\varepsilon})$. 
+
+For the second term in~\eqref{pf:estimate_nonlocal_seminorm_1.5}, we apply Lemmas~\ref{lem:dirichlet_estimate_nonlocal_laplacian} and~\ref{lem:approximation_error_nonlocal_laplacian_boundary} and conclude that,
+\begin{equation*}
+E_{P,\varepsilon}(L_{P,\varepsilon}^{k};\partial_{k\varepsilon}\mc{X}) \leq \frac{4p_{\max}^2}{\varepsilon^2}\|L_{P,\varepsilon}^kf\|_{L^2(\partial_{k\varepsilon}\mc{X})} \leq C M^2.
+\end{equation*}
+\paragraph{Case 2: $s$ even.}
+If $s \in \mathbb{N}$ is even, $s \geq 2$, then letting $k = (s - 2)/2$, the  self-adjointness of $L_{P,\varepsilon}$ implies
+\begin{equation*}
+\dotp{L_{P,\varepsilon}^sf}{f}_P = \|L_{P,\varepsilon}^{k + 1}f\|_P^2.
+\end{equation*}
+As in the first case, we divide the integral up into the interior region $\mc{X}_{k\varepsilon}$ and the boundary region $\partial_{k\varepsilon}\mc{X}$,
+\begin{equation}
+\label{pf:estimate_nonlocal_seminorm_3}
+\|L_{P,\varepsilon}^{k + 1}f\|_P^2 \leq p_{\max} \|L_{P,\varepsilon}^{k + 1}f\|_{\Leb^2(\mc{X})}^2 \leq p_{\max}\biggl\{\int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^{k + 1}f(x)\bigr)^2 \,dP(x) + \int_{\partial_{k\varepsilon}\mc{X}} \bigl(L_{P,\varepsilon}^{k + 1}f(x)\bigr)^2 \,dP(x)\biggr\},
+\end{equation}
+and upper bound each term separately. For the first term, adding and subtracting $\sigma_{\eta}^k \Delta_P^kf(x)$ gives
+\begin{align*}
+\int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^{k + 1}f(x)\bigr)^2 \,dP(x) & \leq 2\int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}\Delta_P^kf(x)\bigr)^2 \,dP(x)  + 2 \int_{\mc{X}_{k\varepsilon}} \Bigl(L_{P,\varepsilon}\bigl(L_{P,\varepsilon}^kf- \sigma_{\eta}\Delta_P^kf\bigr)(x)\Bigr)^2 \,dP(x) \\
+& \overset{(i)}{\leq} CM^2  + 2 \int_{\mc{X}_{k\varepsilon}} \Bigl(L_{P,\varepsilon}\bigl(L_{P,\varepsilon}^kf- \sigma_{\eta}\Delta_P^kf\bigr)(x)\Bigr)^2 \,dP(x) \\
+& \overset{(ii)}{\leq} CM^2  + \frac{Cp_{\max}^2}{\varepsilon^{2}} \|L_{P,\varepsilon}^kf- \sigma_{\eta}\Delta_P^kf\|_{L^2(\mc{X}_{k\varepsilon})}^2 \\
+& \overset{(iii)}{\leq} CM^2,
+\end{align*}
+with $(i)$ following from~\eqref{pf:approximation_error_nonlocal_laplacian_0} since $\Delta_P^kf \in H^2(\mc{X};M\|p\|_{C^{s - 1}(\mc{X})}^l)$, $(ii)$ following from Lemma~\ref{lem:l2estimate_nonlocal_laplacian}, and $(iii)$ following from~\eqref{eqn:approximation_error_nonlocal_laplacian_2}.
+
+Then Lemma~\ref{lem:approximation_error_nonlocal_laplacian_boundary} shows that the second term in~\eqref{pf:estimate_nonlocal_seminorm_3} satisfies
+\begin{equation*}
+\int_{\partial_{k\varepsilon}\mc{X}} \bigl(L_{P,\varepsilon}^{k + 1}f(x)\bigr)^2 \,dP(x) \leq CM^2.
+\end{equation*}
 
 \subsection{Assorted integrals}
 \label{subsec:integrals}
 
 \begin{lemma}
 	\label{lem:l2estimate_nonlocal_laplacian}
-	Assume Model~\ref{def:model_flat_euclidean}. Suppose $f \in L^2(\mc{X};M)$, and let $L_{P,\varepsilon}$ be defined with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exists a constant $C$ which does not depend on $f$ such that
+	Assume Model~\ref{def:model_flat_euclidean}. Suppose $f \in L^2(U;M)$ for an open set $U \subseteq \mc{X}$, and let $L_{P,\varepsilon}$ be defined with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exists a constant $C$ which does not depend on $f$ such that
 	\begin{equation}
 	\label{eqn:l2estimate_nonlocal_laplacian}
-	\|L_{P,\varepsilon}f\|_{\Leb^2(\mc{X})} \leq C p_{\max} M \varepsilon^{-2}
+	\|L_{P,\varepsilon}f\|_{\Leb^2(U)} \leq \frac{2 p_{\max}}{\varepsilon^2} \|f\|_{L^2(U)}
+	\end{equation}
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:dirichlet_estimate_nonlocal_laplacian}
+	Assume Model~\ref{def:model_flat_euclidean}. Suppose $f \in L^2(U;M)$ for an open set $U \subseteq \mc{X}$, and let $L_{P,\varepsilon}$ be defined with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exists a constant $C$ which does not depend on $f$ such that
+	\begin{equation}
+	\label{eqn:dirichlet_estimate_nonlocal_laplacian}
+	E_{P,\varepsilon}(f;U) \leq \frac{4 p_{\max}^2}{\varepsilon^2} \|f\|_{L^2(U)}^2
 	\end{equation}
 \end{lemma}
 \paragraph{Proof (of Lemma~\ref{lem:l2estimate_nonlocal_laplacian}).}
-We fix a version of $f \in \Leb^2(\mc{X})$, so that we may speak of its pointwise values.
+We fix a version of $f \in \Leb^2(U)$, so that we may speak of its pointwise values.
 
-At a given point $x \in \mc{X}$, we can upper bound $|L_{P,\varepsilon}f(x)|^2$ using the Cauchy-Schwarz inequality as follows,
+At a given point $x \in U$, we can upper bound $|L_{P,\varepsilon}f(x)|^2$ using the Cauchy-Schwarz inequality as follows,
 \begin{align*}
-|L_{P,\varepsilon}f(x)|^2 & \leq \biggl(\frac{p_{\max}}{\varepsilon^{2 + d}}\biggr)^2 \Biggl(\int_\mc{X} \bigl(|f(x')| + |f(x)|\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx'\Biggr)^2 \\
-& \leq \biggl(\frac{p_{\max}}{\varepsilon^{2 + d}}\biggr)^2 \Biggl(\int_\mc{X} \bigl(|f(x')| + |f(x)|\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \cdot \int \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \Biggr) \\
-& = \frac{p_{\max}^2}{\varepsilon^{4 + d}} \int_\mc{X} \bigl(|f(x')| + |f(x)|\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx'.
+|L_{P,\varepsilon}f(x)|^2 & \leq \biggl(\frac{p_{\max}}{\varepsilon^{2 + d}}\biggr)^2 \Biggl(\int_U \bigl(|f(x')| + |f(x)|\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx'\Biggr)^2 \\
+& \leq \biggl(\frac{p_{\max}}{\varepsilon^{2 + d}}\biggr)^2 \Biggl(\int_U \bigl(|f(x')| + |f(x)|\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \cdot \int \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \Biggr) \\
+& = \frac{p_{\max}^2}{\varepsilon^{4 + d}} \int_U \bigl(|f(x')| + |f(x)|\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx'.
 \end{align*}
-The equality follows by the assumption $\int_{\Rd} \eta(\|z\|)\,dx = 1$ in~\ref{asmp:kernel_flat_euclidean}. Integrating over all $x \in \mc{X}$, it follows from the triangle inequality that
+The equality follows by the assumption $\int_{\Rd} \eta(\|z\|)\,dx = 1$ in~\ref{asmp:kernel_flat_euclidean}. Integrating over all $x \in U$, it follows from the triangle inequality that
 \begin{align}
-\|L_{P,\varepsilon}\|_{\Leb^2(\mc{X})}^2 & \leq \frac{2 p_{\max}^2}{\varepsilon^{4 + d}} \int_{\mc{X}} \int_{\mc{X}} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx \nonumber \\
-& \leq \frac{2 p_{\max}^2}{\varepsilon^{4 + d}} \int_{\mc{X}} \int_{\mc{X}} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx. \label{pf:approximation_error_nonlocal_laplacian_2}
+\|L_{P,\varepsilon}\|_{\Leb^2(U)}^2 & \leq \frac{2 p_{\max}^2}{\varepsilon^{4 + d}} \int_{U} \int_{U} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx \nonumber \\
+& \leq \frac{2 p_{\max}^2}{\varepsilon^{4 + d}} \int_{U} \int_{U} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx. \label{pf:approximation_error_nonlocal_laplacian_2}
 \end{align}
 Finally, using Fubini's Theorem we determine that
 \begin{equation*}
-\int_{\mc{X}} \int{\mc{X}} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx = 2 \int_{\mc{X}} \int_{\mc{X}} |f(x)|^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx \leq 2 \varepsilon^d \int_{\mc{X}} |f(x)|^2 \,dx = 2\varepsilon^d \|f\|_{\Leb^2(\mc{X})}^2
+\int_{U} \int{U} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx = 2 \int_{U} \int_{U} |f(x)|^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx \leq 2 \varepsilon^d \int_{U} |f(x)|^2 \,dx = 2\varepsilon^d \|f\|_{\Leb^2(U)}^2
 \end{equation*}
 and in combination with \eqref{pf:approximation_error_nonlocal_laplacian_2} we conclude that
 \begin{equation*}
-\|L_{P,\varepsilon}\|_{\Leb^2(\mc{X})}^2 \leq \frac{4p_{\max}^2}{\varepsilon^4} \|f\|_{\Leb^2(\mc{X})}^2. 
+\|L_{P,\varepsilon}\|_{\Leb^2(U)}^2 \leq \frac{4p_{\max}^2}{\varepsilon^4} \|f\|_{\Leb^2(U)}^2. 
 \end{equation*}
 
 \section{Graph quadratic form, manifold domain}
