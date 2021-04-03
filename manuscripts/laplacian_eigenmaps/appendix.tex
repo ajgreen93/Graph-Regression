@@ -52,7 +52,62 @@ One note regarding notation: suppose a function $g \in H^{\ell}(U)$, where $\ell
 
 \subsection{Decomposition of graph Sobolev semi-norm}
 \label{subsec:decomposition_graph_seminorm}
-\textcolor{red}{(TODO)}
+
+In Lemma~\textcolor{red}{(?)}, we show that the graph Sobolev semi-norm (V-statistic) decomposes into an unbiased estimate of the non-local Sobolev semi-norm (U-statistic), and a pure bias term. We also establish that the pure bias term will be small (in expectation) relative to the U-statistic whenever $\varepsilon$ is sufficiently small.
+\begin{lemma}
+	\label{lem:graph_seminorm_bias}
+	For any $f \in L^2(\mc{X})$, the graph Sobolev semi-norm satisfies
+	\begin{equation}
+	\label{eqn:graph_seminorm_bias_1}
+	\dotp{L_{n,\varepsilon}^sf}{f}_{n} = U_{n,\varepsilon}^{(s)}(f) + B_{n,\varepsilon}^{(s)}(f),
+	\end{equation}
+	such that $\mathbb{E}[U_{n,\varepsilon}^{(s)}(f)] = (n - s - 1)!/n! \cdot \dotp{L_{P,\varepsilon}^sf}{f}_P$. If additionally $f \in H^1(\mc{X};M)$ and $\varepsilon \geq n^{-1/d}$, then the bias term $B_{n,\varepsilon}^{(s)}(f)$ satisfies
+	\begin{equation}
+	\label{eqn:graph_seminorm_bias_2}
+	\mathbb{E}\bigl[|B_{n,\varepsilon}^{(s)}(f)|\bigr] \leq \frac{C\varepsilon^2}{\delta n\varepsilon^{2 + d}}M^2.
+	\end{equation}
+\end{lemma}
+Then~\ref{pf:graph_seminorm_ho_1} follows immediately from Lemma~\ref{lem:graph_seminorm_bias}, by Markov's inequality.
+\paragraph{Proof (of Lemma~\ref{lem:graph_seminorm_bias}).}
+We begin by introducing some notation. We will use bold notation $\bj = (j_1,\ldots,j_s)$ for a vector of indices where $j_i \in [n]$ for each $i$. We write $[n]^s$ for the collection of all such vectors, and $(n)^s$ for the subset of such vectors with no repeated indices. Finally, we write $D_if$ for a kernelized difference operator,
+\begin{equation*}
+D_if(x) := \bigl(f(x) - f(X_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr),
+\end{equation*}
+and we let $D_{\bj}f(x) := \bigl(D_{j_1}\circ \cdots \circ D_{j_s}f\bigr)(x)$.
+
+With this notation in hand, it is easy to represent $\dotp{L_{n,\varepsilon}^sf}{f}_{n}$ as the sum of a U-statistic and a bias term,
+\begin{align*}
+\dotp{L_{n,\varepsilon}^sf}{f}_{n} & = \frac{1}{n} \sum_{i = 1}^{n} L_{n,\varepsilon}^sf(X_i) \cdot f(X_i) \\
+& = \underbrace{\frac{1}{n^{s + 1}\varepsilon^{s(d + 2)}} \sum_{{i\bf j} \in (n)^{s + 1}}D_{\bj}f(X_i) \cdot f(X_i)}_{=:U_{n,\varepsilon}^{(s)}(f)} + \underbrace{\frac{1}{n^{s + 1}\varepsilon^{s(d + 2)}} \sum_{\substack{i\bj \in \\ [n]^{s + 1}\setminus (n)^{s + 1}}} D_{\bj}f(X_i) \cdot f(X_i)}_{=:B_{n,\varepsilon}^{(s)}(f)}
+\end{align*}
+When the indices of $i\bj$ are all distinct, it follows straightforwardly from the law of iterated expectation that
+\begin{equation*}
+\mathbb{E}[ D_{\bj}f(X_i) \cdot f(X_i)] = \varepsilon^{s(d + 2)}\mathbb{E}[L_{P,\varepsilon}^sf(X_i) \cdot f(X_i)] = \dotp{L_{P,\varepsilon}^sf}{f}_{P}, 
+\end{equation*}
+which in turn implies $\mathbb{E}[U_{n,\varepsilon}^{(s)}(f)] = (n - s - 1)!/n! \cdot \dotp{L_{P,\varepsilon}^sf}{f}_P$. 
+
+It remains to show~\eqref{eqn:graph_seminorm_bias_2}. By adding and subtracting $f(X_{\bj_1})$, we obtain by symmetry that
+\begin{equation*}
+\sum_{\substack{i\bj \in \\ [n]^{s + 1}\setminus (n)^{s + 1}}} D_{\bj}f(X_i) \cdot f(X_i) = \frac{1}{2} \cdot \sum_{\substack{i\bj \in \\ [n]^{s + 1}\setminus (n)^{s + 1}}} D_{\bj}f(X_i) \cdot \bigl(f(X_i) - f(X_{\bj_1})\bigr),
+\end{equation*}
+and consequently
+\begin{equation*}
+\Ebb\Bigl[\sum_{\substack{i\bj \in \\ [n]^{s + 1}\setminus (n)^{s + 1}}} D_{\bj}f(X_i) \cdot f(X_i)\Bigr] \leq \frac{1}{2} \cdot \sum_{\substack{i\bj \in \\ [n]^{s + 1}\setminus (n)^{s + 1}}} \Ebb\Bigl[\bigl|D_{\bj}f(X_i)\bigr| \cdot \bigl|f(X_i) - f(X_{\bj_1})\bigr|\Bigr].
+\end{equation*}
+In Lemma~\textcolor{red}{(?)}, we show that if $f \in H^1(\mc{X};M)$, then for any $i\bj \in [n]^{s + 1}$ which contains a total of $k + 1$ distinct indices, 
+\begin{equation*}
+\Ebb\Bigl[\bigl|D_{\bj}f(X_i)\bigr| \cdot \bigl|f(X_i) - f(X_{\bj_1})\bigr|\Bigr] \leq C_1 \varepsilon^{2 + kd} M^2.
+\end{equation*}
+This shows us that the expectation of $|B_{n,\varepsilon}^s(f)|$ can bounded from above by the sum over several different terms, as follows:
+\begin{align*}
+\Ebb\Bigl[|B_{n,\varepsilon}^s(f)|\Bigr] & \leq C_1\frac{\varepsilon^2}{n\varepsilon^{2s}}M^2 \sum_{\substack{i\bj \in \\ [n]^{s + 1}\setminus (n)^{s + 1}}} \frac{1}{(n\varepsilon^d)^s}  \varepsilon^{(|i\bj| - 1)d} \\
+& \leq C_1\frac{\varepsilon^2}{n\varepsilon^{2s}}M^2  \sum_{k = 1}^{s - 1} \frac{(n\varepsilon^d)^k}{(n\varepsilon^d)^s}n.
+\end{align*}
+Finally, we note that by assumption $n\varepsilon^d \geq 1$, so that in the above sum the factor of $(n\varepsilon^d)^k$ is largest when $k = s- 1$. We conclude that
+\begin{equation*}
+\Ebb\Bigl[|B_{n,\varepsilon}^s(f)|\Bigr] \leq C_1 (s - 1) \frac{\varepsilon^2}{n\varepsilon^{2s + d}}M^2,
+\end{equation*}
+which is the desired result.
 
 \subsection{Approximation error of non-local Laplacian}
 \label{subsec:approximation_error_nonlocal_laplacian}
@@ -177,11 +232,11 @@ Furthermore, for each $j = 1,\ldots,s - 1$ convolution of $d_x^jf$ with $\eta$ o
 & \leq \|d^jf\|_{\Leb^2(\mc{X_{\varepsilon}})}^2.
 \end{aligned}
 \end{equation}
-In the above, we have used that $|d_x^jf(z)| \leq |d^jf(x)|$ for all $z \in B(0,1)$, and the normalization $\int \eta(\|z\|) \,dz = 1$. 
+In the above, we have used both that $|d_x^jf(z)| \leq |d^jf(x)|$ for all $z \in B(0,1)$, and that the kernel is normalized so that $\int \eta(\|z\|) \,dz = 1$. 
 Combining this with~\eqref{pf:approximation_error_nonlocal_laplacian_4}, we conclude that
 \begin{align*}
 \int_{\mc{X}_{\varepsilon}} |G_2(x)|^2 \,dx & \leq C \Bigl(\varepsilon^{s - 2}\|p\|_{C^{s - 1}(\mc{X})}\Bigr)^2 \sum_{j = 1}^{s - 1} \int_{\mc{X}_{\varepsilon}}\biggl(\frac{1}{j!} \int_{B(0,1)} \Bigl|\bigl(d_x^{j}f\bigr)(z)\Bigr| \cdot \Bigl|\eta(\|z\|)\Bigr| \,dz\biggr)^2 \,dx \\
-& \leq C \Bigl(\varepsilon^{s - 2}\|p\|_{C^{s - 1}(\mc{X})} \sum_{j = 1}^{s - 1}\Bigr)^2 \|d^ju\|_{\Leb^2(\mc{X_{\varepsilon}})}^2,
+& \leq C \Bigl(\varepsilon^{s - 2}\|p\|_{C^{s - 1}(\mc{X})}\Bigr)^2 \sum_{j = 1}^{s - 1} \|d^ju\|_{\Leb^2(\mc{X_{\varepsilon}})}^2,
 \end{align*}
 establishing the desired estimate.
 
@@ -429,9 +484,11 @@ Then Lemma~\ref{lem:approximation_error_nonlocal_laplacian_boundary} shows that 
 \subsection{Assorted integrals}
 \label{subsec:integrals}
 
+\textcolor{red}{(TODO): The language ``...for a Borel set $U \subseteq \mc{X}$...'' should be checked.}
+
 \begin{lemma}
 	\label{lem:l2estimate_nonlocal_laplacian}
-	Assume Model~\ref{def:model_flat_euclidean}. Suppose $f \in L^2(U;M)$ for an open set $U \subseteq \mc{X}$, and let $L_{P,\varepsilon}$ be defined with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exists a constant $C$ which does not depend on $f$ such that
+	Assume Model~\ref{def:model_flat_euclidean}. Suppose $f \in L^2(U;M)$ for a Borel set $U \subseteq \mc{X}$, and let $L_{P,\varepsilon}$ be defined with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exists a constant $C$ which does not depend on $f$ or $M$ such that
 	\begin{equation}
 	\label{eqn:l2estimate_nonlocal_laplacian}
 	\|L_{P,\varepsilon}f\|_{\Leb^2(U)} \leq \frac{2 p_{\max}}{\varepsilon^2} \|f\|_{L^2(U)}
@@ -440,12 +497,22 @@ Then Lemma~\ref{lem:approximation_error_nonlocal_laplacian_boundary} shows that 
 
 \begin{lemma}
 	\label{lem:dirichlet_estimate_nonlocal_laplacian}
-	Assume Model~\ref{def:model_flat_euclidean}. Suppose $f \in L^2(U;M)$ for an open set $U \subseteq \mc{X}$, and let $L_{P,\varepsilon}$ be defined with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exists a constant $C$ which does not depend on $f$ such that
+	Assume Model~\ref{def:model_flat_euclidean}. Suppose $f \in L^2(U;M)$ for a Borel set $U \subseteq \mc{X}$, and let $L_{P,\varepsilon}$ be defined with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exists a constant $C$ which does not depend on $f$ or $M$ such that
 	\begin{equation}
 	\label{eqn:dirichlet_estimate_nonlocal_laplacian}
 	E_{P,\varepsilon}(f;U) \leq \frac{4 p_{\max}^2}{\varepsilon^2} \|f\|_{L^2(U)}^2
 	\end{equation}
 \end{lemma}
+
+\begin{lemma}
+	\label{lem:graph_seminorm_bias2}
+	Assume Model~\ref{def:model_flat_euclidean}. Suppose $f \in H^1(\mc{X};M)$, and let $D_if$ be defined with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exists a constant $C$ which does not depend on $f$ or $M$, such that for any $i \in [n]$ and $\bj \in [n]^s$,
+	\begin{equation*}
+	\Ebb\bigl[|D_{\bj}f(X_i)| \cdot |f(X_i) - f(X_{\bj_1})|\bigr] \leq C \varepsilon^{2 + dk}M^2,
+	\end{equation*}
+	where $k + 1$ is the number of distinct indices in $i\bj$. 
+\end{lemma}
+
 \paragraph{Proof (of Lemma~\ref{lem:l2estimate_nonlocal_laplacian}).}
 We fix a version of $f \in \Leb^2(U)$, so that we may speak of its pointwise values.
 
@@ -458,16 +525,52 @@ At a given point $x \in U$, we can upper bound $|L_{P,\varepsilon}f(x)|^2$ using
 The equality follows by the assumption $\int_{\Rd} \eta(\|z\|)\,dx = 1$ in~\ref{asmp:kernel_flat_euclidean}. Integrating over all $x \in U$, it follows from the triangle inequality that
 \begin{align}
 \|L_{P,\varepsilon}\|_{\Leb^2(U)}^2 & \leq \frac{2 p_{\max}^2}{\varepsilon^{4 + d}} \int_{U} \int_{U} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx \nonumber \\
-& \leq \frac{2 p_{\max}^2}{\varepsilon^{4 + d}} \int_{U} \int_{U} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx. \label{pf:approximation_error_nonlocal_laplacian_2}
+& \leq \frac{2 p_{\max}^2}{\varepsilon^{4 + d}} \int_{U} \int_{U} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx. \label{pf:l2estimate_nonlocal_laplacian_1}
 \end{align}
 Finally, using Fubini's Theorem we determine that
-\begin{equation*}
-\int_{U} \int{U} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx = 2 \int_{U} \int_{U} |f(x)|^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx \leq 2 \varepsilon^d \int_{U} |f(x)|^2 \,dx = 2\varepsilon^d \|f\|_{\Leb^2(U)}^2
-\end{equation*}
-and in combination with \eqref{pf:approximation_error_nonlocal_laplacian_2} we conclude that
+\begin{equation}
+\int_{U} \int_{U} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx = 2 \int_{U} \int_{U} |f(x)|^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx \leq 2 \varepsilon^d \int_{U} |f(x)|^2 \,dx = 2\varepsilon^d \|f\|_{\Leb^2(U)}^2,
+\label{pf:l2estimate_nonlocal_laplacian_2}
+\end{equation}
+and by combining~\eqref{pf:l2estimate_nonlocal_laplacian_1} and~\eqref{pf:l2estimate_nonlocal_laplacian_2} we conclude that
 \begin{equation*}
 \|L_{P,\varepsilon}\|_{\Leb^2(U)}^2 \leq \frac{4p_{\max}^2}{\varepsilon^4} \|f\|_{\Leb^2(U)}^2. 
 \end{equation*}
+
+\paragraph{Proof (of Lemma~\ref{lem:dirichlet_estimate_nonlocal_laplacian}).}
+We have
+\begin{equation*}
+E_{P,\varepsilon}(f) = \frac{1}{\varepsilon^{2 + d}} \int_{U} \int_{U} \bigl(f(x) - f(x')\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x) \leq \frac{2p_{\max}^2}{\varepsilon^{2 + d}} \int_{U} \int_{U} \bigl(|f(x)|^2 + |f(x')|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx,
+\end{equation*}
+and the claim follows from~\eqref{pf:l2estimate_nonlocal_laplacian_2}.
+
+\paragraph{Proof (of Lemma~\ref{lem:graph_seminorm_bias2}).}
+Let $G_{n,\varepsilon}[X_{i\bj}]$ be the subgraph induced by vertices $X_i, X_{\bj_1},\ldots,X_{\bj_s}$. We make two observations. First, in order for $|D_{\bj}f(X_i)| \cdot |f(X_i)  - f(X_j)|$ to be non-zero, it must be the case that the subgraph $G_{n,\varepsilon}[X_{i\bj}]$ is connected. Second, noting that for any indices $i$ and $j$,
+\begin{equation*}
+|D_{ij}f(x)| \leq \Bigl(|D_jf(X_i)| + |D_jf(x)|\Bigr)\|\eta\|_{\infty}, 
+\end{equation*}
+a straightforward inductive argument implies that 
+\begin{equation*}
+|D_{\bj}f(X_i)| \leq s\|\eta\|_{\infty}^s \sum_{j \in i\bj} |D_{\bj_s}f(X_j)|.
+\end{equation*}
+Combining these two observations, we reduce the task to upper bounding the product of two (first-order) differences,
+\begin{align*}
+\mathbb{E}\Bigl[ |D_{\bj}f(X_i)| |f(X_i) - f(X_{\bj_1})| \Bigr] & = \mathbb{E}\Bigl[ |D_{\bj}f(X_i)| |f(X_i) - f(X_{\bj_1})| \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\} \Bigr] \\
+& \leq s\|\eta\|_{\infty}^s \sum_{j \in i\bj} \mathbb{E}\Bigl[ |D_{\bj_s}f(X_j)| \cdot |f(X_i) - f(X_{\bj_1})| \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\}   \Bigr] \\
+& \leq s\|\eta\|_{\infty}^s \sum_{j \in i\bj} \mathbb{E}\Bigl[ |f(X_j) - f(X_{\bj_s})| \cdot |f(X_i) - f(X_{\bj_1})| \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\}   \Bigr] 
+\end{align*}
+Next, from the Cauchy-Schwarz inequality we have that for any $j \in \bj$,
+\begin{align*}
+& \mathbb{E}\Bigl[ |f(X_j) - f(X_{\bj_s})| \cdot |f(X_i) - f(X_{\bj_1})| \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\}   \Bigr] \\
+& \quad \leq \sqrt{\mathbb{E}\Bigl[ |f(X_j) - f(X_{\bj_s})|^2 \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\} \Bigr]} \cdot \sqrt{\mathbb{E}\Bigl[ |f(X_j) - f(X_{\bj_s})|^2 \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\} \Bigr]} \\
+& \quad = \mathbb{E}\Bigl[ |f(X_j) - f(X_{i})|^2 \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\} \Bigr],
+\end{align*}
+with the equality following since each $X_i$ are identically distributed. Marginalizing out the contribution of all indices in $\bj$ not equal to $i$ or $j$ gives
+\begin{align}
+\mathbb{E}\Bigl[ |f(X_j) - f(X_{i})|^2 \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\} \Bigr] & \leq \bigl((s + 1)p_{\max}\nu_d\varepsilon^d\bigr)^{|i\bj\setminus\{j \cup i\}|} \cdot \mathbb{E}\Bigl[ |f(X_j) - f(X_{i})|^2 \1\{\|X_i - X_j\| \leq \varepsilon\}\Bigr] \nonumber \\
+& \leq \bigl((s + 1)p_{\max}\nu_d\varepsilon^d\bigr)^{|i\bj\setminus\{j \cup i\}|} \cdot p_{\max}^2 \nu_d \varepsilon^{2 + d} M^2 \label{pf:graph_seminorm_bias2_1}
+\end{align}
+with the second inequality following from the proof of Lemma~1 in \textcolor{blue}{(Green 2021).} Finally, we notice that $|i\bj\setminus \{i \cup j\}| + 1 = k$, so that~\eqref{pf:graph_seminorm_bias2_1} gives the desired result.
 
 \section{Graph quadratic form, manifold domain}
 \label{sec:graph_quadratic_form_manifold}
