@@ -457,7 +457,7 @@ where $\mathrm{Id}(x) = x$ is the identity mapping.
 	and
 	\begin{equation}
 	\label{eqn:optimal_transport_2}
-	\|\wt{p}_n - p\|_{\infty} \leq A_0\bigl(\wt{\delta} + \theta\bigr)
+	\|\wt{p}_n - p\|_{\infty} \leq A_0\bigl(\wt{\delta} + \theta\bigr).
 	\end{equation}
 \end{proposition}
 For the rest of this section, we let $\wt{P}_n$ be a probability measure with density $\wt{p}_n$, that satisfies the conclusions of Proposition~\ref{prop:optimal_transport}. Additionally we denote by $\wt{T}_n$ an \emph{optimal transport map} between $\wt{P}_n$ and $P_n$, meaning a transportation map which achieves the infimum in \eqref{eqn:optimal_transport}. Finally, we write $U_1,\ldots,U_n$ for the preimages of $X_1,\ldots,X_n$ under $\wt{T}_n$, meaning $U_i = \wt{T}_n^{-1}(X_i)$. 
@@ -1041,7 +1041,7 @@ we have
 \begin{equation*}
 p_{\max} \frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq C_7^2 M^2p_{\max} \cdot \frac{\norm{f}_{\Leb^2(\Xset)}^2}{n} \leq \frac{C_7p_{\max}}{C_6^2 b^2} \norm{f}_{\Leb^2(\Xset)}^4 \leq \frac{\Ebb\bigl[\norm{f}_n^2\bigr]}{b^2},
 \end{equation*}
-where the last inequality follows by taking $C_6 \geq C_7 \sqrt{p_{\max}/p_{\min}}$.
+where the last inequality follows by taking $C_6 \geq C_7 \sqrt{p_{\max}/p_{\min}}$. \sbcomment{I'm confused about the last inequality. Are you missing squares on the last term, i.e. $(\Ebb\bigl[\norm{f}_n^2\bigr])^2$ ? I think the problem repeats below but I could be just missing something.}
 
 \textit{Case 2: $d > 2$.}
 Let $\theta = 2 - d/2$ and $q = 2d/(d - 2)$. Noting that $4 = 2\theta + (1 - \theta)q$, Lyapunov's inequality implies
@@ -1187,7 +1187,7 @@ and choosing $\wt{\rho} = M^{-2/3}n^{-4/(3d)}$ yields
 \|\wh{f} - f_0\|_n^2 \leq \biggl(\frac{C_2}{\delta} + \frac{10}{c_3^2} + \frac{10C_0^{4/d}}{c_3^2}\biggr)M^{4/3}\biggl(\frac{\log n}{n^{1/3}}\biggr)^{4/d} + \frac{10}{c_3^{d/2}}M^{d/3}n^{-1/3} + \frac{10}{n}.
 \end{equation*}
 
-\paragraph{Bounds on $\Leb^2(\Xset)$ error under Lipschitz assumption.}
+\paragraph{Bounds on $\Leb^2(\Xset)$ error under Lipschitz assumption.} \sbcomment{This is a nice result but where do you reference it or use it?}
 Let $V_1,\ldots,V_n$ denote the Voronoi tesselation of $\Xset$ with respect to $X_1,\ldots,X_n$. Extend $\wh{f}$ over $\Xset$ by taking it piecewise constant over the Voronoi cells, i.e.
 \begin{equation*}
 \wh{f}(x) := \sum_{i = 1}^{n} \wh{f}_i \cdot \1\{x \in V_i\}.
