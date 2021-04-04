@@ -173,7 +173,7 @@ Y_i = f_0(X_i) + \varepsilon_i;
 \end{equation*}
 here each $X_i$ belongs to a domain $\Xset$, the regression function $f_0: \Xset \to \Reals$, and $\varepsilon_i \sim N(0,1)$ are independent Gaussian noise. Let $G = (\{1,\ldots,n\},W)$ be a geometric graph defined over the vertices $\{1,\ldots,n\}$, which we associate with the design points $X_1,\ldots,X_n$, where $W_{ij} = 0$ unless $\|X_i - X_j\| \leq r$.  Let $\Lap$ be the (combinatorial) Laplacian matrix associated with $G$. The Laplacian smoothing estimator $\wh{f}$ is defined as
 \begin{equation*}
-\wh{f} := \argmin_{f \in \Reals^n} \Bigl\{\sum_{i = 1}^{n} (Y_i - f_0(X_i))^2 + \rho f^T \Lap f\Bigr\}.
+\wh{f} := \argmin_{f \in \Reals^n} \Bigl\{\sum_{i = 1}^{n} (Y_i - f(X_i))^2 + \rho f^T \Lap f\Bigr\}.
 \end{equation*}
 The accuracy of $\wh{f}$ is measured by the in-sample mean squared error
 \begin{equation*}
