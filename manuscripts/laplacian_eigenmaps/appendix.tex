@@ -2,12 +2,50 @@
 
 \section{Graph-dependent error bounds}
 \label{sec:fixed_graph_error_bounds}
-In this section, we adopt the fixed design perspective; or equivalently, condition on $X_i = x_i$ for $i = 1,\ldots,n$. Let $G = \bigl([n],W\bigr)$ be a fixed graph on $\{1,\ldots,n\}$ with Laplacian matrix $L = \sum_{k = 1}^{n}\lambda_k v_k v_k^{\top}$. The randomness thus all comes from the responses 
+In this section, we adopt the fixed design perspective; or equivalently, condition on $X_i = x_i$ for $i = 1,\ldots,n$. Let $G = \bigl([n],W\bigr)$ be a fixed graph on $\{1,\ldots,n\}$ with Laplacian matrix $L = \frac{1}{n}\sum_{k = 1}^{n}\lambda_k v_k v_k^{\top}$; the eigenvectors have unit empirical norm, $\|v_k\|_n^2 = 1$. The randomness thus all comes from the responses 
 \begin{equation}
 \label{eqn:fixed_graph_regression_model}
 Y_i = f_{0}(x_i) + \varepsilon_i
 \end{equation}
 where the noise variables $\varepsilon_i$ are independent $N(0,1)$. In the rest of this section, we will mildly abuse notation and write $f_0 = (f_0(x_1),\ldots,f_0(x_n)) \in \Reals^n$. We will also write ${\bf Y} = (Y_1,\ldots,Y_n)$.
+
+\subsection{Upper bound on Estimation Error of Laplacian Eigenmaps}
+
+\begin{lemma}
+	\label{lem:fixed_graph_estimation}
+	For any $s \in \mathbb{N} \setminus \{0\}$, the Laplacian eigenmaps estimator $\wh{f}$ of~\eqref{eqn:laplacian_eigenmaps_estimator} satisfies
+	\begin{equation*}
+	\|\wh{f} - f_0\|_n^2 \leq \frac{\dotp{L^sf_0}{f_0}_n}{\lambda_{K + 1}^s} + \frac{5K}{n},
+	\end{equation*}
+	with probability at least $1 - \exp(-K)$. 
+\end{lemma}
+\begin{proof}
+	By the triangle inequality,
+	\begin{equation}
+	\label{pf:fixed_graph_estimation_1}
+	\|\wh{f} - f_0\|_n^2 \leq 2\Bigl(\|\mathbb{E}\wh{f} - f_0\|_n^2 + \|\wh{f} - \mathbb{E}\wh{f}\|_n^2\Bigr).
+	\end{equation}
+	The first term in~\eqref{pf:fixed_graph_estimation_1} (bias) is non-random, since the design is fixed. The expectation $\mathbb{E}\wh{f} = \sum_{k = 1}^{K} \dotp{v_k}{f_0}_n v_k$, so that
+	\begin{equation*}
+	\|\mathbb{E}\wh{f} - f_0\|_n^2 = \Bigl\|\sum_{k = K + 1}^{n} \dotp{v_k}{f_0}_n v_k\Bigr\|_n^2 = \sum_{k = K + 1}^n \dotp{v_k}{f_0}_n^2.
+	\end{equation*}
+	In the above, the last equality relies on the fact that $v_k$ are orthonormal. Using the fact that the eigenvalues are in increasing order, we obtain that
+	\begin{equation*}
+	\sum_{k = K + 1}^n \dotp{v_k}{f_0}_n^2 \leq \frac{1}{\lambda_K^s} \sum_{k = K + 1}^n \lambda_k^s \dotp{v_k}{f_0}_n^2 \leq \frac{\dotp{L^sf_0}{f_0}_n}{\lambda_{K + 1}^s}.
+	\end{equation*}
+	
+	The second term in~\eqref{pf:fixed_graph_estimation_1} (variance) is random. Again using the orthonormality of the eigenvectors $v_k$, we have
+	\begin{equation*}
+	\|\wh{f} - \mathbb{E}\wh{f}\|_n^2 = \sum_{k = 1}^{K} \dotp{v_k}{\varepsilon}_n^2.
+	\end{equation*}
+	Thus $\|\wh{f} - \mathbb{E}\wh{f}\|_n^2$ is equal to $1/n$ times a $\chi^2$ distribution with $K$ degrees of freedom. Consequently, it follows from a result of \citep{laurent00} that
+	\begin{equation*}
+	\Pbb\Bigl(\|\wh{f} - \mathbb{E}\wh{f}\|_n^2 \geq \frac{K}{n} + 2\frac{\sqrt{K}}{n}\sqrt{t} + \frac{2t}{n}\Bigr) \leq \exp(-t).
+	\end{equation*}
+	Setting $t = K$ completes the proof of the Lemma.
+\end{proof}
+
+\subsection{Upper bound on Testing Error of Laplacian Eigenmaps}
 
 Let $\wh{T} = \sum_{k = 1}^{K} \dotp{{\bf Y}}{v_k}_n^2$, and let $\varphi = \1\{\wh{T} \geq t_a\}$. In the following Lemma, we upper bound the Type I and Type II error of the test $\varphi$.
 
@@ -17,9 +55,9 @@ Let $\wh{T} = \sum_{k = 1}^{K} \dotp{{\bf Y}}{v_k}_n^2$, and let $\varphi = \1\{
 		\item If $f_0 = 0$, then $\Ebb_0[\varphi] \leq a$.
 		\item Suppose $f_0 \neq 0$ satisfies
 		\begin{equation*}
-		\sum_{k = 1}^{K} \dotp{f_0}{v_k}_n^2 \geq 16\frac{\sqrt{2K}}{n}\biggl[\sqrt{\frac{1}{a}} + \frac{1}{b}\biggr].
+		\|f_0\|_n^2 \geq \frac{\dotp{L^sf_0}{f_0}_n}{\lambda_{K + 1}^s} + 16\frac{\sqrt{2K}}{n}\biggl[\sqrt{\frac{1}{a}} + \frac{1}{b}\biggr],
 		\end{equation*}
-		Then $\Ebb_{f_0}[1 - \phi] \leq b$.
+		for some $s \in \mathbb{N}\setminus \{0\}$. Then $\Ebb_{f_0}[1 - \phi] \leq b$.
 	\end{itemize}
 \end{lemma}
 
