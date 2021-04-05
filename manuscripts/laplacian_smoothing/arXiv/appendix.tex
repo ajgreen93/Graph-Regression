@@ -1015,7 +1015,7 @@ then \eqref{eqn:empirical_norm_sobolev} follows from the Paley-Zygmund inequalit
 \begin{equation*}
 \mathbb{E}\bigl[\norm{f}_n^4\bigr] = \frac{(n-1)}{n}\left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + \frac{\mathbb{E}\Bigl[\bigl(f(X_1)\bigr)^4\Bigr]}{n} \leq \left(\mathbb{E}\Bigl[\norm{f}_n^2\Bigr]\right)^2 + p_{\max}\frac{\norm{f}_{\Leb^4(\Xset)}^4}{n}.
 \end{equation*}
-We will use the Sobolev inequalities as a tool to show that $\|f\|_{\Leb^4(\Xset)}/n \leq \bigl(\mathbb{E}[\|f\|_n^2]\bigr)^2/(b^2p_{\max})$, whence the claim of the Lemma is shown. The nature of the inequalities we use depend on the value of $d$. In particular, we will use the following relationships between norms: for any $f \in H^1(\mc{X};M)$, 
+We will use the Sobolev inequalities as a tool to show that $\|f\|_{\Leb^4(\Xset)}^4/n \leq \bigl(\mathbb{E}[\|f\|_n^2]\bigr)^2/(b^2p_{\max})$, whence the claim of the Lemma is shown. The nature of the inequalities we use depend on the value of $d$. In particular, we will use the following relationships between norms: for any $f \in H^1(\mc{X};M)$, 
 \begin{equation*}
 \begin{rcases*}
 \sup_{x \in \mc{X}}|f(x)|,& \textrm{$d = 1$}\\
@@ -1039,9 +1039,11 @@ Since by assumption
 \end{equation*}
 we have
 \begin{equation*}
-p_{\max} \frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq C_7^2 M^2p_{\max} \cdot \frac{\norm{f}_{\Leb^2(\Xset)}^2}{n} \leq \frac{C_7p_{\max}}{C_6^2 b^2} \norm{f}_{\Leb^2(\Xset)}^4 \leq \frac{\Ebb\bigl[\norm{f}_n^2\bigr]}{b^2},
+p_{\max} \frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq C_7^2 M^2p_{\max} \cdot \frac{\norm{f}_{\Leb^2(\Xset)}^2}{n} \leq \frac{C_7p_{\max}}{C_6^2 b^2} \norm{f}_{\Leb^2(\Xset)}^4 \leq \frac{\bigl(\Ebb\bigl[\norm{f}_n^2\bigr]\bigr)^2}{b^2},
 \end{equation*}
-where the last inequality follows by taking $C_6 \geq C_7 \sqrt{p_{\max}/p_{\min}}$. \sbcomment{I'm confused about the last inequality. Are you missing squares on the last term, i.e. $(\Ebb\bigl[\norm{f}_n^2\bigr])^2$ ? I think the problem repeats below but I could be just missing something.}
+where the last inequality follows by taking $C_6 \geq C_7 \sqrt{p_{\max}/p_{\min}}$. 
+%\sbcomment{I'm confused about the last inequality. Are you missing squares on the last term, i.e. $(\Ebb\bigl[\norm{f}_n^2\bigr])^2$ ? I think the problem repeats below but I could be just missing something.}
+% AG: Siva was correct, I was missing a square on the last term, here and below. Resolved, here and below.
 
 \textit{Case 2: $d > 2$.}
 Let $\theta = 2 - d/2$ and $q = 2d/(d - 2)$. Noting that $4 = 2\theta + (1 - \theta)q$, Lyapunov's inequality implies
@@ -1050,7 +1052,7 @@ Let $\theta = 2 - d/2$ and $q = 2d/(d - 2)$. Noting that $4 = 2\theta + (1 - \th
 \end{equation*}
 By assumption, $\norm{f}_{\Leb^2(\Xset)} \geq C_6 b \norm{f}_{H^1(\Xset)} n^{-1/d}$, and therefore
 \begin{equation*}
-p_{\max} \frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq \norm{f}_{\Leb^2(\Xset)}^4p_{\max} \cdot \left(\frac{C_7\norm{f}_{H^1(\Xset)}}{n^{1/d}\norm{f}_{\Leb^2(\Xset)}}\right)^{d} \leq \frac{C_7^dp_{\max}\norm{f}_{\Leb^2(\Xset)}^4}{C_6^db^{d}} \leq \frac{\Ebb\bigl[\norm{f}_n^2\bigr]}{b^2}.
+p_{\max} \frac{\norm{f}_{\Leb^4(\Xset)}^4}{n} \leq \norm{f}_{\Leb^2(\Xset)}^4p_{\max} \cdot \left(\frac{C_7\norm{f}_{H^1(\Xset)}}{n^{1/d}\norm{f}_{\Leb^2(\Xset)}}\right)^{d} \leq \frac{C_7^dp_{\max}\norm{f}_{\Leb^2(\Xset)}^4}{C_6^db^{d}} \leq \frac{\bigl(\Ebb\bigl[\norm{f}_n^2\bigr]\bigr)^2}{b^2}.
 \end{equation*}
 where the last inequality follows by taking $C_6 \geq C_7(p_{\max}/p_{\min})^{1/d}$, and keeping in mind that $d > 2$ and $b \geq 1$. 
 
@@ -1060,11 +1062,11 @@ Fix $t \in (1/2,1)$, and suppose that
 \label{pf:empirical_norm_sobolev_1}
 \|f\|_{\Leb^2(\Xset)} \geq \frac{C_6 M}{\delta} \cdot n^{-t/2}.
 \end{equation} 
-Putting $q = 2/(1 - t)$, we have that $\|f\|_{\Leb^{q}(\mc{X})} \leq C_7 \cdot M$, and it follows from derivations similar to those in Case 2 that $\|f\|_{\Leb^4(\Xset)}/n \leq \bigl(\mathbb{E}[\|f\|_n^2]\bigr)^2/(b^2p_{\max})$ when $C_6 \geq C_7 \sqrt{p_{\max}/p_{\min}}$.
+Putting $q = 2/(1 - t)$, we have that $\|f\|_{\Leb^{q}(\mc{X})} \leq C_7 \cdot M$, and it follows from derivations similar to those in Case 2 that $\|f\|_{\Leb^4(\Xset)}^4/n \leq \bigl(\mathbb{E}[\|f\|_n^2]\bigr)^2/(b^2p_{\max})$ when $C_6 \geq C_7 \sqrt{p_{\max}/p_{\min}}$.
 
 Now, suppose $f \in \Leb^4(\Xset)$ satisfies \eqref{pf:empirical_norm_sobolev_1} only when $t = 1$. For each $k = 1,2,\ldots$ let $f_k := n^{1/(2k)}f$, so that each $f_k$ satisfies \eqref{pf:empirical_norm_sobolev_1} with respect to $t = 1 - 1/k$. Clearly $\|f_k - f\|_{\Leb^4(\Xset)} \to 0$ as $k \to \infty$, and therefore
 \begin{equation*}
-\frac{1}{n}\|f\|_{\Leb^4(\Xset)} = \frac{1}{n}\lim_{k \to \infty} \|f_k\|_{\Leb^4(\Xset)} \leq \frac{1}{b^2p_{\max}} \lim_{k \to \infty} \bigl(\mathbb{E}[\|f_k\|_n^2]\bigr)^2 =  \frac{1}{b^2p_{\max}}\bigl(\mathbb{E}[\|f\|_n^2]\bigr)^2.
+\frac{1}{n}\|f\|_{\Leb^4(\Xset)}^4 = \frac{1}{n}\lim_{k \to \infty} \|f_k\|_{\Leb^4(\Xset)}^4 \leq \frac{1}{b^2p_{\max}} \lim_{k \to \infty} \bigl(\mathbb{E}[\|f_k\|_n^2]\bigr)^2 =  \frac{1}{b^2p_{\max}}\bigl(\mathbb{E}[\|f\|_n^2]\bigr)^2.
 \end{equation*}
 This establishes the claim when $d = 2$, and completes the proof of Lemma~\ref{lem:empirical_norm_sobolev}.
 
@@ -1187,7 +1189,9 @@ and choosing $\wt{\rho} = M^{-2/3}n^{-4/(3d)}$ yields
 \|\wh{f} - f_0\|_n^2 \leq \biggl(\frac{C_2}{\delta} + \frac{10}{c_3^2} + \frac{10C_0^{4/d}}{c_3^2}\biggr)M^{4/3}\biggl(\frac{\log n}{n^{1/3}}\biggr)^{4/d} + \frac{10}{c_3^{d/2}}M^{d/3}n^{-1/3} + \frac{10}{n}.
 \end{equation*}
 
-\paragraph{Bounds on $\Leb^2(\Xset)$ error under Lipschitz assumption.} \sbcomment{This is a nice result but where do you reference it or use it?}
+\paragraph{Bounds on $\Leb^2(\Xset)$ error under Lipschitz assumption.} 
+% \sbcomment{This is a nice result but where do you reference it or use it?}
+% AG: Resolved.
 Let $V_1,\ldots,V_n$ denote the Voronoi tesselation of $\Xset$ with respect to $X_1,\ldots,X_n$. Extend $\wh{f}$ over $\Xset$ by taking it piecewise constant over the Voronoi cells, i.e.
 \begin{equation*}
 \wh{f}(x) := \sum_{i = 1}^{n} \wh{f}_i \cdot \1\{x \in V_i\}.
@@ -1202,7 +1206,7 @@ In Proposition~\ref{prop:out_of_sample_error}, we establish that the out-of-samp
 	\|\wh{f} - f_0\|_{\Leb^2(\Xset)}^2 \leq C \log(1/\delta) \biggl(\log(n)\cdot \|\wh{f} - f_0\|_n^2 + M^2\Bigl(\frac{\log n}{n}\Bigr)^{2/d}\biggr).
 	\end{equation*}
 \end{proposition}
-Note that $n^{-2/d} \ll n^{-2/(2 +d)}$. Therefore Proposition~\ref{prop:out_of_sample_error} together with Theorem~\ref{thm:laplacian_smoothing_estimation1} implies that with high probability, $\wh{f}$ achieves the nearly-optimal (up to a factor of $\log n$) estimation rates out-of-sample error---that is, $\|\wh{f} - f_0\|_{\Leb^2(\Xset)}^2 \leq C \log(n) M^{2d/(2 + d)}n^{-2/(2+d)}$---as long as $M \leq Cn^{1/d}$.
+Note that $n^{-2/d} \ll n^{-2/(2 +d)}$. Therefore Proposition~\ref{prop:out_of_sample_error} together with Theorem~\ref{thm:laplacian_smoothing_estimation1} implies that with high probability, $\wh{f}$ achieves the nearly-optimal (up to a factor of $\log n$) estimation rates out-of-sample error---that is, $\|\wh{f} - f_0\|_{\Leb^2(\Xset)}^2 \leq C \log(n) M^{2d/(2 + d)}n^{-2/(2+d)}$---as long as $M \leq Cn^{1/d}$. This justifies one of our remarks after Theorem~\ref{thm:laplacian_smoothing_estimation1}. 
 
 \paragraph{Proof of Proposition~\ref{prop:out_of_sample_error}.}
 Suppose $x \in V_i$, so that we can upper bound the pointwise squared error $|\wh{f}(x) - f(x)|^2$ using the triangle inequality:
