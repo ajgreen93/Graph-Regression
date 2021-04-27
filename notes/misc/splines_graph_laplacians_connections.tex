@@ -1,0 +1,353 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue
+}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{bm}
+\usepackage{multirow}
+\usepackage[font={small,it}]{caption}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{References}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+\DeclareMathAccent{\wc}{0}{mathx}{"71}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\RD}{\Reals^D}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+\newcommand{\bj}{{\bf j}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+\newcommand{\Lap}{{\bf L}}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{FS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Note on: Connections between Smoothing Splines and Laplacian smoothing}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Recall the definition of an \emph{order-$m$ smoothing spline}. For observations $(x_1,y_1),\ldots,(x_n,y_n)$, design points $x_i$ each belonging to a domain $\Omega \subset \Rd$, 
+\begin{equation}
+\label{eqn:smoothing_spline}
+\wh{g} = \argmin_{g \in G} \frac{1}{n} \sum_{i = 1}^{n} (y_i - g(x_i))^2 + \lambda |g|_{m}^2;
+\end{equation}
+here we use $|g|_{m}$ to denote the $H^m(\Omega)$, and $G$ to be an appropriately defined function class. The standard choice is $G = H^m(\Omega)$, in which case we must also choose $m > d/2$ to make~\eqref{eqn:smoothing_spline} be well-defined. 
+
+The goal of this note is to review properties of order-$m$ smoothing splines, and see if/when graph Laplacian smoothing possesses analogous properties. 
+
+\section{Well-posedness of smoothing splines}
+\textcolor{red}{(TODO)}
+
+\section{Optimality of smoothing splines}
+Suppose $x_1,\ldots,x_n$ are sampled independently from a \textcolor{red}{sufficiently regular} density $p$ on $\Omega$, and that
+\begin{equation}
+\label{model:regression}
+y_i = f_0(x_i) + \varepsilon_i,
+\end{equation}
+where $\varepsilon_i \sim N(0,1)$ are i.i.d. Gaussian noise that are also independent of $x_i$. Assume that $f_0 \in H^s(\Omega)$. What can we say about mean squared error $\|\wh{g} - g\|_P^2$?
+
+\textcolor{red}{(TODO)}:
+\begin{itemize}
+	\item Smoothing splines are optimal when $2m > s$. Is there a lower bound on $s$ relative to $m$ or $d$?
+	\item When $m < s < 2s$, the optimality requires some boundary conditions on $f_0$. Detail these boundary conditions and explain intuition behind why they are required. Compare with the boundary conditions required for orthogonal series/non-parametric least squares estimators to be optimal.
+ 	\item Detail various techniques for establishing optimality. Refer to \textcolor{red}{(van der Geer, Nussbaum, Cox)}. Review pros and cons of each technique.
+\end{itemize}
+
+\section{Low-smoothness regime}
+We now introduce a \emph{restricted smoothing spline}, in order to compute estimates for $m < d/2$. Suppose we take $\Phi_N \subseteq G$ to be a finite set of $L^2(P)$-orthogonal low-frequency functions; formally $\Phi_N = \{\phi_1,\ldots,\phi_N\}$, where each $\phi_k$ satisfies the Laplacian eigenfunction equation,
+\begin{equation}
+\label{eqn:laplacian_eigen}
+\Delta_P \phi_k = \lambda_k \phi_k,\quad \frac{\partial}{\partial {\bf n}}\phi_k = 0.
+\end{equation}
+Let $F_N = \mathrm{span}\{\Phi_N\}$, and consider
+\begin{equation}
+\label{eqn:restricted_smoothing_spline}
+\wh{g}_{\Phi} = \argmin_{g \in F_N} \frac{1}{n} \sum_{i = 1}^{n} (y_i - g(x_i))^2 + \lambda |g|_{m}^2.
+\end{equation}
+The restricted smoothing spline~\eqref{eqn:smoothing_spline} is well-posed, and its solution $\wh{g}_{\Phi}$ possesses a relatively simple analytic solution. It may be totally impossible to exactly compute because it is difficult to exactly solve~\eqref{eqn:laplacian_eigen}, but that is besides the point. Now we analyze its statistical properties. To do so, we reduce the analysis to that of a related estimator in the Normal means/Gaussian sequence model.
+
+\textcolor{red}{(TODO)}
+\begin{itemize}
+	\item Refer to the results of \textcolor{blue}{(Birge and Massart)} for empirical risk minimization (ERM) over normed balls in H\"{o}lder spaces. Resolve why Birge and Massart find a phase transition at $m = 1, d = 2$, which is not at the $4m = d$ boundary; I suspect it is because Birge and Massart find the point at which the empirical process diverges.
+\end{itemize}
+
+\subsection{Gaussian sequence model}
+In the Gaussian sequence model, for each $i \in \mathbb{N}$ one observes
+\begin{equation}
+\label{model:gaussian_sequence_model}
+Y_i = \theta_i^{\ast} + \frac{1}{\sqrt{n}}\varepsilon_i,\quad \varepsilon_i \sim N(0,1).
+\end{equation}
+Supposes the sequence $\theta^{\ast}$ possesses some ``smoothness''. In particular, suppose $\theta^{\ast}$ belongs to the \emph{order-$s$ Sobolev ellipsoid} of radius $M$, $\Theta^s = \{\theta: |\theta|_s \leq M\}$, where for $s \in \mathbb{N}$ the Sobolev seminorm $|\theta|_s$ is defined by
+\begin{equation*}
+|\theta|_s^2 := \sum_{j = 1}^{\infty} \theta_j^2 j^{2s/d}.
+\end{equation*}
+Consider the \emph{sequence smoothing spline} estimator, defined for $N \in \mathbb{N}$ as
+\begin{equation}
+\label{eqn:sequence_smoothing_spline}
+\wh{\theta}_{N} := \argmin_{\theta \in \ell^2(N)} |Y - \theta|_{0} + \lambda |\theta|_m^2, \quad \wh{\theta} := \lim_{N \to \infty} \wh{\theta}_{N}.
+\end{equation}
+Note that the sequence space estimator $\wh{\theta}$ is perfectly well-posed even though its analogous function space estimator is not. In fact, the sequence space estimator has the explicit solution
+\begin{equation}
+\wh{\theta}_{j} = Y_j[1 + \lambda j^{2m/d}]^{-1},
+\end{equation}
+showing that it is a shrinkage estimator.
+
+\textcolor{red}{(TODO)}
+\begin{itemize}
+	\item Relate the sampling model~\eqref{model:gaussian_sequence_model} to~\eqref{model:regression}, and likewise relate the estimator~\eqref{eqn:sequence_smoothing_spline} to~\eqref{eqn:restricted_smoothing_spline}. Refer to \textcolor{blue}{(Tsybakov, Johnstone)}.
+	\item Show that in the Gaussian sequence model, if $m > \max\{d/4,s/2\}$ then~\eqref{eqn:sequence_smoothing_spline} achieves optimal $\ell_2$ loss when $N = \infty$.
+\end{itemize}
+\subsection{``Failure'' of restricted smoothing splines in the very-low-smoothness regime}
+On the other hand, whenever $m \leq d/4$ meaningful restrictions on the size of $N$ kick in.
+\begin{lemma}
+	\label{lem:failure_very_low_smoothness}
+	Suppose we observe data $Y_1,Y_2,\ldots$ according to Model~\eqref{model:gaussian_sequence_model}. If we compute $\wh{\theta}$ and any $m \leq d/4$, then
+	\begin{equation}
+	\label{eqn:failure_very_low_smoothness}
+	\Ebb[|\wh{\theta} - \theta^{\ast}|_{0}] = \infty.
+	\end{equation}
+\end{lemma}
+The requirement $m \leq d/4$ is at first glance somewhat mysterious. It is nicely demystified by the following Lemma, which describes the expected ``smoothness'' properties of the estimator $\wh{\theta}$, in terms of the various Sobolev seminorms $|\cdot|_r$.
+\begin{lemma}
+	\label{lem:smoothness_of_sequence_smoothing_splines}
+	Suppose we observe data $Y_1,Y_2,\ldots$ according to Model~\eqref{model:gaussian_sequence_model}, and we compute $\theta$ as in~\eqref{eqn:sequence_smoothing_spline}.
+	\begin{itemize}
+		\item If $4m > 2r + d$, then
+		\begin{equation}
+		\label{eqn:smoothness_of_sequence_smoothing_splines_1}
+		\Ebb[|\wh{\theta}|_{r}^2] \leq |\theta^{\star}|_r^2 + O(\lambda^{-(2s + d)/(2m)}/n).
+		\end{equation}
+		\item If $4m \leq 2r + d$, then 
+		\begin{equation}
+		\label{eqn:smoothness_of_sequence_smoothing_splines_2}
+		\Ebb[|\wh{\theta}|_{r}^2] = \infty.
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+\begin{proof}
+	Recall that $\wh{\theta}_i = Y_i \cdot [1 + \lambda i^{2m/d}]^{-1}$, and note that
+	\begin{equation*}
+	\Ebb[Y_i^2] = (\theta_i^{\ast})^2 + \frac{1}{n}.
+	\end{equation*} 
+	Therefore
+	\begin{equation}
+	\label{pf:smoothness_of_sequence_smoothing_splines_-1}
+	\Ebb[|\wh{\theta}|_{r}^2] = \Ebb\biggl[\sum_{i = 1}^{\infty} \biggl(\frac{Y_i}{1 + \lambda i^{2m/d}}\biggr)^2 i^{2r/d}\biggr] = \sum_{i = 1}^{\infty} \frac{(\theta_i^{\ast})^2 + 1/n}{(1 + \lambda i^{2m/d})^2} \cdot i^{2r/d}
+	\end{equation}
+	Clearly,
+	\begin{equation}
+	\label{pf:smoothness_of_sequence_smoothing_splines_0}
+	\sum_{i = 1}^{\infty} \frac{(\theta_i^{\ast})^2}{(1 + \lambda i^{2m/d})^2}  \cdot i^{2r/d} \leq \sum_{i = 1}^{\infty} (\theta_i^{\ast})^2 \cdot i^{2r/d} = |\theta^{\ast}|_{r}^2.
+	\end{equation}
+	Moreover, when $4m > 2r + d$, then
+	\begin{equation}
+	\label{pf:smoothness_of_sequence_smoothing_splines_1}
+	\frac{1}{n}\sum_{i = 1}^{\infty} \frac{i^{2r/d}}{(1 + \lambda i^{2m/d})^2} \leq \frac{1}{n} \lambda^{-(2r + d)/(2m)}.
+	\end{equation}
+	On the other hand, when $4m \leq 2r + d$, then setting $i^{\ast}$ such that $(i^{\ast})^{2m/d}\lambda = 1$, we have
+	\begin{equation}
+	\label{pf:smoothness_of_sequence_smoothing_splines_2}
+	\frac{1}{n}\sum_{i = 1}^{\infty} \frac{i^{2r/d}}{(1 + \lambda i^{2m/d})^2} \geq 	\frac{1}{2\lambda^2n}\sum_{i = i^{\ast}}^{\infty} i^{(2r - 4m)/d} = \infty.
+	\end{equation}
+	Plugging~\eqref{pf:smoothness_of_sequence_smoothing_splines_0}-\eqref{pf:smoothness_of_sequence_smoothing_splines_2} back into~\eqref{pf:smoothness_of_sequence_smoothing_splines_-1} establishes the claim.
+\end{proof}
+Lemma~\ref{lem:smoothness_of_sequence_smoothing_splines} has a particularly interesting interpretation when $r = 1$ or $r = 0$. 
+\begin{itemize}
+	\item When $r = 1$---corresponding to the first-order Sobolev norm--- Lemma~\ref{lem:smoothness_of_sequence_smoothing_splines} tells us that the sequence smoothing spline $\wh{\theta}$ has infinite $|\cdot|_1$ norm when $d \geq 2$. Remarkably, when $d = 2$ or $d = 3$, $\wh{\theta}$ continues to be optimal despite being an incredibly ``wiggly'' estimator of a ``smooth'' sequence. Note that this forecloses upon the possibility of analyzing $\wh{\theta}$ using uniform convergence over $\Theta^1(M)$, since $\wh{\theta}$ does not belong to this class for any finite $M$.
+	\item When $r = 0$---corresponding to the zeroth-order Sobolev norm, or in other words the $\ell^2$-norm---Lemma~\ref{lem:smoothness_of_sequence_smoothing_splines} tells us that the sequence smoothing spline $\wh{\theta}$ has infinite $\Theta^0$ norm when $d \geq 4$. Clearly, since the regression function $f_0$ has finite $\Theta^0$ norm, and the estimator $\wh{f}$ has infinite $\Theta^0$ norm, it follows from the triangle inequality that $|\wh{f} - f|_0 = \infty$. 
+\end{itemize}
+
+\textcolor{red}{(TODO)}
+\begin{itemize}
+	\item Do an analogous calculation for the $\Theta^{1,1}$ case, with the estimator
+	\begin{equation*}
+	\wt{\theta}_{N} = \argmin_{\theta \in \ell^2(N)} |Y - \theta|_0^2 + \lambda |\theta|_{1,1}^2.
+	\end{equation*}
+	 Confirm your expectation: that when error measured in $|\cdot|_0$ norm and $d > 1$, this estimator is optimal when $N = n$, but not when $N = \infty$. This would give some evidence that the graph is saving the TV denoiser when $d > 1$.
+	 \item Figure out other smoothness properties of $\wh{\theta}_N$, for instance ``H\"{o}lder'' smoothness.
+	 \item Ponder what implication the lack-of-smoothness of sequence smoothing splines has for other problems (besides estimation with error measured in $|\cdot|_0$ norm).
+\end{itemize}
+
+
+
+
+
+
+
+\section{Relationship to Graph Laplacian methods}
+
+\begin{itemize}
+	\item Review why your analysis of Laplacian smoothing breaks down when $d > 4$, making reference to the previous section. If possible, prove a lower bound to this effect. Compare with the analogous situation for restricted smoothing splines, pointing out that the discretization imposed by the graph improves the situation slightly.
+	\item Study whether order-$m$ Laplacian smoothing estimate is optimal over $H^1(\mc{X})$, as long as $m > d/4$. 
+	\item Explain why your analysis of Laplacian smoothing fails at estimation over $H^s(\mc{X})$ for $s > 1$. If possible, prove a lower bound.
+\end{itemize}
+
+
+
+\end{document}
