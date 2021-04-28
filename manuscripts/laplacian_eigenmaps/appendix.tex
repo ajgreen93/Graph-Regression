@@ -2,23 +2,23 @@
 
 \section{Graph-dependent error bounds}
 \label{sec:fixed_graph_error_bounds}
-In this section, we adopt the fixed design perspective; or equivalently, condition on $X_i = x_i$ for $i = 1,\ldots,n$. Let $G = \bigl([n],W\bigr)$ be a fixed graph on $\{1,\ldots,n\}$ with Laplacian matrix $L = \frac{1}{n}\sum_{k = 1}^{n}\lambda_k v_k v_k^{\top}$; the eigenvectors have unit empirical norm, $\|v_k\|_n^2 = 1$. The randomness thus all comes from the responses 
+In this section, we adopt the fixed design perspective; or equivalently, condition on $X_i = x_i$ for $i = 1,\ldots,n$. Let $G = \bigl([n],W\bigr)$ be a fixed graph on $\{1,\ldots,n\}$ with Laplacian matrix $L = \sum_{k = 1}^{n}\lambda_k v_k v_k^{\top}$; the eigenvectors have unit empirical norm, $\|v_k\|_n^2 = 1$. The randomness thus all comes from the responses 
 \begin{equation}
 \label{eqn:fixed_graph_regression_model}
-Y_i = f_{0}(x_i) + \varepsilon_i
+Y_i = f_{0}(x_i) + w_i
 \end{equation}
-where the noise variables $\varepsilon_i$ are independent $N(0,1)$. In the rest of this section, we will mildly abuse notation and write $f_0 = (f_0(x_1),\ldots,f_0(x_n)) \in \Reals^n$. We will also write ${\bf Y} = (Y_1,\ldots,Y_n)$.
+where the noise variables $w_i$ are independent $N(0,1)$. In the rest of this section, we will mildly abuse notation and write $f_0 = (f_0(x_1),\ldots,f_0(x_n)) \in \Reals^n$. We will also write ${\bf Y} = (Y_1,\ldots,Y_n)$.
 
 \subsection{Upper bound on Estimation Error of Laplacian Eigenmaps}
 
 \begin{lemma}
 	\label{lem:fixed_graph_estimation}
-	For any $s \in \mathbb{N} \setminus \{0\}$, the Laplacian eigenmaps estimator $\wh{f}$ of~\eqref{eqn:laplacian_eigenmaps_estimator} satisfies
+	For any integer $s > 0$, and any integer $0 \leq K \leq n$, the Laplacian eigenmaps estimator $\wh{f}$ of~\eqref{eqn:laplacian_eigenmaps_estimator} satisfies
 	\begin{equation}
 	\label{eqn:fixed_graph_estimation}
-	\|\wh{f} - f_0\|_n^2 \leq \frac{\dotp{L^sf_0}{f_0}_n}{\lambda_{K + 1}^s} + \frac{5K}{n},
+	\|\wh{f} - f_0\|_n^2 \leq \frac{\dotp{L^sf_0}{f_0}_n}{\lambda_{K + 1}^s} + \frac{5K}{n};
 	\end{equation}
-	with probability at least $1 - \exp(-K)$. 
+	this is guaranteed if $K = 0$, and otherwise holds with probability at least $1 - \exp(-K)$ if $1 \leq K \leq n$. 
 \end{lemma}
 \paragraph{Proof (of Lemma~\ref{lem:fixed_graph_estimation}).}
 	By the triangle inequality,
@@ -30,12 +30,12 @@ where the noise variables $\varepsilon_i$ are independent $N(0,1)$. In the rest 
 	\begin{equation*}
 	\|\mathbb{E}\wh{f} - f_0\|_n^2 = \Bigl\|\sum_{k = K + 1}^{n} \dotp{v_k}{f_0}_n v_k\Bigr\|_n^2 = \sum_{k = K + 1}^n \dotp{v_k}{f_0}_n^2.
 	\end{equation*}
-	In the above, the last equality relies on the fact that $v_k$ are orthonormal. Using the fact that the eigenvalues are in increasing order, we obtain that
+	In the above, the last equality relies on the fact that $v_k$ are orthonormal in $L^2(P_n)$. Using the fact that the eigenvalues are in increasing order, we obtain
 	\begin{equation*}
-	\sum_{k = K + 1}^n \dotp{v_k}{f_0}_n^2 \leq \frac{1}{\lambda_K^s} \sum_{k = K + 1}^n \lambda_k^s \dotp{v_k}{f_0}_n^2 \leq \frac{\dotp{L^sf_0}{f_0}_n}{\lambda_{K + 1}^s}.
+	\sum_{k = K + 1}^n \dotp{v_k}{f_0}_n^2 \leq \frac{1}{\lambda_{K + 1}^s} \sum_{k = K + 1}^n \lambda_k^s \dotp{v_k}{f_0}_n^2 \leq \frac{\dotp{L^sf_0}{f_0}_n}{\lambda_{K + 1}^s}.
 	\end{equation*}
 	
-	The second term in~\eqref{pf:fixed_graph_estimation_1} (estimation error) is random. Observe that $\dotp{v_k}{\varepsilon}_n \overset{d}{=} Z_k/\sqrt{n}$, where $(Z_1,\ldots,Z_n) \sim N(0,I_{n \times n})$. Again using the orthonormality of the eigenvectors $v_k$, we have
+	If $K = 0$, $\wh{f} = \Ebb{\wh{f}} = 0$, and the second term in~\eqref{pf:fixed_graph_estimation_1} is $0$. Otherwise the second   in~\eqref{pf:fixed_graph_estimation_1} (estimation error) is random. Observe that $\dotp{v_k}{\varepsilon}_n \overset{d}{=} Z_k/\sqrt{n}$, where $(Z_1,\ldots,Z_n) \sim N(0,I_{n \times n})$. Again using the orthonormality of the eigenvectors $v_k$, we have
 	\begin{equation*}
 	\|\wh{f} - \mathbb{E}\wh{f}\|_n^2 = \sum_{k = 1}^{K} \dotp{v_k}{\varepsilon}_n^2 \overset{d}{=} \frac{1}{n}\sum_{k = 1}^{K} Z_k^2.
 	\end{equation*}
@@ -43,7 +43,7 @@ where the noise variables $\varepsilon_i$ are independent $N(0,1)$. In the rest 
 	\begin{equation*}
 	\Pbb\biggl(\|\wh{f} - \mathbb{E}\wh{f}\|_n^2 \geq \frac{K}{n} + 2\frac{\sqrt{K}}{n}\sqrt{t} + \frac{2t}{n}\biggr) \leq \exp(-t).
 	\end{equation*}
-	Setting $t = K$ completes the proof of the Lemma.
+	Setting $t = K$ completes the proof of the lemma.
 
 \subsection{Upper bound on Testing Error of Laplacian Eigenmaps}
 
@@ -985,7 +985,7 @@ The claim then follows from Lemma~\ref{lem:one_sided_bernstein}, upon taking $c 
 
 \subsection{Proof of Proposition~\ref{prop:empirical_norm_sobolev_manifold}}
 \label{subsec:empirical_norm_sobolev_manifold}
-The proof of Proposition~\ref{prop:empirical_norm_sobolev_manifold} follows exactly the same steps as the proof of Proposition~\ref{prop:empirical_norm_sobolev}, except Lemma~\ref{lem:gagliardo_nirenberg} is replaced by Lemma~\ref{lem:gagliardo_nirenberg_manifold}.
+The proof of Proposition~\ref{prop:empirical_norm_sobolev_manifold} follows exactly the same steps as the proof of Proposition~\ref{prop:empirical_norm_sobolev}, upon replacing Lemma~\ref{lem:gagliardo_nirenberg} by Lemma~\ref{lem:gagliardo_nirenberg_manifold}.
 \begin{lemma}[(c.f Theorem~3.70 of~\citet{aubin2012})]
 	\label{lem:gagliardo_nirenberg_manifold}
 	Suppose Model~\ref{def:model_manifold}, and that $f \in H^s(\mc{X})$ for some $s \geq m/4$. Then there exist constants $C_1$ and $C_2$ that do not depend on $f$, such that
@@ -995,7 +995,7 @@ The proof of Proposition~\ref{prop:empirical_norm_sobolev_manifold} follows exac
 	\end{equation}
 \end{lemma}
 	
-\section{Proofs of Main Results}
+\section{Proof of Main Results}
 \label{sec:proofs_main_results}
 
 \subsection{Estimation Results}
@@ -1006,16 +1006,18 @@ We condition on the event that the design points $X_1,\ldots,X_n$ satisfy
 \label{pf:laplacian_eigenmaps_estimation_fo_1}
 \dotp{L_{n,\varepsilon}f_0}{f_0}_n \leq \frac{C}{\delta}M^2 \quad \textrm{and} \quad \lambda_k \geq \min\{\lambda_k(\Delta_P), \varepsilon^{-2}\}~~\textrm{for all $2 \leq k \leq n$.}
 \end{equation}
-Note that by Propositions~\ref{prop:graph_seminorm_fo} and~\ref{prop:graph_eigenvalue}, these statements are both satisfied with probability at least $1 - \delta - Cn\exp\{-cn\varepsilon^d\}$. Conditional on~\eqref{pf:laplacian_eigenmaps_estimation_fo_1}, we have from Lemma~\ref{lem:fixed_graph_estimation} that for any $1 \leq K \leq n - 1$, with probability at least $1 - \exp(-K)$,
+Note that by Propositions~\ref{prop:graph_seminorm_fo} and~\ref{prop:graph_eigenvalue}, these statements are both satisfied with probability at least $1 - \delta - Cn\exp\{-cn\varepsilon^d\}$. 
+
+Conditional on~\eqref{pf:laplacian_eigenmaps_estimation_fo_1}, we have from Lemma~\ref{lem:fixed_graph_estimation} that for any $0 \leq K \leq n$,
 \begin{equation*}
-\|\wh{f} - f_0\|_n^2 \leq C\biggl\{\frac{M^2}{\delta (\lambda_{K + 1}(\Delta_P) \wedge \varepsilon^{-2})} + \frac{K}{n}\biggr\}.
+\|\wh{f} - f_0\|_n^2 \leq C\biggl\{\frac{M^2}{\delta (\lambda_{K + 1}(\Delta_P) \wedge \varepsilon^{-2})} + \frac{K}{n}\biggr\},
 \end{equation*}
-Further, from the bounds $\varepsilon \leq c_0 K^{-1/d}$ (Assumption~\ref{asmp:parameters_estimation_fo}) and $\lambda_{K + 1}(\Delta_P) \geq c K^{2/d}$ (Weyl's Law) we can simply the above expression the following,
+either deterministically (when $K = 0$), or with probability at least $1 - \exp(-K)$ (when $K \geq 1$). Further, from the bounds $\varepsilon \leq c_0 K^{-1/d}$ (Assumption~\ref{asmp:parameters_estimation_fo}) and $\lambda_{K + 1}(\Delta_P) \geq c (K + 1)^{2/d}$ (Weyl's Law) we can simply the above expression to the following,
 \begin{equation}
 \label{pf:laplacian_eigenmaps_estimation_fo_2}
-\|\wh{f} - f_0\|_n^2 \leq C\biggl\{\frac{M^2}{\delta}K^{-2/d} + \frac{K}{n}\biggr\}.
+\|\wh{f} - f_0\|_n^2 \leq C\biggl\{\frac{M^2}{\delta}(K + 1)^{-2/d} + \frac{K}{n}\biggr\}.
 \end{equation}
-We now upper bound the right hand side of~\eqref{pf:laplacian_eigenmaps_estimation_fo_2}, based on the value of $K$ chosen in~\ref{asmp:parameters_estimation_fo}.  The classical case is $K = (M^2n)^{d/(2 + d)}$, in which case~\eqref{pf:laplacian_eigenmaps_estimation_fo_2} implies
+We now upper bound the right hand side of~\eqref{pf:laplacian_eigenmaps_estimation_fo_2}, based on the value of $K$ chosen in~\ref{asmp:parameters_estimation_fo}.  When possible we choose $K = \floor{M^2n}^{d/(2 + d)}$ to balance bias and variance, in which case~\eqref{pf:laplacian_eigenmaps_estimation_fo_2} implies
 \begin{equation*}
 \|\wh{f} - f_0\|_n^2 \leq \frac{C}{\delta} M^2 (M^2n)^{-2/(2 + d)}.
 \end{equation*}
@@ -1093,13 +1095,13 @@ Unlike in the proof of Theorem~\ref{thm:laplacian_eigenmaps_testing_fo}, we note
 
 \section{Analysis of kernel smoothing}
 \label{subsec:kernel_smoothing}
-In this section we prove Lemma~\ref{lem:kernel_smoothing_laplacian_eigenmaps} (in Section~\ref{subsec:pf_kernel_smoothing_laplacian_eigenmaps}) and Lemma~\ref{lem:kernel_smoothing_bias} (in Section~\ref{subsec:pf_kernel_smoothing_bias}). In Section~\ref{subsec:eigenmaps_beats_kernel_smoothing}, we give a sequence $\{p^{(n)}(x), f_0^{(n)}(x)\}_{n \in \mathbb{N}}$ for which the estimator $T_{h,n}\wc{f}$ (kernel extension of Laplacian eigenmaps) dominates direct kernel smoothing of the responses, in the sense that
+In this section we prove Lemma~\ref{lem:kernel_smoothing_insample} (in Section~\ref{subsec:pf_kernel_smoothing_insample}) and Lemma~\ref{lem:kernel_smoothing_bias} (in Section~\ref{subsec:pf_kernel_smoothing_bias}). In Section~\ref{subsec:eigenmaps_beats_kernel_smoothing}, we give a sequence of design densities and regression functions $\{p^{(n)}(x), f_0^{(n)}(x)\}_{n \in \mathbb{N}}$ for which the estimator $T_{h,n}\wc{f}$ (kernel extension of Laplacian eigenmaps) strictly outperforms directly kernel smoothing the responses, in the sense that
 \begin{equation*}
-\lim_{n \to \infty} \sup_{h'} \frac{\Ebb \|T_{h_n,n}\wh{f} - f_0\|_P^2}{\Ebb \|T_{h',n}Y - f_0\|_P^2 } = 0.
+\lim_{n \to \infty} \sup_{h'} \frac{\Ebb \|T_{h,n}\wh{f} - f_0\|_P^2}{\Ebb \|T_{h',n}Y - f_0\|_P^2 } = 0.
 \end{equation*}
 
-\subsection{Proof of Lemma~\ref{lem:kernel_smoothing_laplacian_eigenmaps}}
-\label{subsec:pf_kernel_smoothing_laplacian_eigenmaps}
+\subsection{Proof of Lemma~\ref{lem:kernel_smoothing_insample}}
+\label{subsec:pf_kernel_smoothing_insample}
 
 \textcolor{red}{(TODO)}
 
@@ -1114,7 +1116,7 @@ In this section we prove Lemma~\ref{lem:kernel_smoothing_laplacian_eigenmaps} (i
 		\begin{equation*}
 		\|T_{h,P}f_0 - f_0\|_P^2 \leq C h^{2} |f|_{H^1(\mc{X})}^2.
 		\end{equation*}
-		\item If $f_0 \in H_0^{s}(P)$, $p \in C^{s}(\mc{X})$, and $\psi$ additionally satisfies~\ref{asmp:order_s_kernel}, it follows that
+		\item If $f_0 \in H_0^{s}(\mc{X})$, $p \in C^{s - 1}(\mc{X})$, it follows that
 		\begin{equation*}
 		\|T_{h,P}f_0 - f_0\|_P^2 \leq C h^{2s} |f|_{H^s(\mc{X})}^2.
 		\end{equation*}
@@ -1341,6 +1343,4 @@ On the other hand, if $\psi$ is an order-$s$ kernel for some $s > j$, then by co
 
 \subsection{Upper bound on $L^2(P_n)$ risk}
 \label{subsec:upper_bound_l2pn_risk}
-
-\subsection{Facts about manifolds}
 \textcolor{red}{(TODO)}
