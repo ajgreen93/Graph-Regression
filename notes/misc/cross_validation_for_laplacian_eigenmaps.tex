@@ -1,0 +1,191 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue
+}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+% Make a widecheck symbol (thanks, Stack Exchange!)
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+	<5> <6> <7> <8> <9> <10>
+	<10.95> <12> <14.4> <17.28> <20.74> <24.88>
+	mathx10
+}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+% widecheck made
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+	\title{Note on: Cross-validation for Laplacian methods}
+	\author{Alden Green}
+	\date{\today}
+	\maketitle
+	
+	Outline: Let $\wh{\mu} = Sy$ be a linear smoother. Suppose we have an extension operator $E$ which gives us a function $\wh{f} = E\wh{\mu}$ that can be evaluated at any $x$.
+	\begin{enumerate}
+		\item For certain linear smoothers, e.g. kernel smoothers and smoothing splines, there exists a leave-one-out CV equivalence for which relates the leave one out CV error to the error of the fit on the full data via the reduction
+		\begin{equation}
+		\label{eqn:loocv_equation}
+		\frac{1}{n} \sum_{i = 1}^{n} \bigl(y_i - \wh{f}^{(-i)}(x_i)\bigr)^2 = \frac{1}{n} \sum_{i = 1}^{n} \biggl(\frac{y_i - \wh{f}(x_i)}{1 - S_{ii}}\biggr)^2.
+		\end{equation}
+		The key property is really
+		\begin{equation}
+		\label{eqn:loocv_property}
+		\wh{f}^{(-i)}(x_i) = \frac{1}{1 - S_{ii}} \bigl(\wh{f}(x_i) - S_{ii}y_i\bigr),
+		\end{equation}
+		from which~\eqref{eqn:loocv_equation} easily follows.
+		\item For our particular choice of $S$ and $E$, is the property~\eqref{eqn:loocv_property} satisfied?
+		\item If $S$ is the smoothing matrix associated with Laplacian eigenmaps, the answer to previous questions is no: property~\eqref{eqn:loocv_property} is not satisfied, no matter the choice of extension operator $E$.
+		\item The proof is quite elementary---I will just show a counterexample, for a particular graph $G$---but maybe not that interesting. It's more interesting to think about why we shouldn't expect such a property to hold. For Laplacian eigenmaps the smoother matrix is $S = V_K V_K^{\top}$, where we have written $V_K \in \Reals^{n \times K}$ for the matrix with $k$th column equal to the $k$th eigenvector of the Laplacian matrix $L$. Let $V_K^{(-i)} \in \Reals^{(n - 1) \times K}$ contain the eigenvectors of $L^{(-i)}$, the Laplacian over the graph $G^{(-i)}$ from which the $i$th vertex has been deleted. Then $\wh{f}^{(-i)}(x_i) = V_K^{(-i)} (V_K^{(-i)})^{\top} y^{(-i)}$. 
+		
+		Thus we must only show that there exists some $y^{(-i)}$ which lies in the null space of $V_K^{(-i)}$, but not in the null space of $V_K$, when the latter is viewed as an operator on $L^2(P_n^{(-i)})$. Then setting $y = (y)
+	\end{enumerate}
+\end{document}
