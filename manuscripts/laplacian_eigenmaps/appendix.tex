@@ -1103,7 +1103,88 @@ In this section we prove Lemma~\ref{lem:kernel_smoothing_insample} (in Section~\
 \subsection{Proof of Lemma~\ref{lem:kernel_smoothing_insample}}
 \label{subsec:pf_kernel_smoothing_insample}
 
-\textcolor{red}{(TODO)}
+To begin with, we apply the triangle inequality to upper bound $\|T_{h,n}\wc{f} - f_0\|_P$ by the sum of two terms,
+\begin{equation}
+\label{pf:kernel_smoothing_insample_1}
+\|T_{h,n}\wc{f} - f_0\|_P \leq \|T_{h,n}(\wc{f} - f_0)\|_P + \|T_{h,n}f_0 - f_0\|_P.
+\end{equation}
+We proceed by separately upper bounding each term on the right hand side of~\eqref{pf:kernel_smoothing_insample_1}. We will show that
+\begin{equation}
+\label{pf:kernel_smoothing_insample_2}
+\|T_{h,n}(\wc{f} - f_0)\|_P^2 \leq C \|\wc{f} - f_0\|_n^2
+\end{equation}
+and that 
+\begin{equation}
+\label{pf:kernel_smoothing_insample_3}
+\|T_{h,n}f_0 - f_0\|_P^2 \leq \frac{C}{\delta} \cdot \frac{h^2}{nh^d} |f|_{H^1(\mc{X})}^2 + \frac{C}{\delta}\|T_{h,P}f_0 - f_0\|_P^2,
+\end{equation}
+each with probability at least $1 - C\exp(-cnh^d)$. Together these will imply the claim. 
+
+\underline{\emph{Proof of~\eqref{pf:kernel_smoothing_insample_2}}.}
+Fix $x \in \mc{X}$. By the Cauchy-Schwarz inequality we have
+\begin{align*}
+\Bigl[T_{h,n}\bigl(\wc{f} - f_0\bigr)(x)\Bigr]^2 & = \Biggl[\frac{1}{d_{n,h}(x)^2}\int \psi\biggl(\frac{\|x' - x\|}{h}\biggr) \cdot \bigl(\wc{f}(x') - f_0(x')\bigr) \,dP_n(x')\Biggr]^2 \\
+& \leq \Biggl[\frac{1}{d_{n,h(x)}^2} \int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \,dP_n(x')\Biggr] \cdot \Biggl[\int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x')\Biggr] \\
+& = \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \frac{1}{|d_{n,h}(x)|} \Biggl[\int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x')\Biggr].
+\end{align*}
+In the last line all we have done is written $d_{n,h}^{+}(x)$ for the degree functional computed with respect to the kernel $|\psi|$, recalling that $\psi$ may take negative values so $d_{n,h}^{+}(x)$ may not be equal to $d_{n,h}(x)$.
+
+Now we integrate over $x \in \mc{X}$ to get 
+\begin{align}
+\|T_{h,n}(\wc{f} - f_0)\|_P^2 & = \int \Bigl[T_{h,n}\bigl(\wc{f} - f_0\bigr)(x)\Bigr]^2 \,dP(x) \nonumber \\
+& \leq \int \int \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \frac{1}{|d_{n,h}(x)|} \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x') \,dP(x) \nonumber \\
+& \leq \sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \int \int  \frac{1}{|d_{n,h}(x)|} \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP(x) \,dP_n(x') \nonumber \\
+& \leq \sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x) d_{P,h}^+(x)}{|d_{n,h}(x)|^2} \cdot \|\wc{f} - f_0\|_n^2. \label{pf:kernel_smoothing_insample_4}
+\end{align}
+Thus we have reduced the problem to showing that the various degree functionals $d_{n,h}^{+}, d_{P,h}^{+}$ and $d_{n,h}$ all put similar weight on a given point $x$. We use~\eqref{eqn:uniform_bound_empirical_degree_2}, which gives a uniform multiplicative bound on deviations of the empirical degree around its mean, to conclude that with probability at least $1 - C\exp\{-cnh^d\}$,
+\begin{equation*}
+d_{n,h}(x) \geq \frac{1}{2}d_{P,h}(x)~~ \textrm{and} ~~ d_{n,h}^{+}(x) \leq \frac{3}{2} d_{P,h}^{+}(x) \quad\textrm{for all $x \in \mc{X}$.}
+\end{equation*}
+Therefore,
+\begin{equation*}
+\sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x) d_{P,h}^+(x)}{|d_{n,h}(x)|^2} \leq 6 \cdot \sup_{x \in \mc{X}} \frac{|d_{P,h}^{+}(x)|^2}{|d_{P,h}(x)|^2} \leq 36 \biggl(\frac{\|\psi\|_{\infty} p_{\max} \nu_d}{p_{\min}}\biggr)^2
+\end{equation*}
+with the second inequality following from~\eqref{eqn:degree_lower_bound}. Plugging this back into~\eqref{pf:kernel_smoothing_insample_4} gives the claim.
+
+\underline{\emph{Proof of~\eqref{pf:kernel_smoothing_insample_3}}.}
+At a given point $x \in \mc{X}$, we have
+\begin{align*}
+T_{n,h}f_0(x) - f_0(x) & = \frac{1}{d_{n,h}(x)} \sum_{i = 1}^{n} \bigl(f_0(X_i) - f_0(x)\bigr) \psi\biggl(\frac{\|X_i - x\|}{h}\biggr) \\
+& = \frac{d_{P,h}(x)}{d_{n,h}(x)} \cdot \frac{1}{nd_{P,h}(x)} \sum_{i = 1}^{n} \bigl(f_0(X_i) - f_0(x)\bigr) \psi\biggl(\frac{\|X_i - x\|}{h}\biggr).
+\end{align*}
+Thus,
+\begin{equation}
+\label{pf:kernel_smoothing_insample_5}
+\Bigl[T_{n,h}f_0(x) - f_0(x)\Bigr]^2 = \biggl[\frac{d_{P,h}(x)}{d_{n,h}(x)}\biggr]^2 \cdot \biggl[\underbrace{\frac{1}{nd_{P,h}(x)}\sum_{i = 1}^{n} \bigl(f_0(X_i) - f_0(x)\bigr) \psi\biggl(\frac{\|X_i - x\|}{h}\biggr)}_{:= \wt{L}_{n,h}f_0(x)}\biggr]^2
+\end{equation}
+In the proof of~\eqref{pf:kernel_smoothing_insample_2} we have already given an upper bound on the ratio of population to empirical degree, which implies that
+\begin{equation*}
+\sup_{x \in \mc{X}} \biggl[\frac{d_{P,h}(x)}{d_{n,h}(x)}\biggr]^2 \leq 4,
+\end{equation*}
+with probability at least $1 - C\exp\{-cnh^d\}$. On the other hand, we note that the second term in the product in~\eqref{pf:kernel_smoothing_insample_5} has expectation
+\begin{equation*}
+\Ebb\Bigl[\wt{L}_{n,h}f_0(x)\Bigr] = T_{P,h}f_0(x) - f_0(x),
+\end{equation*} 
+and variance 
+\begin{equation*}
+\Var\Bigl[\wt{L}_{n,h}f_0(x)\Bigr] \leq \frac{1}{n(d_{P,h}(x))^2} \Ebb\biggl[(f_0(X) - f_0(x))^2 \cdot \biggl|\psi\biggl(\frac{\|X - x\|}{h}\biggr)\biggr|^2\biggr].
+\end{equation*}
+Integrating with respect to $P$ gives
+\begin{align*}
+\Ebb\biggl[\int \Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2 \,dP(x)\biggr] & = \int \Ebb\Bigl[\Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2\Bigr] \,dP(x) \\
+& \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{1}{n}\int \int \frac{1}{\bigl(d_{P,h}(x)\bigr)^2} \bigl(f_0(x') - f_0(x)\bigr)^2 \cdot \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr|^2 \,dP(x') \,dP(x) \\
+& \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{3}{p_{\min}nh^d} \wt{E}_{P,h}(f_0),
+\end{align*}
+where in the final inequality we have used the lower bound on $d_{P,h}(x)$ from~\eqref{eqn:degree_lower_bound}, and defined $\wt{E}_{P,h}(f_0)$ to be the non-local Dirichlet energy with respect to the kernel $\psi^2$. 
+
+Putting the pieces together, we conclude that
+\begin{align*}
+\|T_{n,h}f_0(x) - f_0(x)\|_P^2 & = \int \bigl(T_{n,h}f_0(x) - f_0(x)\bigr)^2 \,dP(x) \\
+& \leq \sup_{x \in \mc{X}} \biggl[\frac{d_{P,h}(x)}{d_{n,h}(x)}\biggr]^2 \cdot \int \Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2 \,dP(x) \\
+& \overset{(i)}{\leq} 4\frac{\| T_{P,h}f_0 - f_0\|_P^2}{\delta} + \frac{12}{\delta p_{\min}nh^d} \wt{E}_{P,h}(f_0) \\
+& \overset{(ii)}{\leq}  4\frac{\| T_{P,h}f_0 - f_0\|_P^2}{\delta} + \frac{C}{\delta p_{\min}nh^d} h^2 |f_0|_{H^1(\mc{X})}^2
+\end{align*}
+with probability at least $1 - \delta - C\exp(-cnh^d)$. In $(i)$ we have used Markov's inequality, and in $(ii)$ we have applied the estimate~\eqref{pf:estimate_nonlocal_seminorm_1} to the non-local Dirichlet energy $\wt{E}_{P,h}(f_0)$. This establishes~\eqref{pf:kernel_smoothing_insample_3}.
 
 \subsection{Kernel smoothing bias}
 \label{subsec:pf_kernel_smoothing_bias}
@@ -1127,7 +1208,7 @@ In this section we prove Lemma~\ref{lem:kernel_smoothing_insample} (in Section~\
 \subsection{Comparison of Laplacian eigenmaps to kernel smoothing}
 \label{subsec:eigenmaps_beats_kernel_smoothing}
 
-In this section, we give a sequence of densities $p^{(n)}$ and regression functions $f_0^{(n)}$ for which the $L^2(P)$ error of the two-stage estimator $T_{h,n}\wh{f}$ is stochastically dominated by the $L^2(P)$ error of directly kernel smoothing. We begin by precisely setting up the problem and reviewing the two estimators we will compare. Then we give and prove our formal claim.
+In this section, we give a sequence of densities $p^{(n)}$ and regression functions $f_0^{(n)}$ for which the $L^2(P)$ error of the two-stage estimator $T_{h,n}\wh{f}$ is stochastically dominated by the $L^2(P)$ error of applying kernel smoothing directly to the responses. We begin by precisely setting up the problem and reviewing the two estimators we will compare. Then we give and prove our formal claim.
 
 \paragraph{Setup.}
 As usual, we assume the design points $(X_1,\ldots,X_n)$ are sampled independently from a distribution $P$, and the responses
@@ -1251,7 +1332,7 @@ whereas if $h' > 4r$  then
 \end{equation*}
 In the latter case, setting the derivative equal to $0$ shows that the right hand side is always at least $\theta/\sqrt{32 n}$, and taking the minimum over the two cases then yields~\eqref{eqn:eigenmaps_beats_kernel_smoothing_2}.
 
-\paragraph{A Useful Pair of Lemmas.}
+\paragraph{A Useful Lemma.}
 Let $m = 4n/\log^2n$. Furthermore, for $i = 0,\ldots,m - 1$, let
 \begin{equation*}
 Q_{i1} = [i/m,(i + 1)/m] \cdot (1/2 - r), \quad Q_{i2} = 1/2 + [i/m,(i + 1)/m] \cdot (1/2 - r).
@@ -1266,18 +1347,6 @@ Q_{i1} = [i/m,(i + 1)/m] \cdot (1/2 - r), \quad Q_{i2} = 1/2 + [i/m,(i + 1)/m] \
 \end{lemma}
 Let $\varepsilon = h = \log^2n/2n$. Note that by construction,~\eqref{eqn:balls_in_bins} implies that any points $x$ and $x'$ in adjacent intervals $Q_{ij}$ and $Q_{i'j}$ must be connected in $G_{n,\varepsilon}$. It also implies that $d_{n,h}(x) > 0$ for every $x \in Q_1 \cup Q_2$.
 
-The following Lemma is from~\cite{laurent00}.
-\begin{lemma}
-	\label{lem:chi_square_bound}
-	Let $\xi_1,\ldots,\xi_N$ be independent $N(0,1)$ random variables, and let $U := \sum_{k = 1}^{N} a_k(\xi_k^2 - 1)$.  Then for any $t > 0$,
-	\begin{equation*}
-	\Pbb\Bigl[U \geq 2 \norm{a}_2 \sqrt{t} + 2 \norm{a}_{\infty}t\Bigr] \leq \exp(-t).
-	\end{equation*}
-	In particular if $a_k = 1$ for each $k = 1,\ldots,N$, then
-	\begin{equation*}
-	\Pbb\Bigl[U\geq 2\sqrt{N t} + 2t\Bigr] \leq \exp(-t).
-	\end{equation*}
-\end{lemma}
 \paragraph{Proof (of Lemma~\ref{lem:balls_in_bins}).}
 For each $Q_{ij}$, we have that 
 \begin{equation*}
@@ -1292,19 +1361,63 @@ and the claim follows from some basic algebra.
 
 
 \section{Miscellaneous}
-Here we give some helpful Lemmas used at various points in the above proofs. We also prove that spectral sparsification does not change the rate of convergence of $\wh{f}$. Finally, we review notation and relevant facts regarding Taylor expansion.
+Here we give assorted helpful Lemmas used at various points in the above proofs. We also review notation and relevant facts regarding Taylor expansion.
 
 
 \subsection{Concentration Inequalities}
-
-The following Lemma is an immediate consequence of the one-sided Bernstein's inequality (14.23) in \cite{wainwright2019}.
-\begin{lemma}[One-sided Bernstein's inequality]
-	\label{lem:one_sided_bernstein}
-	Let $X, X_1,\ldots,X_n \sim P$, and $f$ satisfy $\Ebb[f^4(X)] < \infty$. Then with probability at least $1 - \exp\bigl(-n/8 \cdot \|f\|_P^4 /\Ebb[f^4(X)]\bigr)$,
+Lemma~\ref{lem:chi_square_bound} controls the deviation of a chi-squared random variable. It is from~\cite{laurent00}.
+\begin{lemma}
+	\label{lem:chi_square_bound}
+	Let $\xi_1,\ldots,\xi_N$ be independent $N(0,1)$ random variables, and let $U := \sum_{k = 1}^{N} a_k(\xi_k^2 - 1)$.  Then for any $t > 0$,
 	\begin{equation*}
-	\|f\|_n^2 \geq \frac{1}{2}\|f\|_P^2.
+	\Pbb\Bigl[U \geq 2 \norm{a}_2 \sqrt{t} + 2 \norm{a}_{\infty}t\Bigr] \leq \exp(-t).
+	\end{equation*}
+	In particular if $a_k = 1$ for each $k = 1,\ldots,N$, then
+	\begin{equation*}
+	\Pbb\Bigl[U\geq 2\sqrt{N t} + 2t\Bigr] \leq \exp(-t).
 	\end{equation*}
 \end{lemma}
+
+Lemma~\ref{lem:one_sided_bernstein} is an immediate consequence of the one-sided Bernstein's inequality (14.23) in \cite{wainwright2019}.
+\begin{lemma}[One-sided Bernstein's inequality]
+	\label{lem:one_sided_bernstein}
+	Let $X, X_1,\ldots,X_n \sim P$, and $f$ satisfy $\Ebb[f^4(X)] < \infty$. Then
+	\begin{equation*}
+	\|f\|_n^2 \geq \frac{1}{2}\|f\|_P^2,
+	\end{equation*}
+	with probability at least $1 - \exp\bigl(-n/8 \cdot \|f\|_P^4 /\Ebb[f^4(X)]\bigr)$.
+\end{lemma}
+
+In the proof of Lemma~\ref{lem:kernel_smoothing_insample}, we require uniform control of the empirical degree functional $d_{n,h}(x)$ over all $x \in \mc{X}$. Such a result is available to us because the kernel $\psi$ is Lipschitz on its support, so that the class of functions $\{\psi((x - \cdot)/h): h \in \Rd\}$ has finite VC dimension. The precise estimate we use is due to \textcolor{blue}{(Gine + Guillou 2002)}. 
+\begin{lemma}[Uniform bound for empirical degree.]
+	\label{lem:uniform_bound_empirical_degree}
+	Suppose Model~\ref{def:model_flat_euclidean}. For a kernel $\psi$ satisfying~\ref{asmp:kernel} and bandwidth $h$ satisfying~\ref{asmp:bandwidth}, there exist constants $c, C, c_1$ and $C_1$ which do not depend on $h$ or $n$ such that
+	\begin{equation*}
+	\Pbb\biggl(\sup_{x \in \Rd} n \cdot \Bigl|d_{n,h}(x) - d_{P,h}(x)\Bigr| > t\biggr) \leq C\exp\biggl(-c \frac{t^2}{nh^d}\biggr),
+	\end{equation*}
+	for any $t \in \Reals$ satisfying
+	\begin{equation}
+	\label{eqn:uniform_bound_empirical_degree_1}
+	C_1\sqrt{nh^d \log(1/h)} \leq t \leq c_1 nh^d.
+	\end{equation}
+\end{lemma}
+Now we translate Lemma~\ref{lem:uniform_bound_empirical_degree} into a multiplicative bound, which will be more useful for our purposes. By assumption, the density $p$ is Lipschitz. Letting $L_p$ denote the Lipschitz constant of $p$, we have that
+\begin{align*}
+d_{P,h}(x) & = \int \psi\biggl(\frac{\|x' - x\|}{h}\biggr) p(x') \,dx' \\
+& = h^d \int \psi(\|z\|) p(hz + x) \1\Bigl\{ hz + x \in \mc{X} \Bigr\} \,dz \\
+& \geq h^d p(x) \int \psi(\|z\|) \1\Bigl\{ hz + x  \in \mc{X}\Bigr\} \,dz - L_p h^{d + 1} \|\psi\|_{\infty} \nu_d.
+\end{align*}
+Since by assumption $\mc{X}$ has Lipschitz boundary, setting $c_0$ to be a sufficiently small constant in~\ref{asmp:bandwidth}, we can further deduce that $\int \psi(\|z\|) \1\{hz + x \in \mc{X}\} \,dz \geq 1/3$, and consequently that
+\begin{equation}
+\label{eqn:degree_lower_bound}
+d_{P,h}(x) \geq h^d \frac{p(x)}{3} \geq h^d \frac{p_{\min}}{3} \quad \textrm{for all $x \in \mc{X}$.}
+\end{equation}
+On the other hand, by setting $C_0$ to be a sufficiently large constant in~\ref{asmp:bandwidth}, we can ensure that choosing $t = n h^d p_{\min}/6$ satisfies both the inequalities~\eqref{eqn:uniform_bound_empirical_degree_1}. For this choice of $t$ it follows from~\eqref{eqn:degree_lower_bound} and Lemma~\ref{lem:uniform_bound_empirical_degree} that
+\begin{equation}
+\label{eqn:uniform_bound_empirical_degree_2}
+\sup_{x \in \Rd} \biggl|\frac{d_{n,h}(x) - d_{P,h}(x)}{d_{P,h}(x)}\biggr| \leq \sup_{x \in \Rd} \biggl|\frac{d_{n,h}(x) - d_{P,h}(x)}{2t/n}\biggr| \leq \frac{1}{2}
+\end{equation}
+with probability at least $1 - C\exp(-cnh^d)$. This is the form of the result we use in the proof of Lemma~\ref{lem:kernel_smoothing_insample}.
 
 \subsection{Taylor expansion}
 \label{subsec:taylor_expansion}
