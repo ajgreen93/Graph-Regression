@@ -333,7 +333,15 @@ When $s = 0$, the inequality~\eqref{pf:approximation_error_nonlocal_laplacian_0}
 \begin{align*}
 L_{P,\varepsilon}f(x) & = \frac{1}{\varepsilon^{d + 2}}\sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1}\frac{1}{j_1!j_2!}  \int_{\mc{X}} \bigl(d_x^{j_1}f\bigr)(x' - x) \bigl(d_x^{j_2}p\bigr)(x' - x) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \quad + \\
 & \quad \frac{1}{\varepsilon^{d + 2}}\sum_{j = 1}^{s - 1} \frac{1}{j!} \int_{\mc{X}} \bigl(d_x^jf\bigr)(x' - x)  r_{x'}^{q}(x;p) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \quad  + \\
-& \quad \frac{1}{\varepsilon^{d + 2}} \int_{\mc{X}} r_{x'}^j(x;f) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \\
+& \quad \frac{1}{\varepsilon^{d + 2}} \int_{\mc{X}} r_{x'}^j(x;f) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x').
+\end{align*}
+Here we have adopted the convention that $\sum_{j = 1}^{0} = 0$. 
+
+Changing variables to $z = (x' - x)/\varepsilon$, we can rewrite the above expression as 
+\begin{align*}
+L_{P,\varepsilon}f(x) & = \frac{1}{\varepsilon^{2}}\sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1}\frac{\varepsilon^{j_1 + j_2}}{j_1!j_2!}  \int d_x^{j_1}f(z) d_x^{j_2}p(z) \eta\bigl(\|z\|\bigr) \,dz \quad + \\
+& \quad \frac{1}{\varepsilon^{2}} \sum_{j = 1}^{s - 1} \frac{\varepsilon^j}{j!} \int d_x^jf(z)  r_{zh + x}^{q}(x;p) \eta\bigl(\|z\|\bigr) \,dz \quad  + \\
+& \quad \frac{1}{\varepsilon^{2}} \int r_{zh + x}^j(x;f) \eta\bigl(\|z\|\bigr) p(zh + x)\,dz \\
 & := G_1(x) + G_2(x) + G_3(x).
 \end{align*}
 We now separately consider each of $G_1(x),G_2(x)$ and $G_3(x)$. We will establish that if $s = 1$ or $s = 2$, then $G_1(x) = 0$, and otherwise if $s \geq 3$ that
@@ -341,29 +349,29 @@ We now separately consider each of $G_1(x),G_2(x)$ and $G_3(x)$. We will establi
 G_1(x) = \sigma_{\eta}\Delta_Pf(x) + \sum_{j = 1}^{\floor{(s - 1)/2} - 1}g_{2(j + 1)}(x)\varepsilon^{2j} + g_{s}(x)\varepsilon^{s - 2}.
 \end{equation*}
 On the other hand, we will establish that if $s = 1$ then $G_2(x) = 0$, and otherwise for $s \geq 2$
-\begin{equation*}
+\begin{equation}
+\label{pf:approximation_error_nonlocal_laplacian_2}
 \|G_2\|_{\Leb^2(\mc{X}_{\varepsilon})} \leq C \varepsilon^{s - 2} M \|p\|_{C^{s - 1}(\mc{X})};
-\end{equation*}
+\end{equation}
 this same estimate will hold for $G_3$ for all $s \geq 1$. Together these will imply~\eqref{pf:approximation_error_nonlocal_laplacian_0} and~\eqref{pf:approximation_error_nonlocal_laplacian_1}. 
 
 \emph{Estimate on $G_1(x)$.}
-If $s = 1$, then $s - 1 = 0$, and so $G_1(x) = 0$. We may therefore suppose $s \geq 2$. In this case, a change of variables gives
-\begin{align}
-L_{P,\varepsilon}f(x) & = \frac{1}{\varepsilon^{d + 2}} \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1} \frac{1}{j_1!j_2!}  \int_{\mc{X}} \bigl(d_x^{j_1}f\bigr)(x' - x) \bigl(d_x^{j_2}p\bigr)(x' - x) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \nonumber \\
-& = \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1} \frac{\varepsilon^{j_1 + j_2 - 2}}{j_1!j_2!}  \underbrace{\int_{B(0,1)} d_x^{j_1}f(z) d_x^{j_2}p(z) \eta(\|z\|) \,dz}_{:= g_{j_1,j_2}(x)} \label{pf:approximation_error_nonlocal_laplacian_3}
-\end{align}
+If $s = 1$, then $s - 1 = 0$, and so $G_1(x) = 0$. We may therefore suppose $s \geq 2$. Recall that
+\begin{equation}
+G_1(x) = \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1} \frac{\varepsilon^{j_1 + j_2 - 2}}{j_1!j_2!}  \underbrace{\int_{B(0,1)} d_x^{j_1}f(z) d_x^{j_2}p(z) \eta(\|z\|) \,dz}_{:= g_{j_1,j_2}(x)} \label{pf:approximation_error_nonlocal_laplacian_3}
+\end{equation}
 The nature of $g_{j_1,j_2}(x)$ depends on the sum $j_1 + j_2$. Since $d_x^{j_1}f d_x^{j_2}$ is an order $j_1 + j_2$ (multivariate) monomial, we have (see Section~\ref{subsec:taylor_expansion}) that whenever $j_1 + j_2$ is odd,
 \begin{equation*}
 g_{j_1,j_2}(x) = \int_{\mc{X}} d_x^{j_1}f(z) d_x^{j_2}p(z) \eta(\|z\|) \,dz = 0.
 \end{equation*}
-In particular this is the case when $j_1 = 1$ and $j_2 = 0$, which means that if $s = 2$, then $G_1(x) = 0$. On the other hand if $s \geq 3$, then the lowest order term in~\eqref{pf:approximation_error_nonlocal_laplacian_3} is when $j_1 + j_2 = 2$, so that either $j_1 = 1$ and $j_2 = 1$, or $j_1 = 2$ and $j_2 = 0$. It follows that
+In particular this is the case when $j_1 = 1$ and $j_2 = 0$. Thus when $s = 2$,  $G_1(x) = g_{1,0}(x) = 0$. On the other hand if $s \geq 3$, then the lowest order terms in~\eqref{pf:approximation_error_nonlocal_laplacian_3} are those where $j_1 + j_2 = 2$, so that either $j_1 = 1$ and $j_2 = 1$, or $j_1 = 2$ and $j_2 = 0$. We have that
 \begin{align*}
 g_{1,1}(x) + \frac{1}{2}g_{2,0}(x) & = \int_{\mc{X}} d_x^{1}f(z) d_x^{1}p(z) \eta(\|z\|) \,dz + \frac{p(x)}{2} \int_{\mc{X}} d_x^{2}f(z) \eta(\|z\|) \,dz \\
 & = \sum_{i_1 = 1}^{d} \sum_{i_2 = 1}^{d} D^{e_{i_1}}f(x) D^{e_{i_2}}p(x) \int_{\mc{X}} z^{e_{i_1} + e_{i_2}} \eta(\|z\|) \,dz + \frac{p(x)}{2} \sum_{i_1 = 1}^{d} \sum_{i_2 = 1}^{d}D^{e_{i_2}+e_{i_2}}f(x)\int_{\mc{X}} z^{e_{i_1} + e_{i_2}} \eta(\|z\|) \,dz\\
 & = \sum_{i = 1}^{d} D^{e_{i}}f(x) D^{e_{i}}p(x) \int_{\mc{X}} z^2 \eta(\|z\|) \,dz + \frac{p(x)}{2} \sum_{i = 1}^{d} D^{2e_{i}}f(x)\int_{\mc{X}} z^2 \eta(\|z\|) \,dz\\ 
-& = \sigma_{\eta}\Delta_Pf(x).
+& = \sigma_{\eta}\Delta_Pf(x),
 \end{align*}
-Now it remains only to deal with the higher-order terms, where $j_1 + j_2 > 2$, and where it suffices to show that each function $g_{j_1,j_2}$ satisfies~\eqref{pf:approximation_error_nonlocal_laplacian_1.5} for $j = \min\{j_1 + j_2 - 2,s - 2\}$. Now it is helpful to write $g_{j_1,j_2}$ using multi-index notation, 
+which is the leading term order term. Now it remains only to deal with the higher-order terms, where $j_1 + j_2 > 2$, and where it suffices to show that each function $g_{j_1,j_2}$ satisfies~\eqref{pf:approximation_error_nonlocal_laplacian_1.5} for $j = \min\{j_1 + j_2 - 2,s - 2\}$. It is helpful to write $g_{j_1,j_2}$ using multi-index notation, 
 \begin{align*}
 g_{j_1,j_2}(x) = \sum_{|\alpha_1| = j_1} \sum_{|\alpha_2| = j_2} D^{\alpha_1}f(x) D^{\alpha_2}p(x) \int_{B(0,1)} z^{\alpha_1 + \alpha_2} \eta(\|z\|) \,dz,
 \end{align*}
@@ -378,8 +386,7 @@ and summing over all $|\alpha_1| = j_1$ and $|\alpha_2| = j_2$ establishes that 
 \emph{Estimate on $G_2(x)$.}
 Note immediately that $G_2(x) = 0$ if $s = 1$. Otherwise if $s \geq 2$, then $q = s - 1$. Recalling that $|r_{x + z\varepsilon}^{s - 1}(x; p)| \leq C\varepsilon^{s - 1}\|p\|_{C^{s - 1}(\mc{X})}$ for any $z \in B(0,1)$, and that $d_x^jf(\cdot)$ is a $j$-homogeneous function, we have that
 \begin{align}
-|G_2(x)| & \leq \frac{1}{\varepsilon^{d + 2}}\sum_{j = 1}^{s - 1} \frac{1}{j!}\int_{\mc{X}} \Bigl|\bigl(d_x^{j}f\bigr)(x' - x)\Bigr| \cdot \Bigl|r_{x'}^{s - 1}(x;p)\Bigr| \cdot \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \nonumber \\
-& = \frac{1}{\varepsilon^2} \sum_{j = 1}^{s - 1} \frac{1}{j!}\int_{B(0,1)} \Bigl|\bigl(d_x^{j}f\bigr)(\varepsilon z)\Bigr| \cdot |r_{x + z\varepsilon}^{s - 1}(x;p)| \cdot \eta(\|z\|) \,dz \nonumber \\
+|G_2(x)| & \leq \sum_{j = 1}^{s - 1} \frac{\varepsilon^{j - 2}}{j!}\int_{B(0,1)} \Bigl|\bigl(d_x^{j}f\bigr)(z)\Bigr| \cdot |r_{x + z\varepsilon}^{s - 1}(x;p)| \cdot \eta(\|z\|) \,dz \nonumber \\
 & \leq C\varepsilon^{s - 2}\|p\|_{C^{s - 1}(\mc{X})} \sum_{j = 1}^{s - 1} \frac{1}{j!} \int_{B(0,1)} \Bigl|\bigl(d_x^{j}f\bigr)(z)\Bigr| \cdot \eta(\|z\|) \,dz \label{pf:approximation_error_nonlocal_laplacian_4}.
 \end{align}
 Furthermore, for each $j = 1,\ldots,s - 1$ convolution of $d_x^jf$ with $\eta$ only decreases the $\Leb^2(\mc{X}_{\varepsilon})$ norm, meaning
@@ -400,12 +407,7 @@ Combining this with~\eqref{pf:approximation_error_nonlocal_laplacian_4}, we conc
 establishing the desired estimate.
 
 \emph{Estimate on $G_3(x)$.}
-We begin with a pointwise upper bound on $|J_3(x)|$, 
-\begin{align*}
-|G_3(x)| & \leq \frac{p_{\max}}{\varepsilon^{2 + d}} \int_{\mc{X}} \bigl|r_{x'}^s(x;f)\bigr| \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \\
-& = \frac{p_{\max}}{\varepsilon^2} \int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;f)\bigr| \eta(\|z\|) \,dz,
-\end{align*}
-and applying the Cauchy-Schwarz inequality, we deduce a pointwise upper bound on $|G_3(x)|^2$,
+Applying the Cauchy-Schwarz inequality, we deduce a pointwise upper bound on $|G_3(x)|^2$,
 \begin{align*}
 |G_3(x)|^2 & \leq \biggl(\frac{p_{\max}}{\varepsilon^2}\biggr)^2 \cdot \biggl(\int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;u)\bigr|^2 \eta(\|z\|)\,dz\biggr) \cdot \biggl(\int_{B(0,1)} \eta(\|z\|) \,dz\biggr) \\
 & \leq \biggl(\frac{p_{\max}}{\varepsilon^2}\biggr)^2 \int_{B(0,1)} \bigl|r_{x + \varepsilon z}^s(x;u)\bigr|^2 \eta(\|z\|) \,dz.
@@ -804,7 +806,7 @@ From here forward we will assume $\varepsilon < R/2$. Consequently $\eta(\|x' - 
 \end{equation*}
 Thus,
 \begin{equation*}
-A_1(x) \leq \frac{8L_{\eta}\varepsilon^2}{R^2}\int_{\mc{X}}\bigl[f(x') - f(x)\bigr]^2 \1\{\|x' - x\| \leq \varepsilon\} \,d\mu(x') + \|\eta\|_{\infty} \int_{\mc{X}}\bigl[f(x') - f(x)\bigr]^2 \1\bigl\{\varepsilon \|x' - x\| \leq \wt{\varepsilon}\bigr\} \,d\mu(x') \\
+A_1(x) \leq \frac{8L_{\eta}\varepsilon^2}{R^2}\int_{\mc{X}}\bigl[f(x') - f(x)\bigr]^2 \1\{\|x' - x\| \leq \varepsilon\} \,d\mu(x') + \|\eta\|_{\infty} \int_{\mc{X}}\bigl[f(x') - f(x)\bigr]^2 \1\bigl\{\varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon}\bigr\} \,d\mu(x') \\
 \end{equation*}
 Integrating over $\mc{X}$, we conclude from Lemma~\ref{lem:dirichlet_energy_remainder} and Lemma~3.3 of \citep{burago2014} and  that
 \begin{equation*}
@@ -918,9 +920,10 @@ We use Lemma~\ref{lem:dirichlet_energy_remainder} to help upper bound the error 
 \begin{lemma}
 	\label{lem:dirichlet_energy_remainder}
 	Suppose Model~\ref{def:model_manifold}, and additionally that $f \in H^1(\mc{X})$. There exist constants $c$ and $C$ such that for any $\varepsilon < c$,
-	\begin{equation*}
-	\int_{\mc{X}} \int_{\mc{X}} \bigl(f(x') - f(x)\bigr)^2 \1\{\varepsilon < \|x' - x\| < \wt{\varepsilon}\} \,dP(x') \,dP(x) \leq C \varepsilon^{4 + m} \|f\|_{H^1(\mc{X})}^2
-	\end{equation*}
+	\begin{equation}
+	\label{eqn:dirichlet_energy_remainder}
+	\int_{\mc{X}} \int_{\mc{X}} \bigl(f(x') - f(x)\bigr)^2 \1\{\varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon}\} \,d\mu(x') \,d\mu(x) \leq C \varepsilon^{4 + m} \|f\|_{H^1(\mc{X})}^2
+	\end{equation}
 \end{lemma}
 
 Finally, we use Lemma~\ref{lem:manifold_graph_seminorm_bias2} to show that the pure bias component of $\dotp{L_n^sf,f}_n$ is small in expectation. This is analogous to Lemma~\ref{lem:graph_seminorm_bias2}, except assuming Model~\ref{def:model_manifold} rather than Model~\ref{def:model_flat_euclidean}.
@@ -938,14 +941,22 @@ Define the non-local energy $\wt{E}_{P,\varepsilon}$ with respect to geodesic di
 \begin{equation*}
 \wt{E}_{P,\varepsilon}(f;{\mc{X}}) := \dotp{\wt{L}_{P,\varepsilon}f}{f}_{P} = \int_{\mc{X}} \int_{\mc{X}} \bigl(f(x') - f(x)\bigr)^2 \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr) \,dP(x') \,dP(x).
 \end{equation*}
-From the lower bound in~\eqref{eqn:distance_error}, it follows that $E_{P,\varepsilon}(f;X) \leq \wt{E}_{P,\varepsilon}(f;{\mc{X}})$, and from the upper bounds $p(x) \leq p_{\max}$ and $\eta(|x|) \leq \|\eta\|_{\infty} \cdot \1{x \in [-1,1]}$ we further have
+From the lower bound in~\eqref{eqn:distance_error}, it follows that $E_{P,\varepsilon}(f;X) \leq \wt{E}_{P,\varepsilon}(f;{\mc{X}})$, and from the upper bounds $p(x) \leq p_{\max}$ and $\eta(|x|) \leq \|\eta\|_{\infty} \cdot \1\{x \in [-1,1]\}$ we further have
 \begin{equation*}
 \wt{E}_{P,\varepsilon}(f;{\mc{X}}) \leq p_{\max}^2 \|\eta\|_{\infty} \cdot \int_{\mc{X}} \int_{B_{\mc{X}}(\varepsilon)} \bigl(f(x') - f(x)\bigr)^2 \,d\mu(x') \,d\mu(x).
 \end{equation*}
 The estimates~\eqref{eqn:dirichlet_energy_l2} and~\eqref{eqn:dirichlet_energy_sobolev} then respectively follow from (3.1) and Lemma~3.3 of \cite{burago2014}.
 
 \paragraph{Proof (of Lemma~\ref{lem:dirichlet_energy_remainder}).}
-\textcolor{red}{(TODO)}
+Following exactly the steps of the proof of Lemma~3.3 of \citet{burago2014}, but replacing all references to a ball of radius $r$ by references to the set difference between balls of radius $\wt{\varepsilon}$ and $\varepsilon$, we obtain that
+\begin{equation*}
+\int_{\mc{X}} \int_{\mc{X}} \bigl(f(x') - f(x)\bigr)^2 \1\{\varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon}\} \,d\mu(x') \,d\mu(x) \leq (1 + CmK\varepsilon^2) \cdot \int_{\mc{X}} \int_{B_{m}(0,\wt{\varepsilon})} |d_x^{1}f(v)|^2 \,dv \,d\mu(x).
+\end{equation*}
+From (2.7) of~\citet{burago2014}, we further have
+\begin{equation*}
+\int_{\mc{X}} \int_{B_{m}(0,\wt{\varepsilon})} |d_x^{1}f(v)|^2 \,dv \,d\mu(x)  = \frac{\nu_m}{2 + m} (\wt{\varepsilon}^{2 + m} - \varepsilon^{2 + m}) \int_{\mc{X}} |d_x^1f|^2 \,d\mu(x) = 27\frac{\nu_m}{(2 + m)R^2} \varepsilon^{4 + m} \|d^1f\|_{\Leb^2(\mc{X})}^2. 
+\end{equation*}
+Recalling that $\|d^1f\|_{\Leb^2(\mc{X})}^2 \leq \|f\|_{H^1(\mc{X})}^2$, we see that this implies the claim of Lemma~\ref{lem:dirichlet_energy_remainder}.
 
 \paragraph{Proof (of Lemma~\ref{lem:manifold_graph_seminorm_bias2}).}
 The proof of Lemma~\ref{lem:manifold_graph_seminorm_bias2} is identical to the proof of Lemma~\ref{lem:graph_seminorm_bias2}, upon substituting the ambient dimension $m$ for the intrinsic dimension $d$, and using Lemma~\ref{lem:dirichlet_energy_sobolev} rather than Lemma~\ref{lem:dirichlet_estimate_nonlocal_laplacian} to establish~\eqref{pf:graph_seminorm_bias2_1}.
@@ -1095,35 +1106,55 @@ Unlike in the proof of Theorem~\ref{thm:laplacian_eigenmaps_testing_fo}, we note
 
 \section{Analysis of kernel smoothing}
 \label{subsec:kernel_smoothing}
-In this section we prove Lemma~\ref{lem:kernel_smoothing_insample} (in Section~\ref{subsec:pf_kernel_smoothing_insample}) and Lemma~\ref{lem:kernel_smoothing_bias} (in Section~\ref{subsec:pf_kernel_smoothing_bias}). In Section~\ref{subsec:eigenmaps_beats_kernel_smoothing}, we give a sequence of design densities and regression functions $\{p^{(n)}(x), f_0^{(n)}(x)\}_{n \in \mathbb{N}}$ for which the estimator $T_{h,n}\wc{f}$ (kernel extension of Laplacian eigenmaps) strictly outperforms directly kernel smoothing the responses, in the sense that
+In this section we prove Lemma~\ref{lem:kernel_smoothing_insample} (in Section~\ref{subsec:pf_kernel_smoothing_insample}) and Lemma~\ref{lem:kernel_smoothing_bias} (in Section~\ref{subsec:pf_kernel_smoothing_bias}). In Section~\ref{subsec:eigenmaps_beats_kernel_smoothing}, we give a sequence of design densities and regression functions $\{p^{(n)}(x), f_0^{(n)}(x)\}_{n \in \mathbb{N}}$ for which the estimator $T_{n,h}\wc{f}$ (extension of Laplacian eigenmaps by kernel smoothing) strictly outperforms directly kernel smoothing the responses, in the sense that
 \begin{equation*}
-\lim_{n \to \infty} \sup_{h'} \frac{\Ebb \|T_{h,n}\wh{f} - f_0\|_P^2}{\Ebb \|T_{h',n}Y - f_0\|_P^2 } = 0.
+\lim_{n \to \infty} \sup_{h'} \frac{\Ebb \|T_{n,h}\wh{f} - f_0\|_P^2}{\Ebb \|T_{h',n}Y - f_0\|_P^2 } = 0.
 \end{equation*}
+We begin with some preliminary estimates in Section~\ref{subsec:kernel_smoothing_preliminaries}, which will ease the subsequent analysis.
+\subsection{Some preliminary estimates}
+\label{subsec:kernel_smoothing_preliminaries}
+In certain parts the analysis of this section will overlap with Section~\ref{sec:graph_quadratic_form_euclidean}, where we upper bounded the non-local graph-Sobolev seminorm of a function $f$ in terms of the Sobolev norm of $f$. To see why this should be, note that for an function $f$ and point $x \in \mc{X}$, we have
+\begin{equation*}
+T_{P,h}f(x) - f(x) = \frac{1}{d_{Q,h}(x)} \int \bigl(f(x') - f(x)\bigr) \psi\biggl(\frac{\|x' - x\|}{h}\biggr) \,dQ(x') = \frac{h^{d + 2}}{d_{P,h}(x)} L_{P,h}f(x).
+\end{equation*}
+This expression reflects the known fact that the bias operator of kernel smoothing is equal to the non-local Laplacian, up to a rescaling by the population degree functional $d_{P,h}(x)$.  In the second equality, we are using the notation $L_{P,h}f(x)$ exactly as defined in~\eqref{eqn:nonlocal_laplacian}, but with the kernel $\psi$ instead of $\eta$. Note that $\psi$ satisfies all the same assumptions as $\eta$, except that of positivity; when $\psi$ is a higher-order kernel it may take negative values. 
+
+Now we provide a lower bound on $d_{P,h}(x)$ that holds uniformly over all $x \in \mc{X}$. Recall that by assumption the density $p$ is Lipschitz. Letting $L_p$ denote the Lipschitz constant of $p$, we have that
+\begin{align*}
+d_{P,h}(x) & = \int \psi\biggl(\frac{\|x' - x\|}{h}\biggr) p(x') \,dx' \\
+& = h^d \int \psi(\|z\|) p(hz + x) \1\Bigl\{ hz + x \in \mc{X} \Bigr\} \,dz \\
+& \geq h^d p(x) \int \psi(\|z\|) \1\Bigl\{ hz + x  \in \mc{X}\Bigr\} \,dz - L_p h^{d + 1} \|\psi\|_{\infty} \nu_d.
+\end{align*}
+Since by assumption $\mc{X}$ has Lipschitz boundary, setting $c_0$ to be a sufficiently small constant in~\ref{asmp:bandwidth}, we can further deduce that $\int \psi(\|z\|) \1\{hz + x \in \mc{X}\} \,dz \geq 1/3$, and consequently that
+\begin{equation}
+\label{eqn:degree_lower_bound}
+d_{P,h}(x) \geq \frac{p(x)}{3} h^d \geq \frac{p_{\min}}{3}h^d \quad \textrm{for all $x \in \mc{X}$.}
+\end{equation}
 
 \subsection{Proof of Lemma~\ref{lem:kernel_smoothing_insample}}
 \label{subsec:pf_kernel_smoothing_insample}
 
-To begin with, we apply the triangle inequality to upper bound $\|T_{h,n}\wc{f} - f_0\|_P$ by the sum of two terms,
+To begin with, we apply the triangle inequality to upper bound $\|T_{n,h}\wc{f} - f_0\|_P$ by the sum of two terms,
 \begin{equation}
 \label{pf:kernel_smoothing_insample_1}
-\|T_{h,n}\wc{f} - f_0\|_P \leq \|T_{h,n}(\wc{f} - f_0)\|_P + \|T_{h,n}f_0 - f_0\|_P.
+\|T_{n,h}\wc{f} - f_0\|_P \leq \|T_{n,h}(\wc{f} - f_0)\|_P + \|T_{n,h}f_0 - f_0\|_P.
 \end{equation}
 We proceed by separately upper bounding each term on the right hand side of~\eqref{pf:kernel_smoothing_insample_1}. We will show that
 \begin{equation}
 \label{pf:kernel_smoothing_insample_2}
-\|T_{h,n}(\wc{f} - f_0)\|_P^2 \leq C \|\wc{f} - f_0\|_n^2
+\|T_{n,h}(\wc{f} - f_0)\|_P^2 \leq C \|\wc{f} - f_0\|_n^2
 \end{equation}
 and that 
 \begin{equation}
 \label{pf:kernel_smoothing_insample_3}
-\|T_{h,n}f_0 - f_0\|_P^2 \leq \frac{C}{\delta} \cdot \frac{h^2}{nh^d} |f|_{H^1(\mc{X})}^2 + \frac{C}{\delta}\|T_{h,P}f_0 - f_0\|_P^2,
+\|T_{n,h}f_0 - f_0\|_P^2 \leq \frac{C}{\delta} \cdot \frac{h^2}{nh^d} |f|_{H^1(\mc{X})}^2 + \frac{C}{\delta}\|T_{h,P}f_0 - f_0\|_P^2,
 \end{equation}
 each with probability at least $1 - C\exp(-cnh^d)$. Together these will imply the claim. 
 
 \underline{\emph{Proof of~\eqref{pf:kernel_smoothing_insample_2}}.}
 Fix $x \in \mc{X}$. By the Cauchy-Schwarz inequality we have
 \begin{align*}
-\Bigl[T_{h,n}\bigl(\wc{f} - f_0\bigr)(x)\Bigr]^2 & = \Biggl[\frac{1}{d_{n,h}(x)^2}\int \psi\biggl(\frac{\|x' - x\|}{h}\biggr) \cdot \bigl(\wc{f}(x') - f_0(x')\bigr) \,dP_n(x')\Biggr]^2 \\
+\Bigl[T_{n,h}\bigl(\wc{f} - f_0\bigr)(x)\Bigr]^2 & = \Biggl[\frac{1}{d_{n,h}(x)^2}\int \psi\biggl(\frac{\|x' - x\|}{h}\biggr) \cdot \bigl(\wc{f}(x') - f_0(x')\bigr) \,dP_n(x')\Biggr]^2 \\
 & \leq \Biggl[\frac{1}{d_{n,h(x)}^2} \int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \,dP_n(x')\Biggr] \cdot \Biggl[\int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x')\Biggr] \\
 & = \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \frac{1}{|d_{n,h}(x)|} \Biggl[\int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x')\Biggr].
 \end{align*}
@@ -1131,7 +1162,7 @@ In the last line all we have done is written $d_{n,h}^{+}(x)$ for the degree fun
 
 Now we integrate over $x \in \mc{X}$ to get 
 \begin{align}
-\|T_{h,n}(\wc{f} - f_0)\|_P^2 & = \int \Bigl[T_{h,n}\bigl(\wc{f} - f_0\bigr)(x)\Bigr]^2 \,dP(x) \nonumber \\
+\|T_{n,h}(\wc{f} - f_0)\|_P^2 & = \int \Bigl[T_{n,h}\bigl(\wc{f} - f_0\bigr)(x)\Bigr]^2 \,dP(x) \nonumber \\
 & \leq \int \int \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \frac{1}{|d_{n,h}(x)|} \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x') \,dP(x) \nonumber \\
 & \leq \sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \int \int  \frac{1}{|d_{n,h}(x)|} \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP(x) \,dP_n(x') \nonumber \\
 & \leq \sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x) d_{P,h}^+(x)}{|d_{n,h}(x)|^2} \cdot \|\wc{f} - f_0\|_n^2. \label{pf:kernel_smoothing_insample_4}
@@ -1173,42 +1204,101 @@ Integrating with respect to $P$ gives
 \begin{align*}
 \Ebb\biggl[\int \Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2 \,dP(x)\biggr] & = \int \Ebb\Bigl[\Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2\Bigr] \,dP(x) \\
 & \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{1}{n}\int \int \frac{1}{\bigl(d_{P,h}(x)\bigr)^2} \bigl(f_0(x') - f_0(x)\bigr)^2 \cdot \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr|^2 \,dP(x') \,dP(x) \\
-& \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{3}{p_{\min}nh^d} \wt{E}_{P,h}(f_0),
+& \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{3h^2}{p_{\min}n} \wt{E}_{P,h}(f_0;\psi^2).
 \end{align*}
-where in the final inequality we have used the lower bound on $d_{P,h}(x)$ from~\eqref{eqn:degree_lower_bound}, and defined $\wt{E}_{P,h}(f_0)$ to be the non-local Dirichlet energy with respect to the kernel $\psi^2$. 
+In the final inequality we have used the lower bound on $d_{P,h}(x)$ from~\eqref{eqn:degree_lower_bound}, and written $E_{P,h}(f_0;\psi^2)$ for the non-local Dirichlet energy defined with respect to the kernel $\psi^2$. 
 
 Putting the pieces together, we conclude that
 \begin{align*}
 \|T_{n,h}f_0(x) - f_0(x)\|_P^2 & = \int \bigl(T_{n,h}f_0(x) - f_0(x)\bigr)^2 \,dP(x) \\
 & \leq \sup_{x \in \mc{X}} \biggl[\frac{d_{P,h}(x)}{d_{n,h}(x)}\biggr]^2 \cdot \int \Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2 \,dP(x) \\
-& \overset{(i)}{\leq} 4\frac{\| T_{P,h}f_0 - f_0\|_P^2}{\delta} + \frac{12}{\delta p_{\min}nh^d} \wt{E}_{P,h}(f_0) \\
-& \overset{(ii)}{\leq}  4\frac{\| T_{P,h}f_0 - f_0\|_P^2}{\delta} + \frac{C}{\delta p_{\min}nh^d} h^2 |f_0|_{H^1(\mc{X})}^2
+& \overset{(i)}{\leq} 4\frac{\| T_{P,h}f_0 - f_0\|_P^2}{\delta} + \frac{12h^2}{\delta p_{\min}nh^d} {E}_{P,h}(f_0;\psi^2) \\
+& \overset{(ii)}{\leq}  4\frac{\| T_{P,h}f_0 - f_0\|_P^2}{\delta} + \frac{Ch^2}{\delta p_{\min}nh^d} |f_0|_{H^1(\mc{X})}^2,
 \end{align*}
-with probability at least $1 - \delta - C\exp(-cnh^d)$. In $(i)$ we have used Markov's inequality, and in $(ii)$ we have applied the estimate~\eqref{pf:estimate_nonlocal_seminorm_1} to the non-local Dirichlet energy $\wt{E}_{P,h}(f_0)$. This establishes~\eqref{pf:kernel_smoothing_insample_3}.
+with probability at least $1 - \delta - C\exp(-cnh^d)$. In $(i)$ we have used Markov's inequality, and in $(ii)$ we have applied the estimate~\eqref{pf:estimate_nonlocal_seminorm_1} to the non-local Dirichlet energy ${E}_{P,h}(f_0;\psi^2)$. This establishes~\eqref{pf:kernel_smoothing_insample_3}.
 
 \subsection{Kernel smoothing bias}
 \label{subsec:pf_kernel_smoothing_bias}
-
+Lemma~\ref{lem:kernel_smoothing_bias} gives the necessary upper bounds on the bias of kernel smoothing.
 \begin{lemma}
 	\label{lem:kernel_smoothing_bias}
-	Suppose Model~\ref{def:model_flat_euclidean}, and that the smoothing operator $T_{h,P}$ is computed with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel}.
+	Suppose Model~\ref{def:model_flat_euclidean}, and that the kernel smoothing operator $T_{P,h}$ is computed with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel}.
 	\begin{itemize}
-		\item If $f_0 \in H^1(\mc{X})$, it follows that
+		\item If $f_0 \in H^1(\mc{X})$, then there exists a constant $C$ which does not depend on $f_0$ such that
 		\begin{equation*}
-		\|T_{h,P}f_0 - f_0\|_P^2 \leq C h^{2} |f|_{H^1(\mc{X})}^2.
+		\|T_{P,h}f_0 - f_0\|_P^2 \leq C h^{2} |f|_{H^1(\mc{X})}^2.
 		\end{equation*}
-		\item If $f_0 \in H_0^{s}(\mc{X})$, $p \in C^{s - 1}(\mc{X})$, it follows that
+		\item If $f_0 \in H_0^{s}(\mc{X})$, $p \in C^{s - 1}(\mc{X})$, and $\eta$ satisfies~\ref{asmp:ho_kernel}, then there exists a constant $C$ which does not depend on $f_0$ such that
 		\begin{equation*}
-		\|T_{h,P}f_0 - f_0\|_P^2 \leq C h^{2s} |f|_{H^s(\mc{X})}^2.
+		\|T_{P,h}f_0 - f_0\|_P^2 \leq C h^{2s} |f|_{H^s(\mc{X})}^2.
 		\end{equation*}
 	\end{itemize}
 \end{lemma}
+We separately prove the first-order ($s = 1$) and higher-order ($s > 1$) parts of Lemma~\ref{lem:kernel_smoothing_bias}. In both cases, the proof will rely heavily on results already established regarding the non-local Laplacian $L_{P,h}$ and non-local Dirichlet energy $E_{P,h}$, which we recall are given for a kernel function $\mc{K}$ by
+\begin{equation*}
+L_{P,h}f(x) = \frac{1}{h^{d + 2}} \int \bigl(f(x') - f(x)\bigr)\mc{K}\biggl(\frac{\|x' - x\|}{h}\biggr)\,dP(x'),
+\end{equation*}
+and $E_{P,h}(f;\mc{K}) = \dotp{L_{P,h}f}{f}_{P}$, respectively. 
 
+\paragraph{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $s = 1$.}
+Using the conclusions from Section~\ref{subsec:kernel_smoothing_preliminaries}, we have that
+\begin{equation}
+\label{pf:kernel_smoothing_bias_1}
+\|T_{P,h}f - f\|_P^2 \leq \frac{9h^4}{p_{\min}^2} \int \bigl[L_{P,h}f(x)\bigr]^2 \,dP(x).
+\end{equation}
+By the Cauchy-Schwarz inequality, we have that
+\begin{align*}
+\int \bigl[L_{P,h}f(x)\bigr]^2 \,dP(x) & = \frac{1}{h^{2d + 4}}\int \biggl[\int \bigl(f(x') - f(x)\bigr)\psi\biggl(\frac{\|x' - x\|}{h}\biggr) \,dP(x')\biggr]^2 \,dP(x) \\
+& \leq \frac{C}{h^{d + 4}} \int \int \bigl(f(x') - f(x)\bigr)^2 \cdot \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \,dP(x') \,dP(x) \\
+& = \frac{C}{h^{2}} E_{P,h}(f;|\psi|).
+\end{align*}
+Applying the estimate~\eqref{pf:estimate_nonlocal_seminorm_1} to the non-local Dirichlet energy ${E}_{P,h}(f;|\psi|)$ and plugging back into~\eqref{pf:kernel_smoothing_bias_1} gives the claimed result.
+
+\paragraph{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $s > 1$.}
+Proceeding from~\eqref{pf:kernel_smoothing_bias_1}, we separate the integral into the portion sufficiently in the interior of $\mc{X}$ and that near the boundary, obtaining
+\begin{equation}
+\label{pf:kernel_smoothing_bias_2}
+\|T_{P,h}f - f\|_P^2 \leq\frac{9p_{\max}h^4}{p_{\min}^2}\Bigl(\|L_{P,h}f\|_{L^2(\mc{X}_h)}^2 + \|L_{P,h}f\|_{L^2(\partial_{h}(\mc{X}))}^2\Bigr).
+\end{equation}
+In Lemma~\ref{lem:approximation_error_nonlocal_laplacian_boundary}, we established a sufficient upper bound on the second term,
+\begin{equation*}
+\|L_{P,h}f\|_{L^2(\partial_{h}(\mc{X}))}^2 \leq Ch^{2(s - 2)} \|f\|_{H^s(\mc{X})}^2.
+\end{equation*}
+Thus it remains to upper bound the first term. Here we recall that at a given $x \in \mc{X}_h$, we can write
+\begin{align*}
+L_{P,h}f(x) & = \frac{1}{h^{2}}\sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1}\frac{h^{j_1 + j_2}}{j_1!j_2!}  \int d_x^{j_1}f(z) d_x^{j_2}p(z) \psi\bigl(\|z\|\bigr) \,dz \quad + \\
+& \quad \frac{1}{h^{2}} \sum_{j = 1}^{s - 1} \frac{h^j}{j!} \int d_x^jf(z)  r_{zh + x}^{q}(x;p) \psi\bigl(\|z\|\bigr) \,dz \quad  + \\
+& \quad \frac{1}{h^{2}} \int r_{zh + x}^j(x;f) \psi\bigl(\|z\|\bigr) p(zh + x)\,dz \\
+& = G_1(x) + G_2(x) + G_3(x).
+\end{align*}
+(Here $q = s - 1$.) 
+
+We have already given sufficient upper bounds on $\|G_j\|_{L^2(\mc{X}_{h})}$ for $j = 2,3$ in~\eqref{pf:approximation_error_nonlocal_laplacian_2}.  Thus it remains only to upper bound $\|G_1\|_{L^2(\mc{X}_h)}$. Recall the expansion of $G_1$ from~\eqref{pf:approximation_error_nonlocal_laplacian_3},
+\begin{equation*}
+G_1(x) = \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1} \frac{h^{j_1 + j_2 - 2}}{j_1!j_2!}  \underbrace{\int_{B(0,1)} d_x^{j_1}f(z) d_x^{j_2}p(z) \eta(\|z\|) \,dz}_{:= g_{j_1,j_2}(x)}.
+\end{equation*}
+Noting that $d_x^{j_1} \cdot d_x^{j_2}$ is a degree-$(j_1 + j_2)$ multivariate polynomial, and recalling that $\psi$ is an order-$s$ kernel, we have that 
+\begin{equation*}
+\int g_{j_1,j_2}(z) \psi\bigl(\|z\|\bigr) \,dz = 0,\quad \textrm{for all $j_1,j_2$ such that $j_1 + j_2 < s$.}
+\end{equation*}
+Otherwise, derivations similar to those used in the proof of Lemma~\ref{lem:approximation_error_nonlocal_laplacian} imply that
+\begin{equation*}
+\|g_{j_1,j_2}\|_{L^2(\mc{X}_h)} \leq C \|f\|_{H^s(\mc{X})} \|p\|_{C^{s - 1}(\mc{X})},\quad \textrm{for all $j_1,j_2$ such that $j_1 + j_2 \geq s$,}
+\end{equation*}
+from which it follows that
+\begin{equation*}
+\|G_1\|_{L^2(\mc{X}_h)}^2 \leq C  h^{2(s - 2)} \|f\|_{H^s(\mc{X})} \|p\|_{C^{s - 1}(\mc{X})}.
+\end{equation*}
+Together these upper bounds on $\|G_j\|_{L^2(\mc{X}_j)}$ for $j = 1,2,3$ imply that
+\begin{equation*}
+\|L_{P,h}f\|_{\mc{X}_h}^2 \leq Ch^{2(s - 2)} \|f\|_{H^s(\mc{X})}^2,
+\end{equation*}
+and plugging this back into~\eqref{pf:kernel_smoothing_bias_2} yields the claim.
 
 \subsection{Comparison of Laplacian eigenmaps to kernel smoothing}
 \label{subsec:eigenmaps_beats_kernel_smoothing}
 
-In this section, we give a sequence of densities $p^{(n)}$ and regression functions $f_0^{(n)}$ for which the $L^2(P)$ error of the two-stage estimator $T_{h,n}\wh{f}$ is stochastically dominated by the $L^2(P)$ error of applying kernel smoothing directly to the responses. We begin by precisely setting up the problem and reviewing the two estimators we will compare. Then we give and prove our formal claim.
+In this section, we give a sequence of densities $p^{(n)}$ and regression functions $f_0^{(n)}$ for which the $L^2(P)$ error of the two-stage estimator $T_{n,h}\wh{f}$ is stochastically dominated by the $L^2(P)$ error of applying kernel smoothing directly to the responses. We begin by precisely setting up the problem and reviewing the two estimators we will compare. Then we give and prove our formal claim.
 
 \paragraph{Setup.}
 As usual, we assume the design points $(X_1,\ldots,X_n)$ are sampled independently from a distribution $P$, and the responses
@@ -1401,18 +1491,8 @@ In the proof of Lemma~\ref{lem:kernel_smoothing_insample}, we require uniform co
 	C_1\sqrt{nh^d \log(1/h)} \leq t \leq c_1 nh^d.
 	\end{equation}
 \end{lemma}
-Now we translate Lemma~\ref{lem:uniform_bound_empirical_degree} into a multiplicative bound, which will be more useful for our purposes. By assumption, the density $p$ is Lipschitz. Letting $L_p$ denote the Lipschitz constant of $p$, we have that
-\begin{align*}
-d_{P,h}(x) & = \int \psi\biggl(\frac{\|x' - x\|}{h}\biggr) p(x') \,dx' \\
-& = h^d \int \psi(\|z\|) p(hz + x) \1\Bigl\{ hz + x \in \mc{X} \Bigr\} \,dz \\
-& \geq h^d p(x) \int \psi(\|z\|) \1\Bigl\{ hz + x  \in \mc{X}\Bigr\} \,dz - L_p h^{d + 1} \|\psi\|_{\infty} \nu_d.
-\end{align*}
-Since by assumption $\mc{X}$ has Lipschitz boundary, setting $c_0$ to be a sufficiently small constant in~\ref{asmp:bandwidth}, we can further deduce that $\int \psi(\|z\|) \1\{hz + x \in \mc{X}\} \,dz \geq 1/3$, and consequently that
-\begin{equation}
-\label{eqn:degree_lower_bound}
-d_{P,h}(x) \geq h^d \frac{p(x)}{3} \geq h^d \frac{p_{\min}}{3} \quad \textrm{for all $x \in \mc{X}$.}
-\end{equation}
-On the other hand, by setting $C_0$ to be a sufficiently large constant in~\ref{asmp:bandwidth}, we can ensure that choosing $t = n h^d p_{\min}/6$ satisfies both the inequalities~\eqref{eqn:uniform_bound_empirical_degree_1}. For this choice of $t$ it follows from~\eqref{eqn:degree_lower_bound} and Lemma~\ref{lem:uniform_bound_empirical_degree} that
+Now we translate Lemma~\ref{lem:uniform_bound_empirical_degree} into a multiplicative bound, which will be more useful for our purposes. 
+Recall the lower bound on $d_{P,h}(x)$ given in~\eqref{eqn:degree_lower_bound}. By setting $C_0$ to be a sufficiently large constant in~\ref{asmp:bandwidth}, we can ensure that choosing $t = n h^d p_{\min}/6$ satisfies both the inequalities~\eqref{eqn:uniform_bound_empirical_degree_1}. For this choice of $t$ it follows from~\eqref{eqn:degree_lower_bound} and Lemma~\ref{lem:uniform_bound_empirical_degree} that
 \begin{equation}
 \label{eqn:uniform_bound_empirical_degree_2}
 \sup_{x \in \Rd} \biggl|\frac{d_{n,h}(x) - d_{P,h}(x)}{d_{P,h}(x)}\biggr| \leq \sup_{x \in \Rd} \biggl|\frac{d_{n,h}(x) - d_{P,h}(x)}{2t/n}\biggr| \leq \frac{1}{2}
@@ -1421,11 +1501,13 @@ with probability at least $1 - C\exp(-cnh^d)$. This is the form of the result we
 
 \subsection{Taylor expansion}
 \label{subsec:taylor_expansion}
+We begin with some notation that allows us to concisely derivatives. For a given $z \in \Rd$ and $s$-times differentiable function $f: \mc{X} \to \Reals$, we denote $\bigl(d_x^sf\bigr)(z) := \sum_{\abs{\alpha} = s} D^{\alpha}f(x) z^{\alpha}$. We also write $d^sf := \sum_{\abs{\alpha} = j} D^{\alpha}f$. We point out that in the first-order case $d_x^1f$ is the differential of $f$ at $x \in \mc{X}$, while $d^1f$ is the divergence of $f$.
+
 Let $u$ be a function which is $s$ times continuously differentiable at all $x \in \mc{X}$, for $k \in \mathbb{N}\setminus\{0\}$. Suppose that for some $h > 0$, $x \in \mc{X}_{h}$ and $x' \in B(x,h)$. We write the order-$s$ Taylor expansion of $u(x')$ around $x' = x$ as
 \begin{equation*}
 u(x') = u(x) + \sum_{j = 1}^{s - 1} \frac{1}{j!}\bigl(d_x^{j}u\bigr)(x' - x) + r_{x'}^{s}(x;u)
 \end{equation*}
-For notational convenience we have adopted the convention that $\sum_{j = 1}^{0} a_j = 0$. For a given $z \in \Rd$ and $j$-times differentiable function $f: \mc{X} \to \Reals$, we have used the notation $\bigl(d_x^jf\bigr)(z) := \sum_{\abs{\alpha} = j} D^{\alpha}f(x) z^{\alpha}$. Thus $\bigl(d_x^{j}f\bigr)(z)$ is a degree-$j$ polynomial---and so a $j$-homogeneous function---in $z$, meaning for any $t \in \Reals$,
+For notational convenience we have adopted the convention that $\sum_{j = 1}^{0} a_j = 0$.  Thus $\bigl(d_x^{j}f\bigr)(z)$ is a degree-$j$ polynomial---and so a $j$-homogeneous function---in $z$, meaning for any $t \in \Reals$,
 \begin{equation*}
 \bigl(d_x^{j}f\bigr)(tz) = t^{j} \cdot \bigl(d_x^{j}f\bigr)(z).
 \end{equation*}
@@ -1442,6 +1524,7 @@ whereas in $L^2(\mc{X}_{h})$ norm we have,
 \label{eqn:sobolev_remainder_term}
 \int_{\mc{X}_{h}} \bigl|r_{x + thz}^j(x;f)\bigr|^2 \,dx \leq h^{2j} \int_{\mc{X}_{h}} \int_{0}^{1} |d_{x + thz}^jf(z)|^2 \,dt \,dx \leq h^{2j} \|d^jf\|_{\Leb^2(\mc{X})}^2.
 \end{equation}
+In the last inequality 
 
 Finally, we recall some facts regarding the interaction between smoothing kernels and polynomials.  Let $q_j(z)$ be an arbitrary degree-$j$ (multivariate) polynomial. If $\eta$ is a radially symmetric kernel and $j$ is odd, then by symmetry it follows that
 \begin{equation*}
