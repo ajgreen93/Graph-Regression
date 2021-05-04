@@ -192,79 +192,47 @@
 \date{\today}
 \maketitle
 
-Recall the definition of an \emph{order-$m$ smoothing spline}. For observations $(x_1,y_1),\ldots,(x_n,y_n)$, design points $x_i$ each belonging to a domain $\Omega \subset \Rd$, 
+Recall the definition of an \emph{order-$m$ smoothing spline}. For observations $(x_1,y_1),\ldots,(x_n,y_n)$, design points $x_i$ each belonging to a open set with smooth boundary $\Omega \subset \Rd$, 
 \begin{equation}
 \label{eqn:smoothing_spline}
-\wh{g} = \argmin_{g \in G} \frac{1}{n} \sum_{i = 1}^{n} (y_i - g(x_i))^2 + \lambda |g|_{m}^2;
+\wh{g} = \argmin_{g \in H^1(\Omega)} \frac{1}{n} \sum_{i = 1}^{n} (y_i - g(x_i))^2 + \lambda |g|_{m}^2;
 \end{equation}
-here we use $|g|_{m}$ to denote the $H^m(\Omega)$, and $G$ to be an appropriately defined function class. The standard choice is $G = H^m(\Omega)$, in which case we must also choose $m > d/2$ to make~\eqref{eqn:smoothing_spline} be well-defined. 
+here we use $|g|_{m}$ to denote a Hilbert-Sobolev semi-norm on functions $H^m(\Omega)$, and we insist that $m > d/2$ to make~\eqref{eqn:smoothing_spline} be well-defined. 
 
-The goal of this note is to review properties of order-$m$ smoothing splines, and see if/when graph Laplacian smoothing possesses analogous properties. 
+The goal of this note is to review properties of the order-$m$ smoothing spline, to see if/when graph Laplacian smoothing possesses analogous properties, and to see if/when graph Laplacian smoothing possesses different properties. 
 
-\section{Well-posedness of smoothing splines}
-\textcolor{red}{(TODO)}
-
-\section{Optimality of smoothing splines}
-Suppose $x_1,\ldots,x_n$ are sampled independently from a \textcolor{red}{sufficiently regular} density $p$ on $\Omega$, and that
-\begin{equation}
-\label{model:regression}
-y_i = f_0(x_i) + \varepsilon_i,
-\end{equation}
-where $\varepsilon_i \sim N(0,1)$ are i.i.d. Gaussian noise that are also independent of $x_i$. Assume that $f_0 \in H^s(\Omega)$. What can we say about mean squared error $\|\wh{g} - g\|_P^2$?
-
-\textcolor{red}{(TODO)}:
-\begin{itemize}
-	\item Smoothing splines are optimal when $2m > s$. Is there a lower bound on $s$ relative to $m$ or $d$?
-	\item When $m < s < 2s$, the optimality requires some boundary conditions on $f_0$. Detail these boundary conditions and explain intuition behind why they are required. Compare with the boundary conditions required for orthogonal series/non-parametric least squares estimators to be optimal.
- 	\item Detail various techniques for establishing optimality. Refer to \textcolor{red}{(van der Geer, Nussbaum, Cox)}. Review pros and cons of each technique.
-\end{itemize}
-
-\section{Low-smoothness regime}
-We now introduce a \emph{restricted smoothing spline}, in order to compute estimates for $m < d/2$. Suppose we take $\Phi_N \subseteq G$ to be a finite set of $L^2(P)$-orthogonal low-frequency functions; formally $\Phi_N = \{\phi_1,\ldots,\phi_N\}$, where each $\phi_k$ satisfies the Laplacian eigenfunction equation,
-\begin{equation}
-\label{eqn:laplacian_eigen}
-\Delta_P \phi_k = \lambda_k \phi_k,\quad \frac{\partial}{\partial {\bf n}}\phi_k = 0.
-\end{equation}
-Let $F_N = \mathrm{span}\{\Phi_N\}$, and consider
-\begin{equation}
-\label{eqn:restricted_smoothing_spline}
-\wh{g}_{\Phi} = \argmin_{g \in F_N} \frac{1}{n} \sum_{i = 1}^{n} (y_i - g(x_i))^2 + \lambda |g|_{m}^2.
-\end{equation}
-The restricted smoothing spline~\eqref{eqn:smoothing_spline} is well-posed, and its solution $\wh{g}_{\Phi}$ possesses a relatively simple analytic solution. It may be totally impossible to exactly compute because it is difficult to exactly solve~\eqref{eqn:laplacian_eigen}, but that is besides the point. Now we analyze its statistical properties. To do so, we reduce the analysis to that of a related estimator in the Normal means/Gaussian sequence model.
-
-\textcolor{red}{(TODO)}
-\begin{itemize}
-	\item Refer to the results of \textcolor{blue}{(Birge and Massart)} for empirical risk minimization (ERM) over normed balls in H\"{o}lder spaces. Resolve why Birge and Massart find a phase transition at $m = 1, d = 2$, which is not at the $4m = d$ boundary; I suspect it is because Birge and Massart find the point at which the empirical process diverges.
-\end{itemize}
-
-\subsection{Gaussian sequence model}
-In the Gaussian sequence model, for each $i \in \mathbb{N}$ one observes
+\section{Gaussian sequence model}
+All calculations are easy in the Gaussian sequence model, and we begin there. Much of what we do is extracted from \textcolor{blue}{(Johnstone)}. In the Gaussian sequence model, for each $i \in \mathbb{N}$ one observes
 \begin{equation}
 \label{model:gaussian_sequence_model}
 Y_i = \theta_i^{\ast} + \frac{1}{\sqrt{n}}\varepsilon_i,\quad \varepsilon_i \sim N(0,1).
 \end{equation}
-Supposes the sequence $\theta^{\ast}$ possesses some ``smoothness''. In particular, suppose $\theta^{\ast}$ belongs to the \emph{order-$s$ Sobolev ellipsoid} of radius $M$, $\Theta^s = \{\theta: |\theta|_s \leq M\}$, where for $s \in \mathbb{N}$ the Sobolev seminorm $|\theta|_s$ is defined by
-\begin{equation*}
-|\theta|_s^2 := \sum_{j = 1}^{\infty} \theta_j^2 j^{2s/d}.
-\end{equation*}
-Consider the \emph{sequence smoothing spline} estimator, defined for $N \in \mathbb{N}$ as
+Consider the order-$m$ \emph{sequence smoothing spline} estimator,
 \begin{equation}
 \label{eqn:sequence_smoothing_spline}
-\wh{\theta}_{N} := \argmin_{\theta \in \ell^2(N)} |Y - \theta|_{0} + \lambda |\theta|_m^2, \quad \wh{\theta} := \lim_{N \to \infty} \wh{\theta}_{N}.
+\wh{\theta} := \argmin_{\theta \in \ell^2(\mathbb{N})} |Y - \theta|_{0} + \lambda |\theta|_m^2.
 \end{equation}
-Note that the sequence space estimator $\wh{\theta}$ is perfectly well-posed even though its analogous function space estimator is not. In fact, the sequence space estimator has the explicit solution
+where for $m \in \mathbb{N}$ the Sobolev seminorm $|\theta|_m$ is defined by
+\begin{equation*}
+|\theta|_m^2 := \sum_{j = 1}^{\infty} \theta_j^2 j^{2m/d}.
+\end{equation*}
+Note that the order-$m$ sequence smoothing spline $\wh{\theta}$ is perfectly well-posed when $m < d/2$, even though its analogous function space estimator is not. In fact, the sequence space estimator has the explicit solution
 \begin{equation}
 \wh{\theta}_{j} = Y_j[1 + \lambda j^{2m/d}]^{-1},
 \end{equation}
 showing that it is a shrinkage estimator.
 
+Now we analyze the minimax risk of $\wh{\theta}$ over Sobolev ellipsoids. That is, we upper bound the following quantity,
+\begin{equation*}
+\sup_{\theta^{\ast} \in \Theta^s} \Ebb\bigl[|\wh{\theta} - \theta^{\star}|_{0}^2\bigr]
+\end{equation*}
+where $\Theta^s = \{\theta: |\theta|_s \leq M\}$ is the \emph{order-$s$ Sobolev ellipsoid}. Note that we do not assume $s = m$. Note also that $|\cdot|_0$ is the usual norm over $\ell^2(\mathbb{N})$. Finally, a word on terminology: we will use the term ``order-$m$ smoothness'' to refer to the size of the squared norm $|\theta|_m^2$. Of course, these are sequences, and the notion of ``smooth'' sequences is not a totally natural concept. We use this wording regardless, to unify our discussion of Gaussian sequence and non-parametric regression models.
 \textcolor{red}{(TODO)}
 \begin{itemize}
-	\item Relate the sampling model~\eqref{model:gaussian_sequence_model} to~\eqref{model:regression}, and likewise relate the estimator~\eqref{eqn:sequence_smoothing_spline} to~\eqref{eqn:restricted_smoothing_spline}. Refer to \textcolor{blue}{(Tsybakov, Johnstone)}.
-	\item Show that in the Gaussian sequence model, if $m > \max\{d/4,s/2\}$ then~\eqref{eqn:sequence_smoothing_spline} achieves optimal $\ell_2$ loss when $N = \infty$.
+	\item Show that in the Gaussian sequence model, if $m > \max\{d/4,s/2\}$ then~\eqref{eqn:sequence_smoothing_spline} achieves optimal risk.
 \end{itemize}
 \subsection{``Failure'' of restricted smoothing splines in the very-low-smoothness regime}
-On the other hand, whenever $m \leq d/4$ meaningful restrictions on the size of $N$ kick in.
+On the other hand, whenever $m \leq d/4$ the estimator $\wh{\theta}$ is grossly sub-optimal. 
 \begin{lemma}
 	\label{lem:failure_very_low_smoothness}
 	Suppose we observe data $Y_1,Y_2,\ldots$ according to Model~\eqref{model:gaussian_sequence_model}. If we compute $\wh{\theta}$ and any $m \leq d/4$, then
@@ -319,34 +287,109 @@ The requirement $m \leq d/4$ is at first glance somewhat mysterious. It is nicel
 \end{proof}
 Lemma~\ref{lem:smoothness_of_sequence_smoothing_splines} has a particularly interesting interpretation when $r = 1$ or $r = 0$. 
 \begin{itemize}
-	\item When $r = 1$---corresponding to the first-order Sobolev norm--- Lemma~\ref{lem:smoothness_of_sequence_smoothing_splines} tells us that the sequence smoothing spline $\wh{\theta}$ has infinite $|\cdot|_1$ norm when $d \geq 2$. Remarkably, when $d = 2$ or $d = 3$, $\wh{\theta}$ continues to be optimal despite being an incredibly ``wiggly'' estimator of a ``smooth'' sequence. Note that this forecloses upon the possibility of analyzing $\wh{\theta}$ using uniform convergence over $\Theta^1(M)$, since $\wh{\theta}$ does not belong to this class for any finite $M$.
-	\item When $r = 0$---corresponding to the zeroth-order Sobolev norm, or in other words the $\ell^2$-norm---Lemma~\ref{lem:smoothness_of_sequence_smoothing_splines} tells us that the sequence smoothing spline $\wh{\theta}$ has infinite $\Theta^0$ norm when $d \geq 4$. Clearly, since the regression function $f_0$ has finite $\Theta^0$ norm, and the estimator $\wh{f}$ has infinite $\Theta^0$ norm, it follows from the triangle inequality that $|\wh{f} - f|_0 = \infty$. 
+	\item Consider $r = 1$, which corresponds to the first-order Sobolev norm. Lemma~\ref{lem:smoothness_of_sequence_smoothing_splines} tells us that the sequence smoothing spline $\wh{\theta}$ has infinite first-order Sobolev norm in expectation, $\Ebb|\wh{\theta}|_1 = \infty$, whenever $d \geq 2$. Remarkably, when $d = 2$ or $d = 3$, $\wh{\theta}$ continues to have optimal risk despite being an incredibly ``wiggly'' estimator of a ``smooth'' sequence. Note that this forecloses on the possibility of analyzing $\wh{\theta}$ using uniform convergence over $\Theta^1(M)$, since $\wh{\theta}$ does not belong to this class for any finite $M$.
+	\item Consider $r = 0$, which corresponds to the zeroth-order Sobolev norm, or in other words the $\ell^2$-norm. Lemma~\ref{lem:smoothness_of_sequence_smoothing_splines} tells us that the sequence smoothing spline $\wh{\theta}$ has infinite $\Theta^0$ norm when $d \geq 4$. Clearly, since the regression function $f_0$ has finite $\Theta^0$ norm, and the estimator $\wh{f}$ has infinite $\Theta^0$ norm, it follows from the triangle inequality that $|\wh{f} - f|_0 = \infty$. 
 \end{itemize}
 
 \textcolor{red}{(TODO)}
 \begin{itemize}
+	\item Do an analogous calculation for empirical risk minimization over $\Theta^1(M)$. Intuition, both from the above calculations and from \textcolor{blue}{(Birge and Massart)}, suggest that there is a phase transition at $d = 2$.  
 	\item Do an analogous calculation for the $\Theta^{1,1}$ case, with the estimator
 	\begin{equation*}
 	\wt{\theta}_{N} = \argmin_{\theta \in \ell^2(N)} |Y - \theta|_0^2 + \lambda |\theta|_{1,1}^2.
 	\end{equation*}
-	 Confirm your expectation: that when error measured in $|\cdot|_0$ norm and $d > 1$, this estimator is optimal when $N = n$, but not when $N = \infty$. This would give some evidence that the graph is saving the TV denoiser when $d > 1$.
-	 \item Figure out other smoothness properties of $\wh{\theta}_N$, for instance ``H\"{o}lder'' smoothness.
-	 \item Ponder what implication the lack-of-smoothness of sequence smoothing splines has for other problems (besides estimation with error measured in $|\cdot|_0$ norm).
+	Confirm your expectation: that when error measured in $|\cdot|_0$ norm and $d > 1$, this estimator is optimal when $N = n$, but not when $N = \infty$. This would give some evidence that the graph is saving the TV denoiser when $d > 1$.
+	\item Figure out other smoothness properties of $\wh{\theta}_N$, for instance ``H\"{o}lder'' smoothness.
+	\item Ponder what implication the lack-of-smoothness of sequence smoothing splines has for other problems (besides estimation with error measured in $|\cdot|_0$ norm).
 \end{itemize}
 
+\section{High-smoothness regime: optimality of smoothing splines}
+Suppose $x_1,\ldots,x_n$ are~\textcolor{red}{(well-spaced)} in $\Omega$, and that
+\begin{equation}
+\label{model:regression}
+y_i = f_0(x_i) + \varepsilon_i,
+\end{equation}
+where $\varepsilon_i \sim N(0,1)$ are i.i.d. Gaussian noise that are also independent of $x_i$. Assume that $f_0 \in H^s(\Omega)$. What can we say about in-sample mean squared error $\|\wh{g} - g\|_n^2$? What can we say about the out-of-sample mean squared error $\|\wh{g} - g\|_{L^2(\mc{X})}^2$?
 
+\textcolor{red}{(TODO)}:
+\begin{itemize}
+	\item Necessary conditions for the order-$m$ smoothing spline to be optimal are that $m > s/2$ and $m > d/2$. Are these sufficient conditions---at least, on the indices $(m,s,d)$---or is there a lower bound on $s$ relative to $m$ or $d$?
+	\item When $s/2 < m < s$, the aforementioned optimality properties require that $f_0$ satisfy some boundary conditions. Detail these boundary conditions and explain why they are necessary. Compare with the boundary conditions required for orthogonal series/non-parametric least squares estimators to be optimal.
+ 	\item Detail various techniques for establishing optimality. Refer to \textcolor{red}{(van der Geer, Nussbaum, Cox)}. Review pros and cons of each technique.
+\end{itemize}
 
+\section{Low-smoothness regime: optimality of restricted smoothing splines}
+We now introduce the order-$m$ \emph{restricted smoothing spline}, an alternative to the order-$m$ smoothing spline which makes sense when $m < d/2$. To define the order-m restricted smoothing spline, we first need to review the \emph{weighted Laplace-Beltrami operator} $\Delta_P$, and an associated eigenvector problem. For this purpose, we now introduce our formal assumptions on the design distribution $P$. Let $\nu$ denote the $d$-dimensional Lebesgue measure.
+\begin{assumption}[Design distribution $P$.]
+	\label{asmp:design}
+	The design distribution $P$ is supported on an open, bounded set $\Omega \subseteq \Rd$, which has $C^{\infty}$ boundary $\partial \Omega$. The distribution $P$ admits a $C^{\infty}(\Omega)$ density $p$ with respect to Lebesgue measure $\nu$, which is bounded away from $0$ and $\infty$, meaning that for some $p_{\min} < 1 < p_{\max}$
+	\begin{equation*}
+	0 \leq p_{\min} \leq p(x) \leq p_{\max} < \infty,\quad\textrm{for all $x \in \Omega$.}
+	\end{equation*}
+\end{assumption} 
+We note that the assumptions in~\eqref{asmp:design} are in a certain sense very strong, and quite likely overkill for any particular value of $s$ and $d$. The minimum conditions required on $P$ in order to have the operator $\Delta_P$ and its eigenvectors be ``sufficiently regular'' for statistical purposes is certainly of interest, but not the point of this note. 
 
+If $P$ satisfies Assumption~\ref{asmp:design}, the weighted Laplace-Beltrami operator $\Delta_P$ is defined as 
+\begin{equation*}
+\Delta_Pf := \frac{-1}{p} \mathrm{div}(p^2 \nabla f)~~\textrm{in $\Omega$}, \quad \frac{\partial f}{\partial {\bf n}} = 0~~\textrm{on $\partial \Omega$.}
+\end{equation*}
+(The second part of the statement above should interpreted in the usual way, to mean that $\Delta_P$ is an operator acting on those functions $f \in L^2(P)$ that satisfy Neumann boundary conditions). We see that $\Delta_P$ is a second-order symmetric differential operator, and is self-adjoint in $L^2(P)$; the assumptions on $p$ further imply that it is uniformly elliptic. As such it admits a discrete spectrum, with eigenvalues $0 < \lambda_1 \leq \lambda_2 \leq \cdots$, and corresponding eigenvectors $\psi_1,\psi_2,\ldots$ which form an orthonormal basis of $L^2(P)$. Standard theory (e.g. Theorem 6, Chapter 6.3 of \textcolor{blue}{(Evans)}) implies that each eigenvector $\psi_j \in C^{\infty}(\wb{\Omega})$. 
 
+Let $N$ be a positive integer. We define the order-$m$ restricted smoothing spline to be the penalized least squares estimator over the linear subspace  $\Phi_N = \mathrm{span}\{\psi_j: j \leq N\}$ of $L^2(P)$. Formally speaking,
+\begin{equation}
+\label{eqn:restricted_smoothing_spline}
+\wh{g}_{N} = \argmin_{g \in \Phi_N} \frac{1}{n} \sum_{i = 1}^{n} (y_i - g(x_i))^2 + \lambda |g|_{m}^2.
+\end{equation}
+The order-$m$ restricted smoothing spline defined in~\eqref{eqn:restricted_smoothing_spline} is well-posed. Let $\Gamma \in \Reals^{N \times N}$ be the matrix with entries $\Gamma_{ij} = \dotp{\psi_i}{\psi_j}_{m}$. For a given $\alpha \in \Reals^N$, define $g_{\alpha} = \sum_{i = j}^{N} \alpha_j \psi_j$. Then
+\begin{equation*}
+\wh{g}_{N} = \argmin_{\alpha \in \Reals^n} \frac{1}{n} \sum_{i = 1}^{n} (y_i - g_{\alpha}(x_i))^2 + \lambda \alpha^T \Gamma \alpha.
+\end{equation*}
+This is just a generalized ridge problem, and can be solved either exactly, or approximately by an iterative procedure.
 
+Unfortunately, it may be totally impossible to actually compute $\wh{g}_N$, because in order to do so we need access to the eigenfunctions $\psi_j$, which in turn requires knowing $P$. We ignore this problem for the moment, but return to it later when we introduce graph Laplacian smoothing methods. For now, we assume that we can compute the estimator defined by~\eqref{eqn:restricted_smoothing_spline}, and concentrate on analyzing its statistical properties. 
 
-\section{Relationship to Graph Laplacian methods}
+\textcolor{red}{(TODO)}
+\begin{itemize}
+	\item Analyze the statistical properties of the estimator defined in~\eqref{eqn:restricted_smoothing_spline}. Note that you are no longer clear about whether or not these are the same as the properties of the sequence model.
+\end{itemize}
+
+\section{Supervised graph Laplacian smoothing}
 
 \begin{itemize}
 	\item Review why your analysis of Laplacian smoothing breaks down when $d > 4$, making reference to the previous section. If possible, prove a lower bound to this effect. Compare with the analogous situation for restricted smoothing splines, pointing out that the discretization imposed by the graph improves the situation slightly.
 	\item Study whether order-$m$ Laplacian smoothing estimate is optimal over $H^1(\mc{X})$, as long as $m > d/4$. 
 	\item Explain why your analysis of Laplacian smoothing fails at estimation over $H^s(\mc{X})$ for $s > 1$. If possible, prove a lower bound.
 \end{itemize}
+
+\section{Semi-supervised graph Laplacian smoothing}
+
+Suppose now that in addition to the \emph{labeled} data $(x_1,y_1),\ldots,(x_n,y_n)$, we observe $m$ \emph{unlabeled} design points $x_{n + 1},\ldots,x_{n + m}$. Let $N = n + m$, and let $L_{N,\varepsilon}$ denote the graph Laplacian over labeled and unlabeled points,
+\begin{equation*}
+\bigl(L_{N,\varepsilon}u\bigr)_i := \frac{1}{N \varepsilon^{d + 2}}\sum_{j = 1}^{N} (u_i - u_j) \eta\biggl(\frac{\|x_i - x_j\|}{\varepsilon}\biggr).
+\end{equation*}
+The order-$m$ graph Laplacian smoothing estimator $\wh{f}$ defined in \textcolor{red}{(?)} can be naturally generalized to a vector in $\Reals^N$ according to the following formulation,
+\begin{equation}
+\label{eqn:ssl_graph_laplacian_smoothing_0}
+\wh{f}_N := \argmin_{f \in \Reals^N} \|Y - f\|_n^2 + \lambda \dotp{L_{N,\varepsilon}f}{f}_N.
+\end{equation}
+The estimator $\wh{f}$ has a closed-form solution, which can be simply written using the extension operator $E_{n \to N}: \Reals^{n} \to \Reals^N$ and its adjoint, the restriction operator $R_{N \to n}: \Reals^{N} \to \Reals^n$, which are defined by
+\begin{equation*}
+E_{n \to N}u := (u_1,\ldots,u_n,0,\ldots,0),\quad\textrm{and}\quad R_{N \to n}v := (v_1,\ldots,v_n).
+\end{equation*}
+Then the order-$m$ graph Laplacian smoothing estimator can be written as follows
+\begin{equation}
+\label{eqn:ssl_graph_laplacian_smoothing_1}
+\wh{f}_N = (E_{n \to N} R_{N \to n} + \frac{\rho n}{N} L_{N,\varepsilon})^{-1} E_{n \to N}Y.
+\end{equation}
+The form of~\eqref{eqn:ssl_graph_laplacian_smoothing_1} is a compact way to represent the solution $\wh{f}$, but it is rather opaque. In Proposition~\ref{prop:ssl_graph_laplacian_smoothing} we give a second form of $\wh{f}$, which is less compact but more evocative. 
+\begin{proposition}
+	\label{prop:ssl_graph_laplacian_smoothing}
+	Let $\wh{f}_N$ be the solution to~\eqref{eqn:ssl_graph_laplacian_smoothing_0}. Writing $\wh{f}_N = (\wh{f}_n,\wh{f}_m)$ for $\wh{f}_n \in \Reals^m$ and $\wh{f}_n \in \Reals^m$, we have the following.
+	\begin{itemize}
+		\item 
+	\end{itemize}
+\end{proposition}
+
 
 
 
