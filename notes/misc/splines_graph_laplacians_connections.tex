@@ -195,14 +195,14 @@
 Recall the definition of an \emph{order-$m$ smoothing spline}. For observations $(x_1,y_1),\ldots,(x_n,y_n)$, design points $x_i$ each belonging to a open set with smooth boundary $\Omega \subset \Rd$, 
 \begin{equation}
 \label{eqn:smoothing_spline}
-\wh{g} = \argmin_{g \in H^1(\Omega)} \frac{1}{n} \sum_{i = 1}^{n} (y_i - g(x_i))^2 + \lambda |g|_{m}^2;
+\wh{g} = \argmin_{g \in H^m(\Omega)} \frac{1}{n} \sum_{i = 1}^{n} (y_i - g(x_i))^2 + \lambda |g|_{m}^2;
 \end{equation}
 here we use $|g|_{m}$ to denote a Hilbert-Sobolev semi-norm on functions $H^m(\Omega)$, and we insist that $m > d/2$ to make~\eqref{eqn:smoothing_spline} be well-defined. 
 
 The goal of this note is to review properties of the order-$m$ smoothing spline, to see if/when graph Laplacian smoothing possesses analogous properties, and to see if/when graph Laplacian smoothing possesses different properties. 
 
 \section{Gaussian sequence model}
-All calculations are easy in the Gaussian sequence model, and we begin there. Much of what we do is extracted from \textcolor{blue}{(Johnstone)}. In the Gaussian sequence model, for each $i \in \mathbb{N}$ one observes
+All calculations are easier in the Gaussian sequence model, and we begin there. Much of what we do is extracted from \textcolor{blue}{(Johnstone)}. In the Gaussian sequence model, for each $i \in \mathbb{N}$ one observes
 \begin{equation}
 \label{model:gaussian_sequence_model}
 Y_i = \theta_i^{\ast} + \frac{1}{\sqrt{n}}\varepsilon_i,\quad \varepsilon_i \sim N(0,1).
@@ -226,7 +226,7 @@ Now we analyze the minimax risk of $\wh{\theta}$ over Sobolev ellipsoids. That i
 \begin{equation*}
 \sup_{\theta^{\ast} \in \Theta^s} \Ebb\bigl[|\wh{\theta} - \theta^{\star}|_{0}^2\bigr]
 \end{equation*}
-where $\Theta^s = \{\theta: |\theta|_s \leq M\}$ is the \emph{order-$s$ Sobolev ellipsoid}. Note that we do not assume $s = m$. Note also that $|\cdot|_0$ is the usual norm over $\ell^2(\mathbb{N})$. Finally, a word on terminology: we will use the term ``order-$m$ smoothness'' to refer to the size of the squared norm $|\theta|_m^2$. Of course, these are sequences, and the notion of ``smooth'' sequences is not a totally natural concept. We use this wording regardless, to unify our discussion of Gaussian sequence and non-parametric regression models.
+where $\Theta^s = \{\theta: |\theta|_s \leq M\}$ is the \emph{order-$s$ Sobolev ellipsoid}. Note that we do not assume $s = m$. Note also that $|\cdot|_0$ is the usual norm over $\ell^2(\mathbb{N})$. Finally, a word on terminology: we will use the term ``order-$m$ smoothness'' to refer to the size of the squared norm $|\theta|_m^2$. Of course, these are sequences, and the notion of ``smooth'' sequences is not a totally natural concept. We use this wording regardless, to unify our discussion of the Gaussian sequence and non-parametric regression models.
 \textcolor{red}{(TODO)}
 \begin{itemize}
 	\item Show that in the Gaussian sequence model, if $m > \max\{d/4,s/2\}$ then~\eqref{eqn:sequence_smoothing_spline} achieves optimal risk.
@@ -235,7 +235,7 @@ where $\Theta^s = \{\theta: |\theta|_s \leq M\}$ is the \emph{order-$s$ Sobolev 
 On the other hand, whenever $m \leq d/4$ the estimator $\wh{\theta}$ is grossly sub-optimal. 
 \begin{lemma}
 	\label{lem:failure_very_low_smoothness}
-	Suppose we observe data $Y_1,Y_2,\ldots$ according to Model~\eqref{model:gaussian_sequence_model}. If we compute $\wh{\theta}$ and any $m \leq d/4$, then
+	Suppose we observe data $Y_1,Y_2,\ldots$ according to Model~\eqref{model:gaussian_sequence_model}. If we compute $\wh{\theta}$ as in~\eqref{eqn:sequence_smoothing_spline} with $m \leq d/4$, then
 	\begin{equation}
 	\label{eqn:failure_very_low_smoothness}
 	\Ebb[|\wh{\theta} - \theta^{\ast}|_{0}] = \infty.
@@ -298,7 +298,7 @@ Lemma~\ref{lem:smoothness_of_sequence_smoothing_splines} has a particularly inte
 	\begin{equation*}
 	\wt{\theta}_{N} = \argmin_{\theta \in \ell^2(N)} |Y - \theta|_0^2 + \lambda |\theta|_{1,1}^2.
 	\end{equation*}
-	Confirm your expectation: that when error measured in $|\cdot|_0$ norm and $d > 1$, this estimator is optimal when $N = n$, but not when $N = \infty$. This would give some evidence that the graph is saving the TV denoiser when $d > 1$.
+	Confirm your expectation: that when error measured in $|\cdot|_0$ norm and $d > 1$, this estimator is optimal when $N = n$, but not when $N = \infty$. This would give some evidence that the graph is saving the TV denoiser when $d > 1$; although to be clear the TV denoiser has no exact sequence model analogue.
 	\item Figure out other smoothness properties of $\wh{\theta}_N$, for instance ``H\"{o}lder'' smoothness.
 	\item Ponder what implication the lack-of-smoothness of sequence smoothing splines has for other problems (besides estimation with error measured in $|\cdot|_0$ norm).
 \end{itemize}
@@ -309,7 +309,7 @@ Suppose $x_1,\ldots,x_n$ are~\textcolor{red}{(well-spaced)} in $\Omega$, and tha
 \label{model:regression}
 y_i = f_0(x_i) + \varepsilon_i,
 \end{equation}
-where $\varepsilon_i \sim N(0,1)$ are i.i.d. Gaussian noise that are also independent of $x_i$. Assume that $f_0 \in H^s(\Omega)$. What can we say about in-sample mean squared error $\|\wh{g} - g\|_n^2$? What can we say about the out-of-sample mean squared error $\|\wh{g} - g\|_{L^2(\mc{X})}^2$?
+where $\varepsilon_i \sim N(0,1)$ are i.i.d. Gaussian noise that are also independent of $x_i$. Assume that $f_0 \in H^s(\Omega)$. What can we say about in-sample mean squared error $\|\wh{g} - g\|_n^2$? What can we say about the out-of-sample mean squared error $\|\wh{g} - g\|_{L^2(\Omega)}^2$?
 
 \textcolor{red}{(TODO)}:
 \begin{itemize}
@@ -319,7 +319,7 @@ where $\varepsilon_i \sim N(0,1)$ are i.i.d. Gaussian noise that are also indepe
 \end{itemize}
 
 \section{Low-smoothness regime: optimality of restricted smoothing splines}
-We now introduce the order-$m$ \emph{restricted smoothing spline}, an alternative to the order-$m$ smoothing spline which makes sense when $m < d/2$. To define the order-m restricted smoothing spline, we first need to review the \emph{weighted Laplace-Beltrami operator} $\Delta_P$, and an associated eigenvector problem. For this purpose, we now introduce our formal assumptions on the design distribution $P$. Let $\nu$ denote the $d$-dimensional Lebesgue measure.
+We now introduce the order-$m$ \emph{restricted smoothing spline}, an alternative to the order-$m$ smoothing spline which makes sense when $m < d/2$. To define the order-m restricted smoothing spline, we first need to review the \emph{weighted Laplace-Beltrami operator} $\Delta_P$, and an associated eigenvector problem. For this purpose, we now introduce some assumptions on the design distribution $P$. Let $\nu$ denote the $d$-dimensional Lebesgue measure.
 \begin{assumption}[Design distribution $P$.]
 	\label{asmp:design}
 	The design distribution $P$ is supported on an open, bounded set $\Omega \subseteq \Rd$, which has $C^{\infty}$ boundary $\partial \Omega$. The distribution $P$ admits a $C^{\infty}(\Omega)$ density $p$ with respect to Lebesgue measure $\nu$, which is bounded away from $0$ and $\infty$, meaning that for some $p_{\min} < 1 < p_{\max}$
@@ -350,45 +350,198 @@ Unfortunately, it may be totally impossible to actually compute $\wh{g}_N$, beca
 
 \textcolor{red}{(TODO)}
 \begin{itemize}
-	\item Analyze the statistical properties of the estimator defined in~\eqref{eqn:restricted_smoothing_spline}. Note that you are no longer clear about whether or not these are the same as the properties of the sequence model.
+	\item Analyze the statistical properties of the estimator defined in~\eqref{eqn:restricted_smoothing_spline}. Note that you are no longer clear about whether or not these are the same as the properties of the sequence model, especially with regards to out-of-sample loss.
 \end{itemize}
 
 \section{Supervised graph Laplacian smoothing}
 
 \begin{itemize}
-	\item Review why your analysis of Laplacian smoothing breaks down when $d > 4$, making reference to the previous section. If possible, prove a lower bound to this effect. Compare with the analogous situation for restricted smoothing splines, pointing out that the discretization imposed by the graph improves the situation slightly.
-	\item Study whether order-$m$ Laplacian smoothing estimate is optimal over $H^1(\mc{X})$, as long as $m > d/4$. 
-	\item Explain why your analysis of Laplacian smoothing fails at estimation over $H^s(\mc{X})$ for $s > 1$. If possible, prove a lower bound.
+	\item Review why your analysis of graph Laplacian smoothing breaks down when $d > 4$, making reference to the previous section. If possible, prove a lower bound to this effect. Compare with the analogous situation for restricted smoothing splines, pointing out that the discretization imposed by the graph improves the situation slightly.
+	\item Study whether order-$m$ graph Laplacian smoothing estimate is optimal over $H^1(\mc{X})$, as long as $m > d/4$. 
+	\item Explain why your analysis of graph Laplacian smoothing fails at estimation over $H^s(\mc{X})$ for $s > 1$. If possible, prove a lower bound.
 \end{itemize}
 
 \section{Semi-supervised graph Laplacian smoothing}
 
-Suppose now that in addition to the \emph{labeled} data $(x_1,y_1),\ldots,(x_n,y_n)$, we observe $m$ \emph{unlabeled} design points $x_{n + 1},\ldots,x_{n + m}$. Let $N = n + m$, and let $L_{N,\varepsilon}$ denote the graph Laplacian over labeled and unlabeled points,
-\begin{equation*}
+Suppose now that in addition to the \emph{labeled} data $(x_1,y_1),\ldots,(x_n,y_n)$, we observe $m$ \emph{unlabeled} design points $x_{n + 1},\ldots,x_{n + m}$ Let $N = n + m$, let $G_{N}$ denote the weighted graph over $x_1,\ldots,x_N$, and $L_{N,\varepsilon} \in \Reals^{N \times N}$ denote the graph Laplacian of $G_{N}$. Thus $L_{N,\varepsilon}$ satisfies,for any $u \in \Reals^N$,
+\begin{equation}
+\label{eqn:graph_laplacian_all}
 \bigl(L_{N,\varepsilon}u\bigr)_i := \frac{1}{N \varepsilon^{d + 2}}\sum_{j = 1}^{N} (u_i - u_j) \eta\biggl(\frac{\|x_i - x_j\|}{\varepsilon}\biggr).
-\end{equation*}
-The order-$m$ graph Laplacian smoothing estimator $\wh{f}$ defined in \textcolor{red}{(?)} can be naturally generalized to a vector in $\Reals^N$ according to the following formulation,
+\end{equation}
+The first-order graph Laplacian smoothing estimator $\wh{f}_n \in \Reals^n$ defined in \textcolor{red}{(?)} can be naturally generalized to an estimator $\wh{f}_N$ in $\Reals^N$ (that is, a solution over both labeled and unlabeled points), according to
 \begin{equation}
 \label{eqn:ssl_graph_laplacian_smoothing_0}
 \wh{f}_N := \argmin_{f \in \Reals^N} \|Y - f\|_n^2 + \lambda \dotp{L_{N,\varepsilon}f}{f}_N.
 \end{equation}
-The estimator $\wh{f}$ has a closed-form solution, which can be simply written using the extension operator $E_{n \to N}: \Reals^{n} \to \Reals^N$ and its adjoint, the restriction operator $R_{N \to n}: \Reals^{N} \to \Reals^n$, which are defined by
+
+\paragraph{Two alternative forms.}
+\textcolor{red}{(TODO): Put in the Euler-Lagrange equation.}
+Letting the extension operator $E_{n \to N}: \Reals^{n} \to \Reals^N$ and its adjoint, the restriction operator $R_{N \to n}: \Reals^{N} \to \Reals^n$, be respectively defined as
 \begin{equation*}
-E_{n \to N}u := (u_1,\ldots,u_n,0,\ldots,0),\quad\textrm{and}\quad R_{N \to n}v := (v_1,\ldots,v_n).
+E_{n \to N}u := (u_1,\ldots,u_n,0,\ldots,0),\quad\textrm{and}\quad R_{N \to n}v := (v_1,\ldots,v_n),
 \end{equation*}
-Then the order-$m$ graph Laplacian smoothing estimator can be written as follows
+the first-order graph Laplacian smoothing estimator has the closed-form solution
 \begin{equation}
 \label{eqn:ssl_graph_laplacian_smoothing_1}
-\wh{f}_N = (E_{n \to N} R_{N \to n} + \frac{\rho n}{N} L_{N,\varepsilon})^{-1} E_{n \to N}Y.
+\wh{f}_N = \biggl(E_{n \to N} R_{N \to n} + \rho \cdot \frac{n}{N} L_{N,\varepsilon}\biggr)^{-1} E_{n \to N}Y.
 \end{equation}
-The form of~\eqref{eqn:ssl_graph_laplacian_smoothing_1} is a compact way to represent the solution $\wh{f}$, but it is rather opaque. In Proposition~\ref{prop:ssl_graph_laplacian_smoothing} we give a second form of $\wh{f}$, which is less compact but more evocative. 
+The form of~\eqref{eqn:ssl_graph_laplacian_smoothing_1} is a compact way to represent the solution $\wh{f}$, but it is rather opaque. In Proposition~\ref{prop:ssl_graph_laplacian_smoothing} we give a second form for $\wh{f}$, which is less compact but more evocative. To make sense of this alternative representation, we must introduce some new operators (matrices). Specifically, let $L_{m,\varepsilon} \in \Reals^{m \times m}$ be the graph Laplacian over only the unlabeled data, meaning for any vector $u \in \Reals^m$,
+\begin{equation}
+\label{eqn:graph_laplacian_unlabeled}
+\bigl(L_{m,\varepsilon}u\bigr)_i := \frac{1}{m \varepsilon^{d + 2}}\sum_{j = 1}^{m} (u_i - u_j) \eta\biggl(\frac{\|x_{n + i} - x_{n + j}\|}{\varepsilon}\biggr).
+\end{equation}
+Let $K_{m,n} \in \Reals^{m \times n}$ be defined entrywise as
+\begin{equation*}
+\bigl(K_{m,n}\bigr)_{ki} := \eta\biggl(\frac{\|x_i - x_{k + n}\|}{\varepsilon}\biggr).
+\end{equation*}
+Thus $(K_{m,n})_{ki}$ is simply the weight of the edge between the labeled point $x_i$ and the unlabeled point $x_{k +n}$ in the graph $G_N$. Let $D_{m,n} \in \Reals^{m \times m}$ be the diagonal matrix with entries $(D_{m,n})_{kk} := d_{n,\varepsilon}(x_{n + k}) := \sum_{j = 1}^{n} \bigl(K_{m,n}\bigr)_{n + k,j}$. Define $K_{n,m}$ and $D_{n,m}$ analogously.
+
+Finally, let $G_n^{(u)} := ([n], W_n^{(u)})$ be a weighted graph, with the $(i,j)$th entry of weighted edge matrix $W_n^{(u)}$ given by
+\begin{equation*}
+\bigl(W_{n}^{(u)}\bigr)_{ij} := \sum_{k,\ell = m + 1}^{m + n} \eta\biggl(\frac{\|x_i - x_k\|}{\varepsilon}\biggr) \cdot \eta\biggl(\frac{\|x_j - x_{\ell}\|}{\varepsilon}\biggr) \cdot \Bigl(m\varepsilon^{d + 2}L_{m,\varepsilon} + D_{m,n}\Bigr)_{k,\ell}^{-1}.
+\end{equation*}
+Let $L_{n,\varepsilon}^{(u)}$ be the corresponding Laplacian, meaning
+\begin{equation*}
+\bigl(L_{n,\varepsilon}^{(u)}u\bigr)_{i} := \frac{1}{m\varepsilon^{d + 2}} \sum_{j = 1}^{n} (u_i - u_j) W_{n,ij}^{(u)}.
+\end{equation*}
+The proof of Proposition~\ref{prop:ssl_graph_laplacian_smoothing} is contained in Section~\ref{subsec:pf_ssl_graph_laplacian_smoothing}. 
 \begin{proposition}
 	\label{prop:ssl_graph_laplacian_smoothing}
-	Let $\wh{f}_N$ be the solution to~\eqref{eqn:ssl_graph_laplacian_smoothing_0}. Writing $\wh{f}_N = (\wh{f}_n,\wh{f}_m)$ for $\wh{f}_n \in \Reals^m$ and $\wh{f}_n \in \Reals^m$, we have the following.
+	Let $\wh{f}_N$ be the solution to~\eqref{eqn:ssl_graph_laplacian_smoothing_0}. Writing $\wh{f}_N = (\wh{f}_N^{(\ell)},\wh{f}_N^{(u)})$ for $\wh{f}_N^{(\ell)} \in \Reals^n$ and $\wh{f}_N^{(u)} \in \Reals^m$, we have the following.
 	\begin{itemize}
-		\item 
+		\item The in-sample component $\wh{f}_N^{(\ell)}$ of the first-order Laplacian smoothing estimator $\wh{f}_N$ is given by
+		\begin{equation*}
+		\wh{f}_N^{(\ell)} := \biggl(I_n + \frac{\rho n}{N}\biggl[\frac{n}{N}L_{n,\varepsilon} + \frac{m}{N}L_{n,\varepsilon}^{(u)}\biggr]\biggr)^{-1} Y.
+		\end{equation*}
+		\item The out-of-sample component $\wh{f}_N^{(u)}$ of the first-order Laplacian smoothing estimator $\wh{f}_N$ is given by
+		\begin{equation*}
+		\wh{f}_N^{(u)} := \bigl(D_{m,n} + m\varepsilon^{d + 2}L_{m,\varepsilon}\bigr)^{-1} K_{m,n} \wh{f}_N^{(\ell)}.
+		\end{equation*}
 	\end{itemize}
 \end{proposition}
+Proposition~\ref{prop:ssl_graph_laplacian_smoothing} shows two things. First, it shows that at the labeled points $x_1,\ldots,x_n$, the estimator $\wh{f}_N$ is exactly an in-sample graph Laplacian smoothing estimator, but with the crucial distinction that the graph Laplacian is the (weighted) average of $L_{n,\varepsilon}$ and $L_{n,\varepsilon}^{(u)}$. The second thing Proposition~\ref{prop:ssl_graph_laplacian_smoothing} reveals is that at unlabeled points, the estimator $\wh{f}_N$ (or rather, its restriction to unlabeled points $\wh{f}_N^{(u)}$) satisfies the graph Poisson equation
+\begin{equation*}
+(D_{m,n} + m\varepsilon^{d + 2}L_{m,\varepsilon})\wh{f}_N^{(u)} = K_{m,n} \wh{f}_N^{(\ell)}.
+\end{equation*}
+In words, the out-of-sample component $\wh{f}_N^{(u)}$ is the solution to an inverse problem, in which the right hand side is a \emph{smoothening} of the in-sample component $\wh{f}_N^{(\ell)}$. This smoothening is a crucial aspect of the out-of-sample component. The role it plays is most clearly understood when there is exactly one unlabeled point.
+
+\subsection{One unlabeled point}
+Suppose $m = 1$. Then Proposition~\ref{prop:ssl_graph_laplacian_smoothing} simplifies. In particular, the out-of-sample component of $\wh{f}_N$ can be written in terms of the Nadaraya-Watson kernel smoother $T_{n,\varepsilon}$ defined by $T_{n,\varepsilon}u(x) := 1/d_{n,\varepsilon}(x) K_{(x)} u :=  1/d_{n,\varepsilon}(x) \cdot \sum_{i = 1}^{n} u_i \eta(\|x_i - x\|/\varepsilon)$. Here we have written $K_{(x)}$ for the column vector of kernel evaluations at labeled points, $K_{(x)} := (\eta(\|x_1 - x\|/\varepsilon),\ldots,\eta(\|x_n - x\|/\varepsilon))$. 
+\begin{corollary}
+	\label{cor:ssl_graph_laplacian_smoothing_one_unlabeled}
+	Let $\wh{f}_N$ be the solution to~\eqref{eqn:ssl_graph_laplacian_smoothing_0}. Writing $\wh{f}_N = (\wh{f}_N^{(\ell)},\wh{a})$ for $\wh{f}_N^{(\ell)} \in \Reals^n$ and $\wh{a} \in \Reals$, we have the following.
+	\begin{itemize}
+		\item The in-sample component $\wh{f}_N^{(\ell)}$ of the first-order Laplacian smoothing estimator $\wh{f}_N$ is given by
+		\begin{equation}
+		\label{eqn:ssl_graph_laplacian_smoothing_one_unlabeled_1}
+		\wh{f}_N^{(\ell)} := \biggl(I_n + \frac{\rho n}{n + 1}\biggl[\frac{n}{n + 1}L_{n,\varepsilon} + \frac{1}{n + 1}L_{n,\varepsilon}^{(1)}\biggr]\biggr)^{-1} Y.
+		\end{equation}
+		\item The out-of-sample component $\wh{a}$ of the first-order Laplacian smoothing estimator $\wh{f}_N$ is given by
+		\begin{equation}
+		\label{eqn:ssl_graph_laplacian_smoothing_one_unlabeled_2}
+		\wh{a} = \bigl(T_{n,\varepsilon}\wh{f}_N^{(\ell)}\bigr)(x_{n + 1}) = \frac{1}{d_{n,\varepsilon}(x_{n + 1})} K_{(x_{n + 1})}\wh{f}_N^{(\ell)}.
+		\end{equation}
+	\end{itemize}
+\end{corollary}
+From~\eqref{eqn:ssl_graph_laplacian_smoothing_one_unlabeled_1} we see that, roughly speaking, as long as $L_{n,\varepsilon}^{(u)}$ has a reasonable spectrum, the in-sample component $\wh{f}_N^{(\ell)}$ should be quite close to the Laplacian smoothing estimator $\wh{f}_n$ formed only using the in-sample points. From~\eqref{eqn:ssl_graph_laplacian_smoothing_one_unlabeled_2} we see that the out-of-sample component $\wh{a}$ is constructed by passing a Nadaraya-Watson kernel smoother (with kernel function equal to $\eta$ and bandwidth equal to $\varepsilon$) over $\wh{f}_N^{(\ell)}$.
+
+
+
+\section{Proofs}
+
+\subsection{Proof of Proposition~\ref{prop:ssl_graph_laplacian_smoothing}}
+\label{subsec:pf_ssl_graph_laplacian_smoothing}
+\textcolor{red}{(TODO)}
+
+\subsection{Proof of Theorem~{(?)}}
+\label{subsec:pf_ssl_graph_laplacian_smoothing_2}
+
+\paragraph{Strategy.}
+The decomposition in Proposition~\ref{prop:ssl_graph_laplacian_smoothing} reveals something of the structure of $\wh{f}_N$. It also suggests a route to analyzing the out-of-sample error $(\wh{a} - f_0(x_{n + 1}))^2$. Concretely, consider the following expansion
+\begin{align*}
+\wh{a} - f_0(x_{n + 1}) & = \wh{a} - \frac{1}{d_{n,\varepsilon}(x_{n + 1})}K_{(x_{n + 1})} \Ebb_n\wh{f}_N^{(\ell)} + \\
+& \quad \frac{1}{d_{n,\varepsilon}(x_{n + 1})}K_{(x_{n + 1})} \Ebb_n\wh{f}_N^{(\ell)} - \frac{1}{d_{n,\varepsilon}(x_{n + 1})}K_{1,n} f_0 + \\
+& \quad \frac{1}{d_{n,\varepsilon}(x_{n + 1})}K_{(x_{n + 1})} f_0 - f_0(x_{n + 1}) \\
+\Longrightarrow \Ebb_n\bigl[|\wh{a} - f_0(x_{n + 1})|^2\bigr]& \leq \underbrace{\|T_{n,\varepsilon}(\wh{f}_N^{(\ell)} - \mathbb{E}_{n}\wh{f}_N^{(\ell)})\|_P^2}_{\textrm{variance}} + \underbrace{\|T_{n,\varepsilon}(\mathbb{E}_{n}\wh{f}_N^{(\ell)} - f_0)\|_P^2}_{\textrm{bias}} + \underbrace{\|T_{n,\varepsilon}f_0 - f_0\|_P^2}_{\textrm{noiseless kernel smoothing}}
+\end{align*}
+Here $\Ebb_n$ denotes the expectation conditional on the labeled design points $x_1,\ldots,x_n$. Now we proceed to bound each of these terms, with high probability.
+
+\paragraph{Term 1: Variance.}
+Let $\wt{L}_{n,\varepsilon} = n/(n + 1) L_{n,\varepsilon} + 1/(n + 1) L_{n,\varepsilon}^{(u)}$. Denoting the smoother matrix $S_n := [I_n + \rho n/(n + 1)\wt{L}_{n,\varepsilon}]^{-1}$, we can write the variance term as
+\begin{equation*}
+\|T_{n,\varepsilon}(\wh{f}_N^{(\ell)} - \mathbb{E}_{n}\wh{f}_N^{(\ell)})\|_P^2 =  \int_{\Omega} \Bigl(T_{n,\varepsilon}(S_nw)(x)\Bigr)^2 \,dP(x).
+\end{equation*}
+
+Note that for any $i,j$ in $1,\ldots,n$, we have
+\begin{equation*}
+\Ebb_n\bigl[(S_nw)_i \cdot (S_nw)_j\bigr] = (S_n^2)_{ij}.
+\end{equation*}
+Therefore, at a given $x \in \Omega$ it follows that
+\begin{equation*}
+\Ebb_n\Bigl[\bigl(T_{n,\varepsilon}S_nw(x)\bigr)^2\Bigr] = \frac{1}{d_{n,\varepsilon}(x)^2} K_{(x)}^{\top} S_n^2 K_{(x)} \leq \frac{1}{d_{n,\varepsilon}(x)^2} \|S_n\|_{\textrm{op}}^2 \cdot \|K_{(x)}\|_2^2 \leq \frac{1}{d_{n,\varepsilon}(x)^2} \cdot \|K_{(x)}\|_2^2.
+\end{equation*}
+Now by Lemma~\ref{lem:max_degree_deviation}, we have that for both $K(x) = \eta(x)$ and $K = \bigl(\eta(x)\bigr)^2$, with probability at least $1 - C_2\exp\bigl(-c_2 \delta^2 \cdot n \varepsilon^d\bigr)$,
+\begin{equation}
+\label{pf:out_of_sample_laplacian_regularization_1}
+\sup_{x \in \Omega} \biggl|\frac{d_{n,\varepsilon}(x; K)}{n} - d_{P,\varepsilon}(x; K)\biggr| \leq \delta \cdot \inf_{x \in \Omega} d_{P,\varepsilon}(x; K),
+\end{equation}
+and thus
+\begin{equation*}
+\sup_{x \in \Omega}\frac{1}{d_{n,\varepsilon}(x)^2} \cdot \|K_{(x)}\|_2^2 \leq \biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \sup_{x \in \Omega} \frac{1}{nd_{P,\varepsilon}(x)^2} \int \bigl[\eta(\|x'-x\|/\varepsilon)\bigr]^2 \,dP(x') \leq \biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \frac{\|\eta\|_{\infty}}{n p_{\min} \varepsilon^d}.
+\end{equation*}
+Integrating with respect to $P$, and exchanging expectation with integration thus gives that with probability at least $1 - C_2\exp\bigl(-c_2 \delta^2 \cdot n \varepsilon^d\bigr)$,
+\begin{equation*}
+\|T_{n,\varepsilon}(\wh{f}_N^{(\ell)} - \mathbb{E}_{n}\wh{f}_N^{(\ell)})\|_P^2 \leq \biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \frac{\|\eta\|_{\infty} p_{\max}}{n p_{\min} \varepsilon^d}.
+\end{equation*}
+
+\paragraph{Term 2: Bias.}
+\textcolor{red}{(TODO)}.
+
+\paragraph{Term 3: Noiseless kernel smoothing.}
+This is a standard analysis. \textcolor{red}{From our paper on Laplacian eigenmaps (equation (107) and Lemma~19)}, we have that
+\begin{equation*}
+\|T_{n,\varepsilon}f_0 - f_0\|_P^2 \leq \frac{C}{\delta} \cdot \biggl(\frac{\varepsilon^2}{n\varepsilon^d} + \varepsilon^2\biggr) |f|_{H^1(\Omega)}^2 \leq \frac{C}{\delta} \cdot \varepsilon^2 |f|_{H^1(\Omega)}^2
+\end{equation*}
+with probability at least $1 - C\exp(-cn\varepsilon^d)$. 
+
+\section{Technical Results}
+
+\subsection{Concentration of Empirical Functionals}
+
+\paragraph{Degree.}
+Let $d_{n,h}(x;K) := \sum_{i = 1}^{n} K(\|x_i - x\|/h)$ be the empirical degree functional of a kernel function $K$. We begin by recalling some results the concentration of the degree functional $d_{n,h}(x)$ around its mean. This concentration statement will be meaningful whenever $K$ is a smooth kernel and $h$ belongs to some range.
+\begin{enumerate}[label=(K\arabic*)]
+	\setcounter{enumi}{0}
+	\item
+	\label{asmp:kernel}
+	The kernel function $K$ is supported on a subset of $[0,1]$. Additionally, $K$ is Lipschitz continuous on $[0,1]$, and is normalized so that
+	\begin{equation*}
+	\int_{-\infty}^{\infty} K(|z|) \,dz = 1.
+	\end{equation*}
+\end{enumerate}
+\begin{enumerate}[label=(P\arabic*)]
+	\setcounter{enumi}{0}
+	\item
+	\label{asmp:bandwidth}
+	For $\delta > 0$, and for constants $c_0$ and $C_0$, the bandwidth parameter $h$ satisfies
+	\begin{equation*}
+	\frac{1}{\delta^2}C_0\biggl(\frac{\log(1/h)}{n}\biggr)^{1/d} \leq h \leq c_0.
+	\end{equation*}
+\end{enumerate}
+The constants $C_0$ and $c_0$ will be specified in the proof of the following Lemma.
+\begin{lemma}
+	\label{lem:max_degree_deviation}
+	Fix $\delta \in (0,1)$ \textcolor{red}{sufficiently small}. Suppose $\Omega$ and $P$ are \textcolor{red}{regular}, and that the kernel $K$ satisfies~\ref{asmp:kernel} and the bandwidth $h$ satisfies~\ref{asmp:bandwidth}. It follows that
+	\begin{equation*}
+	\Pbb\Biggl( \sup_{x \in \Rd} \biggl|\frac{d_{n,h}(x)}{n} - d_{P,h}(x)\biggr| \geq \delta \cdot \min_{x \in \Omega}\bigl\{d_{P,h}(x)\bigr\} \Biggr) \leq C_2\exp\bigl(-c_2 \delta^2 \cdot n h^d\bigr)
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	\textcolor{red}{(TODO)} Refer to Lemma~23 of Laplacian Eigenmaps paper. 
+\end{proof}
+
+
+
 
 
 
