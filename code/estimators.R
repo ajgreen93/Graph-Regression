@@ -1,3 +1,55 @@
+make_laplacian_eigenmaps <- function(theta)
+{
+  r <- theta[["r"]]
+  K <- theta[["K"]]
+  laplacian_eigenmaps <- function(Y,X){
+    # If we've already computed the eigenvectors don't do it again
+    if(exists("precomputed_data")){
+      stopifnot(r %in% names(precomputed_data))
+      L_eigenvectors <- precomputed_data[[which(names(precomputed_data) == r)]]
+    } else{
+      # Build G_{n,r} over X.
+      G <- neighborhood_graph(X,r)
+      
+      # Get L.
+      L <- Laplacian(G)
+      
+      # Get spectra.
+      spectra <- get_spectra(L,K)
+      L_eigenvectors <- spectra$vectors[,ncol(spectra$vectors):1]
+    }
+    V_K <- L_eigenvectors[,1:K] # Eigenvectors we need
+    a_k <- t(V_K) %*% Y         # Empirical Fourier coefficients
+    f_hat <- V_K %*% a_k        # Spectral projection
+    
+    # browser()
+    
+    return(f_hat)
+  }
+}
+attr(make_laplacian_eigenmaps,"precompute_data") <- function(Y,X, theta_df){
+  rs <- unique(theta_df$r)
+  precomputed_data <- vector(mode = "list",length = length(rs))
+  names(precomputed_data) <- rs
+  for(kk in 1:length(rs)){
+    r <- rs[kk]
+    K <- thetas[[ii]][[jj]] %>% filter(r == !!r) %>% pull(K)
+    
+    # Build G_{n,r} over X.
+    G <- neighborhood_graph(X,r)
+    
+    # Get L.
+    L <- Laplacian(G)
+    
+    # Compute as many eigenvectors as we will need.
+    spectra <- get_spectra(L,max(K))
+    L_eigenvectors <- spectra$vectors[,ncol(spectra$vectors):1]
+    
+    precomputed_data[[kk]] <- L_eigenvectors
+  }
+  return(precomputed_data)
+}
+
 make_laplacian_smoothing <- function(theta)
 {
   r <- theta[["r"]]
@@ -34,6 +86,35 @@ make_laplacian_smoothing_knn <- function(theta)
   }
 }
 
+make_spectral_projection <- function(theta)
+{
+  K <- theta[["K"]]
+  spectral_projection <- function(Y,X)
+  {
+    d <- ncol(X)
+    stopifnot(d == 1)
+    
+    n <- length(Y)
+    psi_K <- sapply(0:(K - 1),function(k){sqrt(2) * cos(k*pi*(X[,1] + 1)/2)}) # Fourier basis
+    a_k <- 1/n * t(psi_K) %*% Y   # Empirical Fourier coefficients
+    f_hat <- psi_K %*% a_k        # Spectral projection
+  }
+}
+
+make_least_squares <- function(theta)
+{
+  K <- theta[["K"]]
+  least_squares <- function(Y,X)
+  {
+    d <- ncol(X)
+    stopifnot(d == 1)
+    
+    n <- length(Y)
+    psi_K <- sapply(0:(K - 1),function(k){sqrt(2) * cos(k*pi*(X[,1] + 1)/2)}) # Fourier basis
+    f_hat <- lm.fit(x = psi_K,y = Y)$fitted.values              # Least squares
+  }
+}
+
 make_knn <- function(theta)
 {
   k <- theta[["k"]]
@@ -50,6 +131,56 @@ make_knn <- function(theta)
     
     return(f_hat)
   }
+}
+
+make_kernel_smoothing <- function(theta)
+{
+  r <- theta[["r"]]
+  kernel_smoothing <- function(Y,X)
+  {
+    # Build G_{n,r} over X.
+    G <- neighborhood_graph(X,r)
+    
+    # Add self loops
+    diag(G) <- 1
+    
+    # normalize by row sums
+    H <- G / rowSums(G)
+    
+    # kernel smoothing estimator
+    f_hat <- as.numeric(H %*% Y)
+    
+    return(f_hat)
+  }
+}
+
+#------------------------------------------------------#
+# Functions to choose initial grid of tuning parameters.
+#------------------------------------------------------#
+initialize_laplacian_eigenmaps_thetas <- function(sample_X,n){
+  # Choose a range of radii based on different desired minimum degree.
+  # Currently, a range so that the minimum degree is between log(n) and 2*n^{1/2}.
+  iters <- 10
+  n_rs <- 20
+  degrees <- round(exp(seq(log(1/4*log(n)),log(1/2*n^(1/2)),length.out = n_rs)) + 1)
+  degree_dependent_rs <- matrix(ncol = n_rs, nrow = iters)
+  for(iter in 1:iters)
+  {
+    X <- sample_X(n)
+    for(jj in 1:n_rs)
+    {
+      rneighborhood <- nn2(data = X, query = X, k = degrees[jj]) 
+      degree_dependent_rs[iter,jj] <- max(rneighborhood$nn.dists[,degrees[jj]])
+    }
+    # r_connects[iter] <-  # connectivity radius
+  }
+  # Choose a range of radii intended to achieve the desired min degree.
+  rs <- colMeans(degree_dependent_rs)
+  
+  # Choose a huge range of eigenvectors
+  Ks <- 1:round(n/20) # Maximum is 1/4 the recommendation of original Belkin + Niyogi paper.
+  
+  thetas <- expand.grid(r = rs, K = Ks)
 }
 
 initialize_laplacian_smoothing_thetas <- function(sample_X,n){
@@ -112,6 +243,29 @@ initialize_laplacian_smoothing_knn_thetas <- function(sample_X,n){
   return(thetas)
 }
 
+initialize_kernel_smoothing_thetas <- function(sample_X,n){
+  # Choose a range of radii based on different desired minimum degree.
+  # Currently, a range so that the minimum degree is between log(n) and n^{1/2}.
+  iters <- 10 
+  n_rs <- 10
+  degrees <- round(exp(seq(log(1/4*log(n)),log(n^(1/2)),length.out = n_rs)) + 1)
+  degree_dependent_rs <- matrix(ncol = n_rs, nrow = iters)
+  for(iter in 1:iters)
+  {
+    X <- sample_X(n)
+    for(jj in 1:n_rs)
+    {
+      rneighborhood <- nn2(data = X, query = X, k = degrees[jj]) 
+      degree_dependent_rs[iter,jj] <- max(rneighborhood$nn.dists[,degrees[jj]])
+    }
+    # r_connects[iter] <-  # connectivity radius
+  }
+  # Choose a range of radii intended to achieve the desired min degree.
+  rs <- colMeans(degree_dependent_rs)
+  
+  thetas <- data.frame(r = rs)
+}
+
 initialize_knn_thetas <- function(sample_X,n){
   # m <- choose_f0_frequency(d)
   # a <- choose_f0_amplitude(d,m)
@@ -120,4 +274,8 @@ initialize_knn_thetas <- function(sample_X,n){
   ks <- c(2:13, seq(14,30,by = 2))
   
   thetas <- data.frame(k = ks)
+}
+
+initialize_spectral_projection_thetas <- function(sample_X,n){
+  thetas <- data.frame(K = 1:(n/20))
 }

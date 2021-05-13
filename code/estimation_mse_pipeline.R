@@ -2,12 +2,16 @@ library(RANN)
 library(dplyr)
 library(Matrix)
 library(reshape2)
+library(RSpectra)
 source("sample.R")
 source("graph.R")
 source("estimators.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/estimation_wigglycosine1d.R")
+source("configs/laplacian_eigenmaps/eigenmaps_approximates_spectral_projection.R")
+
+# Please change this to dictate how verbose the pipeline should be 
+verbose <- F
 
 #----------------------------------------------------#
 # This is the pipeline for running regression estimation experiments.
@@ -20,12 +24,14 @@ Xs <- vector(mode = "list", length = length(ns))
 f0s <- vector(mode = "list", length = length(ns))
 Ys <- vector(mode = "list", length = length(ns))
 thetas <- vector(mode = "list", length = length(ns))
+fits <- vector(mode = "list", length = length(ns))
 
 for(ii in 1:length(ns))
 {
   n <- ns[ii]
   f0 <- make_f0(d,n)
   mse[[ii]] <- vector(mode = "list", length = length(methods))
+  fits[[ii]] <- vector(mode = "list",length = length(methods))
 
   # Initialize tuning parameters (thetas).
   # Note: I have granted methods the right to access the distribution P from which X is sampled
@@ -35,6 +41,7 @@ for(ii in 1:length(ns))
   {
     thetas[[ii]][[jj]] <- initialize_thetas[[jj]](sample_X, n)
     mse[[ii]][[jj]] <- matrix(nrow = nrow(thetas[[ii]][[jj]]), ncol = iters)
+    fits[[ii]][[jj]] <- array(dim = c(nrow(thetas[[ii]][[jj]]),n,iters))
   }
   for(iter in 1:iters)
   {
@@ -50,17 +57,30 @@ for(ii in 1:length(ns))
     {
       method <- methods[[jj]]
       fits_method <- matrix(nrow = nrow(thetas[[ii]][[jj]]), ncol = n)
+      
+      # Do any computations here that we would have to repeat for each hyperparameter (theta)
+      # E.g. compute eigenvectors.
+      precompute_data <- attributes(method)$precompute_data
+      if(!is.null(precompute_data)){
+        precomputed_data <- precompute_data(Y,X, thetas[[ii]][[jj]])
+      } else{
+        precomputed_data <- NULL
+      }
       for(kk in 1:nrow(thetas[[ii]][[jj]])){
         theta <- slice(thetas[[ii]][[jj]],kk)
         estimator <- method(theta)
         fits_method[kk,] <- estimator(Y,X)
-        logger::log_info("n: ", n, ".",
+        if(verbose){
+          logger::log_info("n: ", n, ".",
                          "Iter: ", iter," out of ", iters, ".",
                          "Method: ", jj, " out of ", length(methods), ".",
                          "Parameter: ", kk, " out of ", nrow(thetas[[ii]][[jj]]))
-                         
+        }
       }
       fits_by_method[[jj]] <- fits_method
+      logger::log_info("n: ", n, ".",
+                       "Iter: ", iter," out of ", iters, ".",
+                       "Method: ", jj, " out of ", length(methods), ".")
     }
     
     ### Evaluation. ###
@@ -69,6 +89,9 @@ for(ii in 1:length(ns))
         mse[[ii]][[jj]][kk,iter] <- mean( (f0_evaluations - fits_by_method[[jj]][kk,])^2 )
       }
     }
+    
+    ### Save fits.
+    fits[[ii]][[jj]][,,iter] <- fits_by_method[[jj]]
   }
   
   ### Save best fits. ###

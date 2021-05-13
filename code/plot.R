@@ -3,7 +3,7 @@ library(ggplot2)
 library(gridExtra)
 
 ### Plot. ###
-save_directory <- "data/AISTATS/cosine/d5_largesample" # Please change this to whichever directory you prefer.
+save_directory <- "data/20210510132401" # Please change this to whichever directory you prefer.
 plot_directory <- file.path(save_directory,"plots")
 dir.create(plot_directory)
 
@@ -15,7 +15,7 @@ load(file.path(save_directory,"thetas.R"))
 load(file.path(save_directory,"mse.R"))
 load(file.path(save_directory,"Xs.R"))
 load(file.path(save_directory,"f0s.R"))
-# load(file.path(save_directory,"Ys.R"))
+load(file.path(save_directory,"Ys.R"))
 
 # Plot of mse by tuning parameter.
 pdf(file.path(plot_directory,"mse.pdf"))
@@ -29,6 +29,16 @@ for(jj in 1:length(methods))
     mean_mse <- rowMeans(mse_ii_jj)
     sd_mse <- apply(mse_ii_jj,1,sd)
     
+    if(names(methods)[jj] == "laplacian_eigenmaps"){
+      plot_df <- data.frame(x = thetas_ii_jj[,2],y = mean_mse,
+                            col = as.factor(round(thetas_ii_jj[,1],3)))
+      tuning_plots[[ii]] <- 
+        ggplot(data = plot_df,aes(x = x,y = y, color = col)) + geom_line() + 
+        labs(x = "K",
+             y = "mse",
+             title = paste0("n = ",ns[ii],"")) +
+        theme_bw()
+    }
     if(names(methods)[jj] == "laplacian_smoothing" || is.null(methods))
     {
       plot_df <- data.frame(x = log(thetas_ii_jj[,2]),y = mean_mse,
@@ -94,11 +104,12 @@ if(d == 1)
       plot_name <- paste0(names(methods)[jj],"_estimate_",ii,".png")
       png(file.path(plot_directory,plot_name))
       plot_df <- data.frame(x = Xs[[ii]], y = Ys[[ii]],fhat = best_fits_by_method[[ii]][[jj]])
+      title <- names(methods)[jj]
       plot(x = plot_df$x,y = plot_df$y, 
            col = col,
            cex = cex, cex.main = cex.main, cex.lab = cex.lab, cex.axis = cex.axis,
            xlim = xlim, ylim = ylim, lwd = lwd,
-           xlab = "",ylab = "", main = "Laplacian smoothing")
+           xlab = "",ylab = "", main = title)
       lines(x = plot_df$x[order(plot_df$x)],y = plot_df$fhat[order(plot_df$x)],lwd = 1.5,
             col = "blue")
       dev.off()
@@ -118,16 +129,18 @@ for(jj in 1:length(methods))
   if(names(methods)[jj] == "knn") next
   best_mse <- numeric()
   minimax_mse <- numeric()
+  sd_best_mse <- numeric()
   for(ii in 1:length(ns))
   {
     mse_ii_jj <- mse[[ii]][[jj]]
     best_mse[ii] <- min(rowMeans(mse_ii_jj))
+    sd_best_mse[ii] <- apply(mse_ii_jj,1,sd)[which.min(rowMeans(mse_ii_jj))]/sqrt(ncol(mse_ii_jj))
     minimax_mse[ii] <- ns[ii]^{-2/(2 + d)}
   }
   
   # Rescale minimax mse to match intercept with best_mse
   minimax_mse <- minimax_mse * (best_mse[1]/minimax_mse[1])
-  plot_dfs_best_mse[[jj]] <- data.frame(x = ns, y = best_mse, z = minimax_mse) 
+  plot_dfs_best_mse[[jj]] <- data.frame(x = ns, y = best_mse, z = minimax_mse,sd = sd_best_mse) 
   
   # fitted slope
   log_best_mse <- log(best_mse)
@@ -135,7 +148,12 @@ for(jj in 1:length(methods))
   fitted_slopes[jj] <- round( lm(log_best_mse ~ log_ns)$coefficients[2], 2)
   
   # hack to change names for plotting
-  if(names(plot_dfs_best_mse)[[jj]] == "laplacian_smoothing") names(plot_dfs_best_mse)[[jj]] <- "LS"
+  name <- names(plot_dfs_best_mse)[[jj]]
+  names(plot_dfs_best_mse)[[jj]] <- case_when(
+    name == "laplacian_smoothing" ~ "LS",
+    name == "laplacian_eigenmaps" ~ "LE",
+    name == "spectral_projection" ~ "SP"
+  ) 
   names(plot_dfs_best_mse)[[jj]] <- paste0(names(plot_dfs_best_mse)[[jj]],
                                            " [Slope = ", fitted_slopes[jj],"].")
 }
@@ -147,7 +165,7 @@ legend_text <- unique(plot_df_best_mse$method)
 
 # Plotting parameters
 xlims <- c(min(ns),max(ns))
-ylims <- c(.025, 1.2)
+ylims <- c(min(bind_rows(plot_dfs_best_mse)$y), max(bind_rows(plot_dfs_best_mse)$y))
 
 # only two methods
 cols <- c("red","blue") 
@@ -168,6 +186,6 @@ for(jj in 1:length(methods))
 }
 lines(x = ns, y = minimax_mse)
 grid(equilogs = F, lwd = 2)
-legend("bottomleft", legend = legend_text, col = cols[2], pch = pchs[2], lty = ltys[2], pt.bg = cols[2],
+legend("bottomleft", legend = legend_text, col = cols, pch = pchs, lty = ltys, pt.bg = cols,
        bg = "white", inset = .01, cex = 1.75)
 dev.off()

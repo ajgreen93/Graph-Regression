@@ -1,5 +1,5 @@
 #------------------------------------------------#
-# Configs for first estimation MSE experiment.
+# Configs for poster presentation experiment.
 #------------------------------------------------#
 
 ### General configs.
