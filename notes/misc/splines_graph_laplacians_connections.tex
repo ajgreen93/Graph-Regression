@@ -363,7 +363,7 @@ Unfortunately, it may be totally impossible to actually compute $\wh{g}_N$, beca
 
 \section{Semi-supervised graph Laplacian smoothing}
 
-Suppose now that in addition to the \emph{labeled} data $(x_1,y_1),\ldots,(x_n,y_n)$, we observe $m$ \emph{unlabeled} design points $x_{n + 1},\ldots,x_{n + m}$ Let $N = n + m$, let $G_{N}$ denote the weighted graph over $x_1,\ldots,x_N$, and $L_{N,\varepsilon} \in \Reals^{N \times N}$ denote the graph Laplacian of $G_{N}$. Thus $L_{N,\varepsilon}$ satisfies,for any $u \in \Reals^N$,
+Suppose now that in addition to the \emph{labeled} data $(x_1,y_1),\ldots,(x_n,y_n)$, we observe $m$ \emph{unlabeled} design points $x_{n + 1},\ldots,x_{n + m}$. Let $N = n + m$, let $G_{N}$ denote the weighted graph over $x_1,\ldots,x_N$, and $L_{N,\varepsilon} \in \Reals^{N \times N}$ denote the graph Laplacian of $G_{N}$. Thus $L_{N,\varepsilon}$ satisfies,for any $u \in \Reals^N$,
 \begin{equation}
 \label{eqn:graph_laplacian_all}
 \bigl(L_{N,\varepsilon}u\bigr)_i := \frac{1}{N \varepsilon^{d + 2}}\sum_{j = 1}^{N} (u_i - u_j) \eta\biggl(\frac{\|x_i - x_j\|}{\varepsilon}\biggr).
@@ -397,9 +397,10 @@ Let $K_{m,n} \in \Reals^{m \times n}$ be defined entrywise as
 Thus $(K_{m,n})_{ki}$ is simply the weight of the edge between the labeled point $x_i$ and the unlabeled point $x_{k +n}$ in the graph $G_N$. Let $D_{m,n} \in \Reals^{m \times m}$ be the diagonal matrix with entries $(D_{m,n})_{kk} := d_{n,\varepsilon}(x_{n + k}) := \sum_{j = 1}^{n} \bigl(K_{m,n}\bigr)_{n + k,j}$. Define $K_{n,m}$ and $D_{n,m}$ analogously.
 
 Finally, let $G_n^{(u)} := ([n], W_n^{(u)})$ be a weighted graph, with the $(i,j)$th entry of weighted edge matrix $W_n^{(u)}$ given by
-\begin{equation*}
+\begin{equation}
+\label{eqn:induced_insample_graph}
 \bigl(W_{n}^{(u)}\bigr)_{ij} := \sum_{k,\ell = m + 1}^{m + n} \eta\biggl(\frac{\|x_i - x_k\|}{\varepsilon}\biggr) \cdot \eta\biggl(\frac{\|x_j - x_{\ell}\|}{\varepsilon}\biggr) \cdot \Bigl(m\varepsilon^{d + 2}L_{m,\varepsilon} + D_{m,n}\Bigr)_{k,\ell}^{-1}.
-\end{equation*}
+\end{equation}
 Let $L_{n,\varepsilon}^{(u)}$ be the corresponding Laplacian, meaning
 \begin{equation*}
 \bigl(L_{n,\varepsilon}^{(u)}u\bigr)_{i} := \frac{1}{m\varepsilon^{d + 2}} \sum_{j = 1}^{n} (u_i - u_j) W_{n,ij}^{(u)}.
@@ -434,7 +435,7 @@ Suppose $m = 1$. Then Proposition~\ref{prop:ssl_graph_laplacian_smoothing} simpl
 		\item The in-sample component $\wh{f}_N^{(\ell)}$ of the first-order Laplacian smoothing estimator $\wh{f}_N$ is given by
 		\begin{equation}
 		\label{eqn:ssl_graph_laplacian_smoothing_one_unlabeled_1}
-		\wh{f}_N^{(\ell)} := \biggl(I_n + \frac{\rho n}{n + 1}\biggl[\frac{n}{n + 1}L_{n,\varepsilon} + \frac{1}{n + 1}L_{n,\varepsilon}^{(1)}\biggr]\biggr)^{-1} Y.
+		\wh{f}_N^{(\ell)} := \biggl(I_n + \frac{\rho n}{n + 1}\biggl[\frac{n}{n + 1}L_{n,\varepsilon} + \frac{1}{n + 1}L_{n,\varepsilon}^{(u)}\biggr]\biggr)^{-1} Y.
 		\end{equation}
 		\item The out-of-sample component $\wh{a}$ of the first-order Laplacian smoothing estimator $\wh{f}_N$ is given by
 		\begin{equation}
@@ -445,6 +446,23 @@ Suppose $m = 1$. Then Proposition~\ref{prop:ssl_graph_laplacian_smoothing} simpl
 \end{corollary}
 From~\eqref{eqn:ssl_graph_laplacian_smoothing_one_unlabeled_1} we see that, roughly speaking, as long as $L_{n,\varepsilon}^{(u)}$ has a reasonable spectrum, the in-sample component $\wh{f}_N^{(\ell)}$ should be quite close to the Laplacian smoothing estimator $\wh{f}_n$ formed only using the in-sample points. From~\eqref{eqn:ssl_graph_laplacian_smoothing_one_unlabeled_2} we see that the out-of-sample component $\wh{a}$ is constructed by passing a Nadaraya-Watson kernel smoother (with kernel function equal to $\eta$ and bandwidth equal to $\varepsilon$) over $\wh{f}_N^{(\ell)}$.
 
+Interestingly, the kernel smoothing step in~\eqref{eqn:ssl_graph_laplacian_smoothing_one_unlabeled_2} allows us to make dramatically stronger claims about the out-of-sample squared error $|\wh{a} - f_0(x_{n + 1})|^2$ than we could about the in-sample mean squared error $\|\wh{f}_n - f_0\|_n^2$. We will assume the following.
+\begin{assumption}[Design distribution $P$.]
+	\label{asmp:design2}
+	The design distribution $P$ is supported on an open, bounded set $\Omega \subseteq \Rd$, which has $C^{1}$ boundary $\partial \Omega$. The distribution $P$ admits a $C^{1}(\Omega)$ density $p$ with respect to Lebesgue measure $\nu$, which is bounded away from $0$ and $\infty$, meaning that for some $p_{\min} < 1 < p_{\max}$
+	\begin{equation*}
+	0 \leq p_{\min} \leq p(x) \leq p_{\max} < \infty,\quad\textrm{for all $x \in \Omega$.}
+	\end{equation*}
+\end{assumption}  
+\begin{theorem}
+	\label{thm:out_of_sample_laplacian_regularization}
+	Suppose $(x_1,y_1),\ldots,(x_n,y_n),x_{n + 1}$ are sampled from a distribution $P$ which satisfies Assumption~\ref{asmp:design2}, that the regression function $f_0$ is \textcolor{red}{$M$-Lipschitz} on $\Omega$. If the estimator $\wh{f}_N$ in~\eqref{eqn:ssl_graph_laplacian_smoothing_0} is computed with $0 < \rho \leq M^2(M^2n)^{-2/(2 + d)}$ and $\varepsilon = n^{-1/(2 + d)}$, then 
+	\begin{equation*}
+	\bigl|\wh{a} - f_0(x_{n + 1})\bigr|^2 \leq C\frac{M^2}{\delta^2}(M^2n)^{-2/(2 + d)},
+	\end{equation*}
+	with probability at least $1 - C_1\delta - C_2\exp(-c_2n\varepsilon^d)$.
+\end{theorem}
+
 
 
 \section{Proofs}
@@ -453,33 +471,33 @@ From~\eqref{eqn:ssl_graph_laplacian_smoothing_one_unlabeled_1} we see that, roug
 \label{subsec:pf_ssl_graph_laplacian_smoothing}
 \textcolor{red}{(TODO)}
 
-\subsection{Proof of Theorem~{(?)}}
+\subsection{Proof of Theorem~\ref{thm:out_of_sample_laplacian_regularization}}
 \label{subsec:pf_ssl_graph_laplacian_smoothing_2}
 
 \paragraph{Strategy.}
-The decomposition in Proposition~\ref{prop:ssl_graph_laplacian_smoothing} reveals something of the structure of $\wh{f}_N$. It also suggests a route to analyzing the out-of-sample error $(\wh{a} - f_0(x_{n + 1}))^2$. Concretely, consider the following expansion
+The decomposition in Proposition~\ref{prop:ssl_graph_laplacian_smoothing} reveals something of the structure of $\wh{f}_N$. It also suggests a route to analyzing the out-of-sample error $(\wh{a} - f_0(x_{n + 1}))^2$. Let $S_N$ and $S_n$ denote the smoother matrices such that $\wh{f}_N^{(\ell)} = S_NY$ and $\wh{f}_n = S_nY$; explicitly
+\begin{equation*}
+S_N := \Biggl(I_n + \frac{\rho n}{N}\biggl[\frac{n}{N}L_{n,\varepsilon} + \frac{1}{N}L_{n,\varepsilon}^{(u)}\biggr]\Biggr)^{-1}, \quad \textrm{and} \quad S_n := \Biggl(I_n + \frac{\rho n}{N}L_{n,\varepsilon}\Biggr)^{-1}.
+\end{equation*}
+Now we consider the following decomposition
 \begin{align*}
-\wh{a} - f_0(x_{n + 1}) & = \wh{a} - \frac{1}{d_{n,\varepsilon}(x_{n + 1})}K_{(x_{n + 1})} \Ebb_n\wh{f}_N^{(\ell)} + \\
-& \quad \frac{1}{d_{n,\varepsilon}(x_{n + 1})}K_{(x_{n + 1})} \Ebb_n\wh{f}_N^{(\ell)} - \frac{1}{d_{n,\varepsilon}(x_{n + 1})}K_{1,n} f_0 + \\
-& \quad \frac{1}{d_{n,\varepsilon}(x_{n + 1})}K_{(x_{n + 1})} f_0 - f_0(x_{n + 1}) \\
-\Longrightarrow \Ebb_n\bigl[|\wh{a} - f_0(x_{n + 1})|^2\bigr]& \leq \underbrace{\|T_{n,\varepsilon}(\wh{f}_N^{(\ell)} - \mathbb{E}_{n}\wh{f}_N^{(\ell)})\|_P^2}_{\textrm{variance}} + \underbrace{\|T_{n,\varepsilon}(\mathbb{E}_{n}\wh{f}_N^{(\ell)} - f_0)\|_P^2}_{\textrm{bias}} + \underbrace{\|T_{n,\varepsilon}f_0 - f_0\|_P^2}_{\textrm{noiseless kernel smoothing}}
+\wh{a} - f_0(x_{n + 1}) & = T_{n,\varepsilon}S_NY(x_{n + 1}) - T_{n,\varepsilon}S_Nf_0(x_{n + 1}) + T_{n,\varepsilon}S_Nf_0(x_{n + 1}) - T_{n,\varepsilon}S_nf_0(x_{n + 1}) + T_{n,\varepsilon}S_nf_0(x_{n + 1}) - T_{n,\varepsilon}f_0(x_{n + 1}) + \\
+& \quad T_{n,\varepsilon}f_0(x_{n + 1}) - f_0(x_{n + 1}) \\
+& =  \underbrace{T_{n,\varepsilon}S_Nw(x_{n + 1})}_{\textrm{Term 1}} + \underbrace{T_{n,\varepsilon}[(S_N - S_n)f_0](x_{n + 1})}_{\textrm{Term 2}} +  \underbrace{T_{n,\varepsilon}S_nf_0(x_{n + 1}) - T_{n,\varepsilon}f_0(x_{n + 1})}_{\textrm{Term 3}} + \underbrace{T_{n,\varepsilon}f_0(x_{n + 1}) - f_0(x_{n + 1})}_{\textrm{Term 4}}.
 \end{align*}
-Here $\Ebb_n$ denotes the expectation conditional on the labeled design points $x_1,\ldots,x_n$. Now we proceed to bound each of these terms, with high probability.
+The first of these terms is the contribution of the noise in $Y$. The second of these terms is the perturbation caused by the different smoother matrices. The third of these terms is the bias due to Laplacian regularization. The fourth term is the error inherent to kernel smoothing of noiseless samples. Now we proceed to upper bound the error induced by each of these terms.
 
-\paragraph{Term 1: Variance.}
-Let $\wt{L}_{n,\varepsilon} = n/(n + 1) L_{n,\varepsilon} + 1/(n + 1) L_{n,\varepsilon}^{(u)}$. Denoting the smoother matrix $S_n := [I_n + \rho n/(n + 1)\wt{L}_{n,\varepsilon}]^{-1}$, we can write the variance term as
+\paragraph{Term 1: Noise contribution.}
+Let $\Ebb_N$ denote the expectation conditional on the design points $x_1,\ldots,x_{n + 1}$. For any $i,j$ in $1,\ldots,n$, we have
 \begin{equation*}
-\|T_{n,\varepsilon}(\wh{f}_N^{(\ell)} - \mathbb{E}_{n}\wh{f}_N^{(\ell)})\|_P^2 =  \int_{\Omega} \Bigl(T_{n,\varepsilon}(S_nw)(x)\Bigr)^2 \,dP(x).
+\Ebb_N\bigl[(S_Nw)_i \cdot (S_nw)_j\bigr] = (S_N^2)_{ij}.
 \end{equation*}
-
-Note that for any $i,j$ in $1,\ldots,n$, we have
-\begin{equation*}
-\Ebb_n\bigl[(S_nw)_i \cdot (S_nw)_j\bigr] = (S_n^2)_{ij}.
-\end{equation*}
-Therefore, at a given $x \in \Omega$ it follows that
-\begin{equation*}
-\Ebb_n\Bigl[\bigl(T_{n,\varepsilon}S_nw(x)\bigr)^2\Bigr] = \frac{1}{d_{n,\varepsilon}(x)^2} K_{(x)}^{\top} S_n^2 K_{(x)} \leq \frac{1}{d_{n,\varepsilon}(x)^2} \|S_n\|_{\textrm{op}}^2 \cdot \|K_{(x)}\|_2^2 \leq \frac{1}{d_{n,\varepsilon}(x)^2} \cdot \|K_{(x)}\|_2^2.
-\end{equation*}
+Also, $\|S_N\|_{\textrm{op}} \leq 1$. 
+Therefore
+\begin{equation}
+\label{pf:out_of_sample_laplacian_regularization_0}
+\Ebb_N\Bigl[\bigl(T_{n,\varepsilon}S_Nw(x_{n + 1})\bigr)^2\Bigr] = \frac{1}{d_{n,\varepsilon}(x_{n + 1})^2} K_{(x_{n + 1})}^{\top} S_N^2 K_{(x_{n + 1})} \leq \frac{1}{d_{n,\varepsilon}(x_{n + 1})^2} \|S_N\|_{\textrm{op}}^2 \cdot \|K_{(x_{n + 1})}\|_2^2 \leq \frac{1}{d_{n,\varepsilon}(x_{n + 1})^2} \cdot \|K_{(x_{n + 1})}\|_2^2.
+\end{equation}
 Now by Lemma~\ref{lem:max_degree_deviation}, we have that for both $K(x) = \eta(x)$ and $K = \bigl(\eta(x)\bigr)^2$, with probability at least $1 - C_2\exp\bigl(-c_2 \delta^2 \cdot n \varepsilon^d\bigr)$,
 \begin{equation}
 \label{pf:out_of_sample_laplacian_regularization_1}
@@ -489,20 +507,100 @@ and thus
 \begin{equation*}
 \sup_{x \in \Omega}\frac{1}{d_{n,\varepsilon}(x)^2} \cdot \|K_{(x)}\|_2^2 \leq \biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \sup_{x \in \Omega} \frac{1}{nd_{P,\varepsilon}(x)^2} \int \bigl[\eta(\|x'-x\|/\varepsilon)\bigr]^2 \,dP(x') \leq \biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \frac{\|\eta\|_{\infty}}{n p_{\min} \varepsilon^d}.
 \end{equation*}
-Integrating with respect to $P$, and exchanging expectation with integration thus gives that with probability at least $1 - C_2\exp\bigl(-c_2 \delta^2 \cdot n \varepsilon^d\bigr)$,
+Plugging this back in to~\eqref{pf:out_of_sample_laplacian_regularization_0} gives
 \begin{equation*}
-\|T_{n,\varepsilon}(\wh{f}_N^{(\ell)} - \mathbb{E}_{n}\wh{f}_N^{(\ell)})\|_P^2 \leq \biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \frac{\|\eta\|_{\infty} p_{\max}}{n p_{\min} \varepsilon^d}.
+\Ebb_N\Bigl[\bigl(T_{n,\varepsilon}S_Nw(x_{n + 1})\bigr)^2\Bigr] \leq \biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \frac{\|\eta\|_{\infty}}{n p_{\min} \varepsilon^d}.
+\end{equation*}
+Thus by Markov's inequality, with probability at least $1 - \beta - C_2\exp\bigl(-c_2 \delta^2 \cdot n \varepsilon^d\bigr)$
+\begin{equation*}
+\bigl(T_{n,\varepsilon}S_Nw(x_{n + 1})\bigr)^2 \leq \frac{1}{\beta}\biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \frac{\|\eta\|_{\infty}}{n p_{\min} \varepsilon^d} = C_1\frac{1}{n\varepsilon^d}.
 \end{equation*}
 
-\paragraph{Term 2: Bias.}
-\textcolor{red}{(TODO)}.
-
-\paragraph{Term 3: Noiseless kernel smoothing.}
-This is a standard analysis. \textcolor{red}{From our paper on Laplacian eigenmaps (equation (107) and Lemma~19)}, we have that
+\paragraph{Term 2: Perturbation.}
+From the Cauchy-Schwarz inequality, we have that for any $u \in \Reals^n$,
 \begin{equation*}
-\|T_{n,\varepsilon}f_0 - f_0\|_P^2 \leq \frac{C}{\delta} \cdot \biggl(\frac{\varepsilon^2}{n\varepsilon^d} + \varepsilon^2\biggr) |f|_{H^1(\Omega)}^2 \leq \frac{C}{\delta} \cdot \varepsilon^2 |f|_{H^1(\Omega)}^2
+|T_{n,\varepsilon}u(x_{n + 1})|^2 = \biggl|\frac{1}{d_{n,\varepsilon}(x_{n + 1})} \sum_{i = 1}^{n} u_i \eta\biggl(\frac{\|x_i - x_{n + 1}\|}{\varepsilon}\biggr)\biggr|^2 \leq \frac{1}{d_{n,\varepsilon}(x_{n + 1})} \sum_{i = 1}^{n} |u_i|^2 \eta\biggl(\frac{\|x_{i} - x_{n + 1}\|}{\varepsilon}\biggr) \leq \|u\|_{\infty}^2.
 \end{equation*}
-with probability at least $1 - C\exp(-cn\varepsilon^d)$. 
+Thus to upper bound Term 2 we focus our attention on upper bounding $\|(S_N - S_n)f_0\|_{\infty}$. 
+
+Since $S_N$ and $S_n$ are symmetric, and thus $S_NS_n = S_nS_N$, it follows that
+\begin{equation*}
+(S_N - S_n)f_0 = (S_NS_nS_n^{-1} - S_nS_NS_N^{-1})f_0 = S_N S_n(S_n^{-1} - S_N^{-1})f_0.
+\end{equation*}
+Consequently we can upper bound the $\infty$-norm $\|(S_N - S_n)f_0\|_{\infty}$ by
+\begin{equation*}
+\|(S_N - S_n)f_0\|_{\infty} \leq \|S_N\|_{\infty} \|S_n\|_{\infty} \|(S_n^{-1} - S_N^{-1})f_0\|_{\infty}.
+\end{equation*}
+Here we recall that the $\infty$-operator norm of a matrix is $\|A\|_{\infty} = \max\{\|Au\|_{\infty}:\|u\|_{\infty} = 1\}$. 
+
+We first upper bound $\|(S_n^{-1} - S_N^{-1})f_0\|_{\infty}$, using the decomposition
+\begin{equation*}
+S_n^{-1} - S_N^{-1} = \rho \biggl[\biggl(1 - \frac{n^2}{N^2}\biggr)L_{n,\varepsilon} - \frac{n}{N^2}L_{n,\varepsilon}^{(u)}\biggr],
+\end{equation*}
+and therefore
+\begin{equation}
+\label{pf:out_of_sample_laplacian_regularization_2}
+\|(S_n^{-1} - S_N^{-1})f_0\|_{\infty} \leq \frac{\rho}{n} \Bigl(\|L_{n,\varepsilon}f_0\|_{\infty} + \|L_{n,\varepsilon}^{(u)}f_0\|_{\infty} \Bigr).
+\end{equation}
+From H\"{o}lder's inequality and the Lipschitz property of $f_0$, we deduce both that
+\begin{align*}
+\|L_{n,\varepsilon}f_0\|_{\infty} & = \max_{i = 1,\ldots,n} \biggl| \frac{1}{n\varepsilon^{d + 2}}\sum_{j = 1}^{n} \bigl(f_0(x_i) - f_0(x_j)\bigr) \eta\biggl(\frac{\|x_i - x_j\|}{\varepsilon}\biggr) \biggr| \\
+& \leq \max_{i = 1,\ldots,n}  \frac{M}{n\varepsilon^{d + 1}}\sum_{j = 1}^{n} \eta\biggl(\frac{\|x_i - x_j\|}{\varepsilon}\biggr) \\
+& \leq M\frac{1}{\varepsilon^{d + 1}},
+\end{align*}
+and
+\begin{align*}
+\|L_{n,\varepsilon}^{(u)}f_0\|_{\infty} & = \max_{i = 1,\ldots,n} \biggl| \frac{1}{\varepsilon^{d + 2}} \sum_{j = 1}^{n} \bigl(f_0(x_i) - f_0(x_j)\bigr) W_{n,ij}^{(u)}\biggr| \\
+& \leq \max_{i = 1,\ldots,n} \frac{M}{\varepsilon^{d + 1}} \sum_{j = 1}^{n} |W_{n,ij}^{(u)}|\\
+& \leq \frac{M}{\varepsilon^{d + 1}} \|\eta\|_{\infty},
+\end{align*}
+where we recall the definition of $W_{n}^{(u)}$ from~\eqref{eqn:induced_insample_graph}. Plugging these upper bounds back into~\eqref{pf:out_of_sample_laplacian_regularization_2} gives
+\begin{equation*}
+\|(S_n^{-1} - S_N^{-1})f_0\|_{\infty} \leq 2 \|\eta\|_{\infty}\frac{\rho}{n\varepsilon^{d + 1}}M.
+\end{equation*}
+On the other hand, it is not hard to see that $S_N$ and $S_n$ are contractions in $L^{\infty}(\Reals^n)$, meaning that $\|S_N\|_{\infty},\|S_n\|_{\infty} \leq 1$. We establish that $S_n$ is a contraction, and the exact same reasoning will hold with respect to $S_N$ as well. For any $u \in \Reals^n$, assuming without loss of generality that $u_1 = \|u\|_{\infty}$, we have that
+\begin{equation*}
+(S_n^{-1}u)_1 = u_1 + (\rho L_{n,\varepsilon}u)_1 \geq u_1,
+\end{equation*}
+which implies that $\|S_n^{-1}u\|_{\infty} \geq \|u\|_{\infty}$. Thus for any $u \in \Reals^n$, we also have that
+\begin{equation*}
+\|u\|_{\infty} = \|S_n^{-1}S_nu\|_{\infty} \geq \|S_nu\|_{\infty},
+\end{equation*}
+demonstrating that $S_n$ is a contraction.
+
+Plugging these upper bounds back into~\eqref{pf:out_of_sample_laplacian_regularization_2}, we conclude that
+\begin{equation*}
+\bigl(T_{n,\varepsilon}(S_N - S_n)f_0(x_{n + 1})\bigr)^2 \leq \|(S_N - S_n)f_0\|_{\infty}^2 \leq 4 \|\eta\|_{\infty}^2\biggl(\frac{\rho}{n\varepsilon^{d + 1}}\biggr)^2M^2 =: C_2 \biggl(\frac{\rho}{n\varepsilon^{d + 1}}\biggr)^2M^2.
+\end{equation*}
+
+\paragraph{Term 3: Bias.}
+We begin by taking an expectation of Term 3 conditional on the labeled design points $x_1,\ldots,x_n$ (which we denote by $\Ebb_n$):
+\begin{equation*}
+\Ebb_n\Bigl[\Bigl(T_{n,\varepsilon}S_nf_0(x_{n + 1}) - T_{n,\varepsilon}f_0(x_{n + 1})\Bigr)^2\Bigr] = \|T_{n,\varepsilon}S_nf_0 - T_{n,\varepsilon}f_0\|_P^2.
+\end{equation*}
+We have show in \textcolor{red}{our paper on Laplacian eigenmaps (equation 106)} that for any $u \in \Reals^n$,
+\begin{equation*}
+\|T_{n,\varepsilon}u - T_{n,\varepsilon}f_0\|_P^2 \leq C \|u - f_0\|_n^2,
+\end{equation*}
+and that under the assumption~\ref{asmp:design}, for any Sobolev function $f \in H^1(\Omega)$, with probability at least $1 - \delta$
+\begin{equation*}
+\|S_nf_0 -f_n\|_n^2 \leq \frac{C\rho}{\delta}|f_0|_{H^1(\mc{X})}^2.
+\end{equation*}
+Combining these two results, we have that
+\begin{equation*}
+\Ebb_n\Bigl[\Bigl(T_{n,\varepsilon}S_nf_0(x_{n + 1}) - T_{n,\varepsilon}f_0(x_{n + 1})\Bigr)^2\Bigr] \leq \frac{C_3\rho}{\delta}|f_0|_{H^1(\Omega)}^2
+\end{equation*}                                                                          
+with probability at least $1 - \delta$. Thus it follows from Lemma~\ref{lem:stochastic_boundedness} that with probability at least $1 - 2\delta$,
+\begin{equation*}
+\Bigl(T_{n,\varepsilon}S_nf_0(x_{n + 1}) - T_{n,\varepsilon}f_0(x_{n + 1})\Bigr)^2 \leq \frac{C_3\rho}{\delta^2}|f_0|_{H^1(\Omega)}^2.
+\end{equation*}
+              
+\paragraph{Term 4: Noiseless kernel smoothing.}
+\textcolor{red}{From our paper on Laplacian eigenmaps (equation (107) and Lemma~19)}, we have that
+\begin{equation*}
+\|T_{n,\varepsilon}f_0 - f_0\|_P^2 \leq \frac{C}{\delta} \cdot \biggl(\frac{\varepsilon^2}{n\varepsilon^d} + \varepsilon^2\biggr) |f|_{H^1(\Omega)}^2 \leq \frac{C_4}{\delta} \cdot \varepsilon^2 |f|_{H^1(\Omega)}^2
+\end{equation*}
+with probability at least $1 - \delta - C\exp(-cn\varepsilon^d)$. 
 
 \section{Technical Results}
 
@@ -539,6 +637,30 @@ The constants $C_0$ and $c_0$ will be specified in the proof of the following Le
 \begin{proof}
 	\textcolor{red}{(TODO)} Refer to Lemma~23 of Laplacian Eigenmaps paper. 
 \end{proof}
+
+\subsection{Stochastic Boundedness}
+The following Lemma helps us convert between bounds in conditional expectation and bounds in probability.
+\begin{lemma}
+	\label{lem:stochastic_boundedness}
+	Let $Z \geq 0$ and $X$ be random variables, and let $0 \leq E[Z|X] \leq a$ with probability at least $1 - \delta$. Then
+	\begin{equation*}
+	\Pbb\biggl(Z \geq \frac{a}{\delta}\biggr) \leq 2\delta.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	By the law of iterated expectation, 
+	\begin{equation*}
+	\Pbb(Z \geq \frac{a}{\delta}) = \Ebb[\Pbb(Z \geq \frac{a}{\delta}|X)] = \Ebb[\Pbb(Z \geq \frac{a}{\delta}|X) \wedge 1].
+	\end{equation*}
+	Since $E[Z|X] \leq a$ with probability at least $1 - \delta$,
+	\begin{align*}
+	\Ebb[\Pbb(Z \geq \frac{a}{\delta}|X) \wedge 1] & = \Ebb\Bigl[\bigl(\Pbb(Z \geq \frac{a}{\delta}|X) \wedge 1\bigr) \cdot (\1\{E[Z|X] \leq a\} + \1\{E[Z|X] \geq a\})\Bigr] \\
+	& \leq \Ebb\Bigl[\bigl(\Pbb(Z \geq \frac{a}{\delta}|X) \cdot (\1\{E[Z|X] \leq a\} + \Ebb\Bigl[\1\{E[Z|X] \geq a\})\Bigr] \\
+	& \leq 2\delta,
+	\end{align*}
+	with the last upper bound following from (conditional) Markov's inequality.
+\end{proof}
+
 
 
 
