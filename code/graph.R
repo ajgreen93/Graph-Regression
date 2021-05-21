@@ -1,10 +1,9 @@
 neighborhood_graph <- function(X, r)
 {
   # unpack necessary parameters
-  d <- ncol(X)
   N <- nrow(X)
   
-  k_max <- min(round(N*pi^{d/2}/(gamma(d/2 + 1))*r^d*2),N - 1)
+  k_max <- round(min(4*N^(.5),N - 1))
   A <- knn_to_neighborhood_graph(X,r,k_max)
   return(A)
 }
@@ -38,7 +37,7 @@ knn_to_neighborhood_graph <- function(X, r, k_max)
   {
     A <- Matrix(0, nrow = n, ncol = n)
     k_max <- min(2*k_max,n - 1)
-    rneighbors <- nn2(data = X, query = X, searchtype = 'radius', k = k_max, radius = epsilon)$nn.idx[,-1]
+    rneighbors <- nn2(data = X, query = X, searchtype = 'radius', k = k_max, radius = r)$nn.idx[,-1]
     rneighbors[rneighbors == 0] <- NA
     r_neighbors_list <- as.matrix(melt(rneighbors)[,-2])
     r_neighbors_list <- r_neighbors_list[rowSums(is.na(r_neighbors_list)) == 0,]
@@ -81,4 +80,20 @@ Laplacian <- function(A)
     L <- as(D - A,"dgCMatrix")
   }
   return(L)
+}
+
+# A wrapper around eigs_sym, which takes care of some failure cases when the
+# matrix is poorly conditioned. 
+get_spectra <- function(A,K,sigma = 0){
+  # Compute as many eigenvectors as we will need.
+  spectra <- tryCatch(eigs_sym(A,K,sigma),
+                      error = function(e){
+                        test <- eigs_sym(A,K, which = "SM")
+                        return(test)
+                      })
+  if(max(abs(spectra$values)) > 2e10)
+  {
+    spectra <- eigs_sym(A,K,which = "SM")
+  }
+  spectra
 }
