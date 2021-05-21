@@ -12,6 +12,7 @@ plot_fxn <- function(x,y,f,title = NULL,col = NULL){
 
 # Plot of mse---for best choice of tuning parameter---by sample size
 plot_best_mse <- function(methods,mse){
+  stopifnot(length(methods) <= 3)
   cols <- c("red","blue","green")[1:length(methods)]     
   
   plot_dfs_best_mse <- vector(mode = "list", length = length(methods))
@@ -30,7 +31,6 @@ plot_best_mse <- function(methods,mse){
       sd_best_mse[ii] <- apply(mse_ii_jj,1,sd)[which.min(rowMeans(mse_ii_jj))]/sqrt(ncol(mse_ii_jj))
       minimax_mse[ii] <- ns[ii]^{-2/(2 + d)}
     }
-    
     # Rescale minimax mse to match intercept with best_mse
     minimax_mse <- minimax_mse * (best_mse[1]/minimax_mse[1])
     plot_dfs_best_mse[[jj]] <- data.frame(x = ns, y = best_mse,sd = sd_best_mse) 
@@ -51,7 +51,12 @@ plot_best_mse <- function(methods,mse){
                                              " [Slope = ", fitted_slopes[jj],"].")
   }
   
-  title <- paste0("d = ", d,". Minimax slope = ", -2,"/", d+2, ".")
+  # browser()
+  # # ALDEN REMOVE
+  # best_K <- find_best_K(mse,thetas)
+  # #
+  
+  title <- paste0("d = ", d,", s = ",s,".", "Minimax slope = ", -2*s,"/", d+2*s, ".")
   plot_df_best_mse <- bind_rows(plot_dfs_best_mse, .id = "method") 
   legend_text <- unique(plot_df_best_mse$method)
   
@@ -62,7 +67,8 @@ plot_best_mse <- function(methods,mse){
   
   # shadow plot
   plot(x = ns, xlim = xlims, ylim = ylims,
-       log = "xy", xlab = "Sample size", ylab = "Mean squared error", main = title, 
+       log = "xy", xlab = "Sample size", ylab = "Mean squared error", 
+       main = title,
        cex.main = 2.5, cex.lab = 2.5, cex.axis = 2)
   
   # add points and lines
@@ -85,6 +91,6 @@ plot_best_mse <- function(methods,mse){
   # 
   lines(x = ns, y = minimax_mse)
   grid(equilogs = F, lwd = 2)
-  legend("bottomleft", legend = legend_text, col = cols,
+  legend("bottomleft", legend = legend_text, col = cols, pch = 20,
          bg = "white", inset = .01, cex = 1.75)
 }

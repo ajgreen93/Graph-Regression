@@ -22,8 +22,6 @@ make_laplacian_eigenmaps <- function(theta)
     a_k <- t(V_K) %*% Y         # Empirical Fourier coefficients
     f_hat <- V_K %*% a_k        # Spectral projection
     
-    # browser()
-    
     return(f_hat)
   }
 }
@@ -92,13 +90,28 @@ make_spectral_projection <- function(theta)
   spectral_projection <- function(Y,X)
   {
     d <- ncol(X)
-    stopifnot(d == 1)
-    
     n <- length(Y)
-    psi_K <- sapply(0:(K - 1),function(k){sqrt(2) * cos(k*pi*(X[,1] + 1)/2)}) # Fourier basis
-    a_k <- 1/n * t(psi_K) %*% Y   # Empirical Fourier coefficients
+  
+    if(exists("precomputed_data")){
+      stopifnot(length(precomputed_data) == 1)
+      psi_K <- precomputed_data[[1]][,1:K,drop = FALSE]
+    } else{
+      trig_basis <- get_trigonometric_basis(d,K) # Fourier basis
+      psi_K <- if(K == 1) apply(X,1,trig_basis) else apply(X,1,trig_basis) %>% t()
+    }
+    a_k <- 1/n * (t(psi_K) %*% Y)   # Empirical Fourier coefficients
     f_hat <- psi_K %*% a_k        # Spectral projection
   }
+} 
+attr(make_spectral_projection,"precompute_data") <- function(Y,X, theta_df){
+  precomputed_data <- vector(mode = "list",length = 1)
+  
+  K <- max(theta_df$K)
+  trig_basis <- get_trigonometric_basis(d,K) # Fourier basis
+  psi_K <- if(K == 1) apply(X,1,trig_basis) else apply(X,1,trig_basis) %>% t()
+  
+  precomputed_data[[1]] <- psi_K
+  return(precomputed_data)
 }
 
 make_least_squares <- function(theta)
@@ -107,12 +120,28 @@ make_least_squares <- function(theta)
   least_squares <- function(Y,X)
   {
     d <- ncol(X)
-    stopifnot(d == 1)
-    
     n <- length(Y)
-    psi_K <- sapply(0:(K - 1),function(k){sqrt(2) * cos(k*pi*(X[,1] + 1)/2)}) # Fourier basis
-    f_hat <- lm.fit(x = psi_K,y = Y)$fitted.values              # Least squares
+    
+    if(exists("precomputed_data")){
+      stopifnot(length(precomputed_data) == 1)
+      psi_K <- precomputed_data[[1]][,1:K,drop = FALSE]
+    } else{
+      trig_basis <- get_trigonometric_basis(d,K) # Fourier basis
+      psi_K <- if(K == 1) apply(X,1,trig_basis) else apply(X,1,trig_basis) %>% t()
+    }
+    
+    f_hat <- lm.fit(x = psi_K,y = Y)$fitted.values # Least squares
   }
+}
+attr(make_least_squares,"precompute_data") <- function(Y,X, theta_df){
+  precomputed_data <- vector(mode = "list",length = 1)
+  
+  K <- max(theta_df$K)
+  trig_basis <- get_trigonometric_basis(d,K) # Fourier basis
+  psi_K <- if(K == 1) apply(X,1,trig_basis) else apply(X,1,trig_basis) %>% t()
+  
+  precomputed_data[[1]] <- psi_K
+  return(precomputed_data)
 }
 
 make_knn <- function(theta)
@@ -161,8 +190,13 @@ initialize_laplacian_eigenmaps_thetas <- function(sample_X,n){
   # Choose a range of radii based on different desired minimum degree.
   # Currently, a range so that the minimum degree is between log(n) and 2*n^{1/2}.
   iters <- 10
-  n_rs <- 20
+  n_rs <- 10
   degrees <- round(exp(seq(log(1/4*log(n)),log(1/2*n^(1/2)),length.out = n_rs)) + 1)
+  
+  # ALDEN CHANGE
+  # n_rs <- 40
+  # degrees <- round(seq(4,80,length.out = n_rs))
+  
   degree_dependent_rs <- matrix(ncol = n_rs, nrow = iters)
   for(iter in 1:iters)
   {
@@ -178,7 +212,7 @@ initialize_laplacian_eigenmaps_thetas <- function(sample_X,n){
   rs <- colMeans(degree_dependent_rs)
   
   # Choose a huge range of eigenvectors
-  Ks <- 1:round(n/20) # Maximum is 1/4 the recommendation of original Belkin + Niyogi paper.
+  Ks <- 1:round(n/10) # Maximum is 1/2 the recommendation of original Belkin + Niyogi paper.
   
   thetas <- expand.grid(r = rs, K = Ks)
 }
@@ -277,5 +311,5 @@ initialize_knn_thetas <- function(sample_X,n){
 }
 
 initialize_spectral_projection_thetas <- function(sample_X,n){
-  thetas <- data.frame(K = 1:(n/20))
+  thetas <- data.frame(K = 1:(n/10))
 }

@@ -6,12 +6,15 @@ library(RSpectra)
 source("sample.R")
 source("graph.R")
 source("estimators.R")
+source("manifold.R")
+source("misc.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/laplacian_eigenmaps/eigenmaps_approximates_spectral_projection.R")
+source("configs/laplacian_eigenmaps/mse/sobolev_2d_2s.R")
 
-# Please change this to dictate how verbose the pipeline should be 
+# Options for running the pipeline
 verbose <- F
+save_fits <- F
 
 #----------------------------------------------------#
 # This is the pipeline for running regression estimation experiments.
@@ -24,14 +27,17 @@ Xs <- vector(mode = "list", length = length(ns))
 f0s <- vector(mode = "list", length = length(ns))
 Ys <- vector(mode = "list", length = length(ns))
 thetas <- vector(mode = "list", length = length(ns))
-fits <- vector(mode = "list", length = length(ns))
+if(save_fits) fits <- vector(mode = "list", length = length(ns))
 
 for(ii in 1:length(ns))
 {
   n <- ns[ii]
   f0 <- make_f0(d,n)
   mse[[ii]] <- vector(mode = "list", length = length(methods))
-  fits[[ii]] <- vector(mode = "list",length = length(methods))
+  if(save_fits)
+  {
+    fits[[ii]] <- vector(mode = "list",length = length(methods))
+  }
 
   # Initialize tuning parameters (thetas).
   # Note: I have granted methods the right to access the distribution P from which X is sampled
@@ -41,7 +47,7 @@ for(ii in 1:length(ns))
   {
     thetas[[ii]][[jj]] <- initialize_thetas[[jj]](sample_X, n)
     mse[[ii]][[jj]] <- matrix(nrow = nrow(thetas[[ii]][[jj]]), ncol = iters)
-    fits[[ii]][[jj]] <- array(dim = c(nrow(thetas[[ii]][[jj]]),n,iters))
+    if(save_fits) fits[[ii]][[jj]] <- array(dim = c(nrow(thetas[[ii]][[jj]]),n,iters))
   }
   for(iter in 1:iters)
   {
@@ -91,7 +97,7 @@ for(ii in 1:length(ns))
     }
     
     ### Save fits.
-    fits[[ii]][[jj]][,,iter] <- fits_by_method[[jj]]
+    if(save_fits) fits[[ii]][[jj]][,,iter] <- fits_by_method[[jj]]
   }
   
   ### Save best fits. ###
@@ -118,6 +124,7 @@ for(directory in c(save_directory))
   dir.create(directory)
 }
 configs <- list(d = d,
+                s = s,
                 ns = ns,
                 methods = methods,
                 sample_X = sample_X,
@@ -129,3 +136,4 @@ save(mse, file = paste0(save_directory, '/mse.R'))
 save(Xs, file = paste0(save_directory, '/Xs.R'))
 save(Ys, file = paste0(save_directory, '/Ys.R'))
 save(f0s, file = paste0(save_directory, '/f0s.R'))
+if(save_fits) save(fits, file = paste0(save_directory, '/fits.R'))

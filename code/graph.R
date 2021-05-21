@@ -1,10 +1,9 @@
 neighborhood_graph <- function(X, r)
 {
   # unpack necessary parameters
-  d <- ncol(X)
   N <- nrow(X)
   
-  k_max <- min(round(N*pi^{d/2}/(gamma(d/2 + 1))*r^d*2),N - 1)
+  k_max <- round(min(4*N^(.5),N - 1))
   A <- knn_to_neighborhood_graph(X,r,k_max)
   return(A)
 }
