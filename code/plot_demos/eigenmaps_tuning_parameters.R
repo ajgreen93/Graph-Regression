@@ -22,8 +22,6 @@ load(file.path(data_directory,"Xs.R"))
 load(file.path(data_directory,"f0s.R"))
 load(file.path(data_directory,"Ys.R"))
 
-if(!exists("s")) s <- 2 # ALDEN REMOVE THIS HACK
-
 # Plotting parameters for all plots
 title <- paste0("d = ",d,", s = ",s,".")
 
