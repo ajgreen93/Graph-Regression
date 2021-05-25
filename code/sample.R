@@ -1,3 +1,6 @@
+#------------------------------------#
+# Design distributions.
+#------------------------------------#
 make_sample_gaussian <- function(d, sigma = 1)
 {
   sample_X <- function(n){
@@ -53,6 +56,23 @@ make_doppler <- function(d,n){
     if(x > 0){cos(4*pi/((abs(x)^{1/3})))}
     else{cos(pi/(abs(x)^{1/3}))}
   }
+}
+
+make_eigenfunction <- function(d,K,M,s){
+  #----------------------------------#
+  # Builds the regression function
+  #
+  # f0(x) = M/lambda_K^(s/2) * psi_K
+  #
+  # where psi_K(x) is the kth element in the trigonometric basis.
+  #----------------------------------#
+  lambda_K <- get_eigenvalue(d,K)
+  eigenfunction_K <- get_eigenfunction(d,K)
+  f0 <- function(x){
+    M/lambda_K^(s/2) * eigenfunction_K(x)
+  }
+  attr(f0,"type") <- "eigenfunction"
+  return(f0)
 }
 
 make_spectral_sobolev <- function(d,n,s = 1,M = 2^s,beta = NULL){

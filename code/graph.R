@@ -1,14 +1,14 @@
-neighborhood_graph <- function(X, r)
+neighborhood_graph <- function(X, r, X_new = X,loop = FALSE)
 {
   # unpack necessary parameters
   N <- nrow(X)
   
   k_max <- round(min(4*N^(.5),N - 1))
-  A <- knn_to_neighborhood_graph(X,r,k_max)
+  A <- knn_to_neighborhood_graph(X,r,k_max,X_new,loop)
   return(A)
 }
 
-knn_to_neighborhood_graph <- function(X, r, k_max)
+knn_to_neighborhood_graph <- function(X, r, k_max, X_new = X,loop)
 {
   #--------------------#
   # Input: X (n x d matrix)
@@ -21,11 +21,13 @@ knn_to_neighborhood_graph <- function(X, r, k_max)
   
   # unpack necessary parameters
   n <- nrow(X)
+  m <- nrow(X_new)
   d <- ncol(X)
-  A <- Matrix(0, nrow = n, ncol = n)
+  A <- Matrix(0, nrow = n, ncol = m)
   
   # compute distance matrix
-  rneighbors <- nn2(data = X, query = X, searchtype = 'radius', k = k_max, radius = r)$nn.idx[,-1]
+  rneighbors <- nn2(data = X, query = X_new, searchtype = 'radius', k = k_max, radius = r)$nn.idx
+  if( (!loop) & all(X_new == X)) rneighbors <- rneighbors[,-1]
   rneighbors[rneighbors == 0] <- NA
   r_neighbors_list <- as.matrix(melt(rneighbors)[,-2])
   r_neighbors_list <- r_neighbors_list[rowSums(is.na(r_neighbors_list)) == 0,]
@@ -35,9 +37,9 @@ knn_to_neighborhood_graph <- function(X, r, k_max)
   # Increase k_max and recalculate.
   while((max(rowSums(A)) == k_max - 1) & (k_max < n - 1))
   {
-    A <- Matrix(0, nrow = n, ncol = n)
+    A <- Matrix(0, nrow = n, ncol = m)
     k_max <- min(2*k_max,n - 1)
-    rneighbors <- nn2(data = X, query = X, searchtype = 'radius', k = k_max, radius = r)$nn.idx[,-1]
+    rneighbors <- nn2(data = X, query = X_new, searchtype = 'radius', k = k_max, radius = r)$nn.idx[,-1]
     rneighbors[rneighbors == 0] <- NA
     r_neighbors_list <- as.matrix(melt(rneighbors)[,-2])
     r_neighbors_list <- r_neighbors_list[rowSums(is.na(r_neighbors_list)) == 0,]
@@ -86,14 +88,18 @@ Laplacian <- function(A)
 # matrix is poorly conditioned. 
 get_spectra <- function(A,K,sigma = 0){
   # Compute as many eigenvectors as we will need.
-  spectra <- tryCatch(eigs_sym(A,K,sigma),
+  maxitr <- 10000
+  spectra <- tryCatch(eigs_sym(A,K,sigma,opts = list(maxitr = maxitr)),
                       error = function(e){
-                        test <- eigs_sym(A,K, which = "SM")
+                        test <- eigs_sym(A,K, which = "SM",opts = list(maxitr = maxitr))
                         return(test)
                       })
-  if(max(abs(spectra$values)) > 2e10)
+  
+  # If it hasn't converged, up the number of iterations and try again.
+  while(max(abs(spectra$values)) > 2e10 | length(spectra$values) < K)
   {
-    spectra <- eigs_sym(A,K,which = "SM")
+    maxitr <- maxitr + 10000
+    spectra <- eigs_sym(A,K,which = "SM",opts = list(maxitr = maxitr))
   }
   spectra
 }
