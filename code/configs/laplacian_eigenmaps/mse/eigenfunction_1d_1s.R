@@ -2,29 +2,29 @@
 # Configs for Laplacian Eigenmaps Figure 1.
 #------------------------------------------------#
 
-#------------------------------------------------#
-# Configs for Laplacian Eigenmaps Figure 1.
-#------------------------------------------------#
-
 ### General configs.
 d <- 1
-s <- 2
-M <- 8
-# ns <- 2000
-ns <- round(seq(400,2000,length.out = 10))
-iters <- 2
+s <- 1
+M <- 2^(s - d)
+ns <- round(seq(1000,4000,length.out = 10))
+iters <- 400
 
 ### Configs for sampling. ###
 sample_X <- make_sample_uniform(d)
-make_f0 <- function(d,n){make_spectral_sobolev(d,max(ns),s,M)}
+make_f0 <- function(d,n){
+  g0 <- make_eigenfunction(d,round((M^2*n)^(d/(2*s + d))),M,s)
+  f0 <- function(x){2 * g0(x)}
+}
 
 
 ### Methods. ###
 methods <- list(
   laplacian_eigenmaps = make_laplacian_eigenmaps,
   spectral_projection = make_spectral_projection,
-  least_squares = make_least_squares)
+  least_squares = make_least_squares
+  )
 initialize_thetas <- list(
   initialize_laplacian_eigenmaps_thetas,
   initialize_spectral_projection_thetas,
-  initialize_spectral_projection_thetas)
+  initialize_spectral_projection_thetas
+  )
