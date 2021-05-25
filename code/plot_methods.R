@@ -11,7 +11,7 @@ plot_fxn <- function(x,y,f,title = NULL,col = NULL){
 
 
 # Plot of mse---for best choice of tuning parameter---by sample size
-plot_best_mse <- function(methods,mse){
+plot_best_mse <- function(methods,mse,sd = T,validate = validate_mse){
   stopifnot(length(methods) <= 3)
   cols <- c("red","blue","green")[1:length(methods)]     
   
@@ -21,6 +21,7 @@ plot_best_mse <- function(methods,mse){
   names(fitted_slopes) <- names(methods)
   for(jj in 1:length(methods))
   {
+    method <- methods[[jj]]
     best_mse <- numeric()
     minimax_mse <- numeric()
     sd_best_mse <- numeric()
@@ -29,7 +30,7 @@ plot_best_mse <- function(methods,mse){
       mse_ii_jj <- mse[[ii]][[jj]]
       best_mse[ii] <- min(rowMeans(mse_ii_jj))
       sd_best_mse[ii] <- apply(mse_ii_jj,1,sd)[which.min(rowMeans(mse_ii_jj))]/sqrt(ncol(mse_ii_jj))
-      minimax_mse[ii] <- ns[ii]^{-2/(2 + d)}
+      minimax_mse[ii] <- ns[ii]^{-2*s/(2*s + d)}
     }
     # Rescale minimax mse to match intercept with best_mse
     minimax_mse <- minimax_mse * (best_mse[1]/minimax_mse[1])
@@ -40,21 +41,19 @@ plot_best_mse <- function(methods,mse){
     log_ns <- log(ns)
     fitted_slopes[jj] <- round( lm(log_best_mse ~ log_ns)$coefficients[2], 2)
     
+
     # hack to change names for plotting
     name <- names(plot_dfs_best_mse)[[jj]]
     names(plot_dfs_best_mse)[[jj]] <- case_when(
       name == "laplacian_smoothing" ~ "LS",
       name == "laplacian_eigenmaps" ~ "LE",
-      name == "spectral_projection" ~ "SP"
+      name == "spectral_projection" ~ "SP",
+      name == "least_squares"       ~ "LS",
+      name == "laplacian_eigenmaps_plus_kernel_smoothing" ~ "LE+KS"
     ) 
     names(plot_dfs_best_mse)[[jj]] <- paste0(names(plot_dfs_best_mse)[[jj]],
                                              " [Slope = ", fitted_slopes[jj],"].")
   }
-  
-  # browser()
-  # # ALDEN REMOVE
-  # best_K <- find_best_K(mse,thetas)
-  # #
   
   title <- paste0("d = ", d,", s = ",s,".", "Minimax slope = ", -2*s,"/", d+2*s, ".")
   plot_df_best_mse <- bind_rows(plot_dfs_best_mse, .id = "method") 
@@ -76,19 +75,20 @@ plot_best_mse <- function(methods,mse){
   {
     points(x = ns, y = plot_dfs_best_mse[[jj]]$y, col = cols[jj], pch = 20)
     lines(x = ns, y = plot_dfs_best_mse[[jj]]$y, col = cols[jj],lwd = 1.5)
-    lines(x = ns, y = plot_dfs_best_mse[[jj]]$y + plot_dfs_best_mse[[jj]]$sd, 
-          col = cols[jj],
-          lwd = 1.5,
-          lty = 2)
-    lines(x = ns, y = plot_dfs_best_mse[[jj]]$y - plot_dfs_best_mse[[jj]]$sd, 
-          col = cols[jj],
-          lwd = 1.5,
-          lty = 2)
+    if(sd)
+    {
+      lines(x = ns, y = plot_dfs_best_mse[[jj]]$y + plot_dfs_best_mse[[jj]]$sd, 
+            col = cols[jj],
+            lwd = 1.5,
+            lty = 2)
+      lines(x = ns, y = plot_dfs_best_mse[[jj]]$y - plot_dfs_best_mse[[jj]]$sd, 
+            col = cols[jj],
+            lwd = 1.5,
+            lty = 2)
+    }
   }
   
-  # add standard deviation curves
-  
-  # 
+  # Complete the plot
   lines(x = ns, y = minimax_mse)
   grid(equilogs = F, lwd = 2)
   legend("bottomleft", legend = legend_text, col = cols, pch = 20,
