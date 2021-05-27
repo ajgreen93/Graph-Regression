@@ -84,10 +84,8 @@ make_spectral_sobolev <- function(d,n,s = 1,M = 2^s,beta = NULL){
   #
   # where psi_k(x) is the kth element in the trigonometric basis.
   #------------------------------#
-  # c <- sqrt(sum((1:3)^(2/d)))
-  # beta <- c(0,rep(1/c,3),1/(sqrt(17)*sqrt((4:20)^(2/d))))
   if(is.null(beta)){
-    n_coefs <- n/10
+    n_coefs <- n/20
     beta <- M/sqrt(n_coefs) * c(1/sqrt( (1:n_coefs)^(2*s/d) ) ) # Sobolev norm = 2^s.
   }
   trig_basis <- get_trigonometric_basis(d,length(beta))

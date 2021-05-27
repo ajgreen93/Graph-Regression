@@ -40,6 +40,19 @@ get_eigenvalue <- function(d,K){
   return(eigenvalue)
 }
 
+find_best_parameters <- function(mse,thetas){
+  best_params <- vector(mode = "list",length = length(mse))
+  for(ii in 1:length(mse))
+  {
+    best_params[[ii]] <- vector(mode = "list",length = length(thetas[[1]]))
+    for(jj in 1:length(mse[[ii]]))
+    {
+      best_params[[ii]][[jj]] <- thetas[[ii]][[jj]][which.min(rowSums(mse[[ii]][[jj]])),]
+    }
+  }
+  best_params
+}
+
 
 find_best_K <- function(mse,thetas){
   best_K <- matrix(nrow = length(ns),ncol = length(thetas[[1]]))

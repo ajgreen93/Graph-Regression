@@ -10,12 +10,12 @@ source("manifold.R")
 source("misc.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/laplacian_eigenmaps/parameters/eigenmaps_tuning.R")
+source("configs/laplacian_eigenmaps/parameters/eigenfunction_1s_2d.R")
 
 # Options for running the pipeline
 verbose <- F
 save_fits <- F
-test_data <- F
+test_data <- T
 
 #----------------------------------------------------#
 # This is the pipeline for running regression estimation experiments.

@@ -11,9 +11,11 @@ plot_fxn <- function(x,y,f,title = NULL,col = NULL){
 
 
 # Plot of mse---for best choice of tuning parameter---by sample size
-plot_best_mse <- function(methods,mse,sd = T,validate = validate_mse){
-  stopifnot(length(methods) <= 3)
-  cols <- c("red","blue","green")[1:length(methods)]     
+plot_best_mse <- function(methods,mse,sd = T,validate = validate_mse,cols = NULL){
+  if(is.null(cols)){
+    stopifnot(length(methods) <= 3)
+    cols <- c("red","blue","green")[1:length(methods)]     
+  }
   
   plot_dfs_best_mse <- vector(mode = "list", length = length(methods))
   names(plot_dfs_best_mse) <- names(methods)

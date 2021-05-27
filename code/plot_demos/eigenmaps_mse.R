@@ -10,8 +10,8 @@ source("plot_methods.R")
 source("sample.R")
 
 # User entered information.
-data_directory <- "data/laplacian_eigenmaps/out_of_sample_mse/20210524142230"
-plot_directory <- "plots/laplacian_eigenmaps/out_of_sample_mse/eigenfunction" # Please change this to whichever directory you prefer.
+data_directory <- "data/laplacian_eigenmaps/mse/eigenfunction_2d_2s"
+plot_directory <- "plots/laplacian_eigenmaps/mse/eigenfunction" # Please change this to whichever directory you prefer.
 if(!exists(plot_directory)){dir.create(plot_directory)}
 
 load(file.path(data_directory,"configs.R"))
@@ -24,12 +24,16 @@ load(file.path(data_directory,"Xs.R"))
 load(file.path(data_directory,"f0s.R"))
 load(file.path(data_directory,"Ys.R"))
 
-best_K <- find_best_K(mse,thetas)
-best_radius <- find_best_radius(mse,thetas)
+# Subset data to methods you actually want to plot.
+plot_methods <- c("laplacian_eigenmaps",
+                  "laplacian_eigenmaps_plus_kernel_smoothing",
+                  "spectral_projection")
+mse <- lapply(mse,FUN = function(m){m[names(methods) %in% plot_methods]})
+methods <- methods[names(methods) %in% plot_methods]
 
 ## Plot 1: Mean squared error as a function of n.
 plot_name <- paste0("mse_by_sample_size_",d,"d_",s,"s.pdf")
 pdf(file.path(plot_directory,plot_name))
 par(mar = c(5.1,6,4.1,4.1)) # Prevent the left hand side from getting cut off.
-plot_best_mse(methods,mse,sd = F)
+plot_best_mse(methods,mse,sd = T, cols = c("red","green"))
 dev.off()

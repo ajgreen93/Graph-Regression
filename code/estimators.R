@@ -331,7 +331,7 @@ initialize_laplacian_eigenmaps_thetas <- function(sample_X,n){
   
   # ALDEN CHANGE
   # OPTION MSE
-  # n_rs <- 50
+  # n_rs <- 10
   # degrees <- round(exp(seq(log(1/4*log(n)),log(1/2*n^(1/2)),length.out = n_rs)) + 1)
   
   # OPTION TUNING
