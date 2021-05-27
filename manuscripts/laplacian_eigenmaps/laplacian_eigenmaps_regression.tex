@@ -1003,43 +1003,44 @@ Some remarks:
 \label{sec:experiments}
 
 \textcolor{red}{(TODO): Include more details.}
-In this section we empirically demonstrate that Laplacian Eigenmaps is a very good alternative to spectral projection, even when $n$ is only moderately large. In order to compare the two methods, in our experiments we stick to simple settings where we can compute eigenfunctions of $\Delta_P$, and thus the spectral projection estimator. In general, this is not so easily done: hence the appeal of Laplacian Eigenmaps.
+In this section we empirically demonstrate that Laplacian Eigenmaps is a reasonably good alternative to spectral projection, even when $n$ is only moderately large. In order to compare the two methods, in our experiments we stick to simple settings where we can compute eigenfunctions of $\Delta_P$, and thus the spectral projection estimator. Of course in general, it is not easy to compute these eigenfunctions: hence the appeal of Laplacian Eigenmaps.
 
-In our first experiment, we compare the mean-squared error of Laplacian eigenmaps to that of its classical counterpart. We vary the sample size from $n = 200$ to $n = 2000$; sample $n$ design points $X_1,\ldots,X_n$ from the uniform distribution on the cube $[-1,1]^d$; and sample responses $Y_i$ according to~\eqref{eqn:model} with regression function $f_0 = M/\sqrt{n} \cdot \sum_{k = 1}^{n/20} k^{-s/d} \psi_k$ (Note that $f_0$ changes with $n$, but always belongs to the Sobolev ball~\textcolor{red}{(?)}.) In Figure~\ref{fig:fig1} we show the mean-squared error of Laplacian eigenmaps and spectral projection as a function of $n$, for different dimensions $d$ and order of smoothness $s$. We see that both estimators have mean-squared error converging to zero at least as fast as the optimal rate. (Here the regression function $f_0$ is a little bit smoother than the worst-case Sobolev function, which explains why the minimax rate is not always saturated). Surprisingly, we also find that Laplacian Eigenmaps slightly but consistently outperforms its continuum counterpart. 
 \begin{figure*}[tb]
-	\includegraphics[width=.245\textwidth]{figures/in_sample_mse/mse_by_sample_size_1d_1s.pdf}
-	\includegraphics[width=.245\textwidth]{figures/in_sample_mse/mse_by_sample_size_1d_2s.pdf}
-	\includegraphics[width=.245\textwidth]{figures/in_sample_mse/mse_by_sample_size_2d_1s.pdf}
-	\includegraphics[width=.245\textwidth]{figures/in_sample_mse/mse_by_sample_size_2d_2s.pdf}
-	\caption{Mean squared error of Laplacian eigenmaps (\texttt{LE}) and a spectral projection estimator (\texttt{SP}) as a function of sample size $n$. Each plot is on the log-log scale, and the results are averaged over 400 repetitions. Both estimators are tuned for optimal average mean squared error. The black line shows the minimax rate (in slope only; the intercept is chosen to match the observed error).}
-	\label{fig:fig1}
-\end{figure*}
-
-We also compare the error, over a held-out test set, of Laplacian eigenmaps plus kernel smoothing to the spectral projection estimator. The relative performances of the two estimators, as seen in Figure~\ref{fig:fig2}, is very similar to that seen in Figure~\ref{fig:fig1}, supporting our theoretical claim that the additional error incurred by kernel smoothing of Laplacian Eigenmaps is negligible.
-\begin{figure*}[tb]
+	\includegraphics[width=.245\textwidth]{figures/mse/mse_by_sample_size_1d_1s.pdf}
+	\includegraphics[width=.245\textwidth]{figures/mse/mse_by_sample_size_1d_2s.pdf}
+	\includegraphics[width=.245\textwidth]{figures/mse/mse_by_sample_size_2d_1s.pdf}
+	\includegraphics[width=.245\textwidth]{figures/mse/mse_by_sample_size_2d_2s.pdf}
 	\includegraphics[width=.245\textwidth]{figures/out_of_sample_mse/mse_by_sample_size_1d_1s.pdf}
 	\includegraphics[width=.245\textwidth]{figures/out_of_sample_mse/mse_by_sample_size_1d_2s.pdf}
 	\includegraphics[width=.245\textwidth]{figures/out_of_sample_mse/mse_by_sample_size_2d_1s.pdf}
 	\includegraphics[width=.245\textwidth]{figures/out_of_sample_mse/mse_by_sample_size_2d_2s.pdf}
-	\caption{Mean squared error of Laplacian eigenmaps plus kernel smoothing (\texttt{LE+KS}) and a spectral projection estimator (\texttt{SP}) as a function of sample size $n$. Each plot is on the log-log scale, and the results are averaged over 200 repetitions. Both estimators are tuned for optimal average mean squared error. The black line shows the minimax rate (in slope only; the intercept is chosen to match the observed error).}
+	\caption{Mean squared error (mse) of Laplacian eigenmaps and spectral projection estimators. Top row: in-sample mse of Laplacian eigenmaps (\texttt{LE}) and a spectral projection estimator (\texttt{SP}) as a function of sample size $n$. Bottom row: out-of-sample mse of Laplacian eigenmaps plus kernel smoothing (\texttt{LE+KS}) and a spectral projection estimator. Each plot is on the log-log scale, and the results are averaged over 400 repetitions. All estimators are tuned for optimal average mse. The black line shows the minimax rate (in slope only; the intercept is chosen to match the observed error).}
+	\label{fig:fig1}
+\end{figure*}
+
+In our first experiment, we compare the mean-squared error of Laplacian eigenmaps to that of its classical spectral projection counterpart. We vary the sample size from $n = 1000$ to $n = 4000$; sample $n$ design points $X_1,\ldots,X_n$ from the uniform distribution on the cube $[-1,1]^d$; and sample responses $Y_i$ according to~\eqref{eqn:model} with regression function $f_0 = M/\lambda_K^{s/2} \cdot \psi_K$ for $K \asymp n^{d/(2s + d)}$; the pre-factor $M/\lambda_K^{s/2}$ is chosen so that $|f_0|_{H^s(\mc{X})}^2 = M$. In Figure~\ref{fig:fig1} we show the in-sample mean-squared error of Laplacian eigenmaps and a classical spectral projection estimator as a function of $n$, for different dimensions $d$ and order of smoothness $s$. We see that all estimators have mean-squared error converging to zero at roughly the minimax rate. We also see that the mean-squared error of Laplacian Eigenmaps gets closer to that of spectral projection as $n$ gets larger. The fact that spectral projection outperform Laplacian Eigenmaps 
+
+We also compare the error, over a held-out test set, of Laplacian eigenmaps plus kernel smoothing to the spectral projection estimator. The out-of-sample mean squared error of the two estimators is very similar to the in-sample mean-squared error. This supports our theoretical claim that the additional error incurred by kernel smoothing of Laplacian Eigenmaps is negligible.
+
+In Figure~\ref{fig:fig2} we compare tests using Laplacian eigenmaps and spectral projection. \textcolor{red}{(TODO): Need to ask Siva for help.}
+\begin{figure*}[tb]
+	\caption{Worst-case risk Laplacian eigenmaps (\texttt{LE}) and spectral projection (\texttt{SP}) tests, as a function of sample size $n$.}
 	\label{fig:fig2}
 \end{figure*}
 
-In Figure~\ref{fig:fig3} we compare tests using Laplacian eigenmaps and spectral projection. \textcolor{red}{(TODO): Need to ask Siva for help.}
+These experiments demonstrate that in terms of statistical error, Laplacian eigenmaps methods are reasonable replacements for spectral projection methods. Laplacian eigenmaps depends on two tuning parameters, and in our final experiment we investigate the importance of both, focusing now on estimation. In Figure~\ref{fig:fig3}, we see how the mean-squared error of Laplacian eigenmaps changes as each tuning parameter is varied. As suggested by our theory, properly choosing the number of eigenvectors $K$ is crucial: the mean-squared error curves, as a function of $K$, always have a sharply defined minimum. On the other hand, as a function of the graph radius parameter $\varepsilon$ the mean-squared error curve is much closer to flat. This squares completely with our theory, which requires that the number of eigenvectors $K$ be much more carefully tuned that the graph radius $\varepsilon$.
+
+We also plot the out-of-sample mean squared error of Laplacian eigenmaps plus kernel smoothing, as a function of its various tuning parameters (which include the bandwidth $h$ as well as $\varepsilon$ and $K$.) Here the relationship between theory and empirics is more nuanced. On the one hand, empirically it seems that the optimal choice of bandwidth parameter $h$ is usually smaller than $\varepsilon$, as suggested by our theory. On the other hand, for Laplacian eigenmaps plus kernel smoothing we see that mean-squared error curves as a function of $K$ are often quite close to their minima even when we choose many more eigenvectors than is optimal for Laplacian eigenmaps or spectral projection. This is not reflected in our theory, where we require that $K$ be chosen in the same tight range as was required for Laplacian Eigenmaps to be optimal in-sample. However, it does make intuitive sense: extension by kernel smoothing further attenuates the noise, making the algorithm more forgiving to overfitting during the Laplacian Eigenmaps step. 
+
 \begin{figure*}[tb]
-	\caption{Worst-case risk Laplacian eigenmaps (\texttt{LE}) and spectral projection (\texttt{SP}) tests, as a function of sample size $n$.}
+	\includegraphics[width=.245\textwidth]{figures/tuning/eigenfunction/mse_by_number_of_eigenvectors_1d_1s.pdf}
+	\includegraphics[width=.245\textwidth]{figures/tuning/eigenfunction/mse_by_radius_1d_1s.pdf} 
+	\includegraphics[width=.245\textwidth]{figures/tuning/eigenfunction/mse_by_number_of_eigenvectors_2d_1s.pdf}
+	\includegraphics[width=.245\textwidth]{figures/tuning/eigenfunction/mse_by_radius_2d_1s.pdf} 
+	\includegraphics[width=.245\textwidth]{figures/tuning/sobolev/mse_by_number_of_eigenvectors_1d_1s.pdf}
+	\includegraphics[width=.245\textwidth]{figures/tuning/sobolev/mse_by_radius_1d_1s.pdf} 
+	\caption{Mean squared error of Laplacian Eigenmaps (\textcolor{red}{red}), Laplacian Eigenmaps plus kernel smoothing (\textcolor{blue}{blue}), and spectral projection (\textcolor{green}{green}) as a function of tuning parameters. Top row: the same regression function $f_0$ as used in Figure~\ref{fig:fig1}. Bottom row: the regression function $f_0 \propto \sum_{k} 1/\lambda_k^{s/2} \psi_K$. For all experiments, the sample size $n = 1000$, and the results are averaged over $200$ repetitions. In each panel, all tuning parameters except the one being varied are set to their optimal values. For Laplacian Eigenmaps plus kernel smoothing, circular points and a solid line are used to denote the error as a function of the graph radius $\varepsilon$, whereas triangular points and a dashed line are used to denote the error as a function of the bandwidth $h$.}
 	\label{fig:fig3}
-\end{figure*}
-
-These experiments demonstrate that in terms of statistical error, Laplacian eigenmaps methods are reasonable replacements for spectral projection methods. Laplacian eigenmaps depends on two tuning parameters, and in our final experiment we investigate the importance of both, focusing now on estimation. In Figure~\ref{fig:fig3}, we see how the mean-squared error of Laplacian eigenmaps changes as each tuning parameter is varied. As suggested by our theory, properly choosing the number of eigenvectors $K$ is crucial: the mse curves have a sharply defined minimum. On the other hand, as a function of the graph radius parameter $\varepsilon$ the mse curves are much closer to flat. This is particularly true in the first-order ($s = 1$) case, and still true albeit to a lesser extent when $s = 2$.   These findings reinforce two points we've made previously: first that Laplacian Eigenmaps should be viewed as a type of spectral projection method, in which the more important parameter to carefully tune is the number of eigenvectors $K$; second that the more regularity displayed by the regression function, the more important tuning the graph radius $\varepsilon$ becomes.
-
-\begin{figure*}[tb]
-	\includegraphics[width=.245\textwidth]{figures/eigenmaps_parameters/mse_by_number_of_eigenvectors.pdf}
-	\includegraphics[width=.245\textwidth]{figures/eigenmaps_parameters/mse_by_radius.pdf} 
-	\includegraphics[width=.245\textwidth]{figures/eigenmaps_parameters_2s/mse_by_number_of_eigenvectors.pdf}
-	\includegraphics[width=.245\textwidth]{figures/eigenmaps_parameters_2s/mse_by_radius.pdf} 
-	\caption{Mean squared error of Laplacian Eigenmaps as a function of hyperparameters. For all experiments, sample size $n = 2000$, and the results are averaged over $200$ repetitions. Colors show~\textcolor{red}{(?)}}
-	\label{fig:fig4}
 \end{figure*}
 
 \section{Discussion}
