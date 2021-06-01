@@ -3,19 +3,22 @@ library(dplyr)
 library(Matrix)
 library(reshape2)
 library(RSpectra)
+source("precompute_data.R")
 source("sample.R")
 source("graph.R")
-source("estimators.R")
+source("estimators.R") 
 source("manifold.R")
 source("misc.R")
+source("initialize_parameters.R")
+source("tests.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/laplacian_eigenmaps/parameters/eigenfunction_1s_2d.R")
+source("configs/laplacian_eigenmaps/mse/eigenfunction_1d_1s.R")
 
 # Options for running the pipeline
 verbose <- F
 save_fits <- F
-test_data <- T
+test_data <- F
 
 #----------------------------------------------------#
 # This is the pipeline for running regression estimation experiments.
