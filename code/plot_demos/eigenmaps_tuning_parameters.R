@@ -9,11 +9,11 @@ source("plot_methods.R")
 source("misc.R")
 
 # User entered information.
-data_directory <- "data/laplacian_eigenmaps/out_of_sample_mse/eigenfunction_2d_2s"
-plot_directory <- "plots/laplacian_eigenmaps/tuning/misc/" # Please change this to whichever directory you prefer.
+data_directory <- "data/laplacian_eigenmaps/tuning/sobolev_1s_2d"
+plot_directory <- "plots/laplacian_eigenmaps/tuning/sobolev/" # Please change this to whichever directory you prefer.
 if(!exists(plot_directory)){dir.create(plot_directory)}
 
-plot_n <- 3000                                       # Which sample size would you like to use?
+plot_n <- 1000                                  # Which sample size would you like to use?
 plot_methods <- c("laplacian_eigenmaps",
                   "laplacian_eigenmaps_plus_kernel_smoothing",
                   "spectral_projection")
@@ -43,6 +43,7 @@ CapStr <- function(y) {
 }
 function_names <- c("eigenfunction","sobolev")
 function_name <- function_names[which(sapply(function_names,FUN = function(name){grepl(name,data_directory)}))]
+if(length(function_name) == 0) function_name = ""
 title <- paste0("d = ",d,", s = ",s,". ", CapStr(function_name),".")
 
 ## Plot 1: Mean squared error as a function of K.
@@ -79,7 +80,7 @@ ylims <- c(min(plot_mse),max(plot_mse))
 cols <- c("red","blue","green")
 stopifnot(ncol(plot_mse) <= 3)
 
-plot_name <- paste0("mse_by_number_of_eigenvectors_",d,"d_",s,"s.pdf")
+plot_name <- paste0("mse_by_number_of_eigenvectors_",plot_n,"n_",d,"d_",s,"s.pdf")
 pdf(file.path(plot_directory,plot_name))
 par(mar = c(5.1,6,4.1,4.1)) # Prevent the left hand side from getting cut off.
 # shadow plot
@@ -151,7 +152,7 @@ ylims <- c(min(plot_mse),max(plot_mse))
 cols <- c("red","blue","blue")
 stopifnot(ncol(plot_mse) <= 3)
 
-plot_name <- paste0("mse_by_radius_",d,"d_",s,"s.pdf")
+plot_name <- paste0("mse_by_radius_",plot_n,"n_",d,"d_",s,"s.pdf")
 pdf(file.path(plot_directory,plot_name))
 par(mar = c(5.1,6,4.1,4.1)) # Prevent the left hand side from getting cut off.
 # shadow plot
