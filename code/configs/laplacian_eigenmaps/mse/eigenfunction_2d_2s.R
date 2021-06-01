@@ -7,7 +7,7 @@ d <- 2
 s <- 2
 M <- 2^(s - 2*d + 1)
 ns <- round(seq(1000,4000,length.out = 10))
-iters <- 50
+iters <- 200
 
 ### Configs for sampling. ###
 sample_X <- make_sample_uniform(d)
@@ -19,12 +19,12 @@ make_f0 <- function(d,n){
 
 ### Methods. ###
 methods <- list(
-  # laplacian_eigenmaps = make_laplacian_eigenmaps,
-  spectral_projection = make_spectral_projection
-  # least_squares = make_least_squares
+  laplacian_eigenmaps = make_laplacian_eigenmaps,
+  spectral_projection = make_spectral_projection,
+  least_squares = make_least_squares
 )
 initialize_thetas <- list(
-  # initialize_laplacian_eigenmaps_thetas,
+  initialize_laplacian_eigenmaps_thetas,
+  initialize_spectral_projection_thetas,
   initialize_spectral_projection_thetas
-  # initialize_spectral_projection_thetas
 )

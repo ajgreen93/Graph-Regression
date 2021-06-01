@@ -7,7 +7,7 @@ d <- 1
 s <- 2
 M <- 2^(s - d)
 ns <- round(seq(1000,4000,length.out = 10))
-iters <- 400
+iters <- 200
 
 ### Configs for sampling. ###
 sample_X <- make_sample_uniform(d)

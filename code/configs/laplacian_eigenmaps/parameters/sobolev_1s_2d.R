@@ -5,7 +5,7 @@
 ### General configs.
 d <- 2
 s <- 1
-M <- 4
+M <- 4 * 2^(s - 2*d + 1)
 ns <- 1000
 iters <- 100
 
