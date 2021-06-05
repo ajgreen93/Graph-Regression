@@ -11,7 +11,8 @@ plot_fxn <- function(x,y,f,title = NULL,col = NULL){
 
 
 # Plot of mse---for best choice of tuning parameter---by sample size
-plot_best_mse <- function(methods,mse,sd = T,validate = validate_mse,cols = NULL){
+plot_best_mse <- function(methods,mse,sd = T,validate = validate_mse,cols = NULL,
+                          legend = T, title = NULL, rate = T){
   if(is.null(cols)){
     stopifnot(length(methods) <= 3)
     cols <- c("red","blue","green")[1:length(methods)]     
@@ -57,7 +58,7 @@ plot_best_mse <- function(methods,mse,sd = T,validate = validate_mse,cols = NULL
                                              " [Slope = ", fitted_slopes[jj],"].")
   }
   
-  title <- paste0("d = ", d,", s = ",s,".", "Minimax slope = ", -2*s,"/", d+2*s, ".")
+  if(is.null(title)) title <- paste0("d = ", d,", s = ",s,".", "Minimax slope = ", -2*s,"/", d+2*s, ".")
   plot_df_best_mse <- bind_rows(plot_dfs_best_mse, .id = "method") 
   legend_text <- unique(plot_df_best_mse$method)
   
@@ -91,10 +92,12 @@ plot_best_mse <- function(methods,mse,sd = T,validate = validate_mse,cols = NULL
   }
   
   # Complete the plot
-  lines(x = ns, y = minimax_mse)
+  if(rate) lines(x = ns, y = minimax_mse)
   grid(equilogs = F, lwd = 2)
-  legend("bottomleft", legend = legend_text, col = cols, pch = 20,
+  if(legend){
+    legend("bottomleft", legend = legend_text, col = cols, pch = 20,
          bg = "white", inset = .01, cex = 1.75)
+  }
 }
 
 # Plot the critical radius of tests.
