@@ -13,11 +13,11 @@ source("initialize_parameters.R")
 source("tests.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/laplacian_eigenmaps/mse/eigenfunction_1d_1s.R")
+source("configs/thesis/cluster_assumption/step_function.R")
 
 # Options for running the pipeline
 verbose <- F
-save_fits <- F
+save_fits <- T
 test_data <- F
 
 #----------------------------------------------------#
