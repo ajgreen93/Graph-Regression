@@ -50,36 +50,48 @@ initialize_laplacian_eigenmaps_thetas <- function(sample_X,n,max_K = NULL){
   thetas <- expand.grid(r = rs, K = Ks)
 }
 
-initialize_laplacian_smoothing_thetas <- function(sample_X,n){
-  thetas <- data.frame(r = numeric(), rho = numeric())
+initialize_laplacian_smoothing_thetas <- function(sample_X,n, max_K = 2*round( (M^2*n)^(d/(2*s + d)))){
+  # Choose a range of radii based on different desired minimum degree.
+  iters <- 10
   
-  # Choose a range of radii centered around r_connect, where
-  # r_connect is the connectivity radius: i.e. the minimum radius such that 
-  # observed minimum degree is 2.
-  r_connects <- numeric(10)
-  for(iter in 1:10)
+  # OPTION TUNING
+  n_rs <- 10
+  degrees <- round(seq(2,60,length.out = n_rs))
+  
+  degree_dependent_rs <- matrix(ncol = n_rs, nrow = iters)
+  for(iter in 1:iters)
   {
     X <- sample_X(n)
-    rneighborhood <- nn2(data = X, query = X, k = round(log(n) + 1))
-    r_connects[iter] <- max(rneighborhood$nn.dists[,round(log(n) + 1)]) # connectivity radius
-  }
-  # Choose a range of radii centered around r_connect.
-  rs <- mean(r_connects) + sd(r_connects) * seq(-2,2,length.out = 10)
-  
-  
-  # Choose a range of penalty parameters.
-  rho_optimal_theory <- function(r){1 / (n^{2/(2+d)} * n * r^{d + 2})} # bias-variance balance
-  rho_optimals <- sapply(rs,rho_optimal_theory)
-  rhos <- sapply(rho_optimals,FUN = function(rho){seq(rho, 5 * rho,length.out = 25)})
-  
-  # All combinations.
-  for (ii in 1:length(rs))
-  {
-    for(jj in 1:nrow(rhos))
+    for(jj in 1:n_rs)
     {
-      thetas <- thetas %>% add_row(r = rs[ii],rho = rhos[jj,ii])
+      rneighborhood <- nn2(data = X, query = X, k = degrees[jj]) 
+      degree_dependent_rs[iter,jj] <- max(rneighborhood$nn.dists[,degrees[jj]])
     }
   }
+  # Choose a range of radii intended to achieve the desired min degree.
+  rs <- colMeans(degree_dependent_rs)
+  
+  # Choose rho roughly proportional to 1/lambda_K.
+  desired_K <- seq(1,max_K,length.out = 10) # indices of the eigenvalues you will consider.
+  rhos <- vector(mode = "list",length = length(rs))
+  for(jj in 1:length(rs))
+  {
+    r <- rs[jj]
+    rhos[[jj]] <- matrix(NA,nrow = iters,ncol = length(desired_K))
+    for(iter in 1:iters)
+    {
+      X <- sample_X(n)
+      G <- neighborhood_graph(X,r)
+      L <- Laplacian(G)
+      spectra <- pmax(get_spectra(L,max(desired_K))$values[rev(desired_K)],1e-12)
+      rhos[[jj]][iter,] <- 1/spectra
+    }
+    rhos[[jj]] <- apply(rhos[[jj]],2,FUN = median) %>% unique()
+  }
+  
+  # Combine rhos and rs.
+  thetas <- mapply(expand.grid,rs,rhos,SIMPLIFY = F) %>% bind_rows()
+  names(thetas) <- c("r","rho")
   return(thetas)
 }
 
@@ -114,8 +126,9 @@ initialize_kernel_smoothing_thetas <- function(sample_X,n){
   # Choose a range of radii based on different desired minimum degree.
   # Currently, a range so that the minimum degree is between log(n) and n^{1/2}.
   iters <- 10 
-  n_rs <- 10
-  degrees <- round(exp(seq(log(1/4*log(n)),log(n^(1/2)),length.out = n_rs)) + 1)
+  n_rs <- 30
+  degrees <- round(seq(2,120,length.out = n_rs))
+  
   degree_dependent_rs <- matrix(ncol = n_rs, nrow = iters)
   for(iter in 1:iters)
   {
@@ -125,7 +138,6 @@ initialize_kernel_smoothing_thetas <- function(sample_X,n){
       rneighborhood <- nn2(data = X, query = X, k = degrees[jj]) 
       degree_dependent_rs[iter,jj] <- max(rneighborhood$nn.dists[,degrees[jj]])
     }
-    # r_connects[iter] <-  # connectivity radius
   }
   # Choose a range of radii intended to achieve the desired min degree.
   rs <- colMeans(degree_dependent_rs)
