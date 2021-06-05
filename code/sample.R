@@ -37,6 +37,19 @@ make_sample_uniform <- function(d)
   }
 }
 
+# p(x) = 1/2 * (1{0 < x < 1/2 - sep} + 1{1/2 + sep < x < 1}).
+make_sample_uniform_mixture <- function(d,sep)
+{
+  stopifnot(d == 1) # For now, just 1d.
+  stopifnot(sep < 1/2)
+  L <- c(0,1/2 + sep); U = c(1/2 - sep,1) # Lower and upper extremes.
+  sample_X <- function(n){
+      class <- apply( rmultinom(n, 1, prob = c(1/2,1/2)),2,FUN = function(i){which(i != 0)})
+      X <- sapply(class,FUN = function(l){runif(1,L[l],U[l])}) %>% as.matrix()
+      X
+  }
+}
+
 make_sample_manifold <- function(d,D)
 {
   stopifnot(d <= D)
@@ -179,6 +192,16 @@ make_wiggly_gaussian <- function(d,n)
     return(1/2 * prod((1/dnorm(x)) * cos(2*pi*x/dnorm(x)^{1.5})))
   }
 }
+
+make_stepfunction <- function(height){
+  f0 <- function(x){
+    return(height*((0 < x & x < 1/2) - (1/2 < x & x < 1)))
+  }
+}
+
+#---------------------------------------------------#
+# Old.
+#---------------------------------------------------#
 
 make_cosine_f0 <- function(d,n)
 {
