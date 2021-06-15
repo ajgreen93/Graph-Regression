@@ -93,7 +93,6 @@ find_best_mse <- function(mse,methods){
       best_mse_jj[ii] <- min(rowMeans(mse_ii_jj))
       sd_best_mse_jj[ii] <- apply(mse_ii_jj,1,sd)[which.min(rowMeans(mse_ii_jj))]/sqrt(ncol(mse_ii_jj))
     }
-    # Rescale minimax mse to match intercept with best_mse
     best_mse[[jj]] <- data.frame(x = ns, y = best_mse_jj,sd = sd_best_mse_jj) 
   }
   return(best_mse)

@@ -1,12 +1,28 @@
-plot_fxn <- function(x,y,f,title = NULL,col = NULL){
-    if(is.null(col)){col <- "black"}
-    plot_df <- data.frame(x = x, y = y,f = f)
-    plot(x = plot_df$x,y = plot_df$y, 
+plot_fxn <- function(x,y,f,title = NULL,cols = "black",domains = c(0,1)){
+    # Observed values.
+    if(!is.list(domains)) domains <- list(domains)
+    domain <- c(min(unlist(domains)), max(unlist(domains)))
+    plot(x = x,y = y, 
          col = "grey34",cex = .6,
          cex.main = 2.5, cex.lab = 2.5, cex.axis = 2,
          lwd = 1.1,xlab = "",ylab = "", main = title)
-    lines(x = x[order(x)],y = f[order(x)],lwd = 1.5,
-          col = col)
+  
+    # Plot functions.
+    if(!is.list(f))
+    {
+      f <- list(f)
+    }
+    for(jj in 1:length(f))
+    {
+      for(interval in domains)
+      {
+        interval_indx <- c(x >= interval[1] & x <= interval[2])
+        plot_x <- x[interval_indx]
+        plot_f <- f[[jj]][interval_indx]
+        lines(x = plot_x[order(plot_x)], y = plot_f[order(plot_x)],lwd = 2,
+              col = cols[jj])
+      }
+    }
 }
 
 
@@ -31,7 +47,7 @@ plot_best_mse <- function(methods,mse,sd = T,validate = validate_mse,cols = NULL
     for(ii in 1:length(ns))
     {
       mse_ii_jj <- mse[[ii]][[jj]]
-      best_mse[ii] <- min(rowMeans(mse_ii_jj))
+      best_mse[ii] <- min(rowMeans(mse_ii_jj),na.rm = T)
       sd_best_mse[ii] <- apply(mse_ii_jj,1,sd)[which.min(rowMeans(mse_ii_jj))]/sqrt(ncol(mse_ii_jj))
       minimax_mse[ii] <- ns[ii]^{-2*s/(2*s + d)}
     }
@@ -182,4 +198,45 @@ plot_testing_critical_radius <- function(methods,err,type_II_error = .5,
   grid(equilogs = F, lwd = 2)
   legend("bottomleft", legend = legend_text, col = cols, pch = 20,
          bg = "white", inset = .01, cex = 1.75)
+}
+
+# Plot the best mse for each value of a tuning parameter.
+# Inputs:
+# -- parameter_name: name of the parameter
+plot_mse_by_tuning_parameter <- function(parameter_name,
+                                         methods,thetas,mse,
+                                         cols = rep("black",length(methods)),
+                                         title = "",
+                                         ylims = NULL)
+{
+  for(ii in 1:length(mse))
+  {
+    # Collect plotting data.
+    plot_data <- list(length(methods))
+    for(jj in 1:length(methods))
+    {
+      parameter_values <- unique(thetas[[ii]][[jj]][[parameter_name]])
+      plot_data[[jj]] <- numeric(length(parameter_values))
+      names(plot_data[[jj]]) <- parameter_values
+      for(kk in 1:length(parameter_values))
+      {
+        plot_data[[jj]][kk] <- mse[[ii]][[jj]] %>% 
+          subset(thetas[[ii]][[jj]][[parameter_name]] == parameter_values[kk]) %>% rowMeans() %>% min()
+      }
+    }
+    
+    # Plot
+    xlims <- c(unlist(plot_data) %>% names() %>% as.numeric() %>% min(), 
+               unlist(plot_data) %>% names() %>% as.numeric() %>% max())
+    if(is.null(ylims)) ylims <- c(unlist(plot_data) %>% min(), unlist(plot_data) %>% max())
+    
+    plot(x = NULL, xlim = xlims, ylim = ylims, xlab = parameter_name, ylab = "mse", 
+         main = title[ii], type = "n")
+    for(jj in 1:length(plot_data))
+    {
+      points(x = as.numeric(names(plot_data[[jj]])), y =  plot_data[[jj]], col = cols[jj], pch = 20)
+      lines(x = as.numeric(names(plot_data[[jj]])), y =  plot_data[[jj]], col = cols[jj], lwd = 1.5)
+    }
+    grid(lwd = 2)
+  }
 }

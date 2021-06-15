@@ -13,7 +13,7 @@ source("initialize_parameters.R")
 source("tests.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/thesis/cluster_assumption/step_function.R")
+source("configs/thesis/cluster_assumption/gaussian_mixture_stepfunction.R")
 
 # Options for running the pipeline
 verbose <- F
@@ -171,6 +171,8 @@ for(directory in c(save_directory))
 {
   dir.create(directory)
 }
+if(!exists("s")) s <- NULL
+if(!exists("M")) M <- NULL
 configs <- list(d = d,
                 s = s,
                 ns = ns,

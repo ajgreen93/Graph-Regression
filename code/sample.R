@@ -37,12 +37,12 @@ make_sample_uniform <- function(d)
   }
 }
 
-# p(x) = 1/2 * (1{0 < x < 1/2 - sep} + 1{1/2 + sep < x < 1}).
+# Mixture of two uniforms, P = 1/2 Unif(-1,-sep) + 1/2 Unif(sep,1).
 make_sample_uniform_mixture <- function(d,sep)
 {
   stopifnot(d == 1) # For now, just 1d.
   stopifnot(sep < 1/2)
-  L <- c(0,1/2 + sep); U = c(1/2 - sep,1) # Lower and upper extremes.
+  L <- c(-1,-sep); U = c(sep,1) # Lower and upper extremes.
   sample_X <- function(n){
       class <- apply( rmultinom(n, 1, prob = c(1/2,1/2)),2,FUN = function(i){which(i != 0)})
       X <- sapply(class,FUN = function(l){runif(1,L[l],U[l])}) %>% as.matrix()
@@ -66,8 +66,14 @@ make_sample_manifold <- function(d,D)
 make_doppler <- function(d,n){
   stopifnot(d == 1)
   f0 <- function(x){
-    if(x > 0){cos(4*pi/((abs(x)^{1/3})))}
-    else{cos(pi/(abs(x)^{1/3}))}
+    cos(4*pi/abs(x)^{1/3}) 
+  }
+}
+
+make_sgn_rt <- function(d,n,power = 1/2){
+  stopifnot(d == 1)
+  f0 <- function(x){
+    sign(x)*abs(x)^(power)
   }
 }
 
@@ -195,7 +201,7 @@ make_wiggly_gaussian <- function(d,n)
 
 make_stepfunction <- function(height){
   f0 <- function(x){
-    return(height*((0 < x & x < 1/2) - (1/2 < x & x < 1)))
+    return(height*(2*(x > 0) - 1))
   }
 }
 
