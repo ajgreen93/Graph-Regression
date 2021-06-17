@@ -523,6 +523,31 @@ From the Cauchy-Schwarz inequality, we have that for any $u \in \Reals^n$,
 \end{equation*}
 Thus to upper bound Term 2 we focus our attention on upper bounding $\|(S_N - S_n)f_0\|_{\infty}$. 
 
+To begin, we note that
+\begin{equation*}
+(S_N - S_n)f_0 = S_N(S_n^{-1} - S_N^{-1})S_nf_0 = \rho S_N\biggl(\frac{2n + 1}{(n + 1)^2}L_{n,\varepsilon} - \frac{n}{(n + 1)^2}L_{n,\varepsilon}^{(u)}\biggr)S_nf_0
+\end{equation*}
+and consequently
+\begin{equation}
+\label{pf:out_of_sample_laplacian_regularization_3}
+\|(S_N - S_n)f_0\|_{\infty} \leq \frac{\rho}{n}\|S_N\|_{\infty}\Bigl(\|L_{n,\varepsilon}S_nf_0\|_{\infty} + \|L_{n,\varepsilon}^{(u)}S_nf_0\|_{\infty}\Bigr).
+\end{equation}
+Here we recall that the $\infty$-operator norm of a matrix is $\|A\|_{\infty} = \max\{\|Au\|_{\infty}:\|u\|_{\infty} = 1\}$. We observe that $S_N$ and $S_n$ are contractions in $L^{\infty}(\Reals^n)$, meaning that $\|S_N\|_{\infty},\|S_n\|_{\infty} \leq 1$. We establish that $S_n$ is a contraction, and the exact same reasoning will hold with respect to $S_N$ as well. For any $u \in \Reals^n$, assuming without loss of generality that $u_1 = \|u\|_{\infty}$, we have that
+\begin{equation*}
+(S_n^{-1}u)_1 = u_1 + (\rho L_{n,\varepsilon}u)_1 \geq u_1,
+\end{equation*}
+which implies that $\|S_n^{-1}u\|_{\infty} \geq \|u\|_{\infty}$. Thus for any $u \in \Reals^n$, we also have that
+\begin{equation*}
+\|u\|_{\infty} = \|S_n^{-1}S_nu\|_{\infty} \geq \|S_nu\|_{\infty},
+\end{equation*}
+demonstrating that $S_n$ is a contraction. 
+
+This takes care of the factor of $\|S_N\|_{\infty}$ in~\eqref{pf:out_of_sample_laplacian_regularization_3}. Now we proceed to give upper bounds on~$\|L_{n,\varepsilon}S_nf_0\|_{\infty}$ and~$\|L_{n,\varepsilon}^{(u)}S_nf_0\|_{\infty}$.
+\textcolor{red}{(TODO)} 
+
+
+
+
 Since $S_N$ and $S_n$ are symmetric, and thus $S_NS_n = S_nS_N$, it follows that
 \begin{equation*}
 (S_N - S_n)f_0 = (S_NS_nS_n^{-1} - S_nS_NS_N^{-1})f_0 = S_N S_n(S_n^{-1} - S_N^{-1})f_0.
