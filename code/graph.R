@@ -1,14 +1,14 @@
-neighborhood_graph <- function(X, r)
+neighborhood_graph <- function(X, r, X_new = X,loop = FALSE, kernel = function(s){s <= 1})
 {
   # unpack necessary parameters
   N <- nrow(X)
   
   k_max <- round(min(4*N^(.5),N - 1))
-  A <- knn_to_neighborhood_graph(X,r,k_max)
+  A <- knn_to_neighborhood_graph(X,r,k_max,X_new,loop, kernel)
   return(A)
 }
 
-knn_to_neighborhood_graph <- function(X, r, k_max)
+knn_to_neighborhood_graph <- function(X, r, k_max, X_new = X,loop, kernel)
 {
   #--------------------#
   # Input: X (n x d matrix)
@@ -21,27 +21,40 @@ knn_to_neighborhood_graph <- function(X, r, k_max)
   
   # unpack necessary parameters
   n <- nrow(X)
+  m <- nrow(X_new)
   d <- ncol(X)
-  A <- Matrix(0, nrow = n, ncol = n)
-  
-  # compute distance matrix
-  rneighbors <- nn2(data = X, query = X, searchtype = 'radius', k = k_max, radius = r)$nn.idx[,-1]
-  rneighbors[rneighbors == 0] <- NA
-  r_neighbors_list <- as.matrix(melt(rneighbors)[,-2])
-  r_neighbors_list <- r_neighbors_list[rowSums(is.na(r_neighbors_list)) == 0,]
-  A[r_neighbors_list] <- 1
-  
-  # if k_max was not high enough, at least one vertex in A will have exactly k_max - 1 neighbors.
-  # Increase k_max and recalculate.
-  while((max(rowSums(A)) == k_max - 1) & (k_max < n - 1))
-  {
-    A <- Matrix(0, nrow = n, ncol = n)
-    k_max <- min(2*k_max,n - 1)
-    rneighbors <- nn2(data = X, query = X, searchtype = 'radius', k = k_max, radius = r)$nn.idx[,-1]
+  repeat{
+    A <- Matrix(0, nrow = n, ncol = m)
+    
+    # compute distance matrix
+    rneighborhood <- nn2(data = X, query = X_new, searchtype = 'radius', k = k_max, radius = r)
+    rneighbors <- rneighborhood$nn.idx
+    dist_to_neighbors <- rneighborhood$nn.dists
+    if( (!loop) & all(X_new == X)){
+      rneighbors <- rneighbors[,-1]
+      dist_to_neighbors <- dist_to_neighbors[,-1]
+    }
+    
+    # convert to easy format for adding to sparse matrix.
+    dist_to_neighbors[rneighbors == 0] <- NA
     rneighbors[rneighbors == 0] <- NA
+    
     r_neighbors_list <- as.matrix(melt(rneighbors)[,-2])
     r_neighbors_list <- r_neighbors_list[rowSums(is.na(r_neighbors_list)) == 0,]
-    A[r_neighbors_list] <- 1
+    
+    dist_to_neighbors_vec <- c(dist_to_neighbors)
+    dist_to_neighbors_vec <- dist_to_neighbors_vec[!is.na(dist_to_neighbors_vec)]
+    W <- kernel(dist_to_neighbors_vec/r)
+    
+    # Add to matrix
+    A_check <- A  # for checking convergence
+    A_check[r_neighbors_list] <- 1
+    A[r_neighbors_list] <- W
+    
+    # if k_max was not high enough, at least one vertex in A_check will have exactly k_max - 1 neighbors.
+    # Increase k_max and recalculate.
+    if( !(max(rowSums(A_check)) == k_max - 1) | !(k_max < n - 1)) break
+    k_max <- min(2*k_max,n - 1)
   }
   
   return(A)
@@ -84,16 +97,53 @@ Laplacian <- function(A)
 
 # A wrapper around eigs_sym, which takes care of some failure cases when the
 # matrix is poorly conditioned. 
-get_spectra <- function(A,K,sigma = 0){
+# 
+# Input: A, matrix.
+#        K, number of eigenvectors.
+#        retvec, do we want eigenvectors or just eigenvalues.
+#        tol, tolerance for error in iterative computation.
+#        sigma, for shift-and-invert
+get_spectra <- function(A,K,retvec = TRUE,tol = 1e-10,sigma = tol){
   # Compute as many eigenvectors as we will need.
-  spectra <- tryCatch(eigs_sym(A,K,sigma),
+  maxitr <- 10000
+  spectra <- tryCatch(eigs_sym(A,K,sigma = sigma,
+                               which = "LM", 
+                               opts = list(maxitr = maxitr,
+                                           retvec = retvec,
+                                           tol = tol)),
                       error = function(e){
-                        test <- eigs_sym(A,K, which = "SM")
+                        test <- eigs_sym(A,K, which = "SM", opts = list(maxitr = maxitr,
+                                                                        retvec = retvec,
+                                                                        tol = tol))
                         return(test)
                       })
-  if(max(abs(spectra$values)) > 2e10)
+  
+  # Sometimes, this will spit out garbage. 
+  # You can diagnose this by the presence of ridiculously large eigenvalues, 
+  # when we are looking for small eigenvalues.
+  #
+  # Check if there are any large eigenvalues, and if so, try again, decreasing
+  # the tolerance for error; this seems to work.
+  while(max(abs(spectra$values)) > 1e10)
   {
-    spectra <- eigs_sym(A,K,which = "SM")
+    tol <- tol * .001
+    sigma <- tol
+    # No need for try-catch, since we know the "LM" direction works now.
+    spectra <- eigs_sym(A,K,sigma = sigma, 
+                        which = "LM", 
+                        opts = list(maxitr = maxitr,retvec = retvec,tol = tol))
+    
+                      
+  }
+  
+  # Sometimes, this won't converge.
+  # If it hasn't converged, up the number of iterations and try again.
+  while(length(spectra$values) < K)
+  {
+    maxitr <- maxitr + 10000
+    spectra <- eigs_sym(A,K,which = "SM",opts = list(maxitr = maxitr,
+                                                     retvec = retvec,
+                                                     tol = tol))
   }
   spectra
 }

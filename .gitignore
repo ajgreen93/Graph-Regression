@@ -12,7 +12,8 @@
 *.snm
 *.toc
 
-
+# R code
+*.Rhistory
 
 # DIRECTORIES #
 ##################

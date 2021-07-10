@@ -485,80 +485,65 @@ Now we consider the following decomposition
 & \quad T_{n,\varepsilon}f_0(x_{n + 1}) - f_0(x_{n + 1}) \\
 & =  \underbrace{T_{n,\varepsilon}S_Nw(x_{n + 1})}_{\textrm{Term 1}} + \underbrace{T_{n,\varepsilon}[(S_N - S_n)f_0](x_{n + 1})}_{\textrm{Term 2}} +  \underbrace{T_{n,\varepsilon}S_nf_0(x_{n + 1}) - T_{n,\varepsilon}f_0(x_{n + 1})}_{\textrm{Term 3}} + \underbrace{T_{n,\varepsilon}f_0(x_{n + 1}) - f_0(x_{n + 1})}_{\textrm{Term 4}}.
 \end{align*}
-The first of these terms is the contribution of the noise in $Y$. The second of these terms is the perturbation caused by the different smoother matrices. The third of these terms is the bias due to Laplacian regularization. The fourth term is the error inherent to kernel smoothing of noiseless samples. Now we proceed to upper bound the error induced by each of these terms.
+The first of these terms is the contribution of the noise in the responses ${\bf Y}$. The second of these terms is the perturbation between smoothing with $S_N$ and smoothing with $S_n$. The third of these terms is the bias due to Laplacian regularization. The fourth term is the error inherent to kernel smoothing of noiseless samples. Now we proceed to upper bound the error induced by each of these terms. We will find that
+\begin{equation*}
+|\wh{a} - f_0(x_{n + 1})|^2 \leq 4\Bigl(\frac{C_1}{\delta n\varepsilon^d} + C_2\rho^2\|f_0\|_{L^{\infty}(\Omega)}^2 + \frac{C_3\rho}{\delta^2}|f_0|_{H^1(\Omega)}^2 + \frac{C_4}{\delta} \cdot \varepsilon^2 |f_0|_{H^1(\Omega)}^2\Bigr)
+\end{equation*}
+with probability at least $1 - 4\delta - C\exp(-cn\varepsilon^d)$. From here, plugging in $\varepsilon = n^{-1/(2 + d)}$ and $0 \leq \rho \leq n^{-2/(2 + d)}$ proves the claim.
 
 \paragraph{Term 1: Noise contribution.}
 Let $\Ebb_N$ denote the expectation conditional on the design points $x_1,\ldots,x_{n + 1}$. For any $i,j$ in $1,\ldots,n$, we have
 \begin{equation*}
 \Ebb_N\bigl[(S_Nw)_i \cdot (S_nw)_j\bigr] = (S_N^2)_{ij}.
 \end{equation*}
-Also, $\|S_N\|_{\textrm{op}} \leq 1$. 
-Therefore
+It is evident that $\|S_N\|_{\textrm{op}} \leq 1$, and recalling the notation $K_{(x)} = (\eta(\|x_1 - x\|/\varepsilon),\ldots,\eta(\|x_n - x\|/\varepsilon))$ we have
 \begin{equation}
 \label{pf:out_of_sample_laplacian_regularization_0}
 \Ebb_N\Bigl[\bigl(T_{n,\varepsilon}S_Nw(x_{n + 1})\bigr)^2\Bigr] = \frac{1}{d_{n,\varepsilon}(x_{n + 1})^2} K_{(x_{n + 1})}^{\top} S_N^2 K_{(x_{n + 1})} \leq \frac{1}{d_{n,\varepsilon}(x_{n + 1})^2} \|S_N\|_{\textrm{op}}^2 \cdot \|K_{(x_{n + 1})}\|_2^2 \leq \frac{1}{d_{n,\varepsilon}(x_{n + 1})^2} \cdot \|K_{(x_{n + 1})}\|_2^2.
 \end{equation}
-Now by Lemma~\ref{lem:max_degree_deviation}, we have that for both $K(x) = \eta(x)$ and $K = \bigl(\eta(x)\bigr)^2$, with probability at least $1 - C_2\exp\bigl(-c_2 \delta^2 \cdot n \varepsilon^d\bigr)$,
+Now by Lemma~\ref{lem:max_degree_deviation}, we have that with probability at least $1 - C_2\exp\bigl(-c_2 \cdot n \varepsilon^d\bigr)$,
 \begin{equation}
 \label{pf:out_of_sample_laplacian_regularization_1}
-\sup_{x \in \Omega} \biggl|\frac{d_{n,\varepsilon}(x; K)}{n} - d_{P,\varepsilon}(x; K)\biggr| \leq \delta \cdot \inf_{x \in \Omega} d_{P,\varepsilon}(x; K),
+\sup_{x \in \Omega} \biggl|\frac{d_{n,\varepsilon}(x)}{n} - d_{P,\varepsilon}(x; K)\biggr| \leq \frac{1}{2} \cdot \inf_{x \in \Omega} d_{P,\varepsilon}(x; K).
 \end{equation}
-and thus
+Furthermore,
 \begin{equation*}
-\sup_{x \in \Omega}\frac{1}{d_{n,\varepsilon}(x)^2} \cdot \|K_{(x)}\|_2^2 \leq \biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \sup_{x \in \Omega} \frac{1}{nd_{P,\varepsilon}(x)^2} \int \bigl[\eta(\|x'-x\|/\varepsilon)\bigr]^2 \,dP(x') \leq \biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \frac{\|\eta\|_{\infty}}{n p_{\min} \varepsilon^d}.
+\|K_{(x)}\|_2^2 = \sum_{i = 1}^{n} \eta\biggl(\frac{\|x_i - x_{n + 1}\|}{\varepsilon}\biggr)^2 \leq \|\eta\|_{\infty} d_{n,\varepsilon}(x_{n + 1}),
+\end{equation*}
+and combined with~\eqref{pf:out_of_sample_laplacian_regularization_1} this implies
+\begin{equation*}
+\sup_{x \in \Omega}\frac{1}{d_{n,\varepsilon}(x)^2} \cdot \|K_{(x)}\|_2^2 \leq 9 \sup_{x \in \Omega} \frac{1}{nd_{P,\varepsilon}(x)^2} \int \bigl[\eta(\|x'-x\|/\varepsilon)\bigr]^2 \,dP(x') \leq 9\frac{\|\eta\|_{\infty}}{n p_{\min} \varepsilon^d}.
 \end{equation*}
 Plugging this back in to~\eqref{pf:out_of_sample_laplacian_regularization_0} gives
 \begin{equation*}
-\Ebb_N\Bigl[\bigl(T_{n,\varepsilon}S_Nw(x_{n + 1})\bigr)^2\Bigr] \leq \biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \frac{\|\eta\|_{\infty}}{n p_{\min} \varepsilon^d}.
+\Ebb_N\Bigl[\bigl(T_{n,\varepsilon}S_Nw(x_{n + 1})\bigr)^2\Bigr] \leq 9\frac{\|\eta\|_{\infty}}{n p_{\min} \varepsilon^d}.
 \end{equation*}
-Thus by Markov's inequality, with probability at least $1 - \beta - C_2\exp\bigl(-c_2 \delta^2 \cdot n \varepsilon^d\bigr)$
+Thus by Markov's inequality, with probability at least $1 - \delta - C\exp\bigl(-c n \varepsilon^d\bigr)$
 \begin{equation*}
-\bigl(T_{n,\varepsilon}S_Nw(x_{n + 1})\bigr)^2 \leq \frac{1}{\beta}\biggl[\frac{(1 + \delta)}{(1 - \delta)}\biggr]^2 \frac{\|\eta\|_{\infty}}{n p_{\min} \varepsilon^d} = C_1\frac{1}{n\varepsilon^d}.
+\bigl(T_{n,\varepsilon}S_Nw(x_{n + 1})\bigr)^2 \leq \frac{9}{\delta}\frac{\|\eta\|_{\infty}}{n p_{\min} \varepsilon^d} = C_1\frac{1}{\delta n\varepsilon^d}.
 \end{equation*}
 
 \paragraph{Term 2: Perturbation.}
 From the Cauchy-Schwarz inequality, we have that for any $u \in \Reals^n$,
 \begin{equation*}
-|T_{n,\varepsilon}u(x_{n + 1})|^2 = \biggl|\frac{1}{d_{n,\varepsilon}(x_{n + 1})} \sum_{i = 1}^{n} u_i \eta\biggl(\frac{\|x_i - x_{n + 1}\|}{\varepsilon}\biggr)\biggr|^2 \leq \frac{1}{d_{n,\varepsilon}(x_{n + 1})} \sum_{i = 1}^{n} |u_i|^2 \eta\biggl(\frac{\|x_{i} - x_{n + 1}\|}{\varepsilon}\biggr) \leq \|u\|_{\infty}^2.
+|T_{n,\varepsilon}u(x_{n + 1})|^2 = \biggl|\frac{1}{d_{n,\varepsilon}(x_{n + 1})} \sum_{i = 1}^{n} u_i \eta\biggl(\frac{\|x_i - x_{n + 1}\|}{\varepsilon}\biggr)\biggr|^2 \leq \frac{1}{d_{n,\varepsilon}(x_{n + 1})} \sum_{i = 1}^{n} |u_i|^2 \eta\biggl(\frac{\|x_{i} - x_{n + 1}\|}{\varepsilon}\biggr) \leq \|u\|_{\infty}^2,
 \end{equation*}
-Thus to upper bound Term 2 we focus our attention on upper bounding $\|(S_N - S_n)f_0\|_{\infty}$. 
+where in the last inequality we write $\|u\|_{\infty} := \max_{i = 1,\ldots,n} |u_i|$ for the $L^{\infty}(\Reals^n)$ norm. Thus to upper bound Term 2 we focus our attention on upper bounding $\|(S_N - S_n)f_0\|_{\infty}$. 
 
-Since $S_N$ and $S_n$ are symmetric, and thus $S_NS_n = S_nS_N$, it follows that
+To begin with, we note that
 \begin{equation*}
-(S_N - S_n)f_0 = (S_NS_nS_n^{-1} - S_nS_NS_N^{-1})f_0 = S_N S_n(S_n^{-1} - S_N^{-1})f_0.
+(S_N - S_n)f_0 = S_N(S_n^{-1} - S_N^{-1})S_nf_0 = \rho S_N\biggl(\frac{2n + 1}{(n + 1)^2}L_{n,\varepsilon} - \frac{n}{(n + 1)^2}L_{n,\varepsilon}^{(u)}\biggr)S_nf_0 
 \end{equation*}
-Consequently we can upper bound the $\infty$-norm $\|(S_N - S_n)f_0\|_{\infty}$ by
-\begin{equation*}
-\|(S_N - S_n)f_0\|_{\infty} \leq \|S_N\|_{\infty} \|S_n\|_{\infty} \|(S_n^{-1} - S_N^{-1})f_0\|_{\infty}.
-\end{equation*}
-Here we recall that the $\infty$-operator norm of a matrix is $\|A\|_{\infty} = \max\{\|Au\|_{\infty}:\|u\|_{\infty} = 1\}$. 
+and consequently
+\begin{align}
+\label{pf:out_of_sample_laplacian_regularization_3}
+\|(S_N - S_n)f_0\|_{\infty} & \leq \frac{C\rho}{n}\|S_N\|_{\infty}\Bigl(\|L_{n,\varepsilon}S_nf_0\|_{\infty} + \|L_{n,\varepsilon}^{(u)}S_nf_0\|_{\infty}\Bigr) \nonumber \\
+& \leq \frac{C\rho}{n}\|S_N\|_{\infty}\Bigl(\|L_{n,\varepsilon}\|_{\infty} + \|L_{n,\varepsilon}^{(u)}\|_{\infty}\Bigr) \|S_n\|_{\infty} \|f_0\|_{\infty} \nonumber \\
+& \leq \frac{C\|f_0\|_{L^{\infty}(\Omega)}\rho}{n}\|S_N\|_{\infty}\Bigl(\|L_{n,\varepsilon}\|_{\infty} + \|L_{n,\varepsilon}^{(u)}\|_{\infty}\Bigr) \|S_n\|_{\infty} 
+\end{align}
+Here we have used that $\|f\|_{\infty} \leq \|f\|_{L^{\infty}(\mc{X})} \leq M$, and we recall that the $\infty$-operator norm of a matrix is $\|A\|_{\infty} = \max\{\|Au\|_{\infty}:\|u\|_{\infty} = 1\}$. It remains to give estimates on each of $\|S_N\|_{\infty}, \|S_n\|_{\infty}, \|L_{n,\varepsilon}\|_{\infty}$ and $\|L_{n,\varepsilon}^{(u)}\|_{\infty}$.
 
-We first upper bound $\|(S_n^{-1} - S_N^{-1})f_0\|_{\infty}$, using the decomposition
-\begin{equation*}
-S_n^{-1} - S_N^{-1} = \rho \biggl[\biggl(1 - \frac{n^2}{N^2}\biggr)L_{n,\varepsilon} - \frac{n}{N^2}L_{n,\varepsilon}^{(u)}\biggr],
-\end{equation*}
-and therefore
-\begin{equation}
-\label{pf:out_of_sample_laplacian_regularization_2}
-\|(S_n^{-1} - S_N^{-1})f_0\|_{\infty} \leq \frac{\rho}{n} \Bigl(\|L_{n,\varepsilon}f_0\|_{\infty} + \|L_{n,\varepsilon}^{(u)}f_0\|_{\infty} \Bigr).
-\end{equation}
-From H\"{o}lder's inequality and the Lipschitz property of $f_0$, we deduce both that
-\begin{align*}
-\|L_{n,\varepsilon}f_0\|_{\infty} & = \max_{i = 1,\ldots,n} \biggl| \frac{1}{n\varepsilon^{d + 2}}\sum_{j = 1}^{n} \bigl(f_0(x_i) - f_0(x_j)\bigr) \eta\biggl(\frac{\|x_i - x_j\|}{\varepsilon}\biggr) \biggr| \\
-& \leq \max_{i = 1,\ldots,n}  \frac{M}{n\varepsilon^{d + 1}}\sum_{j = 1}^{n} \eta\biggl(\frac{\|x_i - x_j\|}{\varepsilon}\biggr) \\
-& \leq M\frac{1}{\varepsilon^{d + 1}},
-\end{align*}
-and
-\begin{align*}
-\|L_{n,\varepsilon}^{(u)}f_0\|_{\infty} & = \max_{i = 1,\ldots,n} \biggl| \frac{1}{\varepsilon^{d + 2}} \sum_{j = 1}^{n} \bigl(f_0(x_i) - f_0(x_j)\bigr) W_{n,ij}^{(u)}\biggr| \\
-& \leq \max_{i = 1,\ldots,n} \frac{M}{\varepsilon^{d + 1}} \sum_{j = 1}^{n} |W_{n,ij}^{(u)}|\\
-& \leq \frac{M}{\varepsilon^{d + 1}} \|\eta\|_{\infty},
-\end{align*}
-where we recall the definition of $W_{n}^{(u)}$ from~\eqref{eqn:induced_insample_graph}. Plugging these upper bounds back into~\eqref{pf:out_of_sample_laplacian_regularization_2} gives
-\begin{equation*}
-\|(S_n^{-1} - S_N^{-1})f_0\|_{\infty} \leq 2 \|\eta\|_{\infty}\frac{\rho}{n\varepsilon^{d + 1}}M.
-\end{equation*}
-On the other hand, it is not hard to see that $S_N$ and $S_n$ are contractions in $L^{\infty}(\Reals^n)$, meaning that $\|S_N\|_{\infty},\|S_n\|_{\infty} \leq 1$. We establish that $S_n$ is a contraction, and the exact same reasoning will hold with respect to $S_N$ as well. For any $u \in \Reals^n$, assuming without loss of generality that $u_1 = \|u\|_{\infty}$, we have that
+First, we observe that $S_N$ and $S_n$ are contractions in $L^{\infty}(\Reals^n)$, meaning that $\|S_N\|_{\infty},\|S_n\|_{\infty} \leq 1$. We establish that $S_n$ is a contraction, and the exact same reasoning will hold with respect to $S_N$ as well. For any $u \in \Reals^n$, assuming without loss of generality that $u_1 = \|u\|_{\infty}$, we have that
 \begin{equation*}
 (S_n^{-1}u)_1 = u_1 + (\rho L_{n,\varepsilon}u)_1 \geq u_1,
 \end{equation*}
@@ -566,11 +551,23 @@ which implies that $\|S_n^{-1}u\|_{\infty} \geq \|u\|_{\infty}$. Thus for any $u
 \begin{equation*}
 \|u\|_{\infty} = \|S_n^{-1}S_nu\|_{\infty} \geq \|S_nu\|_{\infty},
 \end{equation*}
-demonstrating that $S_n$ is a contraction.
+demonstrating that $S_n$ is a contraction. 
 
-Plugging these upper bounds back into~\eqref{pf:out_of_sample_laplacian_regularization_2}, we conclude that
+On the other hand, for any $v \in \Reals^n$ such that $\|v\|_{\infty} = 1$,
+\begin{align*}
+\|L_{n,\varepsilon}f_0\|_{\infty} & = \max_{i = 1,\ldots,n} \biggl| \frac{1}{n\varepsilon^{d + 2}}\sum_{j = 1}^{n} \bigl(v_i - v_j\bigr) \eta\biggl(\frac{\|x_i - x_j\|}{\varepsilon}\biggr) \biggr| \\
+& \leq \max_{i = 1,\ldots,n}  \frac{2}{n\varepsilon^{d + 2}}\sum_{j = 1}^{n} \eta\biggl(\frac{\|x_i - x_j\|}{\varepsilon}\biggr) \\
+& \leq \frac{2}{\varepsilon^{d + 2}},
+\end{align*}
+and
+\begin{align*}
+\|L_{n,\varepsilon}^{(u)}f_0\|_{\infty} & = \max_{i = 1,\ldots,n} \biggl| \frac{1}{\varepsilon^{d + 2}} \sum_{j = 1}^{n} \bigl(v - v\bigr) W_{n,ij}^{(u)}\biggr| \\
+& \leq \max_{i = 1,\ldots,n} \frac{2}{\varepsilon^{d + 1}} \sum_{j = 1}^{n} |W_{n,ij}^{(u)}|\\
+& \leq \frac{2}{\varepsilon^{d + 2}} \|\eta\|_{\infty},
+\end{align*}
+so that $\|L_{n,\varepsilon}f_0\|_{\infty}, \|L_{n,\varepsilon}^{(u)}f_0\|_{\infty} \leq C\varepsilon^{-(2 + d)}$. Plugging these estimates back into~\eqref{pf:out_of_sample_laplacian_regularization_3}, we conclude that
 \begin{equation*}
-\bigl(T_{n,\varepsilon}(S_N - S_n)f_0(x_{n + 1})\bigr)^2 \leq \|(S_N - S_n)f_0\|_{\infty}^2 \leq 4 \|\eta\|_{\infty}^2\biggl(\frac{\rho}{n\varepsilon^{d + 1}}\biggr)^2M^2 =: C_2 \biggl(\frac{\rho}{n\varepsilon^{d + 1}}\biggr)^2M^2.
+\bigl(T_{n,\varepsilon}(S_N - S_n)f_0(x_{n + 1})\bigr)^2 \leq \Bigl(\|(S_N - S_n)f_0\|_{\infty}\Bigr)^2 \leq \biggl(\frac{C\rho\|f_0\|_{L^{\infty}(\Omega)}}{n\varepsilon^{d + 2}}\biggr)^2 = C_2\rho^2\|f_0\|_{L^{\infty}(\Omega)}^2.
 \end{equation*}
 
 \paragraph{Term 3: Bias.}
@@ -578,15 +575,15 @@ We begin by taking an expectation of Term 3 conditional on the labeled design po
 \begin{equation*}
 \Ebb_n\Bigl[\Bigl(T_{n,\varepsilon}S_nf_0(x_{n + 1}) - T_{n,\varepsilon}f_0(x_{n + 1})\Bigr)^2\Bigr] = \|T_{n,\varepsilon}S_nf_0 - T_{n,\varepsilon}f_0\|_P^2.
 \end{equation*}
-We have show in \textcolor{red}{our paper on Laplacian eigenmaps (equation 106)} that for any $u \in \Reals^n$,
+We have shown in \textcolor{red}{our paper on Laplacian eigenmaps (equation 106)} that for any $u \in \Reals^n$,
 \begin{equation*}
 \|T_{n,\varepsilon}u - T_{n,\varepsilon}f_0\|_P^2 \leq C \|u - f_0\|_n^2,
 \end{equation*}
-and that under the assumption~\ref{asmp:design}, for any Sobolev function $f \in H^1(\Omega)$, with probability at least $1 - \delta$
+and that under Assumption~\ref{asmp:design}, for any Sobolev function $f \in H^1(\Omega)$, with probability at least $1 - \delta$
 \begin{equation*}
 \|S_nf_0 -f_n\|_n^2 \leq \frac{C\rho}{\delta}|f_0|_{H^1(\mc{X})}^2.
 \end{equation*}
-Combining these two results, we have that
+Combining these results, we have that
 \begin{equation*}
 \Ebb_n\Bigl[\Bigl(T_{n,\varepsilon}S_nf_0(x_{n + 1}) - T_{n,\varepsilon}f_0(x_{n + 1})\Bigr)^2\Bigr] \leq \frac{C_3\rho}{\delta}|f_0|_{H^1(\Omega)}^2
 \end{equation*}                                                                          
@@ -598,7 +595,7 @@ with probability at least $1 - \delta$. Thus it follows from Lemma~\ref{lem:stoc
 \paragraph{Term 4: Noiseless kernel smoothing.}
 \textcolor{red}{From our paper on Laplacian eigenmaps (equation (107) and Lemma~19)}, we have that
 \begin{equation*}
-\|T_{n,\varepsilon}f_0 - f_0\|_P^2 \leq \frac{C}{\delta} \cdot \biggl(\frac{\varepsilon^2}{n\varepsilon^d} + \varepsilon^2\biggr) |f|_{H^1(\Omega)}^2 \leq \frac{C_4}{\delta} \cdot \varepsilon^2 |f|_{H^1(\Omega)}^2
+\Ebb_n\Bigl[\Bigl(T_{n,\varepsilon}f_0(x_{n + 1}) - f_0(x_{n + 1})\Bigr)^2\Bigr] = \|T_{n,\varepsilon}f_0 - f_0\|_P^2 \leq \frac{C}{\delta} \cdot \biggl(\frac{\varepsilon^2}{n\varepsilon^d} + \varepsilon^2\biggr) |f|_{H^1(\Omega)}^2 \leq \frac{C_4}{\delta} \cdot \varepsilon^2 |f|_{H^1(\Omega)}^2
 \end{equation*}
 with probability at least $1 - \delta - C\exp(-cn\varepsilon^d)$. 
 
