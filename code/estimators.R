@@ -136,8 +136,14 @@ make_laplacian_smoothing <- function(theta)
     # Get L.
     L <- Laplacian(G)
     
-    # Solve (rho*L + I)f = Y for f.
-    f_hat <- as.numeric(solve(rho * L + diag(n),Y))
+    # Solve (rho*L + I)f = Y for f,
+    # unless rho is ``too large'', in which case we set equal to mean.
+    if(rho >= 1e+12){
+      f_hat <- rep(mean(Y),length(Y))
+    }else{
+      f_hat <- as.numeric(solve(rho * L + Diagonal(n),Y))
+    }
+    
     
     # "Prediction" function
     predict <- function(X){f_hat}

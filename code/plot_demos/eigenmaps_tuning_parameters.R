@@ -9,14 +9,12 @@ source("plot_methods.R")
 source("misc.R")
 
 # User entered information.
-data_directory <- "data/laplacian_eigenmaps/tuning/sobolev_1s_2d"
-plot_directory <- "plots/laplacian_eigenmaps/tuning/sobolev/" # Please change this to whichever directory you prefer.
+data_directory <- "data/thesis/mse/eigenfunction_1s_5d_2"
+plot_directory <- "plots/thesis/mse/eigenfunction" # Please change this to whichever directory you prefer.
 if(!exists(plot_directory)){dir.create(plot_directory)}
 
-plot_n <- 1000                                  # Which sample size would you like to use?
-plot_methods <- c("laplacian_eigenmaps",
-                  "laplacian_eigenmaps_plus_kernel_smoothing",
-                  "spectral_projection")
+plot_n <- 4000                                  # Which sample size would you like to use?
+plot_methods <- c("laplacian_eigenmaps")
 
 # Load data
 load(file.path(data_directory,"configs.R"))

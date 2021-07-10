@@ -13,17 +13,19 @@ make_sample_gaussian <- function(d, sigma = 1)
   }
 }
 
-make_sample_gaussian_mixture <- function(d,mu = NULL,pi = NULL,sigma = NULL)
+make_sample_gaussian_mixture <- function(d,mu = NULL,pi = NULL,sigma = NULL,truncate  = T)
 {
   if(is.null(mu)){mu <- 0}
   if(is.null(pi)){pi <- rep(1,length(mu))}
   if(is.null(sigma)){sigma <- rep(1,length(mu))}
   sample_X <- function(n){
     X <- matrix(NA,nrow = n,ncol = d)
-    while(any(is.na(X))){
-      class <- apply(rmultinom(sum(is.na(X)), 1, prob = pi),2,FUN = function(i){which(i != 0)})
-      X[which(is.na(X))] <- sapply(class,FUN = function(l){rnorm(1,mu[l],sigma[l])})
-      X[abs(X) > 1] <- NA
+    class <- apply(rmultinom(n, 1, prob = pi),2,FUN = function(i){which(i != 0)})
+    while(any(rowSums(is.na(X)) > 0)){
+      class_for_sample <- class[which(rowSums(is.na(X)) > 0)]
+      X[which(rowSums(is.na(X)) > 0),] <- 
+        sapply(class_for_sample,FUN = function(l){rnorm(d,mu[l],sigma[l])}) %>% t()
+      if(truncate){X[apply(X,1,FUN = function(x){any(abs(x) > 1)}),] <- NA}
     }
     return(X)
   }

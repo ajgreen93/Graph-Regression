@@ -84,16 +84,19 @@ plot_best_mse <- function(methods,mse,sd = T,validate = validate_mse,cols = NULL
              max(plot_df_best_mse$y + plot_df_best_mse$sd,minimax_mse))
   
   # shadow plot
+  if(par()$cex.main == 1) par(cex.main = 2.5)
   plot(x = ns, xlim = xlims, ylim = ylims,
        log = "xy", xlab = "Sample size", ylab = "Mean squared error", 
-       main = title,
-       cex.main = 2.5, cex.lab = 2.5, cex.axis = 2)
+       main = title, cex.lab = 2.5, cex.axis = 2)
   
   # add points and lines
   for(jj in 1:length(methods))
   {
-    points(x = ns, y = plot_dfs_best_mse[[jj]]$y, col = cols[jj], pch = 20)
-    lines(x = ns, y = plot_dfs_best_mse[[jj]]$y, col = cols[jj],lwd = 1.5)
+    points(x = ns, y = plot_dfs_best_mse[[jj]]$y, col = cols[jj], pch = 20, cex = 2)
+    # TODO: this was hacked for backward compatibility with plots for Eigenmaps paper.
+    #       fix it once you have regenerated those plots.
+    if(par()$lwd == 1) par(lwd = 1.5)
+    lines(x = ns, y = plot_dfs_best_mse[[jj]]$y, col = cols[jj])
     if(sd)
     {
       lines(x = ns, y = plot_dfs_best_mse[[jj]]$y + plot_dfs_best_mse[[jj]]$sd, 
@@ -170,16 +173,19 @@ plot_testing_critical_radius <- function(methods,err,type_II_error = .5,
   ylims <- c(min(plot_df[,-1],minimax_crit_radius), max(plot_df[-1],minimax_crit_radius))
   
   # shadow plot
+  if(par()$cex.main == 1) par(cex.main = 2.5)
   plot(x = ns, xlim = xlims, ylim = ylims,
        log = "xy", xlab = "Sample size", ylab = "Critical radius", 
-       main = title,
-       cex.main = 2.5, cex.lab = 2.5, cex.axis = 2)
+       main = title, cex.lab = 2.5, cex.axis = 2)
   
   # add points and lines
   for(jj in 1:length(methods))
   {
     points(x = ns, y = plot_df_list[[jj]]$crit_radius, col = cols[jj], pch = 20)
-    lines(x = ns, y = plot_df_list[[jj]]$crit_radius, col = cols[jj],lwd = 1.5)
+    # TODO: this was hacked for backward compatibility with plots for Eigenmaps paper.
+    #       fix it once you have regenerated those plots.
+    if(par()$lwd == 1) par(lwd = 1.5)
+    lines(x = ns, y = plot_df_list[[jj]]$crit_radius, col = cols[jj])
     if(sd)
     {
       lines(x = ns, y = plot_df_list[[jj]]$crit_radius_lb, 
@@ -207,7 +213,9 @@ plot_mse_by_tuning_parameter <- function(parameter_name,
                                          methods,thetas,mse,
                                          cols = rep("black",length(methods)),
                                          title = "",
-                                         ylims = NULL)
+                                         ylims = NULL,
+                                         xlims = NULL,
+                                         log_axis = "")
 {
   for(ii in 1:length(mse))
   {
@@ -226,17 +234,149 @@ plot_mse_by_tuning_parameter <- function(parameter_name,
     }
     
     # Plot
-    xlims <- c(unlist(plot_data) %>% names() %>% as.numeric() %>% min(), 
+    if(is.null(xlims)) {
+      xlims_ii <- c(unlist(plot_data) %>% names() %>% as.numeric() %>% min(), 
                unlist(plot_data) %>% names() %>% as.numeric() %>% max())
-    if(is.null(ylims)) ylims <- c(unlist(plot_data) %>% min(), unlist(plot_data) %>% max())
+    } else{xlims_ii <- xlims}
+    if(is.null(ylims)){
+      ylims_ii <- c(unlist(plot_data) %>% min(), unlist(plot_data) %>% max())
+    } else{ylims_ii <- ylims}
     
-    plot(x = NULL, xlim = xlims, ylim = ylims, xlab = parameter_name, ylab = "mse", 
-         main = title[ii], type = "n")
+    plot(x = NULL, xlim = xlims_ii, ylim = ylims_ii, xlab = parameter_name, ylab = "mse", 
+         main = title[ii], log = log_axis, type = "n")
     for(jj in 1:length(plot_data))
     {
       points(x = as.numeric(names(plot_data[[jj]])), y =  plot_data[[jj]], col = cols[jj], pch = 20)
-      lines(x = as.numeric(names(plot_data[[jj]])), y =  plot_data[[jj]], col = cols[jj], lwd = 1.5)
+      lines(x = as.numeric(names(plot_data[[jj]])),  y =  plot_data[[jj]], col = cols[jj])
     }
     grid(lwd = 2)
   }
 }
+
+plot_mse_by_tuning_parameter_2d <- function(parameter_names,
+                                            mse,thetas,
+                                            title = "",
+                                            ylims = NULL,
+                                            xlims = NULL,
+                                            log_axis = "")
+{
+  for(ii in 1:length(plot_mse))
+  {
+    # Compute data for plotting
+    col_indx <- sapply(parameter_names,
+                       FUN = function(parameter_name){which(names(plot_thetas[[ii]][[1]]) == parameter_name)})
+    plot_data <- plot_mse[[ii]][[1]][,col_indx] %>% rowMeans()
+    plot_coords <- plot_thetas[[ii]][[1]][,parameter_names]
+    colors <- colorRampPalette(c("blue","red"))(25)[cut(plot_data,25)]
+    
+    if(is.null(xlims)) {
+      xlims_ii <- c(min(plot_coords[,parameter_names[1]]),
+                    max(plot_coords[,parameter_names[1]]))
+    } else{xlims_ii <- xlims}
+    if(is.null(ylims)){
+      ylims_ii <- c(min(plot_coords[,parameter_names[2]]),
+                    max(plot_coords[,parameter_names[2]]))
+    } else{ylims_ii <- ylims}
+    
+    # Plot
+    plot(plot_coords[,parameter_names[1]],plot_coords[,parameter_names[2]], type = "n",
+         xlab = parameter_names[1],ylab = parameter_names[2], main = title[ii],
+         xlim = xlims_ii, ylim = ylims_ii, log = log_axis)
+    points(x = plot_coords[,1],y = plot_coords[,2],pch = 22, cex = 2, bg = colors)
+  }
+}
+
+#---------------------------------------------------#
+# Plotting methods used in thesis.
+#---------------------------------------------------#
+plot_eigenfunctions <- function(psi,x,Ks = 1:ncol(psi),ncolors){
+  # Calculate colors
+  breaks <- seq(min(psi),max(psi),length.out = ncolors + 1)
+  
+  for(ii in 1:length(Ks))
+  {
+    kk <- Ks[ii]
+    mat <- matrix(psi[,kk],ncol = length(x))
+    name <- paste0("psi_",kk)
+    image(x,x,mat, 
+          col = colorRampPalette(c("red", "pink", "blue"))(ncolors),
+          breaks = breaks,
+          main = bquote(psi[.(kk)]), cex.main = 4,
+          xaxt = "n", yaxt = "n", xlab = "", ylab = "",
+          axes = F)
+  }
+}
+
+plot_eigenvectors <- function(V,X,Ks = 1:ncol(V),ncolors = 25,cex.pt = 3){
+  coul <- colorRampPalette(c("red", "pink", "blue"))
+  coul <- coul(ncolors)
+  colors <- matrix(coul[cut(V,ncolors)],
+                   nrow = nrow(V),ncol = ncol(V))
+  
+  ## Plot eigenvectors
+  for(ii in 1:length(Ks)){
+    kk <- Ks[ii]
+    name = paste0("v_",kk)
+    plot(X[,1],X[,2], 
+         ylim = c(-1.1,1.1),xlim = c(-1.1,1.1),
+         axes = F,xlab = "",ylab = "",type = "n",
+         main = bquote(v[.(kk)]),cex.main = 5)
+    points(X[,1],X[,2],pch = 21, bg = colors[,ii], col = colors[,ii],cex = cex.pt)
+  }
+}
+
+# Plot equivalent kernels.
+plot_equivalent_kernel_1d <- function(H,X, plot_X, theta,
+                                      labeled = T,
+                                      colors = rep("black",length(plot_X)),
+                                      title = NULL,
+                                      rug = T,
+                                      xlim = NULL)
+{
+  plot_indx <- apply(plot_X,1,FUN = function(x){apply(X,1,FUN = function(z){sum(z - x)^2}) %>% which.min()})
+  plot_mat <- H[plot_indx,]
+  
+  if(is.null(title))
+  {
+    if(all(names(theta) == c("r","rho","kernel"))){
+      title <- paste0("Radius: ", round(theta$r,2), 
+                      ". Rho: ",round(theta$rho,2),".")
+    } else if(all(names(theta) == c("r","K","kernel"))){
+      title <- paste0("Radius: ", round(theta$r,2), 
+                      ". K: ",K,".")
+    }
+  }
+  
+  if(is.null(xlim)) xlim <- c(min(X),max(X))
+  if(labeled){
+    ylim <- c(min(plot_mat),max(plot_mat))
+  } else{
+    ylim <- c(Inf,-Inf)
+    for(ii in 1:length(plot_indx))
+    {
+      equivalent_kernel <- plot_mat[ii,][-plot_indx[ii]]
+      equivalent_kernel <- equivalent_kernel/sum(equivalent_kernel)
+      ylim[1] <- min(ylim[1],min(equivalent_kernel))
+      ylim[2] <- max(ylim[2],max(equivalent_kernel))
+    }
+  }
+  plot(NULL, xlim = xlim, ylim = ylim,type = "n",
+       xlab = "X", ylab = expression(hat(g)), main = title, las = 1)
+  for(ii in 1:length(plot_indx))
+  {
+    if(labeled){
+      equivalent_kernel <- plot_mat[ii,]
+      X_ii <- X
+    } else{
+      equivalent_kernel <- plot_mat[ii,][-plot_indx[ii]]
+      equivalent_kernel <- equivalent_kernel/sum(equivalent_kernel)
+      X_ii <- X[-plot_indx[ii],,drop = F]
+    }
+    points(X_ii, equivalent_kernel, col = colors[ii], pch = 19,cex = .25)
+    lines(X_ii[order(X_ii)], equivalent_kernel[order(X_ii)], col = colors[ii])
+  }
+  if(rug){rug(X, lwd = .01)}
+  grid(lwd = 2)
+}
+
+signed_root <- function(A){sqrt(abs(A)) * sign(A)}

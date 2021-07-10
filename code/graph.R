@@ -97,20 +97,53 @@ Laplacian <- function(A)
 
 # A wrapper around eigs_sym, which takes care of some failure cases when the
 # matrix is poorly conditioned. 
-get_spectra <- function(A,K,sigma = 0){
+# 
+# Input: A, matrix.
+#        K, number of eigenvectors.
+#        retvec, do we want eigenvectors or just eigenvalues.
+#        tol, tolerance for error in iterative computation.
+#        sigma, for shift-and-invert
+get_spectra <- function(A,K,retvec = TRUE,tol = 1e-10,sigma = tol){
   # Compute as many eigenvectors as we will need.
   maxitr <- 10000
-  spectra <- tryCatch(eigs_sym(A,K,sigma,opts = list(maxitr = maxitr)),
+  spectra <- tryCatch(eigs_sym(A,K,sigma = sigma,
+                               which = "LM", 
+                               opts = list(maxitr = maxitr,
+                                           retvec = retvec,
+                                           tol = tol)),
                       error = function(e){
-                        test <- eigs_sym(A,K, which = "SM",opts = list(maxitr = maxitr))
+                        test <- eigs_sym(A,K, which = "SM", opts = list(maxitr = maxitr,
+                                                                        retvec = retvec,
+                                                                        tol = tol))
                         return(test)
                       })
   
+  # Sometimes, this will spit out garbage. 
+  # You can diagnose this by the presence of ridiculously large eigenvalues, 
+  # when we are looking for small eigenvalues.
+  #
+  # Check if there are any large eigenvalues, and if so, try again, decreasing
+  # the tolerance for error; this seems to work.
+  while(max(abs(spectra$values)) > 1e10)
+  {
+    tol <- tol * .001
+    sigma <- tol
+    # No need for try-catch, since we know the "LM" direction works now.
+    spectra <- eigs_sym(A,K,sigma = sigma, 
+                        which = "LM", 
+                        opts = list(maxitr = maxitr,retvec = retvec,tol = tol))
+    
+                      
+  }
+  
+  # Sometimes, this won't converge.
   # If it hasn't converged, up the number of iterations and try again.
-  while(max(abs(spectra$values)) > 2e10 | length(spectra$values) < K)
+  while(length(spectra$values) < K)
   {
     maxitr <- maxitr + 10000
-    spectra <- eigs_sym(A,K,which = "SM",opts = list(maxitr = maxitr))
+    spectra <- eigs_sym(A,K,which = "SM",opts = list(maxitr = maxitr,
+                                                     retvec = retvec,
+                                                     tol = tol))
   }
   spectra
 }

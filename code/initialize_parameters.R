@@ -10,8 +10,9 @@ initialize_laplacian_eigenmaps_plus_kernel_smoothing_thetas <- function(sample_X
 
 initialize_laplacian_eigenmaps_thetas <- function(sample_X,n,
                                                   n_rs = 10,
+                                                  n_Ks = max_K,
                                                   max_degree = 60,
-                                                  max_K = max(initialize_spectral_projection_thetas$K),
+                                                  max_K = max(initialize_spectral_projection_thetas(sample_X,n)$K),
                                                   dist_to_r = max){
   
   degrees <- seq(2,max_degree + 1,length.out = n_rs) %>% round() %>% unique()
@@ -46,13 +47,14 @@ initialize_laplacian_smoothing_thetas <- function(sample_X,n,
                                                   n_rs = 10,
                                                   n_rhos = 10,
                                                   max_degree = 60,
-                                                  max_K = max(initialize_spectral_projection_thetas$K),
-                                                  dist_to_r = max){
+                                                  max_K = max(initialize_spectral_projection_thetas(sample_X,n)$K),
+                                                  dist_to_r = max,
+                                                  rho_multiplier = 1){
   #------------------------------------------------------------#
   # Choose tuning parameters for Laplacian smoothing.
   # -- r is determined based on the minimum degree we want in the graph.
   # -- rho is chosen to be inversely proportional to the kth eigenvalue of the Laplacian,
-  #    for different values of k.
+  #    for different values of k, times a multiplier.
   #
   # Inputs:
   # -- dist_to_r: a function that goes from distances (in particular, the distance of each
@@ -63,11 +65,12 @@ initialize_laplacian_smoothing_thetas <- function(sample_X,n,
   K <- seq(1,max_K,length.out = n_rhos) %>% round() %>% unique()
   
   # Choose parameters in a data-dependent way using Monte Carlo
-  iters <- 10 
+  r_iters <- 10 
+  rho_iters <- 5
   
   # Choose a range of radii based on different desired degree.
-  degree_dependent_rs <- matrix(ncol = n_rs, nrow = iters)
-  for(iter in 1:iters)
+  degree_dependent_rs <- matrix(ncol = n_rs, nrow = r_iters)
+  for(iter in 1:r_iters)
   {
     X <- sample_X(n)
     for(jj in 1:n_rs)
@@ -83,14 +86,14 @@ initialize_laplacian_smoothing_thetas <- function(sample_X,n,
   for(jj in 1:length(rs))
   {
     r <- rs[jj]
-    rhos[[jj]] <- matrix(NA,nrow = iters,ncol = length(K))
-    for(iter in 1:iters)
+    rhos[[jj]] <- matrix(NA,nrow = rho_iters,ncol = length(K))
+    for(iter in 1:rho_iters)
     {
       X <- sample_X(n)
       G <- neighborhood_graph(X,r)
       L <- Laplacian(G)
       spectra <- pmax(get_spectra(L,max_K)$values[rev(K)],1e-12) # Machine zero.
-      rhos[[jj]][iter,] <- 1/spectra
+      rhos[[jj]][iter,] <- 1/spectra * rho_multiplier
     }
     rhos[[jj]] <- apply(rhos[[jj]],2,FUN = median) %>% unique()
   }

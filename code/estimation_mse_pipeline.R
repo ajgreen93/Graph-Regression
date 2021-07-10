@@ -13,11 +13,11 @@ source("initialize_parameters.R")
 source("tests.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/thesis/cluster_assumption/gaussian_mixture_stepfunction.R")
+source("configs/thesis/mse/eigenfunction_5d_1s.R")
 
 # Options for running the pipeline
-verbose <- F
-save_fits <- T
+verbose <- T
+save_fits <- F
 test_data <- F
 
 #----------------------------------------------------#
