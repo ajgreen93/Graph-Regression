@@ -13,7 +13,7 @@ source("initialize_parameters.R")
 source("tests.R")
 
 # Please change this line to whichever config you wish to run.
-source("configs/thesis/mse/eigenfunction_5d_1s.R")
+source("configs/experimental/eigenfunction_2d_1s.R")
 
 # Options for running the pipeline
 verbose <- T

@@ -95,6 +95,24 @@ Laplacian <- function(A)
   return(L)
 }
 
+incidence <- function(A)
+{
+  # unpack necessary parameters
+  n <- nrow(A)
+  m <- sum(A > 0)
+  
+  # Get adjacency representation in list form.
+  adj_list <- which(G > 0, arr.ind = T)
+  adj_list <- cbind(adj_list, G[adj_list], 1:m)
+  
+  # Convert to matrix form.
+  D <- Matrix(0,nrow = m, ncol = n)
+  D[adj_list[,c(4,1)]] <- adj_list[,3]
+  D[adj_list[,c(4,2)]] <- -adj_list[,3]
+  
+  return(D)
+}
+
 # A wrapper around eigs_sym, which takes care of some failure cases when the
 # matrix is poorly conditioned. 
 # 

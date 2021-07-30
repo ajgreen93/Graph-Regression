@@ -194,3 +194,32 @@ mse_slope <- function(mse,ns){
   log_ns <- log(ns)
   lm(log_mse ~ log_ns)$coefficients[2]
 }
+
+# Build unlabeled-labeled splits for graph Laplacian smoothing.
+#
+# Two twists to the usual notion of building splits.
+# (1): We ensure that no connected component belongs entirely to the same fold.
+# (2): If the graph has any isolets, those vertices are always treated as 
+# labeled; i.e. they belong to *all* folds.
+# These twists ensure that the Laplacian smoothing problem will be well-posed downstream.
+build_splits <- function(G,nfolds)
+{
+  n <- nrow(G)
+  
+  # Compute connected components and isolets
+  components <- igraph::graph_from_adjacency_matrix(G, mode = "undirected") %>%
+    igraph::components()
+  isolets <- (1:n)[components$membership %in% which(components$csize == 1)]
+  
+  # Find folds, respecting connectivity structure as discussed above.
+  folds <- numeric(n)
+  folds[order(components$membership)] <- rep(1:nfolds, n)[1:n]
+  unlabeled = labeled = vector(mode="list", length=nfolds)
+  for(jj in 1:nfolds) {
+    unlabeled[[jj]] = union(which(folds == jj),isolets)
+    labeled[[jj]] = union(which(folds != jj),isolets)
+  }
+  splits <- list(unlabeled = unlabeled,
+                 labeled = labeled)
+  return(splits)
+}

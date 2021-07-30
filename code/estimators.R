@@ -72,99 +72,43 @@ make_laplacian_eigenmaps_plus_kernel_smoothing <- function(theta)
     return(predict)
   }
 }
-attr(make_laplacian_eigenmaps_plus_kernel_smoothing,"precompute_data") <- function(Y,X,X_test,X_validate,theta_df){
-  # Parameters
-  rs <- unique(theta_df$r)
-  hs <- unique(theta_df$h)
-  
-  # Objects for storing pre-computed data
-  precomputed_data_train_eigenvectors <- vector(mode = "list",length = length(rs))
-  precomputed_data_train_kernel_matrices <- vector(mode = "list",length = length(hs))
-  precomputed_data_validate_kernel_matrices <- vector(mode = "list",length = length(hs))
-  precomputed_data_test_kernel_matrices <- vector(mode = "list",length = length(hs))
-  names(precomputed_data_train_eigenvectors) <- rs
-  names(precomputed_data_train_kernel_matrices) <- hs
-  names(precomputed_data_validate_kernel_matrices) <- hs
-  names(precomputed_data_test_kernel_matrices) <- hs
-  
-  # Pre-compute eigenvectors
-  for(kk in 1:length(rs)){
-    r <- rs[kk]
-    K <- thetas[[ii]][[jj]] %>% filter(r == !!r) %>% pull(K)
-    
-    # Build G_{n,r} over X.
-    G <- neighborhood_graph(X,r)
-    
-    # Get L.
-    L <- Laplacian(G)
-    
-    # Compute as many eigenvectors as we will need.
-    spectra <- get_spectra(L,max(K))
-    L_eigenvectors <- spectra$vectors[,ncol(spectra$vectors):1]
-    
-    precomputed_data_train_eigenvectors[[kk]] <- L_eigenvectors
-  }
-  
-  # Pre-compute kernel smoothing "hat" matrices.
-  for(kk in 1:length(hs)){
-    h <- hs[kk]
-    G_train <- neighborhood_graph(X,h,loop = T)
-    G_test <- neighborhood_graph(X,h,X_test)
-    G_validate <-  neighborhood_graph(X,h,X_validate)
-    precomputed_data_train_kernel_matrices[[kk]] <- G_train/pmax(rowSums(G_train),1) # Avoid divide by zero.
-    precomputed_data_test_kernel_matrices[[kk]] <-  G_test/pmax(rowSums(G_test),1)
-    precomputed_data_validate_kernel_matrices[[kk]] <-  G_validate/pmax(rowSums(G_test),1)
-  }
-  
-  # Save it all.
-  precomputed_data <- list(train = list(eigenvectors = precomputed_data_train_eigenvectors,
-                                        kernel_matrices = precomputed_data_train_kernel_matrices),
-                           validate = list(kernel_matrices = precomputed_data_validate_kernel_matrices),
-                           test = list(kernel_matrices = precomputed_data_test_kernel_matrices))
-  return(precomputed_data)
-}
+attr(make_laplacian_eigenmaps_plus_kernel_smoothing,"precompute_data") <- 
+  precompute_laplacian_eigenmaps_plus_kernel_smoothing_data
 
 make_laplacian_smoothing <- function(theta)
 {
   r <- theta[["r"]]
   rho <- theta[["rho"]]
+  labeled <- theta[["labeled"]]
   laplacian_smoothing <- function(Y,X){
-    
     # Build G_{n,r} over X.
     G <- neighborhood_graph(X,r)
     
     # Get L.
     L <- Laplacian(G)
     
-    # Solve (rho*L + I)f = Y for f,
+    # Solve for the estimator, 
     # unless rho is ``too large'', in which case we set equal to mean.
     if(rho >= 1e+12){
       f_hat <- rep(mean(Y),length(Y))
-    }else{
-      f_hat <- as.numeric(solve(rho * L + Diagonal(n),Y))
+    } else
+    {
+      if(labeled)
+      {
+        f_hat <- as.numeric(solve(rho * L + Diagonal(n),Y))
+      } else if(!labeled)
+      {
+        # Create a graph H where every vertex in G is duplicated, included 
+        # once with its corresponding label and once without.
+        # Solve the Laplacian smoothing problem over H.
+        # Return the estimate which at the "unlabeled" points.
+        H <- cbind(rbind(G,G + Diagonal(n)),rbind(G + Diagonal(n),G))
+        L_H <- Laplacian(H)
+        I_n <- Diagonal(2*n,x = c(rep(1,n),rep(0,n)))
+        Y_n <- c(Y,rep(0,n))
+        f_hat <- as.numeric(solve(rho * L_H + I_n,Y_n))[(n + 1):(2*n)]
+      } 
     }
-    
-    
-    # "Prediction" function
-    predict <- function(X){f_hat}
-    return(predict)
-  }
-}
-
-make_laplacian_smoothing_knn <- function(theta)
-{
-  k <- theta[["k"]]
-  rho <- theta[["rho"]]
-  laplacian_smoothing_knn <- function(Y,X){
-    
-    # Build G_{n,k} over X.
-    G <- knn_graph(X,k)
-    
-    # Get L.
-    L <- Laplacian(G)
-    
-    # Solve (rho*L + I)f = Y for f.
-    f_hat <- as.numeric(solve(rho * L + diag(n),Y))
     
     # "Prediction" function
     predict <- function(X){f_hat}
@@ -179,7 +123,7 @@ make_spectral_projection <- function(theta)
   {
     d <- ncol(X)
     n <- length(Y)
-  
+    
     if(exists("precomputed_data")){
       psi_K <- precomputed_data[,1:K,drop = FALSE]
     } else{
@@ -241,24 +185,6 @@ make_least_squares <- function(theta)
 }
 attr(make_least_squares,"precompute_data") <- precompute_least_squares_data
 
-make_knn <- function(theta)
-{
-  k <- theta[["k"]]
-  knn <- function(Y,X)
-  {
-    # Build G_{n,k} over X.
-    G <- knn_graph(X,k)
-    
-    # normalize by row sums
-    H <- G / rowSums(G)
-    
-    # kNN estimator
-    f_hat <- as.numeric(H %*% Y)
-    
-    return(f_hat)
-  }
-}
-
 make_kernel_smoothing <- function(theta)
 {
   r <- theta[["r"]]
@@ -275,6 +201,50 @@ make_kernel_smoothing <- function(theta)
       f_hat <- as.numeric(H %*% Y)
     }
     return(predict)
+  }
+}
+
+#------------------------------------------------------------#
+# Not currently maintained code is below.
+#------------------------------------------------------------#
+
+
+make_laplacian_smoothing_knn <- function(theta)
+{
+  k <- theta[["k"]]
+  rho <- theta[["rho"]]
+  laplacian_smoothing_knn <- function(Y,X){
+    
+    # Build G_{n,k} over X.
+    G <- knn_graph(X,k)
+    
+    # Get L.
+    L <- Laplacian(G)
+    
+    # Solve (rho*L + I)f = Y for f.
+    f_hat <- as.numeric(solve(rho * L + diag(n),Y))
+    
+    # "Prediction" function
+    predict <- function(X){f_hat}
+    return(predict)
+  }
+}
+
+make_knn <- function(theta)
+{
+  k <- theta[["k"]]
+  knn <- function(Y,X)
+  {
+    # Build G_{n,k} over X.
+    G <- knn_graph(X,k)
+    
+    # normalize by row sums
+    H <- G / rowSums(G)
+    
+    # kNN estimator
+    f_hat <- as.numeric(H %*% Y)
+    
+    return(f_hat)
   }
 }
 

@@ -49,7 +49,8 @@ initialize_laplacian_smoothing_thetas <- function(sample_X,n,
                                                   max_degree = 60,
                                                   max_K = max(initialize_spectral_projection_thetas(sample_X,n)$K),
                                                   dist_to_r = max,
-                                                  rho_multiplier = 1){
+                                                  rho_multiplier = 1,
+                                                  labeled = T){
   #------------------------------------------------------------#
   # Choose tuning parameters for Laplacian smoothing.
   # -- r is determined based on the minimum degree we want in the graph.
@@ -59,6 +60,16 @@ initialize_laplacian_smoothing_thetas <- function(sample_X,n,
   # Inputs:
   # -- dist_to_r: a function that goes from distances (in particular, the distance of each
   #               point to its degreeth neighbor) and chooses one value of r.
+  # -- labeled: logical, indicating whether to fit
+  # 
+  #     min \|Y - f\|_n + f^{\top} L_n f (labeled)
+  # 
+  #    or 
+  #    
+  #     min \|Y - f\|_n + f^{\top} L_{2n} f (unlabeled)
+  #
+  #    where L_{2n} is the Laplacian over G_{2n}, the graph with vertices
+  #    {1,...,n,1,...,n}.
   #------------------------------------------------------------#
 
   degrees <- seq(2,max_degree + 1,length.out = n_rs) %>% round() %>% unique()
@@ -96,11 +107,17 @@ initialize_laplacian_smoothing_thetas <- function(sample_X,n,
       rhos[[jj]][iter,] <- 1/spectra * rho_multiplier
     }
     rhos[[jj]] <- apply(rhos[[jj]],2,FUN = median) %>% unique()
+    if(!labeled){
+      # Re-normalize, because f^{\top} L_{G_{2n}} f = 4 f^{\top} L f.
+      rhos[[jj]] <- ifelse(rhos[[jj]] >= 1e12, rhos[[jj]], rhos[[jj]]/4)
+    }
   }
   
-  # Combine rhos and rs.
-  thetas <- mapply(expand.grid,rs,rhos,SIMPLIFY = F) %>% bind_rows()
-  names(thetas) <- c("r","rho")
+  # Combine rhos, rs, and nfolds.
+  thetas <- mapply(expand.grid,rs,rhos,SIMPLIFY = F) %>% 
+    bind_rows() %>%
+    cbind(labeled)
+  names(thetas) <- c("r","rho","labeled")
   return(thetas)
 }
 
