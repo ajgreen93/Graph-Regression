@@ -242,7 +242,7 @@ We comment on these assumptions after stating our first main theorem, regarding 
 	\end{equation}
 	with probability at least $1 - \delta - Cn\exp(-cn\varepsilon^d) - \exp(-K)$.
 \end{theorem}
-From~\eqref{eqn:laplacian_eigenmaps_estimation_fo} it follows immediately that with constant probability $\|\wh{f} - f_0\|_n^2 \lesssim M^2(M^2n)^{-2/(2 + d)}$ whenever $n^{-1/2} \lesssim M \lesssim n^{1/d}$. 
+From~\eqref{eqn:laplacian_eigenmaps_estimation_fo} it follows immediately that with constant probability $\|\wh{f} - f_0\|_n^2 \lesssim M^2(M^2n)^{-2/(2 + d)}$ whenever $n^{-1/2} \lesssim M \lesssim n^{1/d}$, matching the standard minimax estimation rate over Sobolev classes.
 
 Some other remarks:
 \begin{itemize}
@@ -252,7 +252,7 @@ Some other remarks:
 	
 	\textcolor{red}{(TODO): Ryan, you asked about AIC, but I'm not clear about whether you want me to (a) make some remark about it, (b) actually go through the work of giving guarantees, or (c) were just curious.}
 	
-	\item The upper bound given in equation~\eqref{eqn:laplacian_eigenmaps_estimation_fo} holds with probability $1 - \delta - Cn\exp(-cn\varepsilon^d)$. Under the stronger assumption that $f_0 \in C^1(\mc{X};M)$ we can replace the factor of $\delta$ by the sharper $\delta^2/n$, which is less than $\delta$ because $\delta \in (0,1)$. Then a routine calculation, which we carry out in Appendix~\ref{subsec:upper_bound_l2pn_risk}, shows that the expected $L^2(P_n)$ loss is on the same order as~\eqref{eqn:laplacian_eigenmaps_estimation_fo}, matching the minimax rate.
+	\item The upper bound given in equation~\eqref{eqn:laplacian_eigenmaps_estimation_fo} holds with probability $1 - \delta - Cn\exp(-cn\varepsilon^d)$. Under the stronger assumption that $f_0 \in C^1(\mc{X};M)$ we can replace the factor of $\delta$ by the sharper $\delta^2/n$, which is less than $\delta$ because $\delta \in (0,1)$. Then a routine calculation shows that the expected $L^2(P_n)$ loss is on the same order as~\eqref{eqn:laplacian_eigenmaps_estimation_fo}, matching the minimax rate.
 \end{itemize}
 
 \paragraph{Testing.} Consider the test $\varphi = \1\{\wh{T} \geq t_{a}\}$, where $t_{a}$ is the threshold
@@ -369,6 +369,7 @@ For testing, we have that $\varphi$ (which is a level-$a$ test by construction) 
 \|f_0\|_n^2 \geq  \underbrace{\frac{\dotp{L_{n,\varepsilon}^s f_0}{f_0}_n}{\lambda_{K}^s}}_{\textrm{bias}} + \underbrace{32\frac{\sqrt{2K}}{n}\biggl[\sqrt{\frac{1}{a}} + \frac{1}{b}\biggr]}_{\textrm{variance}}.
 \end{equation}
 The quadratic form $\dotp{L_{n,\varepsilon}^s f_0}{f_0}_n$, eigenvalue $\lambda_{K}$, and empirical squared norm $\|f_0\|_n^2$ are each random variables that depend on the random design points $X_1,\ldots,X_n$. We proceed to establish suitable upper and lower bounds on these quantities. 
+% (AG 8/19/21): Need to include some discussion of how the analysis contrasts with that of the classical spectral projection estimator and test.
 
 \paragraph{Estimates of graph quadratic forms.}
 In Proposition~\ref{prop:graph_seminorm_fo} we restate an upper bound on the Dirichlet energy $\dotp{L_{n,\varepsilon}f}{f}_n$ from \textcolor{blue}{Green et al. 2021}. 
@@ -485,9 +486,9 @@ To ensure that $\wh{f}$ is an in-sample minimax rate-optimal estimator, we choos
 	For a constant $C_0$, the graph radius $\varepsilon$ and number of eigenvectors $K$ satisfy
 	\begin{equation}
 	\label{eqn:radius_estimation_manifold}
-	C_0\max\biggl\{\biggl(\frac{\log}{n}\biggr)^{1/m}, n^{-1/(2(s - 1) + m)}\biggr\} \leq \varepsilon \leq \min\{i_0, K^{-1/m}\},
+	C_0\max\biggl\{\biggl(\frac{\log}{n}\biggr)^{1/m}, n^{-1/(2(s - 1) + m)}\biggr\} \leq \varepsilon \leq \min\{\mathrm{inj}(\mc{X}), K^{-1/m}\},
 	\end{equation}
-	where we recall that $i_0$ is a lower bound on the injectivity radius of $\mc{X}$. Additionally,
+	where we recall that $\mathrm{inj}(\mc{X})$ is a lower bound on the injectivity radius of $\mc{X}$. Additionally,
 	\begin{equation*}
 	K = \min\Bigl\{\floor{(M^2n)^{m/(2s + m)}} \wedge 1,n \Bigr\}.
 	\end{equation*}
