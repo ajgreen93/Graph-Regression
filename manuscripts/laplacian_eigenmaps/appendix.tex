@@ -1451,8 +1451,19 @@ On the other hand, if $\psi$ is an order-$s$ kernel for some $s > j$, then by co
 \int_{B(0,1)} q_j(z) \eta(\|z\|) \,dz = 0.
 \end{equation*}
 
-\textcolor{red}{(TODO): Check with Ryan and Siva that (i) they believe these facts, and (ii) these facts do not require additional justification.}
+\section{Computational considerations}
+\label{sec:computational_considerations}
+Recall that when $s = 1$, we have shown that Laplacian eigenmaps is optimal when $\varepsilon \asymp (\log n/n)^{1/d}$ is (up to a constant) as small as possible while still ensuring the graph $G$ is connected. On the other hand, when $s > 1$, we can show Laplacian eigenmaps is optimal only when $\varepsilon = \omega(n^{-c})$ for some $c < 1/d$. For such a choice of $\varepsilon$, the average degree in $G$ will grow polynomially in $n$ as $n \to \infty$, and computing eigenvectors of the Laplacian of a graph will be more computationally intensive than if the graph were sparse \textcolor{red}{(reference)}. Thus Theorems~\ref{thm:laplacian_eigenmaps_estimation_fo} and~\ref{thm:laplacian_eigenmaps_estimation_ho} can be seen as revealing a tradeoff between statistical and computational efficiency; although to be clear, we have no theoretical evidence that Laplacian eigenmaps \emph{fails} to adapt to higher-order smoothness when $\varepsilon \asymp (\log n/n)^{1/d}$---we simply cannot prove that it succeeds. 
+\textcolor{red}{(TODO): If we decide it is worth our time to investigate the optimal choice of graph radius empirically, we can add a line here mentioning this.}
 
-\subsection{Upper bound on $L^2(P_n)$ risk}
-\label{subsec:upper_bound_l2pn_risk}
-\textcolor{red}{(TODO)}
+Suppose one does choose $\varepsilon$ meaningfully larger than the connectivity threshold, as our theory requires when $s > 1$. We now discuss a procedure to efficiently compute an approximation to the Laplacian eigenmaps estimate, without changing the rate of convergence of the resulting estimator: \emph{edge sparsification}. By now there exist various methods see (e.g., the seminal papers of \citet{spielman2011,spielman2013,spielman2014}, or the overview by \citet{vishnoi2012} and references therein) to efficiently remove many edges from the graph $G$ while only slightly perturbing the spectrum of the Laplacian. Specifically such algorithms take as input a parameter $\sigma \geq 1$, and return a sparser graph $\wt{G}$, $E(\wt{G}) \subseteq E(G)$, with a Laplacian $\wt{L}_{n,\varepsilon}$ satisfying
+\begin{equation*}
+\frac{1}{\sigma} \cdot u^{\top} \wt{L}_{n,\varepsilon} u \leq u^{\top} L_{n,\varepsilon} u \leq \sigma \cdot u^{\top} \wt{L}_{n,\varepsilon}u \quad \textrm{for all $u \in \Reals^n$.}
+\end{equation*}
+Let $\wt{f}$ be the Laplacian eigenmaps estimator computed using the eigenvectors of the sparsified graph Laplacian $\wc{L}_{n,\varepsilon}$ . Because $\wt{G}$ is sparser than $G$, it can be (much) faster to compute the eigenvectors of $\wt{L}_{n,\varepsilon}$ than the eigenvectors of $L_{n,\varepsilon}$, and consequently much faster to compute $\wt{f}$ than $\wh{f}$ \textcolor{red}{(reference needed)}. Statistically speaking, letting $\wt{\lambda}_k$ be the $k$th eigenvalue of $\wc{L}_{n,\varepsilon}$, we have that conditional on $X_1,\ldots,X_n$,
+\begin{equation*}
+\|\wt{f} - f_0\|_n^2 \leq \frac{\dotp{\wt{L}_{n,\varepsilon}^s f_0}{f_0}_n}{\wt{\lambda}_{K + 1}^s} + \frac{5K}{n} \leq \sigma^{2s} \frac{\dotp{\wt{L}_{n,\varepsilon}^s f_0}{f_0}_n}{\wt{\lambda}_{K + 1}^s} + \frac{5K}{n},
+\end{equation*}
+with probability at least $1 - \exp(-K)$. Consequently $\wt{f}$ has $L^2(P_n)$-error of at most $\sigma^{2s}$ times our upper bound on the error of $\wh{f}$, and for any choice of $\sigma$ that is constant in $n$ the estimator $\wt{f}$ will also be rate-optimal. 
+
+In fact the aforementioned edge sparsification algorithms are overkill for our needs. For one thing, they are designed to work when $\sigma$ is very close to $1$, whereas in order for $\wc{f}$ to be rate-optimal setting $\sigma$ to be any constant greater than $1$, say $\sigma = 2$, is sufficient. Additionally, edge sparsification algorithms are traditionally designed to work in the worst-case, where no assumptions are made on the structure of the graph $G$. But the geometric graphs we consider in this paper exhibit a special structure, in which very roughly speaking no single edge is a bottleneck. As pointed out by~\citet{sadhanala16b}, in this special case there are far simpler and faster methods for sparsification, which at least empirically seem to do the job.
