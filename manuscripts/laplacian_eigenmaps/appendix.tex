@@ -9,7 +9,7 @@ Y_i = f_{0}(x_i) + w_i
 \end{equation}
 where the noise variables $w_i$ are independent $N(0,1)$. In the rest of this section, we will mildly abuse notation and write $f_0 = (f_0(x_1),\ldots,f_0(x_n)) \in \Reals^n$. We will also write ${\bf Y} = (Y_1,\ldots,Y_n)$.
 
-\subsection{Upper bound on Estimation Error of Laplacian Eigenmaps}
+\subsection{Upper bound on Estimation Error of Laplacian eigenmaps}
 
 \begin{lemma}
 	\label{lem:fixed_graph_estimation}
@@ -191,7 +191,7 @@ which is the desired result.
 \subsection{Approximation error of non-local Laplacian}
 \label{subsec:approximation_error_nonlocal_laplacian}
 
-In this section, we establish the convergence $L_{P,\varepsilon}^kf \to \sigma_{\eta}^k\Delta_P^kf$ as $\varepsilon \to 0$. More precisely, we give an upper bound on the squared difference between $L_{P,\varepsilon}^kf$ and  $\sigma_{\eta}^k\Delta_P^kf$ as a function of $\varepsilon$. The bound holds for all $x \in \mc{X}_{k\varepsilon}$, and $f \in H^{s}(\mc{X})$, as long as $s \geq 2k + 1$.  \textcolor{red}{(TODO): Make sure that $\sigma_{\eta}$ is defined somewhere.}
+In this section, we establish the convergence $L_{P,\varepsilon}^kf \to \sigma_{\eta}^k\Delta_P^kf$ as $\varepsilon \to 0$. More precisely, we give an upper bound on the squared difference between $L_{P,\varepsilon}^kf$ and  $\sigma_{\eta}^k\Delta_P^kf$ as a function of $\varepsilon$. The bound holds for all $x \in \mc{X}_{k\varepsilon}$, and $f \in H^{s}(\mc{X})$, as long as $s \geq 2k + 1$. 
 \begin{lemma}
 	\label{lem:approximation_error_nonlocal_laplacian}
 	Assume Model~\ref{def:model_flat_euclidean}. Let $s \in \mathbb{N} \setminus \{0,1\}$, suppose that $f \in H^s(\mc{X};M)$, and if $s > 1$ suppose that $p \in C^{s - 1}(\mc{X})$. Let $L_{P,\varepsilon}$ be define with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel_flat_euclidean}. Then there exist constants $C_1$ and $C_2$ that do not depend on $f$, such that each of the following statements hold.
@@ -208,7 +208,7 @@ In this section, we establish the convergence $L_{P,\varepsilon}^kf \to \sigma_{
 		\end{equation}
 	\end{itemize}
 \end{lemma}
-We remark that when $k = 1$ and $f \in C^3(\mc{X})$ or $C^4(\mc{X})$, statements of this kind are well known \textcolor{red}{(references)}, and indeed stronger results---with $L^{\infty}(\mc{X})$ norm replacing $L^2(\mc{X})$ norm---hold. When dealing with the iterated Laplacian, and functions $f$ which are regular only in the Sobolev sense, the proof is somewhat more lengthy, but the spirit of the result is largely the same.
+We remark that when $k = 1$ and $f \in C^3(\mc{X})$ or $C^4(\mc{X})$, statements of this kind are well known, and indeed stronger results---with $L^{\infty}(\mc{X})$ norm replacing $L^2(\mc{X})$ norm---hold. When dealing with the iterated Laplacian, and functions $f$ which are regular only in the Sobolev sense, the proof is somewhat more lengthy, but in result is similar in spirit.
  
 \paragraph{Proof (of Lemma~\ref{lem:approximation_error_nonlocal_laplacian}).}
 Throughout this proof, we shall assume that $f$ and $p$ are smooth functions, meaning they belong to $C^{\infty}(\mc{X})$. This is without loss of generality, since $C^{\infty}(\mc{X})$ is dense in both $H^s(\mc{X})$ and $C^{s - 1}(\mc{X})$, and since both sides of the inequalities~\eqref{eqn:approximation_error_nonlocal_laplacian_1} and~\eqref{eqn:approximation_error_nonlocal_laplacian_2} are continuous with respect to $\|\cdot\|_{H^s(\mc{X})}$ and $\|\cdot\|_{C^{s - 1}(\mc{X})}$ norms.
@@ -507,7 +507,7 @@ Now, we use the results of the preceding two sections to prove~\eqref{pf:graph_s
 \label{eqn:dirichlet_energy}
 \dotp{L_{P,\varepsilon}f}{f}_{P} = \frac{1}{\varepsilon^{d + 2}}\int_{\mc{X}} \int_{\mc{X}} \bigl(f(x) - f(x')\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x) =: E_{P,\varepsilon}(f;\mc{X}).
 \end{equation}
-Finally, we recall a result of \textcolor{blue}{(Green 21)}: there exist constants $c_0$ and $C_0$ which do not depend on $M$, such that for all $\varepsilon < c_0$ and for any $f \in H^1(\mc{X};M)$,
+Finally, we recall a result of~\cite{green2021}: there exist constants $c_0$ and $C_0$ which do not depend on $M$, such that for all $\varepsilon < c_0$ and for any $f \in H^1(\mc{X};M)$,
 \begin{equation}
 \label{pf:estimate_nonlocal_seminorm_1}
 E_{P,\varepsilon}(f;\mc{X}) \leq C_0 M^2.
@@ -523,7 +523,7 @@ E_{P,\varepsilon}(L_{P,\varepsilon}^{k}f;\mc{X}) & = \frac{1}{\varepsilon^{d + 2
 & \quad + \int_{\partial_{k\varepsilon}\mc{X}} \int_{\partial_{k\varepsilon}\mc{X}} \bigl(L_{P,\varepsilon}^kf(x) - L_{P,\varepsilon}^kf(x')\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x)\Biggr\} \nonumber \\
 & := E_{P,\varepsilon}(L_{P,\varepsilon}^{k}f;\mc{X}_{k\varepsilon}) + E_{P,\varepsilon}(L_{P,\varepsilon}^{k}f;\partial_{k\varepsilon}\mc{X}) \label{pf:estimate_nonlocal_seminorm_1.5}
 \end{align}
-and upper bound each energy separately. For the first term, we add and substract $\sigma_{\eta}^k\Delta_P^kf(x)$ and $\sigma_{\eta}^k\Delta_P^kf(x')$ within the integrand, then use the triangle inequality and \textcolor{red}{the symmetry between $x$ and $x'$} to deduce that
+and upper bound each energy separately. For the first term, we add and substract $\sigma_{\eta}^k\Delta_P^kf(x)$ and $\sigma_{\eta}^k\Delta_P^kf(x')$ within the integrand, then use the triangle inequality and the symmetry between $x$ and $x'$ to deduce that
 \begin{equation}
 \label{pf:estimate_nonlocal_seminorm_2}
 E_{P,\varepsilon}(L_{P,\varepsilon}^{k}f;\mc{X}_{k\varepsilon}) \leq 3 \sigma_{\eta}^{2k} E_{P,\varepsilon}(\Delta_P^kf;\mc{X}_{k\varepsilon}) + \frac{2}{\varepsilon^{d + 2}}\int_{\mc{X}_{k\varepsilon}} \int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^kf(x) - \sigma_{\eta}^k \Delta_P^kf(x)\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x).
@@ -565,8 +565,6 @@ Then Lemma~\ref{lem:approximation_error_nonlocal_laplacian_boundary} shows that 
 
 \subsection{Assorted integrals}
 \label{subsec:integrals}
-
-\textcolor{red}{(TODO): The language ``...for a Borel set $U \subseteq \mc{X}$...'' should be checked.}
 
 \begin{lemma}
 	\label{lem:l2estimate_nonlocal_laplacian}
@@ -652,7 +650,7 @@ with the equality following since each $X_i$ are identically distributed. Margin
 \mathbb{E}\Bigl[ |f(X_j) - f(X_{i})|^2 \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\} \Bigr] & \leq \bigl((s + 1)p_{\max}\nu_d\varepsilon^d\bigr)^{|i\bj\setminus\{j \cup i\}|} \cdot \mathbb{E}\Bigl[ |f(X_j) - f(X_{i})|^2 \1\{\|X_i - X_j\| \leq \varepsilon\}\Bigr] \nonumber \\
 & \leq \bigl((s + 1)p_{\max}\nu_d\varepsilon^d\bigr)^{|i\bj\setminus\{j \cup i\}|} \cdot p_{\max}^2 \nu_d \varepsilon^{2 + d} M^2 \label{pf:graph_seminorm_bias2_1}
 \end{align}
-with the second inequality following from the proof of Lemma~1 in \textcolor{blue}{(Green 2021).} Finally, we notice that $|i\bj\setminus \{i \cup j\}| + 1 = k$, so that~\eqref{pf:graph_seminorm_bias2_1} gives the desired result.
+with the second inequality following from the proof of Lemma~1 in~\cite{green2021}. Finally, we notice that $|i\bj\setminus \{i \cup j\}| + 1 = k$, so that~\eqref{pf:graph_seminorm_bias2_1} gives the desired result.
 
 \section{Graph Sobolev semi-norm, manifold domain}
 \label{sec:graph_quadratic_form_manifold}
@@ -697,6 +695,8 @@ We show the following results, each of which hold under the same assumptions as 
 \end{itemize}
 We point out that when $f$ is H\"{o}lder smooth, results analogous to~\eqref{eqn:nonlocal_laplacian_approximation_error_manifold_sobolev} have been established in \citet{calder2019}. When $f$ is Sobolev smooth, our analysis (which relies heavily on Taylor expansions) is largely similar, except that the remainder term in the relevant Taylor expansion will be bounded in $L^2(\mc{X})$ norm rather than $L^{\infty}(\mc{X})$ norm. This is analogous to the situation in the flat Euclidean model.
 
+In the proof of~\eqref{pf:graph_seminorm_manifold_1}-\eqref{eqn:manifold_nonlocal_seminorm}, we recall the following estimates from differential geometry: (i) letting $K_0$ be an upper bound on the absolute value of the sectional curvatures of $\mc{X}$, $K_0 \leq 2R$, and  letting (ii) $i_0$ be a lower bound on the injectivity radius of $\mc{X}$, $i_0 \geq \pi R$; see Proposition~1 of \cite{aamari2019}. Additionally, recall that for all $\delta < i_0$, the exponential map $\exp_x: B_m(0,\delta) \subset T_x(\mc{X}) \to B_{\mc{X}}(x,\delta) \subset \mc{X}$ is a diffeomorphism for all $x \in \mc{X}$. We shall therefore always assume $\varepsilon < i_0$. 
+
 \paragraph{Proof (of Proposition~\ref{prop:graph_seminorm_manifold}).} Follows immediately from~\eqref{pf:graph_seminorm_manifold_1} and~\eqref{eqn:manifold_nonlocal_seminorm}. \qed
 
 \subsection{Decomposition of graph Sobolev seminorm}
@@ -712,15 +712,14 @@ In this section, we prove~\eqref{eqn:nonlocal_laplacian_geodesic_error}. By appl
 & \quad \cdot \int_{\mc{X}} \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) - \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr)\biggr| \,d\mu(x') \nonumber \\
 & = \frac{1}{\varepsilon^{2(2 + m)}} A_1(x) \cdot A_2(x) \label{pf:error_euclidean_distance_0}
 \end{align} 
-Thus we have upper bounded $|L_{P,\varepsilon}f(x) - \wt{L}_{P,\varepsilon}f(x)|^2$ by the product of two terms, each of which we now suitably bound. 
-
-To do so, we will use the following estimates, from Proposition 4 of \cite{trillos2019}: letting $R$ denote the reach of $\mc{X}$, for all $\|x' - x\| \leq R/2$,
+Thus we have upper bounded $|L_{P,\varepsilon}f(x) - \wt{L}_{P,\varepsilon}f(x)|^2$ by the product of two terms, each of which we now suitably bound. To do so, we will use the following estimate, from Proposition 4 of \cite{trillos2019}: for all $\|x' - x\| \leq R/2$,
 \begin{equation}
 \label{eqn:distance_error}
 \|x' - x\| \leq d_{\mc{X}}(x',x) \leq \|x' - x\| + \frac{8}{R^2} \|x' - x\|^3.
 \end{equation}
+From here forward we will assume $\varepsilon < R/2$. 
 \paragraph{Upper bound on $A_1(x)$.}
-From here forward we will assume $\varepsilon < R/2$. Consequently $\eta(\|x' - x\|/\varepsilon) \geq \eta(d_{\mc{X}}(x',x)/\varepsilon)$. Furthermore, letting $L_{\eta}$ denote the Lipschitz constant of $\eta$, and setting $\wt{\varepsilon} := (1 + 27\varepsilon^2/R^2)\varepsilon$ we have that
+Consequently $\eta(\|x' - x\|/\varepsilon) \geq \eta(d_{\mc{X}}(x',x)/\varepsilon)$. Furthermore, letting $L_{\eta}$ denote the Lipschitz constant of $\eta$, and setting $\wt{\varepsilon} := (1 + 27\varepsilon^2/R^2)\varepsilon$ we have that
 \begin{equation*}
 \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) - \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr)\biggr| \leq \frac{L_{\eta} 8 \varepsilon^2}{R^2} \cdot \1\bigl\{d_{\mc{X}}(x',x) \leq \varepsilon\bigr\} + \|\eta\|_{\infty} \cdot 1\{\varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon}\}.
 \end{equation*}
@@ -730,7 +729,7 @@ A_1(x) \leq \frac{8L_{\eta}\varepsilon^2}{R^2}\int_{\mc{X}}\bigl[f(x') - f(x)\bi
 \end{equation*}
 Integrating over $\mc{X}$, we conclude from Lemma~\ref{lem:dirichlet_energy_remainder} and Lemma~3.3 of \citep{burago2014} and  that
 \begin{equation*}
-\int_{\mc{X}} A_1(x) \,d\mu(x) \leq \frac{8L_{\eta}\nu_m\varepsilon^2}{R^2(m + 2)} \Bigl(1 + CmKR^2\Bigr) \varepsilon^{m + 2} |f|_{H^1(\mc{X})}^2 + C\|\eta\|_{\infty}\varepsilon^{m + 4} |f|_{H^1(\mc{X})}^2 =: C_5 \varepsilon^{m + 4}|f|_{H^1(\mc{X})}.
+\int_{\mc{X}} A_1(x) \,d\mu(x) \leq \frac{8L_{\eta}\nu_m\varepsilon^2}{R^2(m + 2)} \Bigl(1 + CmK_0R^2\Bigr) \varepsilon^{m + 2} |f|_{H^1(\mc{X})}^2 + C\|\eta\|_{\infty}\varepsilon^{m + 4} |f|_{H^1(\mc{X})}^2 =: C_5 \varepsilon^{m + 4}|f|_{H^1(\mc{X})}.
 \end{equation*}
 
 \paragraph{Upper bound on $A_2(x)$.}
@@ -741,12 +740,12 @@ Integrating over $x' \in \mc{X}$, we see that
 \end{align}
 Equation (1.36) in \cite{trillos2019} states that
 \begin{equation*}
-\bigl|\mu(B_\mc{X}(x,\varepsilon))  - \omega_m \varepsilon^m\bigr|  \leq CmK\varepsilon^{m + 2},
+\bigl|\mu(B_\mc{X}(x,\varepsilon))  - \omega_m \varepsilon^m\bigr|  \leq CmK_0\varepsilon^{m + 2},
 \end{equation*}
-where $K$ is an upper bound on the \textcolor{red}{sectional curvature} of $\mc{X}$. Plugging this back into~\eqref{pf:error_euclidean_distance_1}, we conclude that
+where we recall $K_0$ is an upper bound on the sectional curvature of $\mc{X}$. Plugging this back into~\eqref{pf:error_euclidean_distance_1}, we conclude that
 \begin{align*}
-\int_{\mc{X}} \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) - \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr)\biggr| \,d\mu(x') & \leq  \frac{8L_{\eta}\varepsilon^2}{R^2}\Bigl[\omega_m\varepsilon^{m} + CmK\varepsilon^{m + 2}\Bigr] + \|\eta\|_{\infty} \Bigl[\omega_m(\wt{\varepsilon}^m - {\varepsilon}^m) + 2CmK\varepsilon^{m + 2}\Bigr] \\
-& \leq \frac{8L_{\eta}\varepsilon^2}{R^2}\Bigl[\omega_m\varepsilon^{m} + R^2CmK\varepsilon^{m}\Bigr] + \|\eta\|_{\infty} \varepsilon^{m + 2}\Bigl[\frac{27\omega_m}{R^2} + 2CmK\Bigr] \\
+\int_{\mc{X}} \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) - \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr)\biggr| \,d\mu(x') & \leq  \frac{8L_{\eta}\varepsilon^2}{R^2}\Bigl[\omega_m\varepsilon^{m} + CmK_0\varepsilon^{m + 2}\Bigr] + \|\eta\|_{\infty} \Bigl[\omega_m(\wt{\varepsilon}^m - {\varepsilon}^m) + 2CmK_0\varepsilon^{m + 2}\Bigr] \\
+& \leq \frac{8L_{\eta}\varepsilon^2}{R^2}\Bigl[\omega_m\varepsilon^{m} + R^2CmK_0\varepsilon^{m}\Bigr] + \|\eta\|_{\infty} \varepsilon^{m + 2}\Bigl[\frac{27\omega_m}{R^2} + 2CmK_0\Bigr] \\
 & =: C_6 \varepsilon^{m + 2}.
 \end{align*}
 
@@ -761,7 +760,7 @@ thus proving the claimed result.
 
 \subsection{Approximation Error of non-local Laplacian}
 \label{subsec:manifold_approximation_error_nonlocal_laplacian}
-Fix $x \in \mc{X}$. We begin with a pointwise estimate of $\wt{L}_{P,\varepsilon}f$, facilitated by expressing $w(v) = f(\exp_x(v))$ and $q(v) = p(\exp_x(v))$ in normal coordinates, as in \citep{calder2019}. Letting $J_x(v)$ be the Jacobian of the exponential map $\exp_x: B(0,\varepsilon) \subseteq T_x(\mc{X}) \to B_{\mc{X}}(x,\varepsilon)$ evaluated at $v \in T_x(\mc{X})$, we have
+Fix $x \in \mc{X}$. We begin with a pointwise estimate of $\wt{L}_{P,\varepsilon}f$, facilitated by expressing $w(v) = f(\exp_x(v))$ and $q(v) = p(\exp_x(v))$ in normal coordinates, as in \citep{calder2019}. Let $J_x(\cdot)$ be the Jacobian of the exponential map $\exp_x$, we have
 \begin{align*}
 \wt{L}_{P,\varepsilon}f(x) & = \frac{1}{\varepsilon^{m + 2}} \int_{\mc{X}} \bigl(f(x') - f(x)\bigr) \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr) \,dP(x') \\
 & = \frac{1}{\varepsilon^{m + 2}} \int_{B(0,\varepsilon) \subset T_x(\mc{X})} \bigl(w(v) - w(0)\bigr) \eta\biggl(\frac{\|v\|}{\varepsilon}\biggr) J_x(v) q(v) \,dv \\
@@ -776,17 +775,16 @@ whereas if $f \in H^3(\mc{X})$ and $p \in C^2(\mc{X})$ then
 \begin{equation*}
 \|A_1 - \sigma_{\eta} \Delta_Pf\|_{\Leb^2(\mc{X})}^2 \leq C\|f\|_{H^3(\mc{X})}^2 \varepsilon^2.
 \end{equation*}
-\textcolor{red}{(TODO): This is correct, but feels unacceptably vague. On the other hand, I don't want to have to redo the entire proof from the flat Euclidean section, since all the steps will be basically identical. Ask Ryan + Siva for guidance.}
 
 Therefore it remains only to upper bound $A_2$ in $\Leb^2(\mc{X})$ norm. To do so, we recall (1.34) of \cite{trillos2019}: for any $\varepsilon < i_0$ and all $x \in \mc{X}$, the Jacobian $J_x(v)$ satisfies the upper bound
 \begin{equation*}
-|J_x(v) - 1| \leq CmK\varepsilon^2, \quad  \textrm{for all} ~~ v \in B(0,\varepsilon) \subseteq T_x(\mc{X}).
+|J_x(v) - 1| \leq CmK_0\varepsilon^2, \quad  \textrm{for all} ~~ v \in B(0,\varepsilon) \subseteq T_x(\mc{X}).
 \end{equation*}
 Combining this estimate with the Cauchy-Schwarz inequality, we conclude that
 \begin{align*}
-\|A_2\|_{\Leb^2(\mc{X})}^2 & \leq Cm^2K^2 \biggl[\int_{B(0,1)} \bigl(w(\varepsilon v) - w(0)\bigr)^2 \eta(\|v\|) q(\varepsilon v) \,dv\biggr] \cdot \biggl[\int_{B(0,1)} \eta(\|v\|) q(\varepsilon v) \,dv\biggr] \\
-& \leq Cm^2K^2 \sigma_{\eta} (1 + L_q\varepsilon)  \int_{B(0,1)} \bigl(w(\varepsilon v) - w(0)\bigr)^2 \eta(\|v\|) q(\varepsilon v) \,dv \\
-& \leq Cm^2K^2 \sigma_{\eta}^2 (1 + L_q\varepsilon) p_{\max}  \varepsilon^2 |f|_{H^1(\mc{X})}^2,
+\|A_2\|_{\Leb^2(\mc{X})}^2 & \leq Cm^2K_0^2 \biggl[\int_{B(0,1)} \bigl(w(\varepsilon v) - w(0)\bigr)^2 \eta(\|v\|) q(\varepsilon v) \,dv\biggr] \cdot \biggl[\int_{B(0,1)} \eta(\|v\|) q(\varepsilon v) \,dv\biggr] \\
+& \leq Cm^2K_0^2 \sigma_{\eta} (1 + L_q\varepsilon)  \int_{B(0,1)} \bigl(w(\varepsilon v) - w(0)\bigr)^2 \eta(\|v\|) q(\varepsilon v) \,dv \\
+& \leq Cm^2K_0^2 \sigma_{\eta}^2 (1 + L_q\varepsilon) p_{\max}  \varepsilon^2 |f|_{H^1(\mc{X})}^2,
 \end{align*}
 with the final inequality following from (3.2) of~\cite{burago2014}. Combining our estimates on $A_1$ and $A_2$ yields the claim.
 
@@ -870,7 +868,7 @@ The estimates~\eqref{eqn:dirichlet_energy_l2} and~\eqref{eqn:dirichlet_energy_so
 \paragraph{Proof (of Lemma~\ref{lem:dirichlet_energy_remainder}).}
 Following exactly the steps of the proof of Lemma~3.3 of \citet{burago2014}, but replacing all references to a ball of radius $r$ by references to the set difference between balls of radius $\wt{\varepsilon}$ and $\varepsilon$, we obtain that
 \begin{equation*}
-\int_{\mc{X}} \int_{\mc{X}} \bigl(f(x') - f(x)\bigr)^2 \1\{\varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon}\} \,d\mu(x') \,d\mu(x) \leq (1 + CmK\varepsilon^2) \cdot \int_{\mc{X}} \int_{B_{m}(0,\wt{\varepsilon})} |d_x^{1}f(v)|^2 \,dv \,d\mu(x).
+\int_{\mc{X}} \int_{\mc{X}} \bigl(f(x') - f(x)\bigr)^2 \1\{\varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon}\} \,d\mu(x') \,d\mu(x) \leq (1 + CmK_0\varepsilon^2) \cdot \int_{\mc{X}} \int_{B_{m}(0,\wt{\varepsilon})} |d_x^{1}f(v)|^2 \,dv \,d\mu(x).
 \end{equation*}
 From (2.7) of~\citet{burago2014}, we further have
 \begin{equation*}
@@ -967,7 +965,7 @@ with probability at least $1 - \exp(-n)$. Combining these three separate cases y
 Follows identically to the proof of Theorem~\ref{thm:laplacian_eigenmaps_estimation_fo}, except substituting $L_{n,\varepsilon}^s$ for $L_{n,\varepsilon}$, $\lambda_k^s$ for $\lambda_k$, and using Proposition~\ref{prop:graph_seminorm_ho} rather than Proposition~\ref{prop:graph_seminorm_fo} and Assumption~\ref{asmp:parameters_estimation_ho} rather than Assumption~\ref{asmp:parameters_estimation_fo}.
 
 \paragraph{Proof of Theorem~\ref{thm:laplacian_eigenmaps_estimation_manifold}.}
-Follows identically to the proof of Theorem~\ref{thm:laplacian_eigenmaps_estimation_fo}, substituting $L_{n,\varepsilon}^s$ for $L_{n,\varepsilon}$, $\lambda_k^s$ for $\lambda_k$, and using Proposition~\ref{prop:graph_seminorm_manifold} rather than Proposition~\ref{prop:graph_seminorm_fo}, Proposition~\textcolor{red}{(?)} rather than Proposition~\ref{prop:graph_eigenvalue}, and Assumption~\ref{asmp:parameters_estimation_manifold} rather than Assumption~\ref{asmp:parameters_testing_fo}.
+Follows identically to the proof of Theorem~\ref{thm:laplacian_eigenmaps_estimation_fo}, substituting $L_{n,\varepsilon}^s$ for $L_{n,\varepsilon}$, $\lambda_k^s$ for $\lambda_k$, and using Proposition~\ref{prop:graph_seminorm_manifold} rather than Proposition~\ref{prop:graph_seminorm_fo}, Proposition~\ref{prop:graph_eigenvalue_manifold} rather than Proposition~\ref{prop:graph_eigenvalue}, and Assumption~\ref{asmp:parameters_estimation_manifold} rather than Assumption~\ref{asmp:parameters_testing_fo}.
 
 \subsection{Testing Results}
 
@@ -1215,7 +1213,7 @@ Together these upper bounds on $\|G_j\|_{L^2(\mc{X}_j)}$ for $j = 1,2,3$ imply t
 \end{equation*}
 and plugging this back into~\eqref{pf:kernel_smoothing_bias_2} yields the claim.
 
-\subsection{Comparison of Laplacian eigenmaps to kernel smoothing}
+\subsection{Comparison of Laplacian Eigenmaps to kernel smoothing}
 \label{subsec:eigenmaps_beats_kernel_smoothing}
 
 In this section, we give a sequence of densities $p^{(n)}$ and regression functions $f_0^{(n)}$ for which the $L^2(P)$ error of the two-stage estimator $T_{n,h}\wh{f}$ is stochastically dominated by the $L^2(P)$ error of applying kernel smoothing directly to the responses. We begin by precisely setting up the problem and reviewing the two estimators we will compare. Then we give and prove our formal claim.
@@ -1236,7 +1234,7 @@ we take the domain $\mc{X}^{(n)} = Q_1 \cup Q_2$, and
 \label{def:model_cluster_assumption}
 p^{(n)}(x) := \frac{1}{1 - 2r}\1\bigl\{x \in Q_1 \cup Q_2\bigr\}, \quad f_0^{(n)}(x) := \theta \cdot \Bigl(\1\bigl\{x \in Q_1\bigr\} - \1\bigl\{x \in Q_2\bigr\}\Bigr),
 \end{equation}
-where $\theta \in \Reals$. Note that as $n \to \infty$, the density $p^{(n)}$ is converging (in, say, $L^2([0,1])$ norm) to uniform distribution on $[0,1]$, and the regression function $f_0^{(n)}$ to a step function. 
+where $\theta \in \Reals$. Note that as $n \to \infty$, the density $p^{(n)}$ is converging (in, say, $L^2([0,1])$ norm) to the uniform distribution on $[0,1]$, and the regression function $f_0^{(n)}$ to a step function. 
 
 Our goal is to estimate $f_0$ using an estimator $f$, in such a way that the resulting $L^2(P)$ error $\|f - f_0\|_P^2$ is small. We shall consider two estimators: Laplacian eigenmaps + extension by kernel smoothing, and direct kernel smoothing of the responses. In the notation of our main text, these are respectively $T_{n,h}\wh{f}$ and $T_{n,h'}{\bf Y}$. For simplicity, in both cases we shall consider only the boxcar kernel,
 \begin{equation}
@@ -1394,7 +1392,7 @@ Lemma~\ref{lem:one_sided_bernstein} is an immediate consequence of the one-sided
 	with probability at least $1 - \exp\bigl(-n/8 \cdot \|f\|_P^4 /\Ebb[f^4(X)]\bigr)$.
 \end{lemma}
 
-In the proof of Lemma~\ref{lem:kernel_smoothing_insample}, we require uniform control of the empirical degree functional $d_{n,h}(x)$ over all $x \in \mc{X}$. Such a result is available to us because the kernel $\psi$ is Lipschitz on its support, so that the class of functions $\{\psi((x - \cdot)/h): h \in \Rd\}$ has finite VC dimension. The precise estimate we use is due to \textcolor{blue}{(Gine + Guillou 2002)}. 
+In the proof of Lemma~\ref{lem:kernel_smoothing_insample}, we require uniform control of the empirical degree functional $d_{n,h}(x)$ over all $x \in \mc{X}$. Such a result is available to us because the kernel $\psi$ is Lipschitz on its support, so that the class of functions $\{\psi((x - \cdot)/h): h \in \Rd\}$ has finite VC dimension. The precise estimate we use is due to~\cite{gine2002}.
 \begin{lemma}[Uniform bound for empirical degree.]
 	\label{lem:uniform_bound_empirical_degree}
 	Suppose Model~\ref{def:model_flat_euclidean}. For a kernel $\psi$ satisfying~\ref{asmp:kernel} and bandwidth $h$ satisfying~\ref{asmp:bandwidth}, there exist constants $c, C, c_1$ and $C_1$ which do not depend on $h$ or $n$ such that
@@ -1453,17 +1451,17 @@ On the other hand, if $\psi$ is an order-$s$ kernel for some $s > j$, then by co
 
 \section{Computational considerations}
 \label{sec:computational_considerations}
-Recall that when $s = 1$, we have shown that Laplacian eigenmaps is optimal when $\varepsilon \asymp (\log n/n)^{1/d}$ is (up to a constant) as small as possible while still ensuring the graph $G$ is connected. On the other hand, when $s > 1$, we can show Laplacian eigenmaps is optimal only when $\varepsilon = \omega(n^{-c})$ for some $c < 1/d$. For such a choice of $\varepsilon$, the average degree in $G$ will grow polynomially in $n$ as $n \to \infty$, and computing eigenvectors of the Laplacian of a graph will be more computationally intensive than if the graph were sparse \textcolor{red}{(reference)}. Thus Theorems~\ref{thm:laplacian_eigenmaps_estimation_fo} and~\ref{thm:laplacian_eigenmaps_estimation_ho} can be seen as revealing a tradeoff between statistical and computational efficiency; although to be clear, we have no theoretical evidence that Laplacian eigenmaps \emph{fails} to adapt to higher-order smoothness when $\varepsilon \asymp (\log n/n)^{1/d}$---we simply cannot prove that it succeeds. 
-\textcolor{red}{(TODO): If we decide it is worth our time to investigate the optimal choice of graph radius empirically, we can add a line here mentioning this.}
+Recall that when $s = 1$, we have shown that Laplacian eigenmaps is optimal when $\varepsilon \asymp (\log n/n)^{1/d}$ is (up to a constant) as small as possible while still ensuring the graph $G$ is connected. On the other hand, when $s > 1$, we can show Laplacian eigenmaps is optimal only when $\varepsilon = \omega(n^{-c})$ for some $c < 1/d$. For such a choice of $\varepsilon$, the average degree in $G$ will grow polynomially in $n$ as $n \to \infty$, and computing eigenvectors of the Laplacian of a graph will be more computationally intensive than if the graph were sparse. 
+In this dense-graph setting, we now discuss a procedure to more efficiently compute an approximation to the Laplacian eigenmaps estimate: \emph{edge sparsification}.
 
-Suppose one does choose $\varepsilon$ meaningfully larger than the connectivity threshold, as our theory requires when $s > 1$. We now discuss a procedure to efficiently compute an approximation to the Laplacian eigenmaps estimate, without changing the rate of convergence of the resulting estimator: \emph{edge sparsification}. By now there exist various methods see (e.g., the seminal papers of \citet{spielman2011,spielman2013,spielman2014}, or the overview by \citet{vishnoi2012} and references therein) to efficiently remove many edges from the graph $G$ while only slightly perturbing the spectrum of the Laplacian. Specifically such algorithms take as input a parameter $\sigma \geq 1$, and return a sparser graph $\wt{G}$, $E(\wt{G}) \subseteq E(G)$, with a Laplacian $\wt{L}_{n,\varepsilon}$ satisfying
+By now there exist various methods see (e.g., the seminal papers of \citet{spielman2011,spielman2013,spielman2014}, or the overview by \citet{vishnoi2012} and references therein) to efficiently remove many edges from the graph $G$ while only slightly perturbing the spectrum of the Laplacian. Specifically such algorithms take as input a parameter $\sigma \geq 1$, and return a sparser graph $\wc{G}$, $E(\wc{G}) \subseteq E(G)$, with a Laplacian $\wc{L}_{n,\varepsilon}$ satisfying
 \begin{equation*}
-\frac{1}{\sigma} \cdot u^{\top} \wt{L}_{n,\varepsilon} u \leq u^{\top} L_{n,\varepsilon} u \leq \sigma \cdot u^{\top} \wt{L}_{n,\varepsilon}u \quad \textrm{for all $u \in \Reals^n$.}
+\frac{1}{\sigma} \cdot u^{\top} \wc{L}_{n,\varepsilon} u \leq u^{\top} L_{n,\varepsilon} u \leq \sigma \cdot u^{\top} \wc{L}_{n,\varepsilon}u \quad \textrm{for all $u \in \Reals^n$.}
 \end{equation*}
-Let $\wt{f}$ be the Laplacian eigenmaps estimator computed using the eigenvectors of the sparsified graph Laplacian $\wc{L}_{n,\varepsilon}$ . Because $\wt{G}$ is sparser than $G$, it can be (much) faster to compute the eigenvectors of $\wt{L}_{n,\varepsilon}$ than the eigenvectors of $L_{n,\varepsilon}$, and consequently much faster to compute $\wt{f}$ than $\wh{f}$ \textcolor{red}{(reference needed)}. Statistically speaking, letting $\wt{\lambda}_k$ be the $k$th eigenvalue of $\wc{L}_{n,\varepsilon}$, we have that conditional on $X_1,\ldots,X_n$,
+Let $\wc{f}$ be the Laplacian eigenmaps estimator computed using the eigenvectors of the sparsified graph Laplacian $\wc{L}_{n,\varepsilon}$ . Because $\wc{G}$ is sparser than $G$, it can be (much) faster to compute the eigenvectors of $\wc{L}_{n,\varepsilon}$ than the eigenvectors of $L_{n,\varepsilon}$, and consequently much faster to compute $\wc{f}$ than $\wh{f}$. Statistically speaking, letting $\wc{\lambda}_k$ be the $k$th eigenvalue of $\wc{L}_{n,\varepsilon}$, we have that conditional on $\{X_1,\ldots,X_n\}$,
 \begin{equation*}
-\|\wt{f} - f_0\|_n^2 \leq \frac{\dotp{\wt{L}_{n,\varepsilon}^s f_0}{f_0}_n}{\wt{\lambda}_{K + 1}^s} + \frac{5K}{n} \leq \sigma^{2s} \frac{\dotp{\wt{L}_{n,\varepsilon}^s f_0}{f_0}_n}{\wt{\lambda}_{K + 1}^s} + \frac{5K}{n},
+\|\wc{f} - f_0\|_n^2 \leq \frac{\dotp{\wc{L}_{n,\varepsilon}^s f_0}{f_0}_n}{\wc{\lambda}_{K + 1}^s} + \frac{5K}{n} \leq \sigma^{2s} \frac{\dotp{\wc{L}_{n,\varepsilon}^s f_0}{f_0}_n}{\wc{\lambda}_{K + 1}^s} + \frac{5K}{n},
 \end{equation*}
-with probability at least $1 - \exp(-K)$. Consequently $\wt{f}$ has $L^2(P_n)$-error of at most $\sigma^{2s}$ times our upper bound on the error of $\wh{f}$, and for any choice of $\sigma$ that is constant in $n$ the estimator $\wt{f}$ will also be rate-optimal. 
+with probability at least $1 - \exp(-K)$. Consequently $\wt{f}$ has $L^2(P_n)$-error of at most $\sigma^{2s}$ times our upper bound on the error of $\wh{f}$, and for any choice of $\sigma$ that is constant in $n$ the estimator $\wc{f}$ will also be rate-optimal. 
 
-In fact the aforementioned edge sparsification algorithms are overkill for our needs. For one thing, they are designed to work when $\sigma$ is very close to $1$, whereas in order for $\wc{f}$ to be rate-optimal setting $\sigma$ to be any constant greater than $1$, say $\sigma = 2$, is sufficient. Additionally, edge sparsification algorithms are traditionally designed to work in the worst-case, where no assumptions are made on the structure of the graph $G$. But the geometric graphs we consider in this paper exhibit a special structure, in which very roughly speaking no single edge is a bottleneck. As pointed out by~\citet{sadhanala16b}, in this special case there are far simpler and faster methods for sparsification, which at least empirically seem to do the job.
+In fact the aforementioned edge sparsification algorithms are overkill for our needs. For one thing, they are designed to work when $\sigma$ is very close to $1$, whereas in order for $\wc{f}$ to be rate-optimal, setting $\sigma$ to be any constant greater than $1$, say $\sigma = 2$, is sufficient. Additionally, edge sparsification algorithms are traditionally designed to work in the worst-case, where no assumptions are made on the structure of the graph $G$. But the geometric graphs we consider in this paper exhibit a special structure, in which very roughly speaking no single edge is a bottleneck. As pointed out by~\citet{sadhanala16b}, in this special case there are far simpler and faster methods for sparsification, which at least empirically seem to do the job.
