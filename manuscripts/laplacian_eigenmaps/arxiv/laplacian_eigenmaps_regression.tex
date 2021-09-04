@@ -1,0 +1,146 @@
+\documentclass{article}
+
+%%% Begin Ryan's template
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{times}          % times font
+
+\usepackage[round]{natbib}
+\usepackage{amssymb,amsmath,amsthm,bbm}
+\usepackage[margin=1in]{geometry}
+\usepackage{verbatim,float,url,dsfont}
+\usepackage{graphicx,subfigure,psfrag}
+\usepackage{algorithm,algorithmic}
+\usepackage{mathtools,enumitem}
+\usepackage[colorlinks=true,citecolor=blue,urlcolor=blue,linkcolor=blue]{hyperref}
+\usepackage{multirow}
+
+% Theorems and such
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+
+% Assumption
+\newtheorem*{assumption*}{\assumptionnumber}
+\providecommand{\assumptionnumber}{}
+\makeatletter
+\newenvironment{assumption}[2]{
+	\renewcommand{\assumptionnumber}{Assumption #1#2}
+	\begin{assumption*}
+		\protected@edef\@currentlabel{#1#2}}
+	{\end{assumption*}}
+\makeatother
+
+% Widebar
+\makeatletter
+\newcommand*\rel@kern[1]{\kern#1\dimexpr\macc@kerna}
+\newcommand*\widebar[1]{%
+	\begingroup
+	\def\mathaccent##1##2{%
+		\rel@kern{0.8}%
+		\overline{\rel@kern{-0.8}\macc@nucleus\rel@kern{0.2}}%
+		\rel@kern{-0.2}%
+	}%
+	\macc@depth\@ne
+	\let\math@bgroup\@empty \let\math@egroup\macc@set@skewchar
+	\mathsurround\z@ \frozen@everymath{\mathgroup\macc@group\relax}%
+	\macc@set@skewchar\relax
+	\let\mathaccentV\macc@nested@a
+	\macc@nested@a\relax111{#1}%
+	\endgroup
+}
+\makeatother
+
+% Min and max
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+\newcommand{\argmax}{\mathop{\mathrm{argmax}}}
+\newcommand{\minimize}{\mathop{\mathrm{minimize}}}
+\newcommand{\st}{\mathop{\mathrm{subject\,\,to}}}
+
+% Shortcuts
+\def\R{\mathbb{R}}
+
+%%% End Ryan's template
+
+%%% Begin Alden's additions
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\Reals}{\mathbb{R}} % Same thing as Ryan's \R
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\wb}[1]{\widebar{#1}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\bj}{{\bf j}}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wc}{0}{mathx}{"71}
+%%% End Alden's Additions
+
+\begin{document}
+	
+% Title 
+\begin{center} {\Large{\bf{Minimax-optimal Regression over Sobolev Spaces \\
+				\vspace{.2cm}
+				via Laplacian Eigenmaps with Neighborhood Graphs}}}
+	
+	\vspace*{.3cm}
+	
+	{\large{
+			\begin{center}
+				Alden Green~~~~~ Sivaraman Balakrishnan~~~~~ Ryan J. Tibshirani\\
+				\vspace{.2cm}
+			\end{center}
+			
+			
+			\begin{tabular}{c}
+				Department of Statistics and Data Science \\
+				Carnegie Mellon University
+			\end{tabular}
+			
+			\vspace*{.2in}
+			
+			\begin{tabular}{c}
+				\texttt{\{ajgreen,siva,ryantibs\}@stat.cmu.edu}
+			\end{tabular}
+	}}
+	
+	\vspace*{.2in}
+	
+	\today
+	\vspace*{.2in}
+\end{center}
+
+% Abstract
+\begin{abstract}
+	In this paper we study the statistical properties of nonparametric regression methods based on \emph{Laplacian eigenmaps}. These are spectral projection methods, which involve projecting a vector of observed responses ${\bf Y} = (Y_1,\ldots,Y_n)$ onto a subspace spanned by certain eigenvectors of a neighborhood graph Laplacian. We show that in many cases these methods achieve minimax rates of convergence over continuum function classes. Specifically, we consider the problem of random design regression over Sobolev spaces $H^s(\mc{X})$---where $\mc{X} \subseteq \Rd$ is the support of the design density $p$---and show that under sufficient smoothness conditions on $p$, methods based on Laplacian eigenmaps achieve the optimal rates for both estimation (where the optimal rate is known to be $n^{-2s/(2s + d)}$) and goodness-of-fit testing ($n^{-4s/(4s + d)}$). We also show that Laplacian eigenmaps is \emph{manifold adaptive}: that is, we consider the situation where $\mc{X}$ is a manifold of small intrinsic dimension $m$, and give upper bounds establishing that Laplacian eigenmaps achieves the faster minimax estimation ($n^{-2s/(2s + m)}$) and testing ($n^{-4s/(4s + m)}$) rates of convergence. Finally, since the Laplacian eigenmaps estimator is defined only at observed design points, we propose an out-of-sample extension based on kernel smoothing, and prove that it achieves optimal out-of-sample error. We support these theoretical results with empirical evidence.
+\end{abstract}
+
+	
+% Main text
+\input{../main_text.tex}
+
+% Bibliography
+\bibliographystyle{plainnat}
+\bibliography{../../../graph_regression_bibliography} 
+
+% Appendix
+\appendix
+\input{../appendix.tex}
+
+\end{document}
