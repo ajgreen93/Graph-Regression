@@ -1,5 +1,82 @@
 \noindent 
 
+\section{Upper bounds on population-level spectral series regression}
+
+In this section we first give the proof of Proposition~\ref{prop:spectral_series_estimation}, then of Proposition~\ref{prop:spectral_series_testing}. In both cases the structure of the analysis, which is fairly classical and straightforward, can be usefully compared to our analysis of PCR-LE (see Section~\ref{subsec:analysis}).
+
+\paragraph{Proof of Proposition~\ref{prop:spectral_series_estimation}.}
+We decompose risk into squared bias and variance,
+\begin{equation}
+\label{pf:spectral_series_estimation_0}
+\Ebb \|\wt{f} - f_0\|_P^2 = \Ebb\| \Ebb[\wt{f}]  - f_0\|_P^2 + \Ebb\| \wt{f} - \Ebb[\wt{f}]\|_P^2.
+\end{equation}
+Since the eigenfunctions $\{\psi_k\}$ form an orthonormal basis of $L^2(P)$, and $f_0 \in \mc{H}^{s}(\mc{X}) \subseteq L^2(P)$, we can write the squared bias in terms of squared Fourier coefficients of $f_0$, leading to the following upper bound,
+\begin{equation*}
+\|f_0 - \Ebb[\wt{f}]\|_P^2 = \sum_{k = K + 1}^{\infty}  \dotp{f_0}{\psi_k}_P^2 \leq  \frac{1}{\{\lambda_{K + 1}(\Delta_P)\}^s} \sum_{k = K + 1}^{\infty} \{\lambda_{k + 1}(\Delta_P)\}^s \dotp{f_0}{\psi_k}_P^2 \leq \frac{\|f_0\|_{\mc{H}^s(\mc{X})}}{\{\lambda_{K + 1}(\Delta_P)\}^s}.
+\end{equation*}
+On the other hand, the variance term can be written as the sum of the variance of each empirical Fourier coefficient, and subsequently by the law of total variance we derive that
+\begin{align}
+\label{pf:spectral_series_estimation_2}
+\Ebb\| \wt{f} - \Ebb[\wt{f}]\|_P^2 = \sum_{k = 1}^{K} \Var\Bigl[\dotp{{\bf Y}}{\psi_k}_n\Bigr] & = \sum_{k = 1}^{K} \Var\Bigl[\Ebb[\dotp{Y}{\psi_k}_n|{\bf X}\Bigr] + \Ebb\Bigl[\Var[\dotp{Y}{\psi_k}_n|{\bf X}\Bigr] \nonumber \\
+& = \sum_{k = 1}^{K} \Var\Bigl[\dotp{f_0}{\psi_k}_n\Bigr] + \frac{1}{n}\Ebb\Bigl[\|\psi_k\|_n^2\Bigr] \nonumber \\
+& \leq \frac{K}{n} + \frac{1}{n}\sum_{k = 1}^{K}\Ebb\Bigl[\Bigl(f_0(X)\psi_k(X)\Bigr)^2\Bigr].
+\end{align}
+Consequently,
+\begin{equation}
+\label{pf:spectral_series_estimation_1}
+\Ebb \|\wt{f} - f_0\|_P^2 \leq \frac{\|f_0\|_{\mc{H}^s(\mc{X})}^2}{\bigl[\lambda_{K + 1}(\Delta_P)\bigr]^s} + \frac{K}{n} + \frac{1}{n}\Ebb\Bigl[(f_0(X))^2 \cdot \sum_{k = 1}^{K} (\psi_k(X))^2\Bigr].
+\end{equation}
+The claim of the proposition then follows from variants of two classical results in spectral geometry. The first is a Weyl's Law asymptotic scaling of the eigenvalues of $\Delta_P$ due to~\cite{dunlop2020}; formally, there exist constants $c$ and $C$ (which will depend on $P$ and $d$) such that
+\begin{equation}
+\label{eqn:weyl}
+ck^{2/d} \leq \rho_k \leq Ck^{2/d}\quad\textrm{for all $k \in \mathbb{N}$, $k \geq 2$}.
+\end{equation}
+The second is a local analog to Weyl's Law, which says that there exists a constant $C$ (again depending on $P$ and $d$) such that
+\begin{equation}
+\label{eqn:local_weyl}
+\sup_{x \in \mc{X}}\biggl\{\sum_{k = 1}^{K} \bigl(\psi_k(x)\bigr)^2\biggr\} \leq CK \quad\textrm{for all $K \in \mathbb{N}$}.
+\end{equation}
+Equation~\eqref{eqn:local_weyl} is a direct implication of~\eqref{eqn:weyl} along with Theorem 17.5.3 of~\cite{hormander1973}. Plugging the upper bounds~\eqref{eqn:weyl} and~\eqref{eqn:local_weyl} back into~\eqref{pf:spectral_series_estimation_1}, we conclude that
+\begin{equation}
+\label{pf:spectral_series_estimation_3}
+\Ebb \|\wt{f} - f_0\|_P^2 \leq C\biggl(\frac{\|f_0\|_{\mc{H}^s(\mc{X})}^2}{(K + 1)^{2s/d}} + \frac{K}{n}\biggr).
+\end{equation}
+If $n^{-1/2} \geq M$, then taking $K = 1$ implies $\Ebb \|\wt{f} - f_0\|_P^2 \leq C(M^2 + 1/n)$. Otherwise, setting $K = \floor{M^2n}^{d/(2s + d)}$ balances squared bias and variance, and yields the claim.
+\qed.
+
+\paragraph{Proof of Proposition~\ref{prop:spectral_series_testing}.}
+We briefly lay out the main ideas needed to prove Proposition~\ref{prop:spectral_series_testing}, following the lead of~\cite{ingster2009} who prove a similar result in the special case where $M = 1$ and $P$ is the uniform distribution over $\mc{X} = [0,1]^d$, and referring to that work for more details.
+
+We begin by computing the first two moments of the test statistic $\wt{T}$. The expectation is
+\begin{align*}
+\Ebb[\wt{T}] = \frac{(n - 1)}{n} \sum_{k = 1}^{K} \dotp{f_0}{\psi_K}_P^2 + \frac{K}{n} + \Ebb\Bigl[(f_0(X))^2 \dot \sum_{k = 1}^{K} (\psi_k(X))^2\Bigr],
+\end{align*}
+and from~\eqref{eqn:weyl} (Weyl's Law) we have that under the alternative $f_0 \neq 0$,
+\begin{equation*}
+\Ebb_{f_0}[\wt{T}] \geq \frac{\|f_0\|_{\mc{H}^s(\mc{X})}^2}{\lambda_{K + 1}^s(\Delta_{P})} + \frac{K}{n}.
+\end{equation*}
+To compute the variance, we decompose $\wt{T} = \wt{T}_{1,1} + \wt{T}_{1,2} + \wt{T}_{1,3} + \wt{T}_2$ into the sum of 3 U-statistics and the remaining diagonal terms, defined in terms of the equivalent kernel $\kappa(x,x') = \sum_{k = 1}^{K} \psi_k(x) \psi_k(x')$ as,
+\begin{align*}
+T_{1,1} & := \frac{1}{n^2} \sum_{1 \leq i \neq j \leq n} w_i w_j \kappa(X_i,X_j),\quad && T_{1,2} := \frac{1}{n^2} \sum_{1 \leq i \neq j \leq n} \bigl(w_i f_0(X_j) + w_jf_0(X_i)\bigr)\kappa(X_i,X_j) \\
+T_{1,3} & := \frac{1}{n^2} \sum_{1 \leq i \neq j \leq n} f_0(X_i) f_0(X_j) \kappa(X_i,X_j), \quad && T_2 := \frac{1}{n^2} \sum_{i = 1}^{n} Y_i^2 \kappa(X_i,X_i).
+\end{align*}
+The variances of each statistic can be found by routine computation (see~\cite{ingster2009}), and in particular satisfy the upper bounds
+\begin{align*}
+\Var(T_{1,1}) & \leq \frac{2K}{n^2}, \quad && \Var(T_{1,2}) \overset{\mathrm{(i)}}{\leq} \frac{C}{n}\|f_0\|_P^2\\
+\Var(T_{1,3}) & \overset{\mathrm{(ii)}}{\leq} C\biggl(\frac{K}{n}\|f_0\|_P^4 + \frac{K}{n^2}\|f_0\|_{L^4(\mc{X})}^4\biggr), \quad && \Var(T_{2}) \overset{\mathrm{(iii)}}{\leq} \frac{CK^2}{n^3}\biggl(1 + \|f_0\|_{L^4(\mc{X})}^4\biggr)
+\end{align*}
+where $\mathrm{(i)}-\mathrm{(iii)}$ hold due to local Weyl's law, i.e.~\eqref{eqn:local_weyl}. Upper bounds on Type I and Type II error,
+\begin{equation*}
+\Ebb_0[\wt{\varphi}] \leq \biggl(1 + CK/n^2\biggr)a, \quad \Ebb_{f_0}[1 - \wt{\varphi}] \leq \frac{C(K/n^2 + \|f_0\|_P^2 + K/n \|f_0\|_P^4 + K/n^2 \|f_0\|_{L^4(\mc{X})}^4)}{(\sum_{k = 1}^{K} \dotp{f_0}{\psi_k}_P^2 - \sqrt{2K/an})^2},
+\end{equation*}
+follow from Chebyshev's inequality. It can be verified that so long as
+\begin{equation}
+\label{pf:spectral_series_test}
+\|f_0\|_P^2 \geq C\Biggl(\frac{\|f_0\|_{\mc{H}^s(\mc{X})}^2}{\lambda_{K + 1}^s(\Delta_{P})} + \frac{\sqrt{K}}{n}\biggl(\sqrt{\frac{1}{a}} + \sqrt{\frac{1}{b}}\biggr)\Biggr)
+\end{equation}
+for a sufficiently large constant $C$, then $\Ebb_{f_0}[1 - \wt{\varphi}] \leq b$. The two summands in~\eqref{pf:spectral_series_test} are bias and standard deviation terms, respectively. When $M^2 \leq n^{-1}$, setting $K = 1$ gives the desired result. Otherwise, choosing $K = \floor{M^2n}^{2d/(4s + d)}$ balances these two terms, and leads to~\eqref{eqn:spectral_series_testing}. \qed
+% (AG 8/19/21): Same comment as above, regarding the role of M in random design regression testing.
+
 \section{Graph-dependent error bounds}
 \label{sec:fixed_graph_error_bounds}
 In this section, we adopt the fixed design perspective; or equivalently, condition on $X_i = x_i$ for $i = 1,\ldots,n$. Let $G = \bigl([n],W\bigr)$ be a fixed graph on $\{1,\ldots,n\}$ with Laplacian matrix $L = \sum_{k = 1}^{n}\lambda_k v_k v_k^{\top}$; the eigenvectors have unit empirical norm, $\|v_k\|_n^2 = 1$. The randomness thus all comes from the responses 
@@ -9,11 +86,11 @@ Y_i = f_{0}(x_i) + w_i
 \end{equation}
 where the noise variables $w_i$ are independent $N(0,1)$. In the rest of this section, we will mildly abuse notation and write $f_0 = (f_0(x_1),\ldots,f_0(x_n)) \in \Reals^n$. We will also write ${\bf Y} = (Y_1,\ldots,Y_n)$.
 
-\subsection{Upper bound on Estimation Error of Laplacian eigenmaps}
+\subsection{Upper bound on Estimation Error of PCR-LE}
 
 \begin{lemma}
 	\label{lem:fixed_graph_estimation}
-	For any integer $s > 0$, and any integer $0 \leq K \leq n$, the Laplacian eigenmaps estimator $\wh{f}$ of~\eqref{eqn:laplacian_eigenmaps_estimator} satisfies
+	For any integer $s > 0$, and any integer $0 \leq K \leq n$, the PCR-LE estimator $\wh{f}$ of~\eqref{eqn:laplacian_eigenmaps_estimator} satisfies
 	\begin{equation}
 	\label{eqn:fixed_graph_estimation}
 	\|\wh{f} - f_0\|_n^2 \leq \frac{\dotp{L^sf_0}{f_0}_n}{\lambda_{K + 1}^s} + \frac{5K}{n};
@@ -45,7 +122,7 @@ where the noise variables $w_i$ are independent $N(0,1)$. In the rest of this se
 	\end{equation*}
 	Setting $t = K$ completes the proof of the lemma.
 
-\subsection{Upper bound on Testing Error of Laplacian Eigenmaps}
+\subsection{Upper bound on Testing Error of PCR-LE}
 
 Let $\wh{T} = \sum_{k = 1}^{K} \dotp{{\bf Y}}{v_k}_n^2$, and let $\varphi = \1\{\wh{T} \geq t_a\}$. In the following Lemma, we upper bound the Type I and Type II error of the test $\varphi$.
 
@@ -1022,305 +1099,159 @@ Note that our choices of $K$ and $\varepsilon$ ensure  that~\eqref{pf:laplacian_
 \end{align*}
 Unlike in the proof of Theorem~\ref{thm:laplacian_eigenmaps_testing_fo}, we note that in this case $\varepsilon^2 \leq C\lambda_K(\Delta_P)$ rather than vice versa. From here, proceeding as in the proof of Theorem~\ref{thm:laplacian_eigenmaps_testing_fo} gives the claimed result.
 
-\section{Analysis of kernel smoothing}
-\label{subsec:kernel_smoothing}
-In this section we prove Lemma~\ref{lem:kernel_smoothing_insample} (in Section~\ref{subsec:pf_kernel_smoothing_insample}) and Lemma~\ref{lem:kernel_smoothing_bias} (in Section~\ref{subsec:pf_kernel_smoothing_bias}). In Section~\ref{subsec:eigenmaps_beats_kernel_smoothing}, we give a sequence of design densities and regression functions $\{p^{(n)}(x), f_0^{(n)}(x)\}_{n \in \mathbb{N}}$ for which the estimator $T_{n,h}\wc{f}$ (extension of Laplacian eigenmaps by kernel smoothing) strictly outperforms directly kernel smoothing the responses, in the sense that
-\begin{equation*}
-\lim_{n \to \infty} \sup_{h'} \frac{\Ebb \|T_{n,h}\wh{f} - f_0\|_P^2}{\Ebb \|T_{h',n}Y - f_0\|_P^2 } = 0.
-\end{equation*}
-We begin with some preliminary estimates in Section~\ref{subsec:kernel_smoothing_preliminaries}, which will ease the subsequent analysis.
-\subsection{Some preliminary estimates}
-\label{subsec:kernel_smoothing_preliminaries}
-In certain parts the analysis of this section will overlap with Section~\ref{sec:graph_quadratic_form_euclidean}, where we upper bounded the non-local graph-Sobolev seminorm of a function $f$ in terms of the Sobolev norm of $f$. To see why this should be, note that for an function $f$ and point $x \in \mc{X}$, we have
-\begin{equation*}
-T_{P,h}f(x) - f(x) = \frac{1}{d_{Q,h}(x)} \int \bigl(f(x') - f(x)\bigr) \psi\biggl(\frac{\|x' - x\|}{h}\biggr) \,dQ(x') = \frac{h^{d + 2}}{d_{P,h}(x)} L_{P,h}f(x).
-\end{equation*}
-This expression reflects the known fact that the bias operator of kernel smoothing is equal to the non-local Laplacian, up to a rescaling by the population degree functional $d_{P,h}(x)$.  In the second equality, we are using the notation $L_{P,h}f(x)$ exactly as defined in~\eqref{eqn:nonlocal_laplacian}, but with the kernel $\psi$ instead of $\eta$. Note that $\psi$ satisfies all the same assumptions as $\eta$, except that of positivity; when $\psi$ is a higher-order kernel it may take negative values. 
-
-Now we provide a lower bound on $d_{P,h}(x)$ that holds uniformly over all $x \in \mc{X}$. Recall that by assumption the density $p$ is Lipschitz. Letting $L_p$ denote the Lipschitz constant of $p$, we have that
-\begin{align*}
-d_{P,h}(x) & = \int \psi\biggl(\frac{\|x' - x\|}{h}\biggr) p(x') \,dx' \\
-& = h^d \int \psi(\|z\|) p(hz + x) \1\Bigl\{ hz + x \in \mc{X} \Bigr\} \,dz \\
-& \geq h^d p(x) \int \psi(\|z\|) \1\Bigl\{ hz + x  \in \mc{X}\Bigr\} \,dz - L_p h^{d + 1} \|\psi\|_{\infty} \nu_d.
-\end{align*}
-Since by assumption $\mc{X}$ has Lipschitz boundary, setting $c_0$ to be a sufficiently small constant in~\ref{asmp:bandwidth}, we can further deduce that $\int \psi(\|z\|) \1\{hz + x \in \mc{X}\} \,dz \geq 1/3$, and consequently that
-\begin{equation}
-\label{eqn:degree_lower_bound}
-d_{P,h}(x) \geq \frac{p(x)}{3} h^d \geq \frac{p_{\min}}{3}h^d \quad \textrm{for all $x \in \mc{X}$.}
-\end{equation}
-
-\subsection{Proof of Lemma~\ref{lem:kernel_smoothing_insample}}
-\label{subsec:pf_kernel_smoothing_insample}
-
-To begin with, we apply the triangle inequality to upper bound $\|T_{n,h}\wc{f} - f_0\|_P$ by the sum of two terms,
-\begin{equation}
-\label{pf:kernel_smoothing_insample_1}
-\|T_{n,h}\wc{f} - f_0\|_P \leq \|T_{n,h}(\wc{f} - f_0)\|_P + \|T_{n,h}f_0 - f_0\|_P.
-\end{equation}
-We proceed by separately upper bounding each term on the right hand side of~\eqref{pf:kernel_smoothing_insample_1}. We will show that
-\begin{equation}
-\label{pf:kernel_smoothing_insample_2}
-\|T_{n,h}(\wc{f} - f_0)\|_P^2 \leq C \|\wc{f} - f_0\|_n^2
-\end{equation}
-and that 
-\begin{equation}
-\label{pf:kernel_smoothing_insample_3}
-\|T_{n,h}f_0 - f_0\|_P^2 \leq \frac{C}{\delta} \cdot \frac{h^2}{nh^d} |f|_{H^1(\mc{X})}^2 + \frac{C}{\delta}\|T_{h,P}f_0 - f_0\|_P^2,
-\end{equation}
-each with probability at least $1 - C\exp(-cnh^d)$. Together these will imply the claim. 
-
-\underline{\emph{Proof of~\eqref{pf:kernel_smoothing_insample_2}}.}
-Fix $x \in \mc{X}$. By the Cauchy-Schwarz inequality we have
-\begin{align*}
-\Bigl[T_{n,h}\bigl(\wc{f} - f_0\bigr)(x)\Bigr]^2 & = \Biggl[\frac{1}{d_{n,h}(x)^2}\int \psi\biggl(\frac{\|x' - x\|}{h}\biggr) \cdot \bigl(\wc{f}(x') - f_0(x')\bigr) \,dP_n(x')\Biggr]^2 \\
-& \leq \Biggl[\frac{1}{d_{n,h(x)}^2} \int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \,dP_n(x')\Biggr] \cdot \Biggl[\int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x')\Biggr] \\
-& = \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \frac{1}{|d_{n,h}(x)|} \Biggl[\int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x')\Biggr].
-\end{align*}
-In the last line all we have done is written $d_{n,h}^{+}(x)$ for the degree functional computed with respect to the kernel $|\psi|$, recalling that $\psi$ may take negative values so $d_{n,h}^{+}(x)$ may not be equal to $d_{n,h}(x)$.
-
-Now we integrate over $x \in \mc{X}$ to get 
-\begin{align}
-\|T_{n,h}(\wc{f} - f_0)\|_P^2 & = \int \Bigl[T_{n,h}\bigl(\wc{f} - f_0\bigr)(x)\Bigr]^2 \,dP(x) \nonumber \\
-& \leq \int \int \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \frac{1}{|d_{n,h}(x)|} \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x') \,dP(x) \nonumber \\
-& \leq \sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \int \int  \frac{1}{|d_{n,h}(x)|} \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP(x) \,dP_n(x') \nonumber \\
-& \leq \sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x) d_{P,h}^+(x)}{|d_{n,h}(x)|^2} \cdot \|\wc{f} - f_0\|_n^2. \label{pf:kernel_smoothing_insample_4}
-\end{align}
-Thus we have reduced the problem to showing that the various degree functionals $d_{n,h}^{+}, d_{P,h}^{+}$ and $d_{n,h}$ all put similar weight on a given point $x$. We use~\eqref{eqn:uniform_bound_empirical_degree_2}, which gives a uniform multiplicative bound on deviations of the empirical degree around its mean, to conclude that with probability at least $1 - C\exp\{-cnh^d\}$,
-\begin{equation*}
-d_{n,h}(x) \geq \frac{1}{2}d_{P,h}(x)~~ \textrm{and} ~~ d_{n,h}^{+}(x) \leq \frac{3}{2} d_{P,h}^{+}(x) \quad\textrm{for all $x \in \mc{X}$.}
-\end{equation*}
-Therefore,
-\begin{equation*}
-\sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x) d_{P,h}^+(x)}{|d_{n,h}(x)|^2} \leq 6 \cdot \sup_{x \in \mc{X}} \frac{|d_{P,h}^{+}(x)|^2}{|d_{P,h}(x)|^2} \leq 36 \biggl(\frac{\|\psi\|_{\infty} p_{\max} \nu_d}{p_{\min}}\biggr)^2
-\end{equation*}
-with the second inequality following from~\eqref{eqn:degree_lower_bound}. Plugging this back into~\eqref{pf:kernel_smoothing_insample_4} gives the claim.
-
-\underline{\emph{Proof of~\eqref{pf:kernel_smoothing_insample_3}}.}
-At a given point $x \in \mc{X}$, we have
-\begin{align*}
-T_{n,h}f_0(x) - f_0(x) & = \frac{1}{d_{n,h}(x)} \sum_{i = 1}^{n} \bigl(f_0(X_i) - f_0(x)\bigr) \psi\biggl(\frac{\|X_i - x\|}{h}\biggr) \\
-& = \frac{d_{P,h}(x)}{d_{n,h}(x)} \cdot \frac{1}{nd_{P,h}(x)} \sum_{i = 1}^{n} \bigl(f_0(X_i) - f_0(x)\bigr) \psi\biggl(\frac{\|X_i - x\|}{h}\biggr).
-\end{align*}
-Thus,
-\begin{equation}
-\label{pf:kernel_smoothing_insample_5}
-\Bigl[T_{n,h}f_0(x) - f_0(x)\Bigr]^2 = \biggl[\frac{d_{P,h}(x)}{d_{n,h}(x)}\biggr]^2 \cdot \biggl[\underbrace{\frac{1}{nd_{P,h}(x)}\sum_{i = 1}^{n} \bigl(f_0(X_i) - f_0(x)\bigr) \psi\biggl(\frac{\|X_i - x\|}{h}\biggr)}_{:= \wt{L}_{n,h}f_0(x)}\biggr]^2
-\end{equation}
-In the proof of~\eqref{pf:kernel_smoothing_insample_2} we have already given an upper bound on the ratio of population to empirical degree, which implies that
-\begin{equation*}
-\sup_{x \in \mc{X}} \biggl[\frac{d_{P,h}(x)}{d_{n,h}(x)}\biggr]^2 \leq 4,
-\end{equation*}
-with probability at least $1 - C\exp\{-cnh^d\}$. On the other hand, we note that the second term in the product in~\eqref{pf:kernel_smoothing_insample_5} has expectation
-\begin{equation*}
-\Ebb\Bigl[\wt{L}_{n,h}f_0(x)\Bigr] = T_{P,h}f_0(x) - f_0(x),
-\end{equation*} 
-and variance 
-\begin{equation*}
-\Var\Bigl[\wt{L}_{n,h}f_0(x)\Bigr] \leq \frac{1}{n(d_{P,h}(x))^2} \Ebb\biggl[(f_0(X) - f_0(x))^2 \cdot \biggl|\psi\biggl(\frac{\|X - x\|}{h}\biggr)\biggr|^2\biggr].
-\end{equation*}
-Integrating with respect to $P$ gives
-\begin{align*}
-\Ebb\biggl[\int \Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2 \,dP(x)\biggr] & = \int \Ebb\Bigl[\Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2\Bigr] \,dP(x) \\
-& \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{1}{n}\int \int \frac{1}{\bigl(d_{P,h}(x)\bigr)^2} \bigl(f_0(x') - f_0(x)\bigr)^2 \cdot \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr|^2 \,dP(x') \,dP(x) \\
-& \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{3h^2}{p_{\min}n} \wt{E}_{P,h}(f_0;\psi^2).
-\end{align*}
-In the final inequality we have used the lower bound on $d_{P,h}(x)$ from~\eqref{eqn:degree_lower_bound}, and written $E_{P,h}(f_0;\psi^2)$ for the non-local Dirichlet energy defined with respect to the kernel $\psi^2$. 
-
-Putting the pieces together, we conclude that
-\begin{align*}
-\|T_{n,h}f_0(x) - f_0(x)\|_P^2 & = \int \bigl(T_{n,h}f_0(x) - f_0(x)\bigr)^2 \,dP(x) \\
-& \leq \sup_{x \in \mc{X}} \biggl[\frac{d_{P,h}(x)}{d_{n,h}(x)}\biggr]^2 \cdot \int \Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2 \,dP(x) \\
-& \overset{(i)}{\leq} 4\frac{\| T_{P,h}f_0 - f_0\|_P^2}{\delta} + \frac{12h^2}{\delta p_{\min}nh^d} {E}_{P,h}(f_0;\psi^2) \\
-& \overset{(ii)}{\leq}  4\frac{\| T_{P,h}f_0 - f_0\|_P^2}{\delta} + \frac{Ch^2}{\delta p_{\min}nh^d} |f_0|_{H^1(\mc{X})}^2,
-\end{align*}
-with probability at least $1 - \delta - C\exp(-cnh^d)$. In $(i)$ we have used Markov's inequality, and in $(ii)$ we have applied the estimate~\eqref{pf:estimate_nonlocal_seminorm_1} to the non-local Dirichlet energy ${E}_{P,h}(f_0;\psi^2)$. This establishes~\eqref{pf:kernel_smoothing_insample_3}.
-
-\subsection{Kernel smoothing bias}
-\label{subsec:pf_kernel_smoothing_bias}
-Lemma~\ref{lem:kernel_smoothing_bias} gives the necessary upper bounds on the bias of kernel smoothing.
-\begin{lemma}
-	\label{lem:kernel_smoothing_bias}
-	Suppose Model~\ref{def:model_flat_euclidean}, and that the kernel smoothing operator $T_{P,h}$ is computed with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel}.
-	\begin{itemize}
-		\item If $f_0 \in H^1(\mc{X})$, then there exists a constant $C$ which does not depend on $f_0$ such that
-		\begin{equation*}
-		\|T_{P,h}f_0 - f_0\|_P^2 \leq C h^{2} |f|_{H^1(\mc{X})}^2.
-		\end{equation*}
-		\item If $f_0 \in H_0^{s}(\mc{X})$, $p \in C^{s - 1}(\mc{X})$, and $\eta$ satisfies~\ref{asmp:ho_kernel}, then there exists a constant $C$ which does not depend on $f_0$ such that
-		\begin{equation*}
-		\|T_{P,h}f_0 - f_0\|_P^2 \leq C h^{2s} |f|_{H^s(\mc{X})}^2.
-		\end{equation*}
-	\end{itemize}
-\end{lemma}
-We separately prove the first-order ($s = 1$) and higher-order ($s > 1$) parts of Lemma~\ref{lem:kernel_smoothing_bias}. In both cases, the proof will rely heavily on results already established regarding the non-local Laplacian $L_{P,h}$ and non-local Dirichlet energy $E_{P,h}$, which we recall are given for a kernel function $\mc{K}$ by
-\begin{equation*}
-L_{P,h}f(x) = \frac{1}{h^{d + 2}} \int \bigl(f(x') - f(x)\bigr)\mc{K}\biggl(\frac{\|x' - x\|}{h}\biggr)\,dP(x'),
-\end{equation*}
-and $E_{P,h}(f;\mc{K}) = \dotp{L_{P,h}f}{f}_{P}$, respectively. 
-
-\paragraph{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $s = 1$.}
-Using the conclusions from Section~\ref{subsec:kernel_smoothing_preliminaries}, we have that
-\begin{equation}
-\label{pf:kernel_smoothing_bias_1}
-\|T_{P,h}f - f\|_P^2 \leq \frac{9h^4}{p_{\min}^2} \int \bigl[L_{P,h}f(x)\bigr]^2 \,dP(x).
-\end{equation}
-By the Cauchy-Schwarz inequality, we have that
-\begin{align*}
-\int \bigl[L_{P,h}f(x)\bigr]^2 \,dP(x) & = \frac{1}{h^{2d + 4}}\int \biggl[\int \bigl(f(x') - f(x)\bigr)\psi\biggl(\frac{\|x' - x\|}{h}\biggr) \,dP(x')\biggr]^2 \,dP(x) \\
-& \leq \frac{C}{h^{d + 4}} \int \int \bigl(f(x') - f(x)\bigr)^2 \cdot \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \,dP(x') \,dP(x) \\
-& = \frac{C}{h^{2}} E_{P,h}(f;|\psi|).
-\end{align*}
-Applying the estimate~\eqref{pf:estimate_nonlocal_seminorm_1} to the non-local Dirichlet energy ${E}_{P,h}(f;|\psi|)$ and plugging back into~\eqref{pf:kernel_smoothing_bias_1} gives the claimed result.
-
-\paragraph{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $s > 1$.}
-Proceeding from~\eqref{pf:kernel_smoothing_bias_1}, we separate the integral into the portion sufficiently in the interior of $\mc{X}$ and that near the boundary, obtaining
-\begin{equation}
-\label{pf:kernel_smoothing_bias_2}
-\|T_{P,h}f - f\|_P^2 \leq\frac{9p_{\max}h^4}{p_{\min}^2}\Bigl(\|L_{P,h}f\|_{L^2(\mc{X}_h)}^2 + \|L_{P,h}f\|_{L^2(\partial_{h}(\mc{X}))}^2\Bigr).
-\end{equation}
-In Lemma~\ref{lem:approximation_error_nonlocal_laplacian_boundary}, we established a sufficient upper bound on the second term,
-\begin{equation*}
-\|L_{P,h}f\|_{L^2(\partial_{h}(\mc{X}))}^2 \leq Ch^{2(s - 2)} \|f\|_{H^s(\mc{X})}^2.
-\end{equation*}
-Thus it remains to upper bound the first term. Here we recall that at a given $x \in \mc{X}_h$, we can write
-\begin{align*}
-L_{P,h}f(x) & = \frac{1}{h^{2}}\sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1}\frac{h^{j_1 + j_2}}{j_1!j_2!}  \int d_x^{j_1}f(z) d_x^{j_2}p(z) \psi\bigl(\|z\|\bigr) \,dz \quad + \\
-& \quad \frac{1}{h^{2}} \sum_{j = 1}^{s - 1} \frac{h^j}{j!} \int d_x^jf(z)  r_{zh + x}^{q}(x;p) \psi\bigl(\|z\|\bigr) \,dz \quad  + \\
-& \quad \frac{1}{h^{2}} \int r_{zh + x}^j(x;f) \psi\bigl(\|z\|\bigr) p(zh + x)\,dz \\
-& = G_1(x) + G_2(x) + G_3(x).
-\end{align*}
-(Here $q = s - 1$.) 
-
-We have already given sufficient upper bounds on $\|G_j\|_{L^2(\mc{X}_{h})}$ for $j = 2,3$ in~\eqref{pf:approximation_error_nonlocal_laplacian_2}.  Thus it remains only to upper bound $\|G_1\|_{L^2(\mc{X}_h)}$. Recall the expansion of $G_1$ from~\eqref{pf:approximation_error_nonlocal_laplacian_3},
-\begin{equation*}
-G_1(x) = \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1} \frac{h^{j_1 + j_2 - 2}}{j_1!j_2!}  \underbrace{\int_{B(0,1)} d_x^{j_1}f(z) d_x^{j_2}p(z) \eta(\|z\|) \,dz}_{:= g_{j_1,j_2}(x)}.
-\end{equation*}
-Noting that $d_x^{j_1} \cdot d_x^{j_2}$ is a degree-$(j_1 + j_2)$ multivariate polynomial, and recalling that $\psi$ is an order-$s$ kernel, we have that 
-\begin{equation*}
-\int g_{j_1,j_2}(z) \psi\bigl(\|z\|\bigr) \,dz = 0,\quad \textrm{for all $j_1,j_2$ such that $j_1 + j_2 < s$.}
-\end{equation*}
-Otherwise, derivations similar to those used in the proof of Lemma~\ref{lem:approximation_error_nonlocal_laplacian} imply that
-\begin{equation*}
-\|g_{j_1,j_2}\|_{L^2(\mc{X}_h)} \leq C \|f\|_{H^s(\mc{X})} \|p\|_{C^{s - 1}(\mc{X})},\quad \textrm{for all $j_1,j_2$ such that $j_1 + j_2 \geq s$,}
-\end{equation*}
-from which it follows that
-\begin{equation*}
-\|G_1\|_{L^2(\mc{X}_h)}^2 \leq C  h^{2(s - 2)} \|f\|_{H^s(\mc{X})} \|p\|_{C^{s - 1}(\mc{X})}.
-\end{equation*}
-Together these upper bounds on $\|G_j\|_{L^2(\mc{X}_j)}$ for $j = 1,2,3$ imply that
-\begin{equation*}
-\|L_{P,h}f\|_{\mc{X}_h}^2 \leq Ch^{2(s - 2)} \|f\|_{H^s(\mc{X})}^2,
-\end{equation*}
-and plugging this back into~\eqref{pf:kernel_smoothing_bias_2} yields the claim.
-
-\subsection{Comparison of Laplacian Eigenmaps to kernel smoothing}
+\section{Graph Laplacian methods and the cluster assumption}
 \label{subsec:eigenmaps_beats_kernel_smoothing}
 
-In this section, we give a sequence of densities $p^{(n)}$ and regression functions $f_0^{(n)}$ for which the $L^2(P)$ error of the two-stage estimator $T_{n,h}\wh{f}$ is stochastically dominated by the $L^2(P)$ error of applying kernel smoothing directly to the responses. We begin by precisely setting up the problem and reviewing the two estimators we will compare. Then we give and prove our formal claim.
+A main conclusion of our paper is that PCR-LE is minimax optimal for nonparametric regression over certain Sobolev classes. It is not the only optimal method. For instance, kernel smoothing and least squares using an appropriate set of basis functions as features are two other minimax optimal methods over these Sobolev classes. We now give an example where PCR-LE is better than these two alternatives, in the sense of having (much) smaller risk. This is possible because PCR-LE performs remarkably well when the regression function $f_0$ and design distribution $P$ satisfy a \emph{cluster assumption}: that is, when the regression function is (approximately) piecewise constant over high-density clusters of the design distribution $P$. On the other hand, kernel smoothing (with Euclidean distance) and least squares (using eigenfunctions of an unweighted Laplace operator) cannot take advantage of the cluster assumption. We call this property of PCR-LE \emph{density adaptivity}.
 
-\paragraph{Setup.}
-As usual, we assume the design points $(X_1,\ldots,X_n)$ are sampled independently from a distribution $P$, and the responses
+\subsection{Setup}
+We begin by specifying a sequence of design densities and regression functions $\{(p^{(n)}, f_0^{(n)}): n \in \mathbb{N}\}$. These distributions will all be chosen to satisfy the cluster assumption. To that end, we define two clusters $Q_1,Q_2 \subset \Reals$ using a cluster separation parameter $r$, as
 \begin{equation*}
-Y_i = f_0(X_i) + \varepsilon_i,
+Q_1 := [0,1/2 - r], \quad Q_2 := [1/2 + r,1],
 \end{equation*}
-where the noise terms $\varepsilon_i \sim N(0,1)$ are sampled independently, and are also independent of the design points.
-
-Unlike in our main text, we shall assume a specific (parametric) form for $p = p^{(n)}$ and $f_0 = f_0^{(n)}$, that changes as a function of $n$. More specifically, using the notation
-\begin{equation*}
-r := \frac{(\log n)^2}{n}, \quad Q_1 := [0,1/2 - r], \quad Q_2 := [1/2 + r,1],
-\end{equation*}
-we take the domain $\mc{X}^{(n)} = Q_1 \cup Q_2$, and 
+and take the domain $\mc{X}^{(n)} := Q_1 \cup Q_2$. We then take the design density to be uniform over $\mc{X}^{(n)}$ and the regression function to be a piecewise constant function over $Q_1$ and $Q_2$ of height $\theta$,
 \begin{equation}
 \label{def:model_cluster_assumption}
-p^{(n)}(x) := \frac{1}{1 - 2r}\1\bigl\{x \in Q_1 \cup Q_2\bigr\}, \quad f_0^{(n)}(x) := \theta \cdot \Bigl(\1\bigl\{x \in Q_1\bigr\} - \1\bigl\{x \in Q_2\bigr\}\Bigr),
+p^{(n)}(x) := \frac{1}{1 - 2r}\1\bigl\{x \in Q_1 \cup Q_2\bigr\}, \quad f_0^{(n)}(x) := \theta \cdot \Bigl(\1\bigl\{x \in Q_1\bigr\} - \1\bigl\{x \in Q_2\bigr\}\Bigr).
 \end{equation}
-where $\theta \in \Reals$. Note that as $n \to \infty$, the density $p^{(n)}$ is converging (in, say, $L^2([0,1])$ norm) to the uniform distribution on $[0,1]$, and the regression function $f_0^{(n)}$ to a step function. 
+Thus $p^{(n)}$ and $f_0^{(n)}$ belong to a two-parameter family, where the parameters are the cluster separation $r$ and height $\theta$. Generally speaking, the smaller the separation $r$, and the larger the height $\theta$, the more graph Laplacian methods will outperform both kernel smoothing and linear regression using eigenfunctions of the unweighted Laplace operator as features.
 
-Our goal is to estimate $f_0$ using an estimator $f$, in such a way that the resulting $L^2(P)$ error $\|f - f_0\|_P^2$ is small. We shall consider two estimators: Laplacian eigenmaps + extension by kernel smoothing, and direct kernel smoothing of the responses. In the notation of our main text, these are respectively $T_{n,h}\wh{f}$ and $T_{n,h'}{\bf Y}$. For simplicity, in both cases we shall consider only the boxcar kernel,
+We now define kernel smoothing and least squares using eigenfunction of an unweighted Laplace operator For a kernel function $\psi$ and bandwidth parameter $h$, the kernel smoothing estimator $\wt{f}_{\mathrm{KS}}$ is defined at a point $x \in \mc{X}$ as 
+\begin{equation}
+\label{eqn:kernel_smoothing}
+\wt{f}_{\mathrm{KS}}(x) := 
+\begin{dcases*}
+0, & \quad \textrm{if $d_{n,h}(x) = 0$,} \\
+\frac{1}{d_{n,h}(x)} \sum_{i = 1}^{n} Y_i \psi\biggl(\frac{\|X_i - x\|}{h}\biggr), & \quad \textrm{otherwise.}
+\end{dcases*}
+\end{equation}
+
+Let $(\lambda_1,\phi_1), (\lambda_2,\phi_2),\ldots$ be eigenpairs of the unweighted Laplace operator $\Delta$ on $[0,1]$, meaning
+\begin{equation}
+\label{eqn:laplace_beltrami_eigenpairs}
+\Delta \phi_k = \lambda_k \phi_k, ~~ \|\phi_k\|_{L^2([0,1])} = 1,~~\frac{d}{dx}\phi_k(0) = \frac{d}{dx}\phi_k(1) = 0. 
+\end{equation}
+In this case the eigenfunctions $\phi_k$ of $\Delta$ are simply cosine functions, with eigenvalues proportional to their squared frequency. Noting that $\phi_1(x) = 1$ and $\lambda_1 = 0$, for $k = 2,3,\ldots$ we have
+\begin{equation*}
+\phi_k(x) = \sqrt{2}\cdot\cos(2\pi k x),~~\lambda_k(\Delta) = \pi^2 k^2.
+\end{equation*}
+The least squares estimator using $\phi_1,\ldots,\phi_K$ ($1 \leq K \leq n$) eigenfunctions as features is simply\footnote{For convenience, we will assume $\Phi \in \Reals^{n \times K}$ is full rank. If this is not the case, the least squares estimator $\wt{f}_K$ is not uniquely defined, but any solution will equal ${\bf Y}$ in-sample, and will satisfy $\|\wt{f}_K - f_0\|_n^2 \geq 1/2$ with high probability.}
+\begin{equation}
+\label{eqn:least_squares}
+\wt{f}_{K} := \argmin_{f \in \mathrm{span}\{\phi_1,\ldots,\phi_K\}} \|Y - f\|_n^2 = \Phi (\Phi^{\top} \Phi)^{-1} \Phi^{\top} Y.
+\end{equation}
+Hereafter, we will refer to $\wt{f}_K$ as the \emph{uniform least squares} estimator.
+
+\subsection{Upper bounds on risk of PCR-LE}
+Now we are in a position to state our results. Both PCR-LE and kernel smoothing depend in part on the choice of kernel. For simplicity, in our analysis we only consider the boxcar kernel,
 \begin{equation}
 \label{asmp:boxcar_kernel}
 \eta(z) = \psi(z) = \1\{z \leq 1\}.
 \end{equation}
+This is strictly for convenience, and the following results will also hold for any kernel that satisfies~\ref{asmp:kernel_flat_euclidean}.
 
-\paragraph{Laplacian eigenmaps + kernel smoothing beats direct kernel smoothing.}
-Now we are in a position to state our result. Let $P^{(n)}$ be the distribution with density $p^{(n)}$, i.e. the uniform probability distribution on $Q_1 \cup Q_2$. 
 \begin{proposition}
-	\label{prop:eigenmaps_beats_kernel_smoothing}
-	Suppose $(X_1,Y_1),\ldots(X_n,Y_n)$ are sampled according to~\eqref{def:model_cluster_assumption}. 
-	\begin{itemize}
-		\item Compute the Laplacian eigenmaps estimator $\wh{f}$ using a kernel $\eta$ which satisfies~\eqref{asmp:boxcar_kernel}, number of eigenvectors $K = 2$, and radius $\varepsilon = ((\log n)^2/n)/2$. Compute the kernel smoothed extension $T_{n,h}\wh{f}$ using a kernel $\psi$ which satisfies~\eqref{asmp:boxcar_kernel}, and bandwidth $h = ((\log n)^2/n)/2$. Then,
-		\begin{equation}
-		\label{eqn:eigenmaps_beats_kernel_smoothing_1}
-		\Ebb \|T_{n,h}\wh{f} - f_0^{(n)}\|_{L^2(P^{(n)})}^2 \leq \frac{8 (\log n)^2 + 6 (\log n)^2 \theta^2}{n}.
-		\end{equation}
-		\item Compute the kernel smoothing estimator $T_{n,h}{\bf Y}$, using a kernel $\psi$ which satisfies~\eqref{asmp:boxcar_kernel}. Then
-		\begin{equation}
-		\label{eqn:eigenmaps_beats_kernel_smoothing_2}
-		\inf_{h' > 0} \Ebb\Bigl[\|T_{n,h'}{\bf Y} - f_0^{(n)}\|_{L^2(P^{(n)})}^2\Bigr] \geq \min\biggl\{ \frac{1}{16(\log n)^2}, \frac{\theta}{\sqrt{32 n}} \biggr\}.
-		\end{equation}
-	\end{itemize}
+	\label{prop:cluster_assumption_ub}
+	Suppose $(X_1,Y_1),\ldots(X_n,Y_n)$ are sampled according to~\eqref{def:model_cluster_assumption}. Compute the PCR-LE estimator $\wh{f}$ using a kernel $\eta$ which satisfies~\eqref{asmp:boxcar_kernel}, number of eigenvectors $K = 2$, and radius $\varepsilon = r/2$. Then,
+	\begin{equation}
+	\label{eqn:cluster_assumption_le_ub}
+	\Ebb\Bigl[\|\wh{f} - f_0^{(n)}\|_{n}^2\Bigr] \leq \biggl(6\theta^2 + \frac{1}{n}\biggr) \cdot \frac{8}{r} \exp(-nr/8) + \frac{1}{n}.
+	\end{equation}
 \end{proposition}
-The statements~\eqref{eqn:eigenmaps_beats_kernel_smoothing_1} and~\eqref{eqn:eigenmaps_beats_kernel_smoothing_2} are finite sample and hold for any $\theta$. Taking a sequence $(\theta_n)_{n \in \mathbb{N}}$ such that $\theta = o(\sqrt{n})$ and $\theta = \omega((\log n)^2/\sqrt{n})$ implies that 
-\begin{equation*}
-\lim_{n \to \infty} \sup_{h'}  \frac{\Ebb \|T_{n,h}\wh{f} - f_0^{(n)}\|_{P^{(n)}}^2}{	\Ebb \|T_{n,h'}{\bf Y} - f_0^{(n)}\|_{P^{(n)}}^2 } = 0.
-\end{equation*}
+\paragraph{Proof of Proposition~\ref{prop:cluster_assumption_ub}.}
 
-\paragraph{Proof of Proposition~\ref{prop:eigenmaps_beats_kernel_smoothing}.}
-First we prove~\eqref{eqn:eigenmaps_beats_kernel_smoothing_1}, then~\eqref{eqn:eigenmaps_beats_kernel_smoothing_2}.
-
-\underline{\emph{Proof of~\eqref{eqn:eigenmaps_beats_kernel_smoothing_1}}.}
-We begin by showing that with high probability the eigenvectors $v_1,v_2$ respect the cluster structure of $p$. Formally, letting $u_1 = (\1\{X_i \in Q_1\})_{i \in [n]}$, and likewise $u_2 = (\1\{X_i \in Q_2\})_{i \in [n]}$, we establish that
+We begin by showing that, with high probability, the eigenvectors $v_1,v_2$ respect the cluster structure of $p^{(n)}$. Denote $u_1 = (\1\{X_i \in Q_1\})_{i \in [n]}$, and likewise $u_2 = (\1\{X_i \in Q_2\})_{i \in [n]}$. We make the following two observations:
+\begin{enumerate}
+	\item Because $\varepsilon < r$ and the kernel $\eta$ is compactly supported on $[0,1]$, for each $X_i \in Q_1$ and $X_j \in Q_2$, it must be the case that $\eta(\|X_i - X_j\|/\varepsilon) = 0$.
+	\item Using an elementary concentration argument (stated in Lemma~\ref{lem:balls_in_bins}) and the triangle inequality, we deduce that with probability at least $1 - 4/\varepsilon\exp(-n\varepsilon/4)$ there exists a path in $G_{n,\varepsilon}$ between each $X_i, X_j \in Q_1$, and likewise between each $X_i,X_j \in Q_2$.
+\end{enumerate}
+Together these observations imply that with high probability the neighborhood graph $G_{n,\varepsilon}$ consists of exactly two connected components: one consisting of all design points $X_i \in Q_1$, and the other consisting of all design points $X_i \in Q_2$. In other words, 
 \begin{equation}
 \label{pf:eigenmaps_beats_kernel_smoothing_1}
-\Pbb\Bigl(\mathrm{span}\{v_1,v_2\} = \mathrm{span}\{u_1,u_2\}\Bigr) \geq 1 - \frac{1}{n}.
+\Pbb\Bigl(\mathrm{span}\{v_1,v_2\} = \mathrm{span}\{u_1,u_2\}\Bigr) \geq 1 - 4/\varepsilon\exp(-n\varepsilon/4).
 \end{equation}
-Note that~\eqref{pf:eigenmaps_beats_kernel_smoothing_1} is equivalent to the statement that the neighborhood graph $G_{n,\varepsilon}$ consists of exactly two connected components: one consisting of all design points $X_i \in Q_1$, and the other consisting of all design points $X_i \in Q_2$. Of course, since $h < r$ and $\eta$ is compactly supported on $[0,1]$, it follows that no $X_i \in Q_1$ and $X_j \in Q_2$ can be connected. On the other hand, using an elementary concentration argument (stated in Lemma~\ref{lem:balls_in_bins}) and the triangle inequality, we deduce that with probability at least $1 - 1/n$ there exists a path in $G_{n,\varepsilon}$ between each $X_i, X_j \in Q_1$, and likewise between each $X_i,X_j \in Q_2$. This establishes~\eqref{pf:eigenmaps_beats_kernel_smoothing_1}.
 
-Now we condition on the ``good'' event $\mc{E}$ that the design points $X_1,\ldots,X_n$ satisfy~\eqref{eqn:balls_in_bins}, and therefore that $\mathrm{span}\{v_1,v_2\} = \mathrm{span}\{u_1,u_2\}$. Consider the empirical mean $\wb{Y}_Q := \frac{1}{\sharp\{Q \cup {\bf X}\}} \sum_{i: X_i \in Q} Y_i$. Since $\mathrm{span}\{v_1,v_2\} = \mathrm{span}\{u_1,u_2\}$, the estimator $\wh{f}$ will be piecewise constant on $Q_1$ and $Q_2$, and in fact we have that
-\begin{equation*}
+Let us condition on the ``good'' event $\mc{E}$ that the design points $X_1,\ldots,X_n$ satisfy~\eqref{eqn:balls_in_bins}, and therefore that $\mathrm{span}\{v_1,v_2\} = \mathrm{span}\{u_1,u_2\}$. Consider the empirical mean $\wb{Y}_Q := \frac{1}{\sharp\{Q \cup {\bf X}\}} \sum_{i: X_i \in Q} Y_i$. Since $\mathrm{span}\{v_1,v_2\} = \mathrm{span}\{u_1,u_2\}$, the estimator $\wh{f} = \wh{f}_{\mathrm{LE}}$ will be piecewise constant on $Q_1$ and $Q_2$, and in fact we have that
+\begin{equation}
+\label{pf:eigenmaps_beats_kernel_smoothing_-1}
 \wh{f} = \wb{Y}_{Q_1}u_1 + \wb{Y}_{Q_2}u_2.
-\end{equation*}
-Moreover, by~\eqref{eqn:balls_in_bins} every $x \in Q_1$ is within distance $h$ of at least one $X_i \in {\bf X} \cup Q_1$ and likewise every $x \in Q_2$ is within distance $h$ of at least one $X_j \in {\bf X} \cup Q_2$. Consequently, the kernel smoothening of $\wh{f}$ also exhibits a piecewise constant structure,
+\end{equation}
+Therefore conditional on $\mc{E}$,
 \begin{equation*}
-T_{n,h}\wh{f}(x) = \wb{Y}_{Q_1}\1\{x \in Q_1\} + \wb{Y}_{Q_2}\1\{x \in Q_2\},\quad \textrm{for all}~~x \in Q_1 \cup Q_2.
+\|\wh{f} - f_0^{(n)}\|_{n}^2 = P_n(Q_1) \cdot (\wb{Y}_{Q_1} - \theta)^2 + P_n(Q_2) \cdot (\wb{Y}_{Q_2} + \theta)^2
 \end{equation*}
-Letting
-\begin{equation*}
-\|T_{n,h}\wh{f} - f_0^{(n)}\|_{L^2(P^{(n)})}^2 = \frac{1}{2}\Bigl((\wb{Y}_{Q_1} - \theta)^2 + (\wb{Y}_{Q_2} + \theta)^2\Bigr),
-\end{equation*}
-it follows from Lemma~\ref{lem:chi_square_bound} that conditional on $\mc{E}$,
+and consequently,
 \begin{equation}
 \label{pf:eigenmaps_beats_kernel_smoothing_0}
-\|T_{n,h}\wh{f} - f_0^{(n)}\|_{L^2(P^{(n)})}^2 \leq \frac{4(\log n)^2}{n}.
+\Ebb\Bigl[\|\wh{f} - f_0^{(n)}\|_{n}^2 \Big|\mc{E}\Bigr] = \Ebb\Bigl[\Ebb\bigl[\|\wh{f} - f_0^{(n)}\|_{n}^2\big|X_1,\ldots,X_n\bigr] \Bigr|\mc{E}\Bigr] = \frac{1}{n}.
 \end{equation}
 
-Now we derive a crude upper bound on $\|T_{n,h}\wh{f} - f_0^{(n)}\|_{L^2(P^{(n)})}$ that will suffice to control the error conditional on $\mc{E}^c$. Note that if $d_{n,h}(x) = 0$ then
-$T_{n,h}\wh{f}(x) = 0$, and $\bigl(T_{n,h}\wh{f}(x) - f_0(x)\bigr)^2 = [f_0(x)]^2$. On the other hand, if $d_{n,h}(x) \geq 1$, then by Jensen's inequality it follows that
-\begin{align*}
-\bigl(T_{n,h}\wh{f}(x) - f_0(x)\bigr)^2 & \leq \biggl(\frac{1}{d_{n,h}(x)} \sum_{i = 1}^{n} (\wh{f}_i - f_0(x)) \cdot \1\{\|X_i - x\| \leq h \}\biggr)^2 \\
-& \leq \frac{1}{d_{n,h}(x)} \sum_{i = 1}^{n} (\wh{f}_i - f_0(x))^2 \cdot \1\{\|X_i - x\| \leq h \} \\
-& \leq 2[f_0(x)]^2 + \frac{2}{d_{n,h}(x)} \sum_{i = 1}^{n} (\wh{f}_i)^2 \cdot \1\{\|X_i - x\| \leq h\},
-\end{align*}
-and integrating over all $x \in \mc{X}^{(n)}$ gives
-\begin{align*}
-\|T_{n,h}\wh{f} - f_0\|_{L^2(P^{(n)})}^2 & \leq 2 \|f_0\|_{L^2(P^{(n)})}^2 + \sum_{i = 1}^{n} (\wh{f}_i)^2 \biggl(\int \frac{\1\{\|X_i - x\| \leq h \}}{d_{n,h}(x)} \,dP(x)\biggr) \\
-& \leq 2 \|f_0\|_{L^2(P^{(n)})}^2 + 2h\sum_{i = 1}^{n} (\wh{f}_i)^2 \\
-& = 2 \|f_0\|_{L^2(P^{(n)})}^2 + 2 (\log n)^2 \|\wh{f}\|_n^2.
-\end{align*}
-We can further upper bound the empirical norm of $\|\wh{f}\|_n^2$ using the Cauchy-Schwarz inequality:
+Now we derive a crude upper bound on $\|\wh{f} - f_0^{(n)}\|_{n}$ that will suffice to control the error conditional on $\mc{E}^c$. We observe that the empirical norm of $\wh{f}$ is bounded,
 \begin{equation*}
 \|\wh{f}\|_n^2 \leq \frac{2}{n}\sum_{i = 1}^{n}\dotp{Y}{v_1}_n^2v_{1,i}^2 + \dotp{{\bf Y}}{v_2}_n^2v_{2,i}^2 \leq 2\bigl(\dotp{{\bf Y}}{v_1}_n^2 + \dotp{{\bf Y}}{v_2}_n^2\bigr) \leq 4 \|{\bf Y}\|_n^2. 
 \end{equation*}
-Noting that $\Ebb[\|{\bf Y}\|_n^2|{\bf X}] = \|f_0\|_n^2 + 1/n$, and that $\max_x |f_0(x)| = \theta$, we conclude that
+Noting that $\Ebb[\|{\bf Y}\|_n^2|X_1,\ldots,X_n] = \|f_0\|_n^2 + 1/n  = \theta^2 + 1/n$, we conclude that
 \begin{equation*}
-\Ebb\Bigl[\|T_{n,h}\wh{f} - f_0\|_{L^2(P^{(n)})}^2 \cdot \1\{\mc{E}^c\}\Bigr] \leq \Ebb\Bigl[\Bigl(2 \|f_0\|_{L^2(P^{(n)})}^2 + 4 (\log n)^2 \|{\bf Y}\|_n^2\Bigr) \cdot \1\{\mc{E}^c\} \Bigr] \leq \frac{2 \theta^2}{n} + \frac{4 (\log n)^2(\theta^2 + 1)}{n}.
+\Ebb\Bigl[\|\wh{f} - f_0\|_{n}^2 \cdot \1\{\mc{E}^c\}\Bigr] \leq \Ebb\Bigl[\Bigl(2 \|f_0\|_{n}^2 + 4(\theta^2 + 1/n) \cdot \1\{\mc{E}^c\} \Bigr] \leq (6\theta^2 + n^{-1}) \cdot 4\varepsilon^{-1} \exp(-n\varepsilon/4).
 \end{equation*}
-Combining this with~\eqref{pf:eigenmaps_beats_kernel_smoothing_0} implies~\eqref{eqn:eigenmaps_beats_kernel_smoothing_1}.
+Combining this with~\eqref{pf:eigenmaps_beats_kernel_smoothing_0} implies~\eqref{eqn:cluster_assumption_le_ub}.
 
-\underline{\emph{Proof of~\eqref{eqn:eigenmaps_beats_kernel_smoothing_2}}.}
-Fix $x \in \mc{X}^{(n)}$. A standard argument using the law of iterated expectation implies the following lower bound on the pointwise risk in terms of squared-bias and variance-like quantities,
+\subsection{Lower bounds on risk of kernel smoothing and least squares}
+
+\begin{proposition}
+	\label{prop:cluster_assumption_lb}
+	Suppose $(X_1,Y_1),\ldots,(X_n,Y_n)$ are sampled according to~\eqref{def:model_cluster_assumption}. Suppose $(\log n)^2/n \leq r \leq c$, where $c$ is a universal constant. 
+	\begin{itemize}
+		\item Compute the kernel smoothing estimator $\wt{f} = \wt{f}_{\mathrm{KS}}$ as in~\eqref{eqn:kernel_smoothing}, using a kernel $\psi$ which satisfies~\eqref{asmp:boxcar_kernel}. Then there exist universal constants $c, N > 0$ such that for all $n > N$,
+		\begin{equation}
+		\label{eqn:cluster_assumption_ks_lb}
+		\inf_{h' > 0} \Ebb\Bigl[\|\wt{f} - f_0^{(n)}\|_{n}^2\Bigr] \geq c\min\biggl\{ \frac{r^{-1}}{n}, \frac{\theta}{\sqrt{n}} \biggr\}.
+		\end{equation}
+		\item Compute the least squares estimator $\wt{f} = \wt{f}_{\mathrm{SP}}$ as in~\eqref{eqn:least_squares}. Then there exist universal constants $c, N > 0$ such that for all $n > N$,
+		\begin{equation}
+		\label{eqn:cluster_assumption_sp_lb}
+		\inf_{1 \leq K \leq n} \Ebb \Bigl[\|\wt{f} - f_0^{(n)}\|_n^2\Bigr] \geq c\min\biggl\{\frac{r^{-1}}{n}, \frac{1}{\log(n)}, \frac{r^{-2/3}}{n}, \frac{\sqrt{\theta}}{n^{3/4}}\biggr\}.
+		\end{equation}
+	\end{itemize}
+\end{proposition}
+The proof of Proposition~\ref{prop:cluster_assumption_lb} is long, and we defer it until after some discussion of the implications of the proposition.
+
+Together, Propositions~\ref{prop:cluster_assumption_ub} and~\ref{prop:cluster_assumption_lb} illustrate that the risk of PCR-LE can be dramatically smaller than that of kernel smoothing or uniform least squares. For instance, taking $\theta = n^{1/2}$ and $r = n^{-3/4}$, when appropriately tuned, $\wh{f}$ satisfies
 \begin{equation*}
-\Ebb\Bigl[\Bigl(T_{n,h'}{\bf Y}(x) - f_0(x)\Bigr)^2\Bigr] \geq \Ebb\biggl[\Bigl(f_0(X) - f_0(x)\Bigr)^2|X \in B(x,h')\biggr] + \Ebb\biggl[\frac{1}{d_{n,h'}(x)}\biggr].
+\Ebb\Bigl[\|\wh{f} - f_0^{(n)}\|_{n}^2\Bigr] \leq C\biggl(n^{7/4}\exp(-n^{1/4}/8)) + \frac{1}{n}\biggr) \leq \frac{C}{n},
+\end{equation*}
+for a universal constant $C$ and all $n$ larger than some universal constant $N$, whereas for $\wt{f} = \wt{f}_{\mathrm{KS}}$,
+\begin{equation*}
+\inf_{h' > 0} \Ebb\Bigl[\|\wt{f} - f_0^{(n)}\|_{n}^2\Bigr] \geq \frac{c}{n^{1/4}},
+\end{equation*}
+and for $\wt{f} = \wt{f}_{\mathrm{SP}}$,
+\begin{equation*}
+\inf_{1 \leq K \leq n} \Ebb\Bigl[\|\wt{f} - f_0^{(n)}\|_{n}^2\Bigr] \geq \frac{c}{n^{1/2}}.
+\end{equation*}
+Other choices of $\theta$ and $r$ lead to even more dramatic gaps between the risk of PCR-LE, and the risk of kernel smoothing and least squares. The overall takeaway is that under Model~\ref{def:model_cluster_assumption}, estimators that use the graph Laplacian can converge to the true regression function $f_0^{(n)}$ at fast rates---parametric rates that do not depend on the $L^2$ norm of $f_0^{(n)}$---whereas other estimators, optimal for estimation over Sobolev spaces, converge to $f_0^{(n)}$ at slow rates---nonparametric rates that deteriorate as the $L^2$ norm of $f_0^{(n)}$ grows.
+
+Some remarks:
+\begin{itemize}
+	\item The lower bound on the in-sample risk of $\wt{f}_{\mathrm{KS}}$  given by \eqref{eqn:cluster_assumption_ks_lb} is larger than that of $\wt{f}_{\mathrm{SP}}$ given by \eqref{eqn:cluster_assumption_sp_lb}. This does not mean that kernel smoothing exhibits less adaptivity to the cluster assumption than uniform least squares. Instead, we suspect it is due to looseness in our lower bounds: we are able to tightly control the bias of kernel smoothing, whereas we must use a potentially loose bound on the bias of uniform least squares. Experimentally, it appears that kernel smoothing usually outperforms uniform least squares, under various instantiations of the cluster assumption.
+	\item The cluster assumption---in which the regression function is piecewise constant and $p$ consists of multiple connected components---is a very strong assumption. The \emph{low-density separation} condition is a related but weaker assumption, in which the regression function is assumed to be smoother (but not constant) in regions of higher density. This is a rather general hypothesis which can formalized in a number of different ways. For instance, one could insist that the regression function $f_0$ belong to a normed ball in a \emph{weighted Sobolev space}, with semi-norm given by
+	\begin{equation*}
+	|f_0|_{H^s(P)} := \dotp{\Delta_P^s f_0}{f_0}_P.
+	\end{equation*}
+	Intuitively, when $\|f_0\|_{H^s(P)}$ is much smaller than $\|f_0\|_{H^s(\mc{X})}$, density-adaptive learners such as PCR-LE should have the advantage on non-density adaptive linear smoothers, such as kernel smoothing or uniform least squares. Indeed, in the case of Model~\ref{def:model_cluster_assumption} we see that
+	\begin{equation*}
+	\|f_0^{(n)}\|_{H^s(P^{(n)})} = 0~~\textrm{for all $s \in \mathbb{N}$, and all $r, \theta > 0$,}
+	\end{equation*}
+	whereas $f_0^{(n)}$ does not even belong to the first-order Sobolev space $H^1([0,1])$. In words, this shows the cluster assumption is an extreme case of the low-density separation condition. Unfortunately, it is quite difficult to analyze graph-based estimators under the general low-density separation condition, without making strong assumptions on $P$. 
+	\item Finally, we note that either changing the graph or the normalization of the Laplacian fundamentally alters the type of density adaptivity displayed by graph-Laplacian-based estimators; see~\citet{hoffmann2019} for an extensive discussion.
+\end{itemize}
+
+\subsection{Proof of Proposition~\ref{prop:cluster_assumption_lb}}
+First we show~\eqref{eqn:cluster_assumption_ks_lb}, then~\eqref{eqn:cluster_assumption_sp_lb}.
+
+\subsubsection{Proof of~\eqref{eqn:cluster_assumption_ks_lb}}
+A standard argument using the law of iterated expectation implies the following lower bound on the pointwise risk in terms of squared-bias and variance-like quantities,
+\begin{equation*}
+\Ebb\Bigl[\Bigl(\wt{f}(X_i) - f_0(X_i)\Bigr)^2|X_i = x\Bigr] \geq \frac{(n - 1)}{n}\Ebb\biggl[\Bigl(f_0(X) - f_0(x)\Bigr)^2|X \in B(x,h')\biggr] + \Ebb\biggl[\frac{1}{d_{n,h'}(x)}\biggr].
 \end{equation*}
 The variance term can be lower bounded quite simply for any $x \in \mc{X}^{(n)}$; noting that $\sup_{x} p^{(n)}(x) < 2$ and $\nu(B(x,h') \cap \mc{X}^{(n)}) \leq 2h'$, it follows by Jensen's inequality that 
 \begin{equation*}
@@ -1330,40 +1261,180 @@ On the other hand the squared bias term is quite large for $x$ close to $1/2$. P
 \begin{equation*}
 \Ebb[(f_0(X) - f_0(x))^2|X \in B(x,h')] \geq \frac{\theta^2}{8} \quad \textrm{for all}~x \in [(1 - h'/2)_{+}, 1/2 - r].
 \end{equation*}
-Combining these lower bounds on variance and squared bias terms and integrating over $x' \in \mc{X}$, we deduce the following: if $h' \leq 4r$, then
+Combining these lower bounds on variance and squared bias terms and summing over $X_1,\ldots,X_n$, we arrive at the following: if $h' \leq 4r$, then
 \begin{equation*}
-\Ebb\Bigl[\|T_{n,h'}{\bf Y} - f_0^{(n)}\|_{L^2(P^{(n)})}^2\Bigr] \geq \frac{1}{16(\log n)^2},
+\Ebb\Bigl[\|\wt{f} - f_0^{(n)}\|_{n}^2\Bigr] = \frac{1}{n}\sum_{i = 1}^{n} \Ebb\biggl[\Ebb\Bigl[\Bigl(\wt{f}(X_i) - f_0(X_i)\Bigr)^2|X_i\Bigr]\biggr]\geq \frac{1}{16rn},
 \end{equation*}
 whereas if $h' > 4r$  then
-\begin{equation*}\Ebb\Bigl[\|T_{n,h'}{\bf Y} - f_0^{(n)}\|_{L^2(P^{(n)})}^2\Bigr] \geq \frac{1}{4nh'} + \frac{\theta^2h'}{32}.
-\end{equation*}
-In the latter case, setting the derivative equal to $0$ shows that the right hand side is always at least $\theta/\sqrt{32 n}$, and taking the minimum over the two cases then yields~\eqref{eqn:eigenmaps_beats_kernel_smoothing_2}.
+\begin{align*}
+\Ebb\Bigl[\|\wt{f} - f_0^{(n)}\|_{n}^2\Bigr] & = \frac{1}{n}\sum_{i = 1}^{n} \Ebb\biggl[\Ebb\Bigl[\Bigl(\wt{f}(X_i) - f_0(X_i)\Bigr)^2|X_i\Bigr]\biggr] \\
+& \geq \frac{1}{4nh'} + \frac{\theta^2}{8}\frac{(n - 1)}{n} P^{(n)}\Bigl([(1 - h'/2)_{+}, 1/2 - r]\Bigr) \\
+&\geq \frac{1}{4nh'} + \frac{\theta^2h'}{64}.
+\end{align*}
+In the latter case, setting the derivative equal to $0$ shows that the right hand side is always at least $\theta/\sqrt{64 n}$, and taking the minimum over the two cases then yields~\eqref{eqn:cluster_assumption_ks_lb}.
 
-\paragraph{A Useful Lemma.}
-Let $m = 4n/\log^2n$. Furthermore, for $i = 0,\ldots,m - 1$, let
+\subsubsection{Proof of~\eqref{eqn:cluster_assumption_sp_lb}}
+We begin by decomposing the risk into conditional bias and variance terms. Let $\mathbb{E}_n = \Ebb[\cdot|X_1,\ldots,X_n]$ denote expectation conditional on the design points $X_1,\ldots,X_n$.  Then by the law of iterated expectation, and the fact that $\Ebb_n[w] = 0$,
 \begin{equation*}
-Q_{i1} = [i/m,(i + 1)/m] \cdot (1/2 - r), \quad Q_{i2} = 1/2 + [i/m,(i + 1)/m] \cdot (1/2 - r).
+\Ebb\bigl[\|\wt{f}_{\mathrm{SP}} - f_0\|_n^2\bigr] = \Ebb\bigl[\|\Ebb_n\wt{f}_{\mathrm{SP}} -  f_0\|_n^2\bigr] + \Ebb\bigl[\|\wt{f}_{\mathrm{SP}} - \Ebb_n\wt{f}_{\mathrm{SP}}\|_n^2\bigr]. 
 \end{equation*}
-\begin{lemma}
-	\label{lem:balls_in_bins}
-	Suppose $(X_1,Y_1),\ldots(X_n,Y_n)$ are sampled according to~\eqref{def:model_cluster_assumption}. For any $\log(n) > 16$, we have that 
+We separately lower bound the expected conditional squared bias and variance terms. To anticipate what is to come: we will show that the expected conditional variance is equal to $K/n$; on the other hand we will show that the expected conditional squared bias is lower bounded,
+\begin{equation}
+\label{pf:cluster_assumption_sp_lb_1}
+\Ebb\bigl[\|\Ebb_n\wt{f}_{\mathrm{SP}} -  f_0\|_n^2\bigr] = \frac{K}{n}\quad\textrm{and}\quad\Ebb\bigl[\|\Ebb_n\wt{f}_{\mathrm{SP}} -  f_0\|_n^2\bigr] \geq \frac{\theta^2}{2601\pi^2 K^{3}},
+\end{equation}
+with the lower bound holding so long as $K \leq \min\{1/(16r),n/(8 \log(8 n)), (\sqrt{160} \pi/r)^{2/3}\}$. If $K$ is larger than this, then the expected conditional variance is lower bounded,
+\begin{equation}
+\label{pf:cluster_assumption_sp_lb_2}
+\Ebb\bigl[\|\wt{f}_{\mathrm{SP}} - \Ebb_n\wt{f}_{\mathrm{SP}}\|_n^2\bigr] \geq \min\biggl\{\frac{1}{16rn}, \frac{1}{8 \log(8n)}, \frac{(\sqrt{160} \pi)^{2/3}}{r^{2/3}n} \biggr\}
+\end{equation}
+Otherwise~\eqref{pf:cluster_assumption_sp_lb_1} implies that the in-sample risk is always at least 
+\begin{equation*}
+\Ebb\bigl[\|\wt{f}_{\mathrm{SP}} - f_0\|_n^2\bigr] \geq \frac{\theta^2}{2601\pi^2 K^{3}} + \frac{K}{n} \geq 2 \frac{\theta^{1/2}}{n^{3/4}} \frac{1}{(2601 \pi^2)^{1/4}}.
+\end{equation*}
+Along with~\eqref{pf:cluster_assumption_sp_lb_2}, this implies the claim. It remains to show the bounds on conditional bias and variance.
+
+\paragraph{Conditional variance.}
+The expected conditional variance is exactly equal to $K/n$, a standard fact that is verified by the following calculations: first,
+\begin{align*}
+\|\wt{f}_{\mathrm{SP}} - \Ebb_n\wt{f}_{\mathrm{SP}}\|_n^2 = \|\Phi(\Phi^{\top}\Phi)^{-1}\Phi^{\top}w\|_n^2 = \frac{1}{n}w^{\top}\Phi(\Phi^{\top}\Phi)^{-1}\Phi^{\top}w;
+\end{align*}
+thus standard properties of the Gaussian distribution and the trace trick imply
+\begin{equation*}
+\Ebb_n\bigl[\|\wt{f}_{\mathrm{SP}} - \Ebb_n\wt{f}_{\mathrm{SP}}\|_n^2 \bigr] = \frac{1}{n} \mathrm{tr} (\Phi(\Phi^{\top}\Phi)^{-1}\Phi^{\top}) = \frac{K}{n};
+\end{equation*}
+and finally by the law of iterated expectation and the independence of the noise $(w_1,\ldots,w_n)$ and the design points $X_1,\ldots,X_n$,
+\begin{equation*}
+\Ebb\Bigl[\Ebb_n\bigl[\|\wt{f}_{\mathrm{SP}} - \Ebb_n\wt{f}_{\mathrm{SP}}\|_n^2\Bigr] = K/n.
+\end{equation*}
+
+\paragraph{Conditional bias.}
+It takes more work to lower bound the conditional bias. We will first upper bound the Lipschitz constant of $\Ebb_n\wt{f}_{\mathrm{SP}}$ in terms of the empirical norm $\|\Ebb_n\wt{f}_{\mathrm{SP}}\|_n$. Then we will use this upper bound to argue that either $\Ebb_n\wt{f}_{\mathrm{SP}}$ has empirical norm much larger than that of $f_0$, or $\Ebb_n\wt{f}_{\mathrm{SP}}$ is a smooth function, in the sense of having a small Lipschitz constant. In the former case, the triangle inequality will then imply that $\|\Ebb_n\wt{f}_{\mathrm{SP}} -  f_0\|_n$ must be large. In the latter case, the smoothness of $\Ebb_n\wt{f}_{\mathrm{SP}}$ will imply that $\Ebb_n\wt{f}_{\mathrm{SP}}$ must be far from $f_0$ at many points $X_i$ close to $x = 1/2$.
+
+The following Lemma gives our upper bound on the Lipschitz constant of $\|\Ebb_n\wt{f}_{\mathrm{SP}}\|_n$. Here we treat $\Ebb_n\wt{f}_{\mathrm{SP}} = \sum_{k = 1}^{K} \wt{\beta}_k \phi_k$ as a function defined at all $x \in [0,1]$ by extending it in the canonical way. As a function over $[0,1]$, clearly $\Ebb_n\wt{f}_{\mathrm{SP}} \in C^\infty([0,1])$. Let $\Sigma \in \Reals^{K \times K}$ be the covariance matrix of $(\phi_1,\ldots,\phi_K)$, i.e. the matrix with entries $\Sigma_{k\ell} = \dotp{\phi_k,\phi_{\ell}}_{P^{(n)}}$. Let $\wh{\Sigma} := (\Phi^{\top}\Phi)/n$ be the empirical covariance matrix. Let $I_K \in \Reals^{K \times K}$ be the identity matrix.
+\begin{lemma}[Lipschitz regularity of $\Ebb_n\wt{f}_{\mathrm{SP}}$.]
+	\label{lem:lipschitz_regularity_sp}
+	Let $\wt{f}_n = \Ebb_n\wt{f}_{\mathrm{SP}}$. Then 
 	\begin{equation}
-	\label{eqn:balls_in_bins}
-	\Pbb\Bigl(\sharp\{Q_{ij} \cup {\bf X}\} > 0 ~~\textrm{for all $i = 1,\ldots,m - 1$ and $j = 1,2$} \Bigr) \geq 1 - \frac{1}{n}.
+	\label{eqn:lipschitz_regularity_sp1}
+	\|\wt{f}_n\|_{C^1(\mc{X})}^2 \leq \pi^2 \frac{K^{3} \cdot \|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\|_{\mathrm{op}}}{(1 - \|I_K - \Sigma\|_F)} \cdot \|\wt{f}_n\|_n^2.
+	\end{equation}
+	Moreover, suppose $K \leq 1/(16r)$ and $r \leq (1 - 2^{-1/2})/2$.
+	\begin{itemize}
+		\item {\bf(Matrix perturbation)} Then
+		\begin{equation}
+		\label{eqn:lipschitz_regularity_matrix_perturbation}
+		\|\Sigma - I_K\|_F \leq \frac{1}{2}.
+		\end{equation}
+		\item {\bf(Matrix concentration, cf. \cite{hsu2012})} If additionally $n \geq 8K \log(K/\delta)$ for some $\delta \in (0,1/2)$, then with probability at least $1 - 2\delta$,
+		\begin{equation}
+		\label{eqn:lipschitz_regularity_matrix_concentration}
+		\|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\|_{\mathrm{op}} \leq 5.
+		\end{equation}
+	\end{itemize}
+	Therefore, if $K \leq \min\{1/(16r),n/(8 \log(K/\delta))\}$, then with probability at least $1 - 2\delta$,
+	\begin{equation}
+	\label{eqn:lipschitz_regularity_sp2}
+	\|\wt{f}_n\|_{C^1(\mc{X})}^2 \leq 10 \pi^2 K^3 \|\wt{f}_n\|_n^2.
 	\end{equation}
 \end{lemma}
-Let $\varepsilon = h = \log^2n/2n$. Note that by construction,~\eqref{eqn:balls_in_bins} implies that any points $x$ and $x'$ in adjacent intervals $Q_{ij}$ and $Q_{i'j}$ must be connected in $G_{n,\varepsilon}$. It also implies that $d_{n,h}(x) > 0$ for every $x \in Q_1 \cup Q_2$.
+We defer the proof of Lemma~\ref{lem:lipschitz_regularity_sp} until after we complete the proof of~\eqref{eqn:cluster_assumption_sp_lb}.
 
-\paragraph{Proof (of Lemma~\ref{lem:balls_in_bins}).}
-For each $Q_{ij}$, we have that 
+Now, if $\|\wt{f}_n\|_n^2 \geq \frac{3}{2}\|f_0\|_n^2$, then by the triangle inequality
 \begin{equation*}
-\Pbb\bigl(\sharp\{Q_{ij} \cup {\bf X}\} = 0\bigr) = (1 - 1/(2m))^{n} \leq \exp\{-n/2m\}.
+\|\wt{f}_n - f_0\|_n \geq \|\wt{f}_n\|_n - \|f_0\|_n \geq \sqrt{\frac{3}{2}} \cdot \|f_0\|_n  = \sqrt{\frac{3}{2}} \cdot \theta.
 \end{equation*}
-Thus by a union bound,
+Otherwise $\|\wt{f}_n\|_n^2 \geq \frac{3}{2}\|f_0\|_n^2$. In this case, we show that $|\wt{f}_n(X_i) - f_0(X_i)|$ must be large (on the order of $\theta$) for many points $X_i$ which are close to $x = 1/2$. Let us suppose without loss of generality that $\wt{f}_n(1/2) \leq \theta/2$ and consider points $X_i \in Q_1$ close to $x = 1/2$; otherwise if $\wt{f}_n(1/2) > \theta/2$ we could obtain the exact same bound by considering $X_i \in Q_2$. For each point $X_i \in Q_1$, by Lemma~\ref{lem:lipschitz_regularity_sp} we have that with probability at least $1 - 2\delta$,
 \begin{equation*}
-\Pbb\Bigl(\sharp\{Q_{ij} \cup {\bf X}\} = 0 ~~\textrm{for any $i = 1,\ldots,m - 1$ and $j = 1,2$} \Bigr) \leq 2m\exp\{-n/2m\} = \frac{8n}{\log^2n}\exp\{-\log^2n/8\},
+|\wt{f}_n(X_i) - \wt{f}_n(1/2)| \leq CK^{3/2} \|\wt{f}_n\|_n \cdot |X_i - 1/2| \leq \sqrt{10}\pi K^{3/2} \theta \cdot |X_i - 1/2|.
 \end{equation*}
-and the claim follows from some basic algebra. 
+Since $\wt{f}_n(1/2) \leq \theta/2$ and $f_0(X_i) = \theta/2$ for all $X_i \in Q_1$ it follows that
+\begin{equation*}
+|\wt{f}_n(X_i) - f_0(X_i)| \geq \theta - \sqrt{10}\pi K^{3/2} \theta \cdot |X_i - 1/2|,
+\end{equation*}
+and consequently
+\begin{equation*}
+|\wt{f}_n(X_i) - f_0(X_i)| \geq \theta/2,\quad\textrm{for any $X_i \in Q_1$ such that $|X_i - 1/2| \leq 1/(\sqrt{40}\pi K^{3/2})$.}
+\end{equation*}
+This yields a lower bound on $\|\wt{f}_n - f_0\|_n$; letting $Q_K := \Bigl[\frac{1}{2} - \frac{1}{\sqrt{40}\pi K^{3/2}},\frac{1}{2} - r\Bigr]$, we have that 
+\begin{equation*}
+\|\wt{f}_n - f_0\|_n \geq \frac{\theta}{2} \cdot P_n\Bigl(Q_k\Bigr).
+\end{equation*}
+Then as long as $K^{-3/2} \geq \sqrt{160} \pi r$, from the multiplicative form of Hoeffding's inequality (Lemma~\ref{lem:hoeffding_smoothing})
+\begin{equation*}
+P^{(n)}(Q_K) \geq \frac{1}{\sqrt{160} \pi K^{3/2}} \geq 2r \Longrightarrow \Pbb\biggl(P_n(Q_K) \geq \frac{1}{\sqrt{640} \pi K^{3/2}}\biggr) \geq 1 - \exp(-nr/4) \geq 1 - \frac{4}{n^2}.
+\end{equation*}
+Putting the pieces together, we conclude that if $K \leq \min\{1/(8r),n/(8 \log(K/\delta)), (\sqrt{160} \pi/r)^{2/3}\}$, then
+\begin{equation*}
+\|\wt{f}_n - f_0\|_n \geq \frac{\theta}{51 \pi K^{3/2}},
+\end{equation*}
+with probability at least $1 - 2\delta - {4}{n^2}$. Taking $\delta = 1/8$ then implies the claim.
+
+\paragraph{Proof of Lemma~\ref{lem:lipschitz_regularity_sp}.}
+
+\underline{\it{Proof of~\eqref{eqn:lipschitz_regularity_sp1}}.}
+Recall that $\wt{f}_n = \sum_{k = 1}^{K} \wt{\beta}_k \phi_k$. Exchanging sum with derivative, we have that
+\begin{equation*}
+\frac{d}{dx} \wt{f}_n(x) = -\pi \sum_{k = 1}^{K}\wt{\beta}_k k \sin(k\pi x).
+\end{equation*}
+Thus taking absolute value and applying the Cauchy-Schwarz inequality gives
+\begin{equation*}
+|\wt{f}_n'(x)|^2 \leq \pi^2 K^2 \sum_{k = 1}^{K} \bigl(\sin(k\pi x)\bigr)^2 \|\beta\|_2^2 \leq \pi^2 K^3 \|\beta\|_2^2.
+\end{equation*}
+On the other hand, we can also relate the empirical norm $\|\wt{f}_n\|_n^2$ to the $\ell^2$ norm of $\beta$. Specifically,
+\begin{equation*}
+\|\wt{f}_n\|_n^2 = \beta^{\top} \wh{\Sigma} \beta \geq \frac{\|\beta\|_2^2}{\|\wh{\Sigma}^{-1}\|_{\mathrm{op}}} \geq \frac{\|\beta\|_2^2}{\|\Sigma^{-1}\|_{\mathrm{op}} \cdot \|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\|_{\mathrm{op}}} = \frac{\|\beta\|_2^2 \|\Sigma\|_{\mathrm{op}} }{\|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\|_{\mathrm{op}}}
+\end{equation*}
+Rearranging, we see that 
+\begin{equation*}
+\sup_{x \in [0,1]} |\wt{f}_n'(x)|^2 \leq \frac{\pi^2 K^3}{\|\Sigma\|_{\mathrm{op}}} \|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\|_{\mathrm{op}} \leq \frac{\pi^2 K^3}{1 - \|I_K - \Sigma\|_F} \|\Sigma^{1/2} \wh{\Sigma}^{-1} \Sigma^{1/2}\|_{\mathrm{op}}
+\end{equation*}
+with the latter inequality following since $\|\Sigma\|_{\mathrm{op}} \geq \|I_K\|_{\mathrm{op}} - \|I_K - \Sigma\|_{\mathrm{op}} \geq 1 - \|I_K - \Sigma\|_{F}$. 
+
+\underline{\it{Proof of~\eqref{eqn:lipschitz_regularity_matrix_perturbation}}.}
+We will show that for all $1 \leq k < \ell \leq K$, 
+\begin{equation}
+\label{pf:lipshcitz_regularity_matrix_perturbation_1}
+(1 - \dotp{\phi_k}{\phi_k}_{P^{(n)}})^2 \leq 32r^2, \quad\textrm{and}\quad|\dotp{\phi_k}{\phi_{\ell}}_{P^{(n)}}| \leq 64r^2.
+\end{equation}
+This implies $\|I - \Sigma\|_F^2 \leq 32K^2r^2$, so that $\|I - \Sigma\|_F \leq 1/2$ so long as $K \leq 1/(16r)$.
+
+The proof of~\eqref{pf:lipshcitz_regularity_matrix_perturbation_1} follows from computing some standard integrals. We separate the computation based on whether $k = 1$ or $k > 1$. \newline
+
+\underline{\it{Case 1: $k = 1$.}}
+When $k = 1$, $\dotp{\phi_1}{\phi_1}_{P^{(n)}} = 1$ and $(1 - \dotp{\phi_1}{\phi_1}_{P^{(n)}})^2 = 0$. Additionally, by symbolic integration we find that
+\begin{equation*}
+\dotp{\phi_k}{\phi_{\ell}}_{P^{(n)}} = \frac{-2\sqrt{2}}{(1 - 2r)} \cdot \frac{\cos(\ell\pi/2) \sin(\ell\pi r)}{\ell \pi},
+\end{equation*}
+and therefore
+\begin{equation*}
+\bigl[\dotp{\phi_k}{\phi_{\ell}}_{P^{(n)}}\bigr]^2 \leq \frac{8}{(1 - 2r)^2} \cdot \biggl(\frac{\sin(\ell\pi r)}{\ell \pi}\biggr)^2 \leq \frac{8}{(1 - 2r)^2} r^2 \leq 16r^2,
+\end{equation*}
+where in the second-to-last inequality follows because $\sin(x)/x \leq 1$, and the last inequality follows by our assumed upper bound on $r$. \newline
+
+\underline{\it{Case 2: $k > 1$.}}
+When $k > 1$,
+\begin{equation*}
+\dotp{\phi_k}{\phi_k}_{P^{(n)}} = 1 - \frac{2}{(1 - 2r)} \frac{\cos(k\pi) \sin(2k\pi r)}{k\pi} \Longrightarrow \bigl[1 - \dotp{\phi_k}{\phi_k}_{P^{(n)}}\bigr]^2 \leq \frac{4}{(1 - 2r)^2} \cdot \biggl(\frac{\sin(2k\pi r)}{k\pi}\biggr)^2 \leq 32r^2.
+\end{equation*}
+Similarly,
+\begin{equation*}
+\dotp{\phi_k}{\phi_\ell}_{P^{(n)}} = -\frac{4}{(1 - 2r)}\biggl[\frac{\cos((k + \ell)\pi) \sin((k + \ell)\pi r)}{(k + \ell)\pi} + \frac{\cos((k - \ell)\pi) \sin((k - \ell)\pi r)}{(k - \ell)\pi}\biggr]
+\end{equation*}
+and therefore
+\begin{equation*}
+\bigl[\dotp{\phi_k}{\phi_\ell}_{P^{(n)}}\bigr]^2 \leq \frac{16}{(1 - 2r)^2} \biggl(\biggl[\frac{\sin((k + \ell)\pi r)}{(k + \ell)\pi}\biggr]^2 + \biggl[\frac{\sin((k - \ell)\pi r)}{(k - \ell)\pi}\biggr]^2\biggr) \leq 64 r^2.
+\end{equation*}
+
+\underline{\it{Proof of~\eqref{eqn:lipschitz_regularity_matrix_concentration}}}
+Denote $\Phi(x) = (\phi_1,\ldots,\phi_K(x)) \in \Reals^K$ for any $x \in [0,1]$. Then for any $x \in [0,1]$,
+\begin{equation*}
+\|\Sigma^{-1/2} \Phi(x)\| \leq \|\Sigma^{-1}\|_{\mathrm{op}}^{1/2} \|\Phi(x)\|_2 \leq \|\Sigma^{-1}\|_{\mathrm{op}}^{1/2} \sqrt{2K} \leq 2 \sqrt{K}
+\end{equation*}
+with the second-to-last inequality following from~\eqref{eqn:lipschitz_regularity_matrix_perturbation}, and the last inequality following since $|\phi_k(x)| \leq \sqrt{2}$ for all $k$. Thus $\|\Sigma^{-1/2} \Phi(x)\|/\sqrt{K} \leq 2$, and~\eqref{eqn:lipschitz_regularity_matrix_concentration} follows from Theorem~1 of \citet{hsu2012}.
+
+\underline{\it{Proof of~\eqref{eqn:lipschitz_regularity_sp2}}.}
+Follows immediately.
 
 \section{Miscellaneous}
 Here we give assorted helpful Lemmas used at various points in the above proofs. We also review notation and relevant facts regarding Taylor expansion.
@@ -1392,26 +1463,39 @@ Lemma~\ref{lem:one_sided_bernstein} is an immediate consequence of the one-sided
 	with probability at least $1 - \exp\bigl(-n/8 \cdot \|f\|_P^4 /\Ebb[f^4(X)]\bigr)$.
 \end{lemma}
 
-In the proof of Lemma~\ref{lem:kernel_smoothing_insample}, we require uniform control of the empirical degree functional $d_{n,h}(x)$ over all $x \in \mc{X}$. Such a result is available to us because the kernel $\psi$ is Lipschitz on its support, so that the class of functions $\{\psi((x - \cdot)/h): h \in \Rd\}$ has finite VC dimension. The precise estimate we use is due to~\cite{gine2002}.
-\begin{lemma}[Uniform bound for empirical degree.]
-	\label{lem:uniform_bound_empirical_degree}
-	Suppose Model~\ref{def:model_flat_euclidean}. For a kernel $\psi$ satisfying~\ref{asmp:kernel} and bandwidth $h$ satisfying~\ref{asmp:bandwidth}, there exist constants $c, C, c_1$ and $C_1$ which do not depend on $h$ or $n$ such that
+Lemma~\ref{lem:hoeffding_smoothing} is a multiplicative form of Hoeffding's inequality.
+\begin{lemma}[Hoeffding's Inequality, multiplicative form]
+	\label{lem:hoeffding_smoothing}
+	Suppose $Z_i$ are independent random variables, which satisfy $Z_i \in [0,B]$ for $i = 1,\ldots,n$. For any $0 < \delta < 1$, it holds that
 	\begin{equation*}
-	\Pbb\biggl(\sup_{x \in \Rd} n \cdot \Bigl|d_{n,h}(x) - d_{P,h}(x)\Bigr| > t\biggr) \leq C\exp\biggl(-c \frac{t^2}{nh^d}\biggr),
+	\Pbb\biggl(\Bigl|S_n - \mu\Bigr| \geq \delta \mu\biggr) \leq 2\exp\biggl(-\frac{\delta^2\mu}{3B^2}\biggr).
 	\end{equation*}
-	for any $t \in \Reals$ satisfying
+\end{lemma}
+
+The following Lemma gives a ``balls-in-bins'' result. More precisely, it gives a lower bound on the probability that every bin
+\begin{equation*}
+Q_{i1} = [i/m,(i + 1)/m] \cdot (1/2 - r), \quad Q_{i2} = 1/2 + [i/m,(i + 1)/m] \cdot (1/2 - r).
+\end{equation*}
+will contain at least one ball.
+\begin{lemma}
+	\label{lem:balls_in_bins}
+	Suppose $(X_1,Y_1),\ldots(X_n,Y_n)$ are sampled according to~\eqref{def:model_cluster_assumption}, and suppose $r \leq 1/4$. We have that 
 	\begin{equation}
-	\label{eqn:uniform_bound_empirical_degree_1}
-	C_1\sqrt{nh^d \log(1/h)} \leq t \leq c_1 nh^d.
+	\label{eqn:balls_in_bins}
+	\Pbb\Bigl(\sharp\{Q_{ij} \cup {\bf X}\} > 0 ~~\textrm{for all $i = 1,\ldots,m - 1$ and $j = 1,2$} \Bigr) \geq 1 - 2m\exp\{-n/2m\}.
 	\end{equation}
 \end{lemma}
-Now we translate Lemma~\ref{lem:uniform_bound_empirical_degree} into a multiplicative bound, which will be more useful for our purposes. 
-Recall the lower bound on $d_{P,h}(x)$ given in~\eqref{eqn:degree_lower_bound}. By setting $C_0$ to be a sufficiently large constant in~\ref{asmp:bandwidth}, we can ensure that choosing $t = n h^d p_{\min}/6$ satisfies both the inequalities~\eqref{eqn:uniform_bound_empirical_degree_1}. For this choice of $t$ it follows from~\eqref{eqn:degree_lower_bound} and Lemma~\ref{lem:uniform_bound_empirical_degree} that
-\begin{equation}
-\label{eqn:uniform_bound_empirical_degree_2}
-\sup_{x \in \Rd} \biggl|\frac{d_{n,h}(x) - d_{P,h}(x)}{d_{P,h}(x)}\biggr| \leq \sup_{x \in \Rd} \biggl|\frac{d_{n,h}(x) - d_{P,h}(x)}{2t/n}\biggr| \leq \frac{1}{2}
-\end{equation}
-with probability at least $1 - C\exp(-cnh^d)$. This is the form of the result we use in the proof of Lemma~\ref{lem:kernel_smoothing_insample}.
+\paragraph{Proof (of Lemma~\ref{lem:balls_in_bins}).}
+For each $Q_{ij}$, we have that $P(Q_{ij}) = (1/2 - r)/m \geq 1/(2m)$. Therefore
+\begin{equation*}
+\Pbb\bigl(\sharp\{Q_{ij} \cup {\bf X}\} = 0\bigr) = (1 - 1/(2m))^{n} \leq \exp\{-n/2m\}.
+\end{equation*}
+By a union bound,
+\begin{equation*}
+\Pbb\Bigl(\sharp\{Q_{ij} \cup {\bf X}\} = 0 ~~\textrm{for any $i = 1,\ldots,m - 1$ and $j = 1,2$} \Bigr) \leq 2m\exp\{-n/2m\}. \qed
+\end{equation*}
+Let $\varepsilon = 2/m$. Note that by construction,~\eqref{eqn:balls_in_bins} implies that any points $x$ and $x'$ in adjacent intervals $Q_{ij}$ and $Q_{i'j}$ must be connected in $G_{n,\varepsilon}$. Likewise, it implies that for $h = 1/m$ the degree $d_{n,h}(x) > 0$ for every $x \in Q_1 \cup Q_2$.
+
 
 \subsection{Taylor expansion}
 \label{subsec:taylor_expansion}
@@ -1451,14 +1535,14 @@ On the other hand, if $\psi$ is an order-$s$ kernel for some $s > j$, then by co
 
 \section{Computational considerations}
 \label{sec:computational_considerations}
-Recall that when $s = 1$, we have shown that Laplacian eigenmaps is optimal when $\varepsilon \asymp (\log n/n)^{1/d}$ is (up to a constant) as small as possible while still ensuring the graph $G$ is connected. On the other hand, when $s > 1$, we can show Laplacian eigenmaps is optimal only when $\varepsilon = \omega(n^{-c})$ for some $c < 1/d$. For such a choice of $\varepsilon$, the average degree in $G$ will grow polynomially in $n$ as $n \to \infty$, and computing eigenvectors of the Laplacian of a graph will be more computationally intensive than if the graph were sparse. 
-In this dense-graph setting, we now discuss a procedure to more efficiently compute an approximation to the Laplacian eigenmaps estimate: \emph{edge sparsification}.
+Recall that when $s = 1$, we have shown that PCR-LE is optimal when $\varepsilon \asymp (\log n/n)^{1/d}$ is (up to a constant) as small as possible while still ensuring the graph $G$ is connected. On the other hand, when $s > 1$, we can show PCR-LE is optimal only when $\varepsilon = \omega(n^{-c})$ for some $c < 1/d$. For such a choice of $\varepsilon$, the average degree in $G$ will grow polynomially in $n$ as $n \to \infty$, and computing eigenvectors of the Laplacian of a graph will be more computationally intensive than if the graph were sparse. 
+In this dense-graph setting, we now discuss a procedure to more efficiently compute an approximation to the PCR-LE estimate: \emph{edge sparsification}.
 
 By now there exist various methods see (e.g., the seminal papers of \citet{spielman2011,spielman2013,spielman2014}, or the overview by \citet{vishnoi2012} and references therein) to efficiently remove many edges from the graph $G$ while only slightly perturbing the spectrum of the Laplacian. Specifically such algorithms take as input a parameter $\sigma \geq 1$, and return a sparser graph $\wc{G}$, $E(\wc{G}) \subseteq E(G)$, with a Laplacian $\wc{L}_{n,\varepsilon}$ satisfying
 \begin{equation*}
 \frac{1}{\sigma} \cdot u^{\top} \wc{L}_{n,\varepsilon} u \leq u^{\top} L_{n,\varepsilon} u \leq \sigma \cdot u^{\top} \wc{L}_{n,\varepsilon}u \quad \textrm{for all $u \in \Reals^n$.}
 \end{equation*}
-Let $\wc{f}$ be the Laplacian eigenmaps estimator computed using the eigenvectors of the sparsified graph Laplacian $\wc{L}_{n,\varepsilon}$ . Because $\wc{G}$ is sparser than $G$, it can be (much) faster to compute the eigenvectors of $\wc{L}_{n,\varepsilon}$ than the eigenvectors of $L_{n,\varepsilon}$, and consequently much faster to compute $\wc{f}$ than $\wh{f}$. Statistically speaking, letting $\wc{\lambda}_k$ be the $k$th eigenvalue of $\wc{L}_{n,\varepsilon}$, we have that conditional on $\{X_1,\ldots,X_n\}$,
+Let $\wc{f}$ be the PCR-LE estimator computed using the eigenvectors of the sparsified graph Laplacian $\wc{L}_{n,\varepsilon}$ . Because $\wc{G}$ is sparser than $G$, it can be (much) faster to compute the eigenvectors of $\wc{L}_{n,\varepsilon}$ than the eigenvectors of $L_{n,\varepsilon}$, and consequently much faster to compute $\wc{f}$ than $\wh{f}$. Statistically speaking, letting $\wc{\lambda}_k$ be the $k$th eigenvalue of $\wc{L}_{n,\varepsilon}$, we have that conditional on $\{X_1,\ldots,X_n\}$,
 \begin{equation*}
 \|\wc{f} - f_0\|_n^2 \leq \frac{\dotp{\wc{L}_{n,\varepsilon}^s f_0}{f_0}_n}{\wc{\lambda}_{K + 1}^s} + \frac{5K}{n} \leq \sigma^{2s} \frac{\dotp{\wc{L}_{n,\varepsilon}^s f_0}{f_0}_n}{\wc{\lambda}_{K + 1}^s} + \frac{5K}{n},
 \end{equation*}

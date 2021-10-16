@@ -102,7 +102,7 @@
 
 \begin{frontmatter}
 
-\title{Supplementary Material For: Minimax-optimal Regression over Sobolev Spaces via Laplacian Eigenmaps with Neighborhood Graphs}
+\title{Supplementary Material For: Minimax optimal Regression over Sobolev Spaces via Laplacian Eigenmaps with Neighborhood Graphs}
 %\thankstext{T1}{A sample of additional note to the title.}
 
 \begin{aug}
@@ -134,7 +134,7 @@ In this section, we adopt the fixed design perspective; or equivalently, conditi
 \label{eqn:fixed_graph_regression_model}
 Y_i = f_{0}(x_i) + w_i
 \end{equation}
-where the noise variables $w_i$ are independent $N(0,1)$. In the rest of this section, we will mildly abuse notation and write $f_0 = (f_0(x_1),\ldots,f_0(x_n)) \in \Reals^n$. We will also write ${\bf Y} = (Y_1,\ldots,Y_n)$.
+where the noise variables $w_i$ are independent $N(0,1)$. In the rest of this section, we will mildly abuse notation and write $f_0 = (f_0(x_1),\ldots,f_0(x_n)) \in \Reals^n$. We will also write ${\bf Y} = (Y_1,\ldots,Y_n)$, and ${\bf w} = (w_1,\ldots,w_n)$.
 
 \subsection{Upper bound on Estimation Error of Laplacian eigenmaps}
 
@@ -147,7 +147,7 @@ where the noise variables $w_i$ are independent $N(0,1)$. In the rest of this se
 	\end{equation}
 	this is guaranteed if $K = 0$, and otherwise holds with probability at least $1 - \exp(-K)$ if $1 \leq K \leq n$. 
 \end{lemma}
-\paragraph{Proof (of Lemma~\ref{lem:fixed_graph_estimation}).}
+\paragraph{Proof (of Lemma~\ref{lem:fixed_graph_estimation})}
 By the triangle inequality,
 \begin{equation}
 \label{pf:fixed_graph_estimation_1}
@@ -162,9 +162,9 @@ In the above, the last equality relies on the fact that $v_k$ are orthonormal in
 \sum_{k = K + 1}^n \dotp{v_k}{f_0}_n^2 \leq \frac{1}{\lambda_{K + 1}^s} \sum_{k = K + 1}^n \lambda_k^s \dotp{v_k}{f_0}_n^2 \leq \frac{\dotp{L^sf_0}{f_0}_n}{\lambda_{K + 1}^s}.
 \end{equation*}
 
-If $K = 0$, $\wh{f} = \Ebb{\wh{f}} = 0$, and the second term in~\eqref{pf:fixed_graph_estimation_1} is $0$. Otherwise the second   in~\eqref{pf:fixed_graph_estimation_1} (estimation error) is random. Observe that $\dotp{v_k}{\varepsilon}_n \overset{d}{=} Z_k/\sqrt{n}$, where $(Z_1,\ldots,Z_n) \sim N(0,I_{n \times n})$. Again using the orthonormality of the eigenvectors $v_k$, we have
+If $K = 0$, $\wh{f} = \Ebb{\wh{f}} = 0$, and the second term in~\eqref{pf:fixed_graph_estimation_1} is $0$. Otherwise the second   in~\eqref{pf:fixed_graph_estimation_1} (estimation error) is random. Observe that $\dotp{v_k}{{\bf w}}_n \overset{d}{=} Z_k/\sqrt{n}$, where $(Z_1,\ldots,Z_n) \sim N(0,I_{n \times n})$. Again using the orthonormality of the eigenvectors $v_k$, we have
 \begin{equation*}
-\|\wh{f} - \mathbb{E}\wh{f}\|_n^2 = \sum_{k = 1}^{K} \dotp{v_k}{\varepsilon}_n^2 \overset{d}{=} \frac{1}{n}\sum_{k = 1}^{K} Z_k^2.
+\|\wh{f} - \mathbb{E}\wh{f}\|_n^2 = \sum_{k = 1}^{K} \dotp{v_k}{{\bf w}}_n^2 \overset{d}{=} \frac{1}{n}\sum_{k = 1}^{K} Z_k^2.
 \end{equation*}
 Thus $\|\wh{f} - \mathbb{E}\wh{f}\|_n^2$ is equal to $1/n$ times a $\chi^2$ distribution with $K$ degrees of freedom. Consequently, it follows from a result of \citep{laurent00} that
 \begin{equation*}
@@ -189,13 +189,13 @@ Let $\wh{T} = \sum_{k = 1}^{K} \dotp{{\bf Y}}{v_k}_n^2$, and let $\varphi = \1\{
 		for some $s \in \mathbb{N}\setminus \{0\}$. Then $\Ebb_{f_0}[1 - \phi] \leq b$.
 	\end{itemize}
 \end{lemma}
-\paragraph{Proof (of Lemma~\ref{lem:fixed_graph_testing}).}
+\paragraph{Proof (of Lemma~\ref{lem:fixed_graph_testing})}
 We first compute the expectation and variance of $\wh{T}$, then apply Chebyshev's inequality to upper bound the Type I and Type II error.
 
 \underline{\emph{Expectation}.}
 Recall that $\wh{T} = \sum_{k = 1}^{K} \dotp{Y}{v_k}_n^2$. Expanding the square gives
 \begin{equation*}
-\Ebb[\wh{T}] = \sum_{k = 1}^{K} \Ebb[\dotp{Y}{v_k}_n^2] = \sum_{k = 1}^{K} \dotp{f_0}{v_k}_n^2 + \Ebb[2\dotp{f_0}{v_k}_n\dotp{\varepsilon}{v_k}_n + \dotp{\varepsilon}{v_k}_n^2] = \frac{K}{n} + \sum_{k = 1}^{K} \dotp{f_0}{v_k}_n^2.
+\Ebb[\wh{T}] = \sum_{k = 1}^{K} \Ebb[\dotp{Y}{v_k}_n^2] = \sum_{k = 1}^{K} \dotp{f_0}{v_k}_n^2 + \Ebb[2\dotp{f_0}{v_k}_n\dotp{{\bf w}}{v_k}_n + \dotp{{\bf w}}{v_k}_n^2] = \frac{K}{n} + \sum_{k = 1}^{K} \dotp{f_0}{v_k}_n^2.
 \end{equation*}
 Thus $\Ebb[\wh{T}] - t_a = \sum_{k = 1}^{K} \dotp{f_0}{v_k}_n^2 - \sqrt{2K}/n \cdot \sqrt{1/a}$. Furthermore, it is a consequence of~\eqref{eqn:fixed_graph_testing_critical_radius} that 
 \begin{equation}
@@ -204,7 +204,7 @@ Thus $\Ebb[\wh{T}] - t_a = \sum_{k = 1}^{K} \dotp{f_0}{v_k}_n^2 - \sqrt{2K}/n \c
 \end{equation} 
 
 \underline{\emph{Variance}.}
-Recall from the proof of Lemma~\ref{lem:fixed_graph_estimation} that $\dotp{\varepsilon}{v_k}_n \overset{d}{=} Z_k/\sqrt{n}$ for $(Z_1,\ldots,Z_n) \sim N(0,I_{n \times n})$. Expanding the square, and recalling that $\Cov[Z,Z^2] = 0$ for Gaussian random variables, we have that
+Recall from the proof of Lemma~\ref{lem:fixed_graph_estimation} that $\dotp{{\bf w}}{v_k}_n \overset{d}{=} Z_k/\sqrt{n}$ for $(Z_1,\ldots,Z_n) \sim N(0,I_{n \times n})$. Expanding the square, and recalling that $\Cov[Z,Z^2] = 0$ for Gaussian random variables, we have that
 \begin{equation*}
 \Var\bigl[\dotp{{\bf Y}}{v_k}_n^2\bigr] = \Var\biggl[\frac{2}{n}\dotp{f_0}{v_k}_nZ_k + \frac{2}{n^2}Z_k^2\biggr] = \frac{4\dotp{f_0}{v_k}_n^2}{n} + \frac{2}{n^2}.
 \end{equation*}
@@ -252,7 +252,7 @@ In this section we prove Proposition~4. The proposition will follow from several
 \end{enumerate}
 Finally, in Section~\ref{subsec:integrals} we provide some assorted estimates used in Sections~\ref{subsec:decomposition_graph_seminorm}. 
 
-\paragraph{Proof (of Proposition~4).}
+\paragraph{Proof (of Proposition~4)}
 Proposition~4 follows immediately from~\eqref{pf:graph_seminorm_ho_1} and~\eqref{pf:graph_seminorm_ho_2}. \qed
 
 One note regarding notation: suppose a function $g \in H^{\ell}(U)$, where $\ell \in \mathbb{N}$ and $U$ is an open set. Let $V$ be another open set, compactly contained within $U$. Then we will use the notation $g \in H^{\ell}(V)$ to mean that the restriction $\restr{g}{V}$ of $g$ to $V$ belongs to $H^{\ell}(V)$.
@@ -275,7 +275,7 @@ In Lemma~\ref{lem:graph_seminorm_bias}, we decompose the graph Sobolev semi-norm
 	\end{equation}
 \end{lemma}
 Then~\ref{pf:graph_seminorm_ho_1} follows immediately from Lemma~\ref{lem:graph_seminorm_bias}, by Markov's inequality.
-\paragraph{Proof (of Lemma~\ref{lem:graph_seminorm_bias}).}
+\paragraph{Proof (of Lemma~\ref{lem:graph_seminorm_bias})}
 We begin by introducing some notation. We will use bold notation $\bj = (j_1,\ldots,j_s)$ for a vector of indices where $j_i \in [n]$ for each $i$. We write $[n]^s$ for the collection of all such vectors, and $(n)^s$ for the subset of such vectors with no repeated indices. Finally, we write $D_if$ for a kernelized difference operator,
 \begin{equation*}
 D_if(x) := \bigl(f(x) - f(X_i)\bigr) \eta\biggl(\frac{\|X_i - x\|}{\varepsilon}\biggr),
@@ -338,7 +338,7 @@ In this section, we establish the convergence $L_{P,\varepsilon}^kf \to \sigma_{
 \end{lemma}
 We remark that when $k = 1$ and $f \in C^3(\mc{X})$ or $C^4(\mc{X})$, statements of this kind are well known, and indeed stronger results---with $L^{\infty}(\mc{X})$ norm replacing $L^2(\mc{X})$ norm---hold. When dealing with the iterated Laplacian, and functions $f$ which are regular only in the Sobolev sense, the proof is somewhat more lengthy, but in result is similar in spirit.
 
-\paragraph{Proof (of Lemma~\ref{lem:approximation_error_nonlocal_laplacian}).}
+\paragraph{Proof (of Lemma~\ref{lem:approximation_error_nonlocal_laplacian})}
 Throughout this proof, we shall assume that $f$ and $p$ are smooth functions, meaning they belong to $C^{\infty}(\mc{X})$. This is without loss of generality, since $C^{\infty}(\mc{X})$ is dense in both $H^s(\mc{X})$ and $C^{s - 1}(\mc{X})$, and since both sides of the inequalities~\eqref{eqn:approximation_error_nonlocal_laplacian_1} and~\eqref{eqn:approximation_error_nonlocal_laplacian_2} are continuous with respect to $\|\cdot\|_{H^s(\mc{X})}$ and $\|\cdot\|_{C^{s - 1}(\mc{X})}$ norms.
 
 We will actually prove a more general set of statements than contained in Lemma~\ref{lem:approximation_error_nonlocal_laplacian}, more general in the sense that they give estimates for all $k$, rather than simply the particular choices of $k$ given above. In particular, we will prove that the following two statements hold for any $s \in \mathbb{N}$ and any $k \in \mathbb{N} \setminus \{0\}$. 
@@ -415,7 +415,8 @@ g_{j_1,j_2}(x) = \int_{\mc{X}} d_x^{j_1}f(z) d_x^{j_2}p(z) \eta(\|z\|) \,dz = 0.
 In particular this is the case when $j_1 = 1$ and $j_2 = 0$. Thus when $s = 2$,  $G_1(x) = g_{1,0}(x) = 0$. On the other hand if $s \geq 3$, then the lowest order terms in~\eqref{pf:approximation_error_nonlocal_laplacian_3} are those where $j_1 + j_2 = 2$, so that either $j_1 = 1$ and $j_2 = 1$, or $j_1 = 2$ and $j_2 = 0$. We have that
 \begin{align*}
 g_{1,1}(x) + \frac{1}{2}g_{2,0}(x) & = \int_{\mc{X}} d_x^{1}f(z) d_x^{1}p(z) \eta(\|z\|) \,dz + \frac{p(x)}{2} \int_{\mc{X}} d_x^{2}f(z) \eta(\|z\|) \,dz \\
-& = \sum_{i_1 = 1}^{d} \sum_{i_2 = 1}^{d} D^{e_{i_1}}f(x) D^{e_{i_2}}p(x) \int_{\mc{X}} z^{e_{i_1} + e_{i_2}} \eta(\|z\|) \,dz + \frac{p(x)}{2} \sum_{i_1 = 1}^{d} \sum_{i_2 = 1}^{d}D^{e_{i_2}+e_{i_2}}f(x)\int_{\mc{X}} z^{e_{i_1} + e_{i_2}} \eta(\|z\|) \,dz\\
+& = \sum_{i_1 = 1}^{d} \sum_{i_2 = 1}^{d} D^{e_{i_1}}f(x) D^{e_{i_2}}p(x) \int_{\mc{X}} z^{e_{i_1} + e_{i_2}} \eta(\|z\|) \,dz \\
+& \quad + \frac{p(x)}{2} \sum_{i_1 = 1}^{d} \sum_{i_2 = 1}^{d}D^{e_{i_2}+e_{i_2}}f(x)\int_{\mc{X}} z^{e_{i_1} + e_{i_2}} \eta(\|z\|) \,dz\\
 & = \sum_{i = 1}^{d} D^{e_{i}}f(x) D^{e_{i}}p(x) \int_{\mc{X}} z^2 \eta(\|z\|) \,dz + \frac{p(x)}{2} \sum_{i = 1}^{d} D^{2e_{i}}f(x)\int_{\mc{X}} z^2 \eta(\|z\|) \,dz\\ 
 & = \sigma_{\eta}\Delta_Pf(x),
 \end{align*}
@@ -640,7 +641,7 @@ Finally, we recall a result of~\cite{green2021}: there exist constants $c_0$ and
 \label{pf:estimate_nonlocal_seminorm_1}
 E_{P,\varepsilon}(f;\mc{X}) \leq C_0 M^2.
 \end{equation}
-\paragraph{Case 1: $s$ odd.}
+\paragraph{Case 1: $s$ odd}
 Suppose $s$ is odd, so that $s \geq 3$. Taking $k = (s - 1)/2$, we use the self-adjointness of $L_{P,\varepsilon}$ to relate the non-local semi-norm $\dotp{L_{P,\varepsilon}^sf}{f}_{P}$ to a non-local Dirichlet energy,
 \begin{equation*}
 \dotp{L_{P,\varepsilon}^sf}{f}_P = \dotp{L_{P,\varepsilon}^{k + 1}f}{L_{P,\varepsilon}^{k}f}_P = E_{P,\varepsilon}(L_{P,\varepsilon}^{k}f;\mc{X}).
@@ -658,8 +659,9 @@ E_{P,\varepsilon}(L_{P,\varepsilon}^{k}f;\mc{X}_{k\varepsilon}) \leq 3 \sigma_{\
 \end{equation}
 Noticing that $\Delta_P^kf \in H^1(\mc{X};\|p\|_{C^{s - 1}(\mc{X})}^kM)$, we use~\eqref{pf:estimate_nonlocal_seminorm_1} to conclude that $E_{P,\varepsilon}(\Delta_P^kf;\mc{X}_{k\varepsilon}) \leq C_0M^2$. On the other hand, it follows from Assumption~(K1) and~\eqref{eqn:approximation_error_nonlocal_laplacian_1} that
 \begin{align*}
-\frac{2}{\varepsilon^{d + 2}}\int_{\mc{X}_{k\varepsilon}} \int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^kf(x) - \sigma_{\eta}^k \Delta_P^kf(x)\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x) & \leq \frac{2p_{\max}}{\varepsilon^{2}}\int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^kf(x) - \sigma_{\eta}^k \Delta_P^kf(x)\bigr)^2 \,dP(x) \\
-& \leq C_1M^2.
+& \frac{2}{\varepsilon^{d + 2}}\int_{\mc{X}_{k\varepsilon}} \int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^kf(x) - \sigma_{\eta}^k \Delta_P^kf(x)\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x) \\
+& \quad \leq \frac{2p_{\max}}{\varepsilon^{2}}\int_{\mc{X}_{k\varepsilon}} \bigl(L_{P,\varepsilon}^kf(x) - \sigma_{\eta}^k \Delta_P^kf(x)\bigr)^2 \,dP(x) \\
+& \quad \leq C_1M^2.
 \end{align*}
 Plugging these two bounds into~\eqref{pf:estimate_nonlocal_seminorm_2} gives the desired upper bound on $E_{P,\varepsilon}(L_{P,\varepsilon}^{k};\mc{X}_{k\varepsilon})$. 
 
@@ -667,7 +669,7 @@ For the second term in~\eqref{pf:estimate_nonlocal_seminorm_1.5}, we apply Lemma
 \begin{equation*}
 E_{P,\varepsilon}(L_{P,\varepsilon}^{k}f;\partial_{k\varepsilon}\mc{X}) \leq \frac{4p_{\max}^2}{\varepsilon^2}\|L_{P,\varepsilon}^kf\|_{L^2(\partial_{k\varepsilon}\mc{X})} \leq C M^2.
 \end{equation*}
-\paragraph{Case 2: $s$ even.}
+\paragraph{Case 2: $s$ even}
 If $s \in \mathbb{N}$ is even, $s \geq 2$, then letting $k = (s - 2)/2$, the  self-adjointness of $L_{P,\varepsilon}$ implies
 \begin{equation*}
 \dotp{L_{P,\varepsilon}^sf}{f}_P = \|L_{P,\varepsilon}^{k + 1}f\|_P^2.
@@ -721,7 +723,7 @@ Then Lemma~\ref{lem:approximation_error_nonlocal_laplacian_boundary} shows that 
 	where $k + 1$ is the number of distinct indices in $i\bj$. 
 \end{lemma}
 
-\paragraph{Proof (of Lemma~\ref{lem:l2estimate_nonlocal_laplacian}).}
+\paragraph{Proof (of Lemma~\ref{lem:l2estimate_nonlocal_laplacian})}
 We fix a version of $f \in L^2(U)$, so that we may speak of its pointwise values.
 
 At a given point $x \in U$, we can upper bound $|L_{P,\varepsilon}f(x)|^2$ using the Cauchy-Schwarz inequality as follows,
@@ -737,22 +739,28 @@ The equality follows by the assumption $\int_{\Rd} \eta(\|z\|)\,dx = 1$ in~(K1).
 \end{align}
 Finally, using Fubini's Theorem we determine that
 \begin{equation}
-\int_{U} \int_{U} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx = 2 \int_{U} \int_{U} |f(x)|^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx \leq 2 \varepsilon^d \int_{U} |f(x)|^2 \,dx = 2\varepsilon^d \|f\|_{L^2(U)}^2,
+\begin{aligned}
+\int_{U} \int_{U} \bigl(|f(x')|^2 + |f(x)|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx & = 2 \int_{U} \int_{U} |f(x)|^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx \\
+& \leq 2 \varepsilon^d \int_{U} |f(x)|^2 \,dx = 2\varepsilon^d \|f\|_{L^2(U)}^2,
 \label{pf:l2estimate_nonlocal_laplacian_2}
+\end{aligned}
 \end{equation}
 and by combining~\eqref{pf:l2estimate_nonlocal_laplacian_1} and~\eqref{pf:l2estimate_nonlocal_laplacian_2} we conclude that
 \begin{equation*}
 \|L_{P,\varepsilon}\|_{L^2(U)}^2 \leq \frac{4p_{\max}^2}{\varepsilon^4} \|f\|_{L^2(U)}^2. 
 \end{equation*}
 
-\paragraph{Proof (of Lemma~\ref{lem:dirichlet_estimate_nonlocal_laplacian}).}
+\paragraph{Proof (of Lemma~\ref{lem:dirichlet_estimate_nonlocal_laplacian})}
 We have
 \begin{equation*}
-E_{P,\varepsilon}(f) = \frac{1}{\varepsilon^{2 + d}} \int_{U} \int_{U} \bigl(f(x) - f(x')\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x) \leq \frac{2p_{\max}^2}{\varepsilon^{2 + d}} \int_{U} \int_{U} \bigl(|f(x)|^2 + |f(x')|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx,
+\begin{aligned}
+E_{P,\varepsilon}(f) & = \frac{1}{\varepsilon^{2 + d}} \int_{U} \int_{U} \bigl(f(x) - f(x')\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x) \\
+& \leq \frac{2p_{\max}^2}{\varepsilon^{2 + d}} \int_{U} \int_{U} \bigl(|f(x)|^2 + |f(x')|^2\bigr) \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dx' \,dx,
+\end{aligned}
 \end{equation*}
 and the claim follows from~\eqref{pf:l2estimate_nonlocal_laplacian_2}.
 
-\paragraph{Proof (of Lemma~\ref{lem:graph_seminorm_bias2}).}
+\paragraph{Proof (of Lemma~\ref{lem:graph_seminorm_bias2})}
 Let $G_{n,\varepsilon}[X_{i\bj}]$ be the subgraph induced by vertices $X_i, X_{\bj_1},\ldots,X_{\bj_s}$. We make two observations. First, in order for $|D_{\bj}f(X_i)| \cdot |f(X_i)  - f(X_j)|$ to be non-zero, it must be the case that the subgraph $G_{n,\varepsilon}[X_{i\bj}]$ is connected. Second, noting that for any indices $i$ and $j$,
 \begin{equation*}
 |D_{ij}f(x)| \leq \Bigl(|D_jf(X_i)| + |D_jf(x)|\Bigr)\|\eta\|_{\infty}, 
@@ -775,8 +783,9 @@ Next, from the Cauchy-Schwarz inequality we have that for any $j \in \bj$,
 \end{align*}
 with the equality following since each $X_i$ are identically distributed. Marginalizing out the contribution of all indices in $\bj$ not equal to $i$ or $j$ gives
 \begin{align}
-\mathbb{E}\Bigl[ |f(X_j) - f(X_{i})|^2 \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\} \Bigr] & \leq \bigl((s + 1)p_{\max}\nu_d\varepsilon^d\bigr)^{|i\bj\setminus\{j \cup i\}|} \cdot \mathbb{E}\Bigl[ |f(X_j) - f(X_{i})|^2 \1\{\|X_i - X_j\| \leq \varepsilon\}\Bigr] \nonumber \\
-& \leq \bigl((s + 1)p_{\max}\nu_d\varepsilon^d\bigr)^{|i\bj\setminus\{j \cup i\}|} \cdot p_{\max}^2 \nu_d \varepsilon^{2 + d} M^2 \label{pf:graph_seminorm_bias2_1}
+& \mathbb{E}\Bigl[ |f(X_j) - f(X_{i})|^2 \cdot \1\bigl\{G_{n,\varepsilon}[X_{i\bj}]~~\textrm{is connected.} \bigr\} \Bigr] \nonumber\\
+& \quad \leq \bigl((s + 1)p_{\max}\nu_d\varepsilon^d\bigr)^{|i\bj\setminus\{j \cup i\}|} \cdot \mathbb{E}\Bigl[ |f(X_j) - f(X_{i})|^2 \1\{\|X_i - X_j\| \leq \varepsilon\}\Bigr] \nonumber \\
+& \quad \leq \bigl((s + 1)p_{\max}\nu_d\varepsilon^d\bigr)^{|i\bj\setminus\{j \cup i\}|} \cdot p_{\max}^2 \nu_d \varepsilon^{2 + d} M^2 \label{pf:graph_seminorm_bias2_1}
 \end{align}
 with the second inequality following from the proof of Lemma~1 in~\cite{green2021}. Finally, we notice that $|i\bj\setminus \{i \cup j\}| + 1 = k$, so that~\eqref{pf:graph_seminorm_bias2_1} gives the desired result.
 
@@ -825,7 +834,7 @@ We point out that when $f$ is H\"{o}lder smooth, results analogous to~\eqref{eqn
 
 In the proof of~\eqref{pf:graph_seminorm_manifold_1}-\eqref{eqn:manifold_nonlocal_seminorm}, we recall the following estimates from differential geometry: (i) letting $K_0$ be an upper bound on the absolute value of the sectional curvatures of $\mc{X}$, $K_0 \leq 2R$, and  letting (ii) $i_0$ be a lower bound on the injectivity radius of $\mc{X}$, $i_0 \geq \pi R$; see Proposition~1 of \cite{aamari2019}. Additionally, recall that for all $\delta < i_0$, the exponential map $\exp_x: B_m(0,\delta) \subset T_x(\mc{X}) \to B_{\mc{X}}(x,\delta) \subset \mc{X}$ is a diffeomorphism for all $x \in \mc{X}$. We shall therefore always assume $\varepsilon < i_0$. 
 
-\paragraph{Proof (of Proposition~7).} Follows immediately from~\eqref{pf:graph_seminorm_manifold_1} and~\eqref{eqn:manifold_nonlocal_seminorm}. \qed
+\paragraph{Proof (of Proposition~7)} Follows immediately from~\eqref{pf:graph_seminorm_manifold_1} and~\eqref{eqn:manifold_nonlocal_seminorm}. \qed
 
 \subsection{Decomposition of graph Sobolev seminorm}
 \label{subsec:manifold_decomposition_graph_seminorm}
@@ -846,24 +855,28 @@ Thus we have upper bounded $|L_{P,\varepsilon}f(x) - \wt{L}_{P,\varepsilon}f(x)|
 \|x' - x\| \leq d_{\mc{X}}(x',x) \leq \|x' - x\| + \frac{8}{R^2} \|x' - x\|^3.
 \end{equation}
 From here forward we will assume $\varepsilon < R/2$. 
-\paragraph{Upper bound on $A_1(x)$.}
+\paragraph{Upper bound on $A_1(x)$}
 Consequently $\eta(\|x' - x\|/\varepsilon) \geq \eta(d_{\mc{X}}(x',x)/\varepsilon)$. Furthermore, letting $L_{\eta}$ denote the Lipschitz constant of $\eta$, and setting $\wt{\varepsilon} := (1 + 27\varepsilon^2/R^2)\varepsilon$ we have that
 \begin{equation*}
 \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) - \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr)\biggr| \leq \frac{L_{\eta} 8 \varepsilon^2}{R^2} \cdot \1\bigl\{d_{\mc{X}}(x',x) \leq \varepsilon\bigr\} + \|\eta\|_{\infty} \cdot 1\{\varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon}\}.
 \end{equation*}
 Thus,
 \begin{equation*}
-A_1(x) \leq \frac{8L_{\eta}\varepsilon^2}{R^2}\int_{\mc{X}}\bigl[f(x') - f(x)\bigr]^2 \1\{\|x' - x\| \leq \varepsilon\} \,d\mu(x') + \|\eta\|_{\infty} \int_{\mc{X}}\bigl[f(x') - f(x)\bigr]^2 \1\bigl\{\varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon}\bigr\} \,d\mu(x') \\
+\begin{aligned}
+A_1(x) & \leq \frac{8L_{\eta}\varepsilon^2}{R^2}\int_{\mc{X}}\bigl[f(x') - f(x)\bigr]^2 \1\{\|x' - x\| \leq \varepsilon\} \,d\mu(x') \\
+& \quad + \|\eta\|_{\infty} \int_{\mc{X}}\bigl[f(x') - f(x)\bigr]^2 \1\bigl\{\varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon}\bigr\} \,d\mu(x')
+\end{aligned}
 \end{equation*}
 Integrating over $\mc{X}$, we conclude from Lemma~\ref{lem:dirichlet_energy_remainder} and Lemma~3.3 of \citep{burago2014} and  that
 \begin{equation*}
 \int_{\mc{X}} A_1(x) \,d\mu(x) \leq \frac{8L_{\eta}\nu_m\varepsilon^2}{R^2(m + 2)} \Bigl(1 + CmK_0R^2\Bigr) \varepsilon^{m + 2} |f|_{H^1(\mc{X})}^2 + C\|\eta\|_{\infty}\varepsilon^{m + 4} |f|_{H^1(\mc{X})}^2 =: C_5 \varepsilon^{m + 4}|f|_{H^1(\mc{X})}.
 \end{equation*}
 
-\paragraph{Upper bound on $A_2(x)$.}
+\paragraph{Upper bound on $A_2(x)$}
 Integrating over $x' \in \mc{X}$, we see that
 \begin{align}
-\int_{\mc{X}} \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) - \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr)\biggr| \,d\mu(x') & \leq \frac{8L_{\eta}\varepsilon^2}{R^2} \int_{\mc{X}} \1\bigl\{d_{\mc{X}}(x',x)\bigr\} \,d\mu(x') + p_{\max}\|\eta\|_{\infty} \int_{\mc{X}} \1\bigl\{ \varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon} \bigr\} \,d\mu(x') \nonumber \\
+\int_{\mc{X}} \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) - \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr)\biggr| \,d\mu(x') & \leq \frac{8L_{\eta}\varepsilon^2}{R^2} \int_{\mc{X}} \1\bigl\{d_{\mc{X}}(x',x)\bigr\} \,d\mu(x')\nonumber \\
+& \quad + p_{\max}\|\eta\|_{\infty} \int_{\mc{X}} \1\bigl\{ \varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon} \bigr\} \,d\mu(x') \nonumber \\
 & = \frac{8L_{\eta}\varepsilon^2}{R^2} \cdot \mu\bigl(B(x,\varepsilon)\bigr) +  p_{\max}\|\eta\|_{\infty} \Bigl[\mu\bigl(B(x,\wt{\varepsilon})\bigr) - \mu\bigl(B(x,\varepsilon)\bigr) \Bigr]. \label{pf:error_euclidean_distance_1}
 \end{align}
 Equation (1.36) in \cite{trillos2019} states that
@@ -872,12 +885,13 @@ Equation (1.36) in \cite{trillos2019} states that
 \end{equation*}
 where we recall $K_0$ is an upper bound on the sectional curvature of $\mc{X}$. Plugging this back into~\eqref{pf:error_euclidean_distance_1}, we conclude that
 \begin{align*}
-\int_{\mc{X}} \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) - \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr)\biggr| \,d\mu(x') & \leq  \frac{8L_{\eta}\varepsilon^2}{R^2}\Bigl[\omega_m\varepsilon^{m} + CmK_0\varepsilon^{m + 2}\Bigr] + \|\eta\|_{\infty} \Bigl[\omega_m(\wt{\varepsilon}^m - {\varepsilon}^m) + 2CmK_0\varepsilon^{m + 2}\Bigr] \\
+\int_{\mc{X}} \biggl|\eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) - \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr)\biggr| \,d\mu(x') & \leq  \frac{8L_{\eta}\varepsilon^2}{R^2}\Bigl[\omega_m\varepsilon^{m} + CmK_0\varepsilon^{m + 2}\Bigr] \nonumber \\
+& \quad + \|\eta\|_{\infty} \Bigl[\omega_m(\wt{\varepsilon}^m - {\varepsilon}^m) + 2CmK_0\varepsilon^{m + 2}\Bigr] \\
 & \leq \frac{8L_{\eta}\varepsilon^2}{R^2}\Bigl[\omega_m\varepsilon^{m} + R^2CmK_0\varepsilon^{m}\Bigr] + \|\eta\|_{\infty} \varepsilon^{m + 2}\Bigl[\frac{27\omega_m}{R^2} + 2CmK_0\Bigr] \\
 & =: C_6 \varepsilon^{m + 2}.
 \end{align*}
 
-\paragraph{Putting together the pieces.}
+\paragraph{Putting together the pieces}
 Plugging our upper bounds on $A_1(x)$ and $A_2(x)$ back into~\eqref{pf:error_euclidean_distance_0}, we deduce that
 \begin{align*}
 \|\wt{L}_{P,\varepsilon}f - L_{P,\varepsilon}f\|_{L^2(\mc{X})}^2 & \leq \frac{1}{\varepsilon^{2(2 + m)}} \int_{\mc{X}} A_1(x) \cdot A_2(x) \,d\mu(x) \\
@@ -920,14 +934,14 @@ with the final inequality following from (3.2) of~\cite{burago2014}. Combining o
 \label{subsec:manifold_estimate_nonlocal_seminorm}
 In this subsection we establish that the upper bound~\eqref{eqn:manifold_nonlocal_seminorm} holds when $f \in H^s(\mc{X})$ and $p \in C^{s - 1}(\mc{X})$. We first consider $s = 2$, and then $s = 3$.
 
-\paragraph{Case 1: $s = 2$.}
+\paragraph{Case 1: $s = 2$}
 When $s = 2$, the triangle inequality implies that
 \begin{equation*}
 \dotp{L_{P,\varepsilon}^sf}{f}_P \leq 2p_{\max}\Bigl(\|L_{P,\varepsilon}f - \wt{L}_{P,\varepsilon}\|_{L^2(\mc{X})}^2 + \|\wt{L}_{P,\varepsilon}f\|_{L^2(\mc{X})}^2\Bigr)
 \end{equation*}
 The first term on the right hand side is upper bounded in~\eqref{eqn:nonlocal_laplacian_geodesic_error}, and the second term is upper bounded in~\eqref{eqn:nonlocal_laplacian_approximation_error_manifold_l2}. Together these estimates imply the claim.
 
-\paragraph{Case 2: $s = 3$.}
+\paragraph{Case 2: $s = 3$}
 When $s = 3$, the triangle inequality implies that
 \begin{equation*}
 \dotp{L_{P,\varepsilon}^sf}{f}_P = E_{P,\varepsilon}(L_{P,\varepsilon}f;\mc{X}) \leq 3\Bigl( E_{P,\varepsilon}(L_{P,\varepsilon}f - \wt{L}_{P,\varepsilon}f;\mc{X}) +  E_{P,\varepsilon}(\wt{L}_{P,\varepsilon}f - \sigma_{\eta} \Delta_Pf;\mc{X}) + \sigma_{\eta}^2 E_{P,\varepsilon}(\Delta_Pf;\mc{X})\Bigr)
@@ -982,7 +996,7 @@ Finally, we use Lemma~\ref{lem:manifold_graph_seminorm_bias2} to show that the p
 	where $k + 1$ is the number of distinct indices in $i\bj$. 
 \end{lemma}
 
-\paragraph{Proof (of Lemmas~\ref{lem:dirichlet_energy_l2} and~\ref{lem:dirichlet_energy_sobolev}).}
+\paragraph{Proof (of Lemmas~\ref{lem:dirichlet_energy_l2} and~\ref{lem:dirichlet_energy_sobolev})}
 Define the non-local energy $\wt{E}_{P,\varepsilon}$ with respect to geodesic distance,
 \begin{equation*}
 \wt{E}_{P,\varepsilon}(f;{\mc{X}}) := \dotp{\wt{L}_{P,\varepsilon}f}{f}_{P} = \int_{\mc{X}} \int_{\mc{X}} \bigl(f(x') - f(x)\bigr)^2 \eta\biggl(\frac{d_{\mc{X}}(x',x)}{\varepsilon}\biggr) \,dP(x') \,dP(x).
@@ -993,7 +1007,7 @@ From the lower bound in~\eqref{eqn:distance_error}, it follows that $E_{P,\varep
 \end{equation*}
 The estimates~\eqref{eqn:dirichlet_energy_l2} and~\eqref{eqn:dirichlet_energy_sobolev} then respectively follow from (3.1) and Lemma~3.3 of \cite{burago2014}.
 
-\paragraph{Proof (of Lemma~\ref{lem:dirichlet_energy_remainder}).}
+\paragraph{Proof (of Lemma~\ref{lem:dirichlet_energy_remainder})}
 Following exactly the steps of the proof of Lemma~3.3 of \citet{burago2014}, but replacing all references to a ball of radius $r$ by references to the set difference between balls of radius $\wt{\varepsilon}$ and $\varepsilon$, we obtain that
 \begin{equation*}
 \int_{\mc{X}} \int_{\mc{X}} \bigl(f(x') - f(x)\bigr)^2 \1\{\varepsilon < d_{\mc{X}}(x',x) \leq \wt{\varepsilon}\} \,d\mu(x') \,d\mu(x) \leq (1 + CmK_0\varepsilon^2) \cdot \int_{\mc{X}} \int_{B_{m}(0,\wt{\varepsilon})} |d_x^{1}f(v)|^2 \,dv \,d\mu(x).
@@ -1004,7 +1018,7 @@ From (2.7) of~\citet{burago2014}, we further have
 \end{equation*}
 Recalling that $\|d^1f\|_{L^2(\mc{X})}^2 \leq \|f\|_{H^1(\mc{X})}^2$, we see that this implies the claim of Lemma~\ref{lem:dirichlet_energy_remainder}.
 
-\paragraph{Proof (of Lemma~\ref{lem:manifold_graph_seminorm_bias2}).}
+\paragraph{Proof (of Lemma~\ref{lem:manifold_graph_seminorm_bias2})}
 The proof of Lemma~\ref{lem:manifold_graph_seminorm_bias2} is identical to the proof of Lemma~\ref{lem:graph_seminorm_bias2}, upon substituting the ambient dimension $m$ for the intrinsic dimension $d$, and using Lemma~\ref{lem:dirichlet_energy_sobolev} rather than Lemma~\ref{lem:dirichlet_estimate_nonlocal_laplacian} to establish~\eqref{pf:graph_seminorm_bias2_1}.
 
 \section{Lower bound on empirical norm}
@@ -1025,7 +1039,7 @@ In this section we establish Proposition~6. As mentioned, the proof of this Prop
 \end{lemma}
 
 
-\paragraph{Proof (of Proposition~6).}
+\paragraph{Proof (of Proposition~6)}
 Rearranging~\eqref{eqn:gagliardo_nirenberg} and raising both sides to the $4$th power, we see that
 \begin{equation*}
 \frac{\Ebb[f^4(X)]}{\|f\|_P^4} \leq C \biggl(\frac{\|f\|_{L^4(\mc{X})}}{\|f\|_{L^2(\mc{X})}}\biggr)^4 \leq C_1\biggl(\frac{|f|_{H^s(\mc{X})}}{\|f\|_{L^2(\mc{X})}}\biggr)^{d/s} + C_2,
@@ -1057,7 +1071,7 @@ The proof of Proposition~9 follows exactly the same steps as the proof of Propos
 
 \subsection{Estimation Results}
 
-\paragraph{Proof of Theorem~1.}
+\paragraph{Proof of Theorem~1}
 We condition on the event that the design points $X_1,\ldots,X_n$ satisfy
 \begin{equation}
 \label{pf:laplacian_eigenmaps_estimation_fo_1}
@@ -1089,15 +1103,15 @@ Finally if $M > n^{1/d}$, we take $K = n$. In this case, we note that $\wh{f}(X_
 with probability at least $1 - \exp(-n)$. Combining these three separate cases yields the conclusion of Theorem~1. 
 
 
-\paragraph{Proof of Theorem~3.}
+\paragraph{Proof of Theorem~3}
 Follows identically to the proof of Theorem~1, except substituting $L_{n,\varepsilon}^s$ for $L_{n,\varepsilon}$, $\lambda_k^s$ for $\lambda_k$, and using Proposition~4 rather than Proposition~3 and Assumption~(P3) rather than Assumption~(P1).
 
-\paragraph{Proof of Theorem~6.}
+\paragraph{Proof of Theorem~6}
 Follows identically to the proof of Theorem~1, substituting $L_{n,\varepsilon}^s$ for $L_{n,\varepsilon}$, $\lambda_k^s$ for $\lambda_k$, and using Proposition~7 rather than Proposition~3, Proposition~8 rather than Proposition~4, and Assumption~(P6) rather than Assumption~(P1).
 
 \subsection{Testing Results}
 
-\paragraph{Proof of Theorem~2.}
+\paragraph{Proof of Theorem~2}
 We have already upper bounded the Type I error of $\varphi$ in Lemma~\ref{lem:fixed_graph_testing}, and it remains to upper bound the Type II error. To do so, we condition on the event that the design points $X_1,\ldots,X_n$ satisfy,
 \begin{equation}
 \label{pf:laplacian_eigenmaps_testing_fo_1}
@@ -1136,13 +1150,13 @@ Finally if $M > n^{1/d}$, we take $K = n$, and~\eqref{pf:laplacian_eigenmaps_tes
 \end{equation*}
 We conclude by observing that by assumption, $\|f_0\|_P^2$ implies each of these three inequalities, and thus implies~\eqref{pf:laplacian_eigenmaps_testing_fo_3}.
 
-\paragraph{Proof of Theorem~4.}
+\paragraph{Proof of Theorem~4}
 Follows identically to the proof of Theorem~1, except substituting $L_{n,\varepsilon}^s$ for $L_{n,\varepsilon}$, $\lambda_k^s$ for $\lambda_k$, and using Proposition~4 rather than Proposition~3 and Assumption~(P4) rather than Assumption~(P2).
 
-\paragraph{Proof of Theorem~7.}
+\paragraph{Proof of Theorem~7}
 Follows identically to the proof of Theorem~1, except substituting $L_{n,\varepsilon}^s$ for $L_{n,\varepsilon}$, $\lambda_k^s$ for $\lambda_k$, and using Proposition~7 rather than Proposition~3, Proposition~8 rather than Proposition~4, Proposition~9 rather than Proposition~6, and Assumption~(P6) rather than Assumption~(P2).
 
-\paragraph{Proof of Theorem~5.}
+\paragraph{Proof of Theorem~5}
 Note that our choices of $K$ and $\varepsilon$ ensure  that~\eqref{pf:laplacian_eigenmaps_testing_fo_1} (with $L_{n,\varepsilon}^s$ replacing $L_{n,\varepsilon}$) and~\eqref{pf:laplacian_eigenmaps_testing_fo_2} are satisfied with probability at least $1 - b/2$. Proceeding as in the proof of Theorem~2, we upper bound the right hand side of~\eqref{eqn:fixed_graph_testing_critical_radius},
 \begin{align*}
 \frac{\dotp{L_{n,\varepsilon}f_0}{f_0}_n}{\lambda_{K + 1}} + \frac{\sqrt{2K}}{n}\biggl[2\sqrt{\frac{1}{a}} + \sqrt{\frac{2}{b}} + \frac{32}{bn}\biggr] & \leq C\biggl(\frac{M^2}{b \min\{\lambda_{K+1}(\Delta_P), \varepsilon^{-2}\}} + \frac{\sqrt{2K}}{n}\biggl[\sqrt{\frac{1}{a}} + \frac{1}{b}\biggr]\biggr) \\
@@ -1249,7 +1263,8 @@ and variance
 Integrating with respect to $P$ gives
 \begin{align*}
 \Ebb\biggl[\int \Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2 \,dP(x)\biggr] & = \int \Ebb\Bigl[\Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2\Bigr] \,dP(x) \\
-& \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{1}{n}\int \int \frac{1}{\bigl(d_{P,h}(x)\bigr)^2} \bigl(f_0(x') - f_0(x)\bigr)^2 \cdot \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr|^2 \,dP(x') \,dP(x) \\
+& \leq \| T_{P,h}f_0 - f_0\|_P^2 \\
+& \quad + \frac{1}{n}\int \int \frac{1}{\bigl(d_{P,h}(x)\bigr)^2} \bigl(f_0(x') - f_0(x)\bigr)^2 \cdot \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr|^2 \,dP(x') \,dP(x) \\
 & \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{3h^2}{p_{\min}n} \wt{E}_{P,h}(f_0;\psi^2).
 \end{align*}
 In the final inequality we have used the lower bound on $d_{P,h}(x)$ from~\eqref{eqn:degree_lower_bound}, and written $E_{P,h}(f_0;\psi^2)$ for the non-local Dirichlet energy defined with respect to the kernel $\psi^2$. 
@@ -1286,7 +1301,7 @@ L_{P,h}f(x) = \frac{1}{h^{d + 2}} \int \bigl(f(x') - f(x)\bigr)\mc{K}\biggl(\fra
 \end{equation*}
 and $E_{P,h}(f;\mc{K}) = \dotp{L_{P,h}f}{f}_{P}$, respectively. 
 
-\paragraph{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $s = 1$.}
+\paragraph{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $s = 1$}
 Using the conclusions from Section~\ref{subsec:kernel_smoothing_preliminaries}, we have that
 \begin{equation}
 \label{pf:kernel_smoothing_bias_1}
@@ -1300,7 +1315,7 @@ By the Cauchy-Schwarz inequality, we have that
 \end{align*}
 Applying the estimate~\eqref{pf:estimate_nonlocal_seminorm_1} to the non-local Dirichlet energy ${E}_{P,h}(f;|\psi|)$ and plugging back into~\eqref{pf:kernel_smoothing_bias_1} gives the claimed result.
 
-\paragraph{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $s > 1$.}
+\paragraph{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $s > 1$}
 Proceeding from~\eqref{pf:kernel_smoothing_bias_1}, we separate the integral into the portion sufficiently in the interior of $\mc{X}$ and that near the boundary, obtaining
 \begin{equation}
 \label{pf:kernel_smoothing_bias_2}
@@ -1346,7 +1361,7 @@ and plugging this back into~\eqref{pf:kernel_smoothing_bias_2} yields the claim.
 
 In this section, we give a sequence of densities $p^{(n)}$ and regression functions $f_0^{(n)}$ for which the $L^2(P)$ error of the two-stage estimator $T_{n,h}\wh{f}$ is stochastically dominated by the $L^2(P)$ error of applying kernel smoothing directly to the responses. We begin by precisely setting up the problem and reviewing the two estimators we will compare. Then we give and prove our formal claim.
 
-\paragraph{Setup.}
+\paragraph{Setup}
 As usual, we assume the design points $(X_1,\ldots,X_n)$ are sampled independently from a distribution $P$, and the responses
 \begin{equation*}
 Y_i = f_0(X_i) + \varepsilon_i,
@@ -1370,7 +1385,7 @@ Our goal is to estimate $f_0$ using an estimator $f$, in such a way that the res
 \eta(z) = \psi(z) = \1\{z \leq 1\}.
 \end{equation}
 
-\paragraph{Laplacian eigenmaps + kernel smoothing beats direct kernel smoothing.}
+\paragraph{Laplacian eigenmaps + kernel smoothing beats direct kernel smoothing}
 Now we are in a position to state our result. Let $P^{(n)}$ be the distribution with density $p^{(n)}$, i.e. the uniform probability distribution on $Q_1 \cup Q_2$. 
 \begin{proposition}
 	\label{prop:eigenmaps_beats_kernel_smoothing}
@@ -1393,7 +1408,7 @@ The statements~\eqref{eqn:eigenmaps_beats_kernel_smoothing_1} and~\eqref{eqn:eig
 \lim_{n \to \infty} \sup_{h'}  \frac{\Ebb \|T_{n,h}\wh{f} - f_0^{(n)}\|_{P^{(n)}}^2}{	\Ebb \|T_{n,h'}{\bf Y} - f_0^{(n)}\|_{P^{(n)}}^2 } = 0.
 \end{equation*}
 
-\paragraph{Proof of Proposition~\ref{prop:eigenmaps_beats_kernel_smoothing}.}
+\paragraph{Proof of Proposition~\ref{prop:eigenmaps_beats_kernel_smoothing}}
 First we prove~\eqref{eqn:eigenmaps_beats_kernel_smoothing_1}, then~\eqref{eqn:eigenmaps_beats_kernel_smoothing_2}.
 
 \underline{\emph{Proof of~\eqref{eqn:eigenmaps_beats_kernel_smoothing_1}}.}
@@ -1467,7 +1482,7 @@ whereas if $h' > 4r$  then
 \end{equation*}
 In the latter case, setting the derivative equal to $0$ shows that the right hand side is always at least $\theta/\sqrt{32 n}$, and taking the minimum over the two cases then yields~\eqref{eqn:eigenmaps_beats_kernel_smoothing_2}.
 
-\paragraph{A Useful Lemma.}
+\paragraph{A Useful Lemma}
 Let $m = 4n/\log^2n$. Furthermore, for $i = 0,\ldots,m - 1$, let
 \begin{equation*}
 Q_{i1} = [i/m,(i + 1)/m] \cdot (1/2 - r), \quad Q_{i2} = 1/2 + [i/m,(i + 1)/m] \cdot (1/2 - r).
@@ -1482,7 +1497,7 @@ Q_{i1} = [i/m,(i + 1)/m] \cdot (1/2 - r), \quad Q_{i2} = 1/2 + [i/m,(i + 1)/m] \
 \end{lemma}
 Let $\varepsilon = h = \log^2n/2n$. Note that by construction,~\eqref{eqn:balls_in_bins} implies that any points $x$ and $x'$ in adjacent intervals $Q_{ij}$ and $Q_{i'j}$ must be connected in $G_{n,\varepsilon}$. It also implies that $d_{n,h}(x) > 0$ for every $x \in Q_1 \cup Q_2$.
 
-\paragraph{Proof (of Lemma~\ref{lem:balls_in_bins}).}
+\paragraph{Proof (of Lemma~\ref{lem:balls_in_bins})}
 For each $Q_{ij}$, we have that 
 \begin{equation*}
 \Pbb\bigl(\sharp\{Q_{ij} \cup {\bf X}\} = 0\bigr) = (1 - 1/(2m))^{n} \leq \exp\{-n/2m\}.
