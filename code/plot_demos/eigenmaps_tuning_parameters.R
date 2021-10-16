@@ -9,12 +9,9 @@ source("plot_methods.R")
 source("misc.R")
 
 # User entered information.
-data_directory <- "data/thesis/mse/eigenfunction_1s_5d_2"
-plot_directory <- "plots/thesis/mse/eigenfunction" # Please change this to whichever directory you prefer.
+data_directory <- "data/laplacian_eigenmaps/tuning/sobolev_1s_2d"
+plot_directory <- "plots/laplacian_eigenmaps/tuning/sobolev" # Please change this to whichever directory you prefer.
 if(!exists(plot_directory)){dir.create(plot_directory)}
-
-plot_n <- 4000                                  # Which sample size would you like to use?
-plot_methods <- c("laplacian_eigenmaps")
 
 # Load data
 load(file.path(data_directory,"configs.R"))
@@ -27,10 +24,16 @@ load(file.path(data_directory,"Xs.R"))
 load(file.path(data_directory,"f0s.R"))
 load(file.path(data_directory,"Ys.R"))
 
+# Subset data to methods you actually want to plot.
+plot_n <- 1000
+plot_methods <- c("laplacian_eigenmaps",
+                  "spectral_projection")
 stopifnot(plot_n %in% ns)
+stopifnot(all(plot_methods %in% names(methods)))
 mse <- mse[ns %in% plot_n][[1]][names(methods) %in% plot_methods]
 if(exists("test_mse")) test_mse <- test_mse[ns %in% plot_n][[1]][names(methods) %in% plot_methods]
 thetas <- thetas[ns %in% plot_n][[1]][names(methods) %in% plot_methods]
+methods <- methods[names(methods) %in% plot_methods]
 
 # Plotting parameters for all plots
 # Capitalization function from https://rstudio-pubs-static.s3.amazonaws.com/408658_512da947714740b99253228f084a08a9.html.
@@ -75,8 +78,8 @@ for(ii in alg_indx)
 # Plotting parameters
 xlims <- c(min(Ks),max(Ks))
 ylims <- c(min(plot_mse),max(plot_mse))
-cols <- c("red","blue","green")
-stopifnot(ncol(plot_mse) <= 3)
+cols <- c("red","green")
+stopifnot(ncol(plot_mse) <= 2)
 
 plot_name <- paste0("mse_by_number_of_eigenvectors_",plot_n,"n_",d,"d_",s,"s.pdf")
 pdf(file.path(plot_directory,plot_name))
@@ -100,7 +103,7 @@ alg_indx_r <- sapply(thetas,FUN = function(theta){"r" %in% names(theta)}) %>% wh
 rs <- sapply(thetas[alg_indx_r],FUN = function(theta){unique(theta$r)})
 
 # Mse as a function of r, for best other parameters.
-plot_mse_r <- matrix(nrow = nrow(rs),ncol = ncol(rs))
+plot_mse <- matrix(nrow = nrow(rs),ncol = ncol(rs))
 for(jj in 1:length(alg_indx_r))
 {
   ii <- alg_indx_r[jj]
@@ -110,45 +113,18 @@ for(jj in 1:length(alg_indx_r))
   if(exists("test_mse")) test_mse_ii <- test_mse[[ii]]
   if(all(names(best_parameters_ii) == c("r","K"))){
     # Laplacian eigenmaps
-    plot_mse_r[,jj] <- unique(rowMeans(mse_ii[thetas_ii$K == best_parameters_ii$K,]))
+    plot_mse[,jj] <- unique(rowMeans(mse_ii[thetas_ii$K == best_parameters_ii$K,]))
   } else if(all(names(best_parameters_ii) == c("r","K","h"))){
     # Laplacian eigenmaps plus kernel smoothing
-    plot_mse_r[,jj] <- rowMeans(test_mse_ii[thetas_ii$K == best_parameters_ii$K & thetas_ii$h == best_parameters_ii$h,])
+    plot_mse[,jj] <- rowMeans(test_mse_ii[thetas_ii$K == best_parameters_ii$K & thetas_ii$h == best_parameters_ii$h,])
   }
-}
-
-# Mse as a function of h, for best other parameters.
-alg_indx_h <- sapply(thetas,FUN = function(theta){"h" %in% names(theta)}) %>% which()
-if(length(alg_indx_h) > 0)
-{
-  hs <- sapply(thetas[alg_indx_h],FUN = function(theta){unique(theta$h)})
-  plot_mse_h <- matrix(nrow = nrow(hs),ncol = ncol(hs))
-  for(jj in 1:length(alg_indx_h))
-  {
-    ii <- alg_indx_h[jj]
-    best_parameters_ii <- best_parameters[[ii]]
-    mse_ii <- mse[[ii]]
-    thetas_ii <- thetas[[ii]]
-    test_mse_ii <- test_mse[[ii]]
-    if(all(names(best_parameters_ii) == c("r","K","h"))){
-      # Laplacian eigenmaps plus kernel smoothing
-      plot_mse_h[,jj] <- rowMeans(test_mse_ii[thetas_ii$K == best_parameters_ii$K & thetas_ii$r == best_parameters_ii$r,])
-    }
-  }
-  plot_mse <- cbind(plot_mse_r,plot_mse_h)
-  rs <- cbind(rs,hs)
-  colnames(plot_mse) <- c(paste("r",names(methods)[alg_indx_r],sep = "_"),
-                          paste("h",names(methods)[alg_indx_h],sep = "_"))
-} else{
-  plot_mse <- plot_mse_r
-  colnames(plot_mse) <- c(paste("r",names(methods)[alg_indx_r],sep = "_"))
 }
 
 # Plotting parameters
 xlims <- c(min(rs),max(rs))
 ylims <- c(min(plot_mse),max(plot_mse))
-cols <- c("red","blue","blue")
-stopifnot(ncol(plot_mse) <= 3)
+cols <- c("red")
+stopifnot(ncol(plot_mse) <= 1)
 
 plot_name <- paste0("mse_by_radius_",plot_n,"n_",d,"d_",s,"s.pdf")
 pdf(file.path(plot_directory,plot_name))
@@ -161,14 +137,8 @@ plot(x = rs[,1], xlim = xlims, ylim = ylims, xlab = "Radius", ylab = "Mean Squar
 # add points and lines
 for(jj in 1:ncol(plot_mse))
 {
-  if(startsWith(colnames(plot_mse)[jj],"h_"))
-  {
-    points(x = rs[,jj], y =  plot_mse[,jj], col = cols[jj], pch = 17, cex = .9)
-    lines(x = rs[,jj], y =  plot_mse[,jj], col = cols[jj], lwd = 1.5, lty = 2)
-  } else{
-    points(x = rs[,jj], y =  plot_mse[,jj], col = cols[jj], pch = 20)
-    lines(x = rs[,jj], y =  plot_mse[,jj], col = cols[jj], lwd = 1.5)
-  }
+  points(x = rs[,jj], y =  plot_mse[,jj], col = cols[jj], pch = 20)
+  lines(x = rs[,jj], y =  plot_mse[,jj], col = cols[jj], lwd = 1.5)
 }
 grid(lwd = 2)
 dev.off()

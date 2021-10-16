@@ -66,7 +66,7 @@ plot_best_mse <- function(methods,mse,sd = T,validate = validate_mse,cols = NULL
     names(plot_dfs_best_mse)[[jj]] <- case_when(
       name == "laplacian_smoothing" ~ "LS",
       name == "laplacian_eigenmaps" ~ "LE",
-      name == "spectral_projection" ~ "SP",
+      name == "spectral_projection" ~ "SS",
       name == "least_squares"       ~ "LS",
       name == "laplacian_eigenmaps_plus_kernel_smoothing" ~ "LE+KS"
     ) 
@@ -157,7 +157,7 @@ plot_testing_critical_radius <- function(methods,err,type_II_error = .5,
     abbr <- case_when(
       name == "laplacian_smoothing" ~ "LS",
       name == "laplacian_eigenmaps" ~ "LE",
-      name == "spectral_projection" ~ "SP",
+      name == "spectral_projection" ~ "SS",
       name == "least_squares"       ~ "LS",
       name == "laplacian_eigenmaps_plus_kernel_smoothing" ~ "LE+KS"
     ) 
