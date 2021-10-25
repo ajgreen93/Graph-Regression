@@ -10,7 +10,7 @@ We decompose risk into squared bias and variance,
 \label{pf:spectral_series_estimation_0}
 \Ebb \|\wt{f} - f_0\|_P^2 = \Ebb\| \Ebb[\wt{f}]  - f_0\|_P^2 + \Ebb\| \wt{f} - \Ebb[\wt{f}]\|_P^2.
 \end{equation}
-Since the eigenfunctions $\{\psi_k\}$ form an orthonormal basis of $L^2(P)$, and $f_0 \in \mc{H}^{s}(\mc{X}) \subseteq L^2(P)$, we can write the squared bias in terms of squared Fourier coefficients of $f_0$, leading to the following upper bound,
+Since the eigenfunctions $\{\psi_k\}$ form an orthonormal basis of $L^2(\mc{X})$ (with respect to the inner-product $\dotp{\cdot}{\cdot}_P$) and $f_0 \in \mc{H}^{s}(\mc{X}) \subseteq L^2(\mc{X})$, we can write the squared bias in terms of squared Fourier coefficients of $f_0$, leading to the following upper bound,
 \begin{equation*}
 \|f_0 - \Ebb[\wt{f}]\|_P^2 = \sum_{k = K + 1}^{\infty}  \dotp{f_0}{\psi_k}_P^2 \leq  \frac{1}{\{\lambda_{K + 1}(\Delta_P)\}^s} \sum_{k = K + 1}^{\infty} \{\lambda_{k + 1}(\Delta_P)\}^s \dotp{f_0}{\psi_k}_P^2 \leq \frac{\|f_0\|_{\mc{H}^s(\mc{X})}}{\{\lambda_{K + 1}(\Delta_P)\}^s}.
 \end{equation*}
@@ -107,7 +107,7 @@ where the noise variables $w_i$ are independent $N(0,1)$. In the rest of this se
 	\begin{equation*}
 	\|\mathbb{E}\wh{f} - f_0\|_n^2 = \Bigl\|\sum_{k = K + 1}^{n} \dotp{v_k}{f_0}_n v_k\Bigr\|_n^2 = \sum_{k = K + 1}^n \dotp{v_k}{f_0}_n^2.
 	\end{equation*}
-	In the above, the last equality relies on the fact that $v_k$ are orthonormal in $L^2(P_n)$. Using the fact that the eigenvalues are in increasing order, we obtain
+	In the above, the last equality relies on the fact that $v_k$ are orthonormal with respect to $\dotp{\cdot}{\cdot}_n$. Using the fact that the eigenvalues are in increasing order, we obtain
 	\begin{equation*}
 	\sum_{k = K + 1}^n \dotp{v_k}{f_0}_n^2 \leq \frac{1}{\lambda_{K + 1}^s} \sum_{k = K + 1}^n \lambda_k^s \dotp{v_k}{f_0}_n^2 \leq \frac{\dotp{L^sf_0}{f_0}_n}{\lambda_{K + 1}^s}.
 	\end{equation*}
@@ -579,7 +579,7 @@ which proves the claim of~\eqref{pf:approximation_error_nonlocal_laplacian_bound
 \subsection{Estimate of non-local Sobolev seminorm}
 \label{subsec:estimate_nonlocal_seminorm}
 
-Now, we use the results of the preceding two sections to prove~\eqref{pf:graph_seminorm_ho_2}. We will divide our analysis in two cases, depending on whether $s$ is odd or even, but before we do this we state some facts that will be applicable to both cases. First, we  recall that $L_{P,\varepsilon}$ is self-adjoint in $L^2(P)$, meaning $\dotp{L_{P,\varepsilon}f}{g}_{P} = \dotp{f}{L_{P,\varepsilon}g}_{P}$ for all $f, g \in L^2(P)$. We also recall the definition of the Dirichlet energy $E_{P,\varepsilon}(f;\mc{X})$,
+Now, we use the results of the preceding two sections to prove~\eqref{pf:graph_seminorm_ho_2}. We will divide our analysis in two cases, depending on whether $s$ is odd or even, but before we do this we state some facts that will be applicable to both cases. First, we  recall that $L_{P,\varepsilon}$ is self-adjoint in $L^2(P)$, meaning $\dotp{L_{P,\varepsilon}f}{g}_{P} = \dotp{f}{L_{P,\varepsilon}g}_{P}$ for all $f, g \in L^2(\mc{X})$. We also recall the definition of the Dirichlet energy $E_{P,\varepsilon}(f;\mc{X})$,
 \begin{equation}
 \label{eqn:dirichlet_energy}
 \dotp{L_{P,\varepsilon}f}{f}_{P} = \frac{1}{\varepsilon^{d + 2}}\int_{\mc{X}} \int_{\mc{X}} \bigl(f(x) - f(x')\bigr)^2 \eta\biggl(\frac{\|x' - x\|}{\varepsilon}\biggr) \,dP(x') \,dP(x) =: E_{P,\varepsilon}(f;\mc{X}).
@@ -1546,6 +1546,6 @@ Let $\wc{f}$ be the PCR-LE estimator computed using the eigenvectors of the spar
 \begin{equation*}
 \|\wc{f} - f_0\|_n^2 \leq \frac{\dotp{\wc{L}_{n,\varepsilon}^s f_0}{f_0}_n}{\wc{\lambda}_{K + 1}^s} + \frac{5K}{n} \leq \sigma^{2s} \frac{\dotp{\wc{L}_{n,\varepsilon}^s f_0}{f_0}_n}{\wc{\lambda}_{K + 1}^s} + \frac{5K}{n},
 \end{equation*}
-with probability at least $1 - \exp(-K)$. Consequently $\wt{f}$ has $L^2(P_n)$-error of at most $\sigma^{2s}$ times our upper bound on the error of $\wh{f}$, and for any choice of $\sigma$ that is constant in $n$ the estimator $\wc{f}$ will also be rate-optimal. 
+with probability at least $1 - \exp(-K)$. Consequently $\|\wt{f} - f_0\|_n^2$is at most $\sigma^{2s} \cdot \|\wh{f} - f_0\|_n^2$, and for any choice of $\sigma$ that is constant in $n$ the estimator $\wc{f}$ will also be rate-optimal. 
 
 In fact the aforementioned edge sparsification algorithms are overkill for our needs. For one thing, they are designed to work when $\sigma$ is very close to $1$, whereas in order for $\wc{f}$ to be rate-optimal, setting $\sigma$ to be any constant greater than $1$, say $\sigma = 2$, is sufficient. Additionally, edge sparsification algorithms are traditionally designed to work in the worst-case, where no assumptions are made on the structure of the graph $G$. But the geometric graphs we consider in this paper exhibit a special structure, in which very roughly speaking no single edge is a bottleneck. As pointed out by~\citet{sadhanala16b}, in this special case there are far simpler and faster methods for sparsification, which at least empirically seem to do the job.

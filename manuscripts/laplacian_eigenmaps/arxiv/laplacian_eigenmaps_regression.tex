@@ -95,10 +95,9 @@
 \begin{document}
 	
 % Title 
-\begin{center} {\Large{\bf{Minimax-optimal Regression over Sobolev Spaces \\
+\begin{center} {\Large{\bf{Minimax Optimal Regression over Sobolev Spaces \\
 				\vspace{.2cm}
-				via Laplacian Eigenmaps with Neighborhood Graphs} \\}
-			\textcolor{red}{(TODO): Keep this title?}}
+				via Laplacian Eigenmaps on Neighborhood Graphs}}}
 	
 	\vspace*{.3cm}
 	
@@ -129,7 +128,7 @@
 
 % Abstract
 \begin{abstract}
-	In this paper we study the statistical properties of Principal Components Regression with Laplacian Eigenmaps (PCR-LE), a method for nonparametric regression based on Laplacian Eigenmaps (LE). PCR-LE works by projecting a vector of observed responses ${\bf Y} = (Y_1,\ldots,Y_n)$ onto a subspace spanned by certain eigenvectors of a neighborhood graph Laplacian. We show that in many cases PCR-LE achieves minimax rates of convergence over continuum function classes. Specifically, we consider the problem of random design regression over Sobolev spaces $H^s(\mc{X})$---where $\mc{X} \subseteq \Rd$ is the support of the design distribution $P$---and show that under sufficient smoothness conditions on the design density $p$, PCR-LE achieves the optimal rates for both estimation (where the optimal rate is known to be $n^{-2s/(2s + d)}$) and goodness-of-fit testing ($n^{-4s/(4s + d)}$). We also show that PCR-LE is \emph{manifold adaptive}: that is, we consider the situation where $\mc{X}$ is a manifold of small intrinsic dimension $m$, and give upper bounds establishing that PCR-LE achieves the faster minimax estimation ($n^{-2s/(2s + m)}$) and testing ($n^{-4s/(4s + m)}$) rates of convergence. Interestingly, these rates are almost always much faster than the known rates of convergence of graph Laplacian eigenvectors to their population-level limits; in other words, for this problem regression with learned features appears to be much easier, statistically speaking, than feature learning. We support these theoretical results with empirical evidence.
+	In this paper we study the statistical properties of Principal Components Regression with Laplacian Eigenmaps (PCR-LE), a method for nonparametric regression based on Laplacian Eigenmaps (LE). PCR-LE works by projecting a vector of observed responses ${\bf Y} = (Y_1,\ldots,Y_n)$ onto a subspace spanned by certain eigenvectors of a neighborhood graph Laplacian. We show that PCR-LE achieves minimax rates of convergence over continuum function classes. Specifically, we consider the problem of random design regression over Sobolev spaces $H^s(\mc{X})$---where $\mc{X} \subseteq \Rd$ is the support of the design distribution $P$---and show that under sufficient smoothness conditions on the design density $p$, PCR-LE achieves the optimal rates for both estimation (where the optimal rate in squared $L^2$ norm is known to be $n^{-2s/(2s + d)}$) and goodness-of-fit testing ($n^{-4s/(4s + d)}$). We also show that PCR-LE is \emph{manifold adaptive}: that is, we consider the situation where $\mc{X}$ is a manifold of small intrinsic dimension $m$, and give upper bounds establishing that PCR-LE achieves the faster minimax estimation ($n^{-2s/(2s + m)}$) and testing ($n^{-4s/(4s + m)}$) rates of convergence. Interestingly, these rates are almost always much faster than the known rates of convergence of graph Laplacian eigenvectors to their population-level limits; in other words, for this problem regression with learned features appears to be much easier, statistically speaking, than feature learning itself. We support these theoretical results with empirical evidence.
 \end{abstract}
 
 	
