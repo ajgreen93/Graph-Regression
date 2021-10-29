@@ -1,5 +1,34 @@
 \noindent 
 
+\section{Notation Table}
+\label{sec:notation_table}
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{p{.14\textwidth} | p{.5\textwidth} }
+			Symbol & Definition
+			\\
+			\hline
+			$\mc{X}$ & domain, either an open set in $\Rd$ (Model~\ref{def:model_flat_euclidean}) or a compact manifold embedded in $\Rd$ (Model~\ref{def:model_manifold}) \\
+			$\nu$ & Lebesgue measure \\
+			$\mu$ & volume form induced by the embedding of $\mc{X}$ into $\Rd$ \\
+			$P$ & probability measure associated with the design points \\
+			$p$ & density of the probability measure, either with respect to $\nu$ (Model~\ref{def:model_flat_euclidean}) or $\mu$ (Model~\ref{def:model_manifold}). \\
+			$L^2(\mc{X})$ & set of square-integrable functions, meaning either $\int_{\mc{X}} f^2 \,d\nu < \infty$ (Model~\ref{def:model_flat_euclidean}) or $\int_{\mc{X}} f^2 \,d\mu < \infty$ (Model~\ref{def:model_manifold}). \\
+			$C^k(\mc{X})$ & functions which are $k$-times continuously differentiable in $\mc{X}$ \\
+			$C_c^{\infty}(\mc{X})$ & functions in $C^{\infty}(\mc{X})$ which are compactly supported in $\mc{X}$ \\
+			$H^s(\mc{X})$ & order-s Sobolev space (Definition~\ref{def:sobolev_space} under Model~\ref{def:model_flat_euclidean}, Definition~\ref{def:sobolev_space_manifold} under Model~\ref{def:model_manifold}.) \\
+			$H_0^s(\mc{X})$ & order-s zero-trace Sobolev space (Definition~\ref{def:zero_trace_sobolev_space}) \\
+			$\|\cdot\|_2$ & Euclidean distance \\
+			$d_{\mc{X}}(\cdot,\cdot)$ & geodesic distance \\
+			$B(x,\delta)$ & Ball in Euclidean distance, centered at $x$ with radius $\delta$ \\
+			$B_{\mc{X}}(x,\delta)$ & Ball in geodesic distance
+		\end{tabular}
+	\end{center}
+	\caption{Notation.}
+\end{table}
+
+
 \section{Upper bounds on population-level spectral series regression}
 
 In this section we first give the proof of Proposition~\ref{prop:spectral_series_estimation}, then of Proposition~\ref{prop:spectral_series_testing}. In both cases the structure of the analysis, which is fairly classical and straightforward, can be usefully compared to our analysis of PCR-LE (see Section~\ref{subsec:analysis}).
