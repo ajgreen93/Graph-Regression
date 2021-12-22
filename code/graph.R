@@ -41,6 +41,7 @@ knn_to_neighborhood_graph <- function(X, r, k_max, X_new = X,loop, kernel)
     
     r_neighbors_list <- as.matrix(melt(rneighbors)[,-2])
     r_neighbors_list <- r_neighbors_list[rowSums(is.na(r_neighbors_list)) == 0,]
+    r_neighbors_list <- r_neighbors_list[,c(2,1)]
     
     dist_to_neighbors_vec <- c(dist_to_neighbors)
     dist_to_neighbors_vec <- dist_to_neighbors_vec[!is.na(dist_to_neighbors_vec)]

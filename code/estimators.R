@@ -80,9 +80,16 @@ make_laplacian_smoothing <- function(theta)
   r <- theta[["r"]]
   rho <- theta[["rho"]]
   labeled <- theta[["labeled"]]
+  kernel <- theta[["kernel"]]
   laplacian_smoothing <- function(Y,X){
+    
     # Build G_{n,r} over X.
-    G <- neighborhood_graph(X,r)
+    if(!is.null(kernel))
+    {
+      G <- neighborhood_graph(X,r,kernel)
+    } else{
+      G <- neighborhood_graph(X,r)
+    }
     
     # Get L.
     L <- Laplacian(G)

@@ -325,6 +325,32 @@ plot_eigenvectors <- function(V,X,Ks = 1:ncol(V),ncolors = 25,cex.pt = 3){
   }
 }
 
+plot_equivalent_kernel <- function(H,X, plot_X, theta,
+                                  labeled = T,
+                                  colors = rep("black",length(plot_X)),
+                                  rug = T,
+                                  title = NULL,
+                                  xlim = NULL)
+{
+  if(d == 1)
+  {
+    plot_equivalent_kernel_1d(H,X, plot_X, theta,
+                              labeled = labeled,
+                              colors = colors,
+                              title = title,
+                              rug = rug,
+                              xlim = xlim)
+  } else if(d == 2)
+  {
+    plot_equivalent_kernel_2d(H,X, plot_X, theta,
+                              labeled = labeled,
+                              colors = colors,
+                              title = title,
+                              wireframe = T,
+                              xlim = xlim)
+  }
+}
+
 # Plot equivalent kernels.
 plot_equivalent_kernel_1d <- function(H,X, plot_X, theta,
                                       labeled = T,
@@ -334,14 +360,14 @@ plot_equivalent_kernel_1d <- function(H,X, plot_X, theta,
                                       xlim = NULL)
 {
   plot_indx <- apply(plot_X,1,FUN = function(x){apply(X,1,FUN = function(z){sum(z - x)^2}) %>% which.min()})
-  plot_mat <- H[plot_indx,]
+  plot_mat <- H[plot_indx,,drop = F]
   
   if(is.null(title))
   {
-    if(all(names(theta) == c("r","rho","kernel"))){
+    if(all(c("r","rho") %in% names(theta))){
       title <- paste0("Radius: ", round(theta$r,2), 
                       ". Rho: ",round(theta$rho,2),".")
-    } else if(all(names(theta) == c("r","K","kernel"))){
+    } else if(all(c("r","K") %in% names(theta))){
       title <- paste0("Radius: ", round(theta$r,2), 
                       ". K: ",K,".")
     }
@@ -377,6 +403,52 @@ plot_equivalent_kernel_1d <- function(H,X, plot_X, theta,
   }
   if(rug){rug(X, lwd = .01)}
   grid(lwd = 2)
+}
+
+plot_equivalent_kernel_2d <- function(H,X, plot_X, theta,
+                                      labeled = T,
+                                      colors = rep("black",length(plot_X)),
+                                      title = NULL,
+                                      wireframe = T,
+                                      xlim = NULL)
+{
+  # Sanity checks
+  stopifnot(nrow(plot_X) == 1)
+  stopifnot(ncol(X) == 2)
+  
+  plot_indx <- apply(plot_X,1,FUN = function(x){apply(X,1,FUN = function(z){sum((z - x)^2)}) %>% which.min()})
+  plot_mat <- H[plot_indx,]
+  if(!labeled){
+    plot_mat <- plot_mat[-plot_indx]
+    X <- X[-plot_indx,,drop = F]
+  }
+  
+  # Plot
+  if(wireframe)
+  {
+    if(all(unique(X[,1]) == unique(X[,2])))
+    {
+      # Special plotting if already a grid
+      u <- unique(X[,1])
+      indx <- matrix(nrow = nrow(X),ncol = 2)
+      indx[,1] <- sapply(X[,1], FUN = function(x){which(u == x)})
+      indx[,2] <- sapply(X[,2], FUN = function(x){which(u == x)})
+      z <- matrix(NA,ncol = length(unique(X[,1])),
+                  nrow = length(unique(X[,1])))
+      z[indx] <- plot_mat
+      s <- list(x = u,y = u, z = z)
+    } else{
+      # Otherwise, interpolate onto a grid
+      s <- akima::interp(x = X[,1],y = X[,2],z = plot_mat)
+    }
+    persp(x = s$x,y = s$y, z = s$z, phi = 45, theta = 60)
+  } else{s
+    s <- list(x = X[,1],
+              y = X[,2],
+              z = plot_mat)
+    
+    lattice::cloud(z ~ x * y, data = s,pch = 1, col = "black")
+  }
 }
 
 signed_root <- function(A){sqrt(abs(A)) * sign(A)}
