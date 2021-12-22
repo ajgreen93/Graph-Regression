@@ -1,0 +1,211 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue
+}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+% Make a widecheck symbol (thanks, Stack Exchange!)
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+	<5> <6> <7> <8> <9> <10>
+	<10.95> <12> <14.4> <17.28> <20.74> <24.88>
+	mathx10
+}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+% widecheck made
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Note on: Local Weyl's Law}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $\Delta = -\sum_{i = 1}^{d} \frac{\partial^2}{\partial x_i^2}$ be the continuum Laplacian operator in $\Rd$. Let $\mc{X}$ be a connected open bounded set in $\Rd$, with $C^{1,1}$ boundary. The eigenvector equation with Neumann boundary conditions is
+\begin{equation}
+\label{eqn:eigenvector}
+\Delta \psi = \lambda \psi,\quad \frac{\partial}{\partial {\bf n}}\psi = 0~~\textrm{on $\partial \mc{X}$.}
+\end{equation}
+The operator $\Delta$ has a discrete spectrum, by which we mean that there exist enumerable pairs $(\lambda,\psi)$ which satisfy~\eqref{eqn:eigenvector}. We enumerate them $(\lambda_1,\psi_1),(\lambda_2,\psi_2),\ldots$ in increasing order of eigenvalue, $\lambda_1 \leq \lambda_2 \leq \ldots$. 
+
+Note that $(\psi_k)_{k}$ form an orthonormal basis of $L^2(\mc{X})$. Thus the spectral function $E_{\lambda}u := \sum_{k: \lambda_k \leq \lambda} \dotp{u}{\psi_k} \psi_k$ is the projection of a given $u \in L^2(\mc{X})$ onto the ``bottom'' part of the spectrum. The following estimate on the spectral function is due to H\"{o}rmander, Theorem 17.5.3:
+\begin{equation}
+\label{eqn:local_weyl_law}
+\sup_{x \in \mc{X}} |E_{\lambda}(x)|^2 \leq C \lambda^{d/2} \quad \textrm{for all $K \in \mathbb{N}$.}
+\end{equation}
+I prove~\eqref{eqn:local_weyl_law}, following the proof of H\"{o}rmander but giving some extra exposition where I didn't initially understand his reasoning. First, I make some useful notes about the result.
+\begin{itemize}
+	\item The statement~\eqref{eqn:local_weyl_law} also holds when $\Delta$ is replaced by a symmetric second order positive differential operator,
+	\begin{equation*}
+	\mc{L} :=  -\sum_{i,j = 1}^{d} g^{ij}\frac{\partial^2}{\partial x_ix_j} + \sum_{j = 1}^{d} b^j \frac{\partial}{\partial x_j} + c
+	\end{equation*}
+	with coefficients $g$ and $b$ in $C^{\infty}(\mc{X})$. This includes the case of the weighted Laplace-Beltrami operator $\Delta_P$ when $P$ admits a smooth density $p$ over $\mc{X}$.
+	\item Let $N(\lambda) = \#\{k: \lambda_k \leq \lambda\}$. Using the trace trick, we have that
+	\begin{equation*}
+	N(\lambda) = \sharp\int_{\mc{X}} |E_\lambda(x)|^2 \,dx \leq C\lambda^{d/2}
+	\end{equation*}
+	implying that $\lambda_K \gtrsim K^{2/d}$. This is one-half of the Weyl's law asymptotic scaling $\lambda_K \asymp K^{2/d}$; in fact it is only half needed to establish 
+	\item 
+\end{itemize}
+
+
+and show that it implies the asymptotic estimate $\lambda_K \gtrsim K^{2/d}$, which is one-half of the Weyl's Law estimate. Note that the other half of Weyl's Law, $\lambda_K \lesssim K^{2/d}$, along with~\eqref{eqn:local_weyl_law}, implies that 
+\begin{equation}
+\label{eqn:local_weyl_law2}
+\sup_{x \in \mc{X}} |E_{\lambda_K}(x)|^2 \leq C K \quad \textrm{for all $K \in \mathbb{N}$.}
+\end{equation}
+~\eqref{eqn:local_weyl_law2} is how we state the result in our Laplacian eigenmaps paper.
+
+\section{Proof of~\eqref{eqn:local_weyl_law}}
+
+
+
+\end{document}

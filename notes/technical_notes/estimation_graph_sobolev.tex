@@ -1,0 +1,87 @@
+\documentclass{article}
+
+\input{preamble.sty}
+
+\begin{document}
+	% Front Matter
+	\title{Estimation over Graph Sobolev Spaces}
+	\author{Alden Green}
+	\maketitle
+	
+	\tableofcontents
+	
+	\section{Introduction}
+	We consider a Normal means problem. We observe ${\bf Y} = (Y_1,\ldots,Y_n) \in \Reals^n$ according to the signal plus Gaussian noise model,
+	\begin{equation}
+	Y_i = \theta_i^{\ast} + w_i,
+	\end{equation}
+	where $w_i \sim N(0,1)$ are independent Gaussian noise variables. The task is to recover the mean vector $\theta_i^{\ast} \in \Reals^n$, which is generally impossible unless some structure is assumed.
+	
+	The classical approach assumes that $\theta_i^{\ast}$ exhibits \emph{decay} as a function of $i$. We take a different route, and assume \emph{smoothness} of the mean vector $\theta^{\ast}$ with respect to some graph $\texttt{G} = (\texttt{V},\texttt{E})$. This smoothness is defined with respect to the edge incidence matrix $D \in \Reals^{m \times n}$---which has rows $D_{e} = (0,\ldots,1,\ldots,-1,\ldots,0)$ for each edge $e = (i,j) \in \ttt{E}$, and $m = |E|$ is the number of edges in $\ttt{G}$---and the Laplacian $L = D^{\top}D$. In particular, we assume $\theta^{\ast}$ belongs to a \emph{graph Sobolev class}, which we now define.
+	
+	\begin{definition}[Graph Sobolev Space]
+		For a given $s \in \mathbb{N}, s \geq 1$ and $p \in [1,\infty)$, the \emph{graph Sobolev seminorm} of a vector $\theta \in \Reals^n$ is given by
+		\begin{equation}
+		|\theta|_{s,p} := 
+		\begin{cases}
+		\|DL^{(s - 1)/2}\|_p, & \quad\textrm{$s$ odd.}\\
+		\|L^{s/2}\|_p, & \quad\textrm{$s$ even.}
+		\end{cases}
+		\end{equation}
+		The graph Sobolev class $W_n^{s,p} \subseteq \Reals^n$ consists of all vectors $\theta \in \Reals^n$ for which $\|\theta\|_{s,p} < \infty$. The graph Sobolev ball $W_{n}^{s,p}(M) = \{\theta \in W_n^{s,p}: |\theta|_{s,p} < M\}$.
+	\end{definition} 
+	We address the following questions:
+	\begin{itemize}
+		\item \emph{Minimax rates}. The risk of an estimator $\wh{\theta} \in \Reals^n$--i.e. a measurable function of ${\bf Y}$---with respect to mean-squared error loss is
+		\begin{equation}
+		\label{eqn:risk}
+		R\bigl(\wh{\theta},\theta^{\ast}\bigr) = \frac{1}{n}\Ebb[\|\wh{\theta} - \theta^{\ast}\|_2^2]. 
+		\end{equation}
+		The minimax risk over balls $W_{n}^{s,p}(M)$ is
+		\begin{equation}
+		R(W_{n}^{s,p}(M)) = \inf_{\wh{\theta}} \sup_{\theta^{\ast} \in W_n^{s,p}(M)} 	R\bigl(\wh{\theta},\theta^{\ast}\bigr).
+		\end{equation}
+		We would like to find a function $\psi(n,M)$ such that $R(W_{n}^{s,p}(M)) \asymp \psi(n,M)$.
+		\item \emph{Adaptivity}. \textcolor{red}{(TODO)}.
+		\item \emph{Fractional Sobolev spaces} \textcolor{red}{(TODO)}.
+	\end{itemize}
+	Our particular angle will be to get as far as we can using only discrete analogues to classical results of Fourier analysis.
+	
+	\section{Discrete Fourier Analysis}
+	The Laplacian $L$ is a positive semi-definite matrix, and according to the spectral theorem can be characterized as $L = \sum_{k = 1}^{n} \lambda_k v_k v_k^{\top}$, where the eigenvalue/eigenvector pairs $(\lambda_k,v_k)$ satisfy
+	\begin{equation}
+	L v_k = \lambda_k v_k, \quad \|v_k\|_2^2 = 1,
+	\end{equation} 
+	and are index in ascending order of eigenvalues $0 = \lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n$. We assume the spectrum of $L$ exhibits some structure characteristic of certain geometric graphs.
+	\begin{assumption}{A}{1}
+		\label{asmp:weyl}
+		There exist positive numbers $a$ and $A$ such that
+		\begin{equation}
+		\label{eqn:weyl}
+		a k^{2/d} \leq \lambda_k \leq A K^{2/d}, \textrm{for all $k \in \{2,\ldots,n\}$.}
+		\end{equation}
+	\end{assumption}
+	\begin{assumption}{A}{2}
+		\label{asmp:laplacian-spectrum} 
+		The graph Laplacian $L$ of $\ttt{G}$ satisfies the following: there exists a positive number $B$ such that
+		\begin{equation}
+		\label{eqn:eigenvector-incoherence}
+		\max_{k = 1,\ldots,n} \|v_k\|_{\infty} \leq \frac{B}{\sqrt{n}}.
+		\end{equation}
+	\end{assumption}
+	Trivially~\eqref{eqn:weyl} is satisfied for any connected graph $\ttt{G}$, and~\eqref{eqn:eigenvector-incoherence} for any graph, connected or not. However, we will obtain sharp rates for estimation only when $a \asymp A$ and $B \asymp 1$. 
+	
+	Let $F: \Reals^n \to \Reals^n$ denote the Graph Fourier Transform $F\theta := (\theta^{\top} v_1,\ldots,\theta^{\top}v_n)$.  Under Assumption~\ref{asmp:laplacian-spectrum}, we can reproduce many results of classical Fourier analysis.
+	\begin{proposition}
+		For any graph $\ttt{G}$ with incidence matrix $D$, Laplacian $L$, and GFT $F$, the following statements hold for all $\theta \in \Reals^n$.
+		\begin{itemize}
+			\item \emph{Parseval}. $\|\theta\|_2 = \|F\theta\|_2$
+			\item \emph{Laplacian to Multiplication}. $F(L\theta) = \vec{\lambda} \odot F(\theta)$. Here $\vec{\lambda} := (\lambda_1,\ldots,\lambda_n)$ and for vectors $v,u \in \Reals^n, v \odot u = (v_1u_1,\ldots,v_nu_n)$ stands for pointwise multiplication.
+		\end{itemize}
+		Suppose additionally that $\ttt{G}$ satisfies~\ref{asmp:laplacian-spectrum}. Then
+		\begin{itemize}
+			\item \emph{Duality}. $\|\theta\|_1 \leq (B/\sqrt{n}) \|F\theta\|_{\infty}$.
+			\item \emph{Hausdorff-Young}.  
+		\end{itemize}
+	\end{proposition}
+\end{document}

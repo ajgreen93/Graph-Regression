@@ -1,0 +1,377 @@
+\documentclass{article}
+
+%%% Begin Ryan's template
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{times}          % times font
+
+\usepackage[round]{natbib}
+\usepackage{amssymb,amsmath,amsthm,bbm}
+\usepackage[margin=1in]{geometry}
+\usepackage{verbatim,float,url,dsfont}
+\usepackage{graphicx,subfigure,psfrag}
+\usepackage{algorithm,algorithmic}
+\usepackage{mathtools,enumitem}
+\usepackage[colorlinks=true,citecolor=blue,urlcolor=blue,linkcolor=blue]{hyperref}
+\usepackage{multirow}
+
+% Theorems and such
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+
+% Assumption
+\newtheorem*{assumption*}{\assumptionnumber}
+\providecommand{\assumptionnumber}{}
+\makeatletter
+\newenvironment{assumption}[2]{
+	\renewcommand{\assumptionnumber}{Assumption #1#2}
+	\begin{assumption*}
+		\protected@edef\@currentlabel{#1#2}}
+	{\end{assumption*}}
+\makeatother
+
+% Widebar
+\makeatletter
+\newcommand*\rel@kern[1]{\kern#1\dimexpr\macc@kerna}
+\newcommand*\widebar[1]{%
+	\begingroup
+	\def\mathaccent##1##2{%
+		\rel@kern{0.8}%
+		\overline{\rel@kern{-0.8}\macc@nucleus\rel@kern{0.2}}%
+		\rel@kern{-0.2}%
+	}%
+	\macc@depth\@ne
+	\let\math@bgroup\@empty \let\math@egroup\macc@set@skewchar
+	\mathsurround\z@ \frozen@everymath{\mathgroup\macc@group\relax}%
+	\macc@set@skewchar\relax
+	\let\mathaccentV\macc@nested@a
+	\macc@nested@a\relax111{#1}%
+	\endgroup
+}
+\makeatother
+
+% Min and max
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+\newcommand{\argmax}{\mathop{\mathrm{argmax}}}
+\newcommand{\minimize}{\mathop{\mathrm{minimize}}}
+\newcommand{\st}{\mathop{\mathrm{subject\,\,to}}}
+
+% Shortcuts
+\def\R{\mathbb{R}}
+
+%%% End Ryan's template
+
+%%% Begin Alden's additions
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\Reals}{\mathbb{R}} % Same thing as Ryan's \R
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\wb}[1]{\widebar{#1}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\bj}{{\bf j}}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wc}{0}{mathx}{"71}
+%%% End Alden's Additions
+
+\begin{document}
+
+\textcolor{red}{(TODO): Come back and edit this. For now it is garbled copy-paste gibberish.}
+
+\section{Out-of-sample error}
+\label{sec:out_of_sample}
+We consider an estimator $\wh{f}$ defined only at the design points $\{X_1,\ldots,X_n\}$.  Our goal is to define an extension to the entire domain $\mc{X}$, such that the resulting extension has small $L^2(P)$ norm. We propose a simple method, kernel smoothing, to do the job. The method can applied to any estimator defined at the design points, and we show that a smoothed version of our original estimator $\wh{f}$ has optimal $L^2(P)$ error. For simplicity, in this section we will stick to the flat Euclidean setting, where $(X_1,Y_1),\ldots,(X_n,Y_n)$ are observed according to Model~\ref{def:model_flat_euclidean}.
+
+\paragraph{Extension by kernel smoothing.}
+We now formally define our approach to extension by kernel smoothing. For a kernel function $\psi(\cdot): [0,\infty) \to (-\infty,+\infty)$, bandwidth $h > 0$, and a distribution $Q$, the \emph{Nadaraya-Watson kernel smoother} $T_{Q,h}$ is given by
+\begin{equation*}
+\bigl(T_{Q,h}f)(x) := 
+\begin{dcases*}
+\frac{1}{d_{Q,h}(x)} \int_{\Omega} f(z)\psi\biggl(\frac{\|z - x\|}{h}\biggr) \,dQ(z), & \textrm{if $d_{Q,h}(x) > 0$,} \\
+0, &\textrm{otherwise,}
+\end{dcases*}
+\end{equation*}
+where $d_{Q,h}(x) := \int_{\Omega} \psi\bigl(\|z - x\|/h\bigr) \,dQ(z)$. For convenience, we will write $T_{n,h}f(x) := T_{P_n,h}f(x)$, and $d_{n,h}(x) := n \cdot d_{P_n,h}(x)$.  We extend the Laplacian eigenmaps estimator by passing the kernel smoother $T_{n,h}$ over it, that is we consider the estimator $T_{n,h}\wh{f}$, which is defined at every $x \in \mc{X}$ (indeed, at every $x \in \Rd$). Note that ``extension'' here is a slight abuse of nomenclature, since $T_{n,h}\wh{f}$ and $\wh{f}$ may not agree in-sample.
+
+\paragraph{Out-of-sample error of kernel smoothed Laplacian eigenmaps.}
+
+In Lemma~\ref{lem:kernel_smoothing_insample}, we consider an arbitrary estimator $\wc{f} \in \Reals^n$. We show that the out-of-sample error $\|T_{n,h}\wc{f} - f_0\|_P^2$ can be upper bounded by three terms--- (a constant times) the in-sample error $\|\wc{f} - f_0\|_n^2$, and variance and bias terms that arise naturally in the analysis of kernel smoothing over noiseless data. We shall assume the following conditions on $\psi$ and $h$.
+\begin{enumerate}[label=(K\arabic*)]
+	\setcounter{enumi}{2}
+	\item
+	\label{asmp:kernel}
+	The kernel function $\psi$ is supported on a subset of $[0,1]$. Additionally, $\psi$ is Lipschitz continuous on $[0,1]$, and is normalized so that
+	\begin{equation*}
+	\int_{-\infty}^{\infty} \psi(|z|) \,dz = 1.
+	\end{equation*}
+\end{enumerate}
+\begin{enumerate}[label=(P\arabic*)]
+	\setcounter{enumi}{6}
+	\item
+	\label{asmp:bandwidth}
+	For constants $c_0$ and $C_0$, the bandwidth parameter $h$ satisfies
+	\begin{equation*}
+	C_0\biggl(\frac{\log(1/h)}{n}\biggr)^{1/d} \leq h \leq c_0.
+	\end{equation*}
+\end{enumerate}
+\begin{lemma}
+	\label{lem:kernel_smoothing_insample}
+	Suppose Model~\ref{def:model_flat_euclidean}, and additionally that $f_0 \in H^1(\mc{X};M)$ and $p \in C^1(\mc{X})$. If the kernel smoothing estimator $T_{n,h}\wc{f}$ is computed with a kernel $\psi$ satisfying~\ref{asmp:kernel} and bandwidth $h$ satisfying~\ref{asmp:bandwidth}, it holds that
+	\begin{equation}
+	\label{eqn:kernel_smoothing_insample}
+	\|T_{n,h}\wc{f} - f_0\|_P^2 \leq C\biggl(\|\wc{f} - f_0\|_n^2 + \frac{1}{\delta} \cdot \frac{h^2}{nh^d} |f|_{H^1(\mc{X})}^2 + \frac{1}{\delta}\|T_{P,h}f_0 - f_0\|_P^2\biggr),
+	\end{equation}
+	with probability at least $1 - \delta - Ch^d\exp\{-Cnh^d\}$. 
+\end{lemma}
+Notice that the variance term in the above is smaller than the typical variance term for kernel smoothing of noisy data, by a factor of $h^2$. On the other hand the bias term is typical, and when $\psi$ is an order-$s$ kernel a standard analysis (see Lemma~\ref{lem:kernel_smoothing_bias}) shows that $\|T_{P,h}f_0 - f_0\|_P^2 \lesssim |f|_{H^s(\mc{X})}^2 h^{2s}$.
+\begin{enumerate}[label=(K\arabic*)]
+	\setcounter{enumi}{3}
+	\item
+	\label{asmp:ho_kernel}
+	The kernel function $\psi$ is an order-$s$ kernel, meaning it satisfies $\int_{-\infty}^{\infty} \psi(|z|) \,dz = 1$, and if $s \geq 2$,
+	\begin{equation*}
+	\int_{-\infty}^{\infty} z^j \psi(|z|) \,dz = 0 ~~\textrm{for}~j = 1,\ldots, s + d - 2, \quad \textrm{and}~ \int_{-\infty}^{\infty} z^{s + d - 1} \psi(|z|) \,dz < \infty. 
+	\end{equation*}
+\end{enumerate}
+Kernels satisfying~\ref{asmp:ho_kernel} can be constructed using linear combinations of (truncated) polynomials in a standard way; for instance, the boxcar kernel $\psi(z) = (1/2)\cdot\1\{|z| \leq 1\}$ is an order-$2$ kernel, and $\psi(z) = (9/26 - 15z^2/52)\cdot\1\{|z| \leq 1\}$ is an order-$3$ kernel.
+
+Choosing $h \asymp n^{-1/(2(s - 1) + d)}$ balances the kernel smoothing bias and variance terms in~\eqref{eqn:kernel_smoothing_insample}, and implies that for $f_0 \in H^s(\mc{X};M)$,
+\begin{equation}
+\label{eqn:kernel_smoothing_insample2}
+\|T_{n,h}\wc{f} - f_0\|_P^2 \leq C\biggl(\|\wc{f} - f_0\|_n^2 + \frac{M^2}{\delta}n^{-2s/(2(s - 1) + d)}\biggr).
+\end{equation}
+This analysis tells us that the additional error incurred by passing a kernel smoother over an in-sample estimator $\wc{f}$ is negligible compared to the minimax rate of estimation. Consequently, if $\wc{f}$ converges at the minimax rate in squared $L^2(P_n)$-norm, then $T_{n,h}\wc{f}$ will converge at the minimax rate in squared $L^2(P)$-norm. It follows immediately from Theorem~\ref{thm:laplacian_eigenmaps_estimation_fo} (when $s = 1$) or Theorem~\ref{thm:laplacian_eigenmaps_estimation_ho} (when $s > 1$) that $T_{n,h}\wh{f}$ achieves the optimal rate of convergence in $L^2(P)$.
+
+\begin{theorem}
+	\label{thm:laplacian_eigenmaps_estimation_out_of_sample}
+	Suppose Model~\ref{def:model_flat_euclidean}. There exist constants $c$, $C$, and $N$ that do not depend on $f_0$ or $n$ such that each the following statements hold with probability at least $1 - \delta - Cn\exp\{-cn\varepsilon^d\} - Ch^d\exp\{-cnh^d\}$,  for all $n \geq N$ and for any $\delta \in (0,1)$.
+	\begin{itemize}
+		\item If $f_0 \in H^1(\mc{X};M)$, the Laplacian eigenmaps estimator $\wh{f}$ is computed with parameters $\varepsilon$ and $K$ that satisfy~\ref{asmp:parameters_estimation_fo}, and the out-of-sample extension $T_{n,h}\wh{f}$ is computed with bandwidth $h = n^{-1/d}$ and kernel $\psi$ that satisfies~\ref{asmp:kernel}, then
+		\begin{equation*}
+		\|T_{n,h}\wh{f} - f_0\|_P^2 \leq \frac{C}{\delta}M^2(M^2n)^{-2/(2 + d)}.
+		\end{equation*}
+		\item If $f_0 \in H_0^s(\mc{X};M)$ and $p \in C^{s - 1}(\mc{X})$ for some $s \in \mathbb{N}, s \geq 2$, and the Laplacian eigenmaps estimator $\wh{f}$ is computed with parameters $\varepsilon$ and $K$ that satisfy~\ref{asmp:parameters_estimation_ho}, and the out-of-sample extension $T_{n,h}\wh{f}$ is computed with bandwidth $h = n^{-1/(2(s - 1) + d)}$ and kernel $\psi$ that satisfies~\ref{asmp:kernel} and~\ref{asmp:ho_kernel}, then
+		\begin{equation*}
+		\|T_{n,h}\wh{f} - f_0\|_P^2 \leq \frac{C}{\delta}M^2(M^2n)^{-2s/(2s + d)}.
+		\end{equation*}
+	\end{itemize}
+\end{theorem}
+Some remarks:
+\begin{itemize}
+	\item \emph{Data-driven parameter tuning}. Since $T_{n,h}\wh{f}$ is defined out-of-sample, we can use sample splitting or cross-validation methods to tune hyperparameters, which we could not do for the original estimator $\wh{f}$. For instance, we can (i) split the sample into two halves, (ii) use the first half to compute $T_{n,h}\wh{f}$ for various values of $\varepsilon$, $h$, and $K$, (iii) choose the optimal values of these three hyperparameters by minimizing error on the held out set. Practically speaking, cross-validation is one of the most common approaches to choosing hyperparameters. Theoretically, it is known that choosing hyper-parameters through sample splitting can result in estimators that optimally adapt to the order of regularity $s$ \citep{gyorfi2006}. In other words, it leads to estimators that are rate-optimal (up to $\log n$ factors), even when $s$ is unknown. We believe similar arguments should imply that $T_{n,h}\wh{f}$ is adaptive in this sense when $\varepsilon,h$ and $K$ are chosen by sample splitting, but the details should be worked out carefully.
+	
+	% (AG 8/31/21): For now, I punted on proving formal results regarding sample-splitting. I can return later during a revision. 
+	\item \emph{Alternatives to extension by kernel smoothing}. There exist other approaches to extending a function $f$ from its evaluations $\{f(X_1),\ldots,f(X_n)\}$: for instance, minimum-norm interpolation in some RKHS or Banach space or 1-nearest neighbors regression.  We consider extension by kernel smoothing because it is a simple and statistically optimal procedure that does not require any knowledge of the domain $\mc{X}$ or distribution $P$---as we have argued, this latter property is one of the main selling points of Laplacian eigenmaps as a tool for nonparametric regression. One potential drawback to kernel smoothing is that it can change the value of the estimate at data, meaning $\wh{f} \neq (\wc{f}(X_1),\ldots, \wc{f}(X_n))$. More sophisticated procedures based on Nystr\"{o}m extension of the eigenvectors $\{v_1,\ldots,v_K\}$~\citep{fowlkes2004} inherit the generality of kernel smoothing while resulting in genuine extrapolation; however, the statistical properties of these procedures are substantially more difficult to analyze. 
+\end{itemize}
+
+\section{Proofs}
+\section{Proofs}
+\label{subsec:kernel_smoothing}
+In this section we prove Lemma~\ref{lem:kernel_smoothing_insample} (in Section~\ref{subsec:pf_kernel_smoothing_insample}) and Lemma~\ref{lem:kernel_smoothing_bias} (in Section~\ref{subsec:pf_kernel_smoothing_bias}). In Section~\ref{subsec:eigenmaps_beats_kernel_smoothing}, we give a sequence of design densities and regression functions $\{p^{(n)}(x), f_0^{(n)}(x)\}_{n \in \mathbb{N}}$ for which the estimator $T_{n,h}\wc{f}$ (extension of Laplacian eigenmaps by kernel smoothing) strictly outperforms directly kernel smoothing the responses, in the sense that
+\begin{equation*}
+\lim_{n \to \infty} \sup_{h'} \frac{\Ebb \|T_{n,h}\wh{f} - f_0\|_P^2}{\Ebb \|T_{h',n}Y - f_0\|_P^2 } = 0.
+\end{equation*}
+We begin with some preliminary estimates in Section~\ref{subsec:kernel_smoothing_preliminaries}, which will ease the subsequent analysis.
+\subsection{Some preliminary estimates}
+\label{subsec:kernel_smoothing_preliminaries}
+In certain parts the analysis of this section will overlap with Section~\ref{sec:graph_quadratic_form_euclidean}, where we upper bounded the non-local graph-Sobolev seminorm of a function $f$ in terms of the Sobolev norm of $f$. To see why this should be, note that for an function $f$ and point $x \in \mc{X}$, we have
+\begin{equation*}
+T_{P,h}f(x) - f(x) = \frac{1}{d_{Q,h}(x)} \int \bigl(f(x') - f(x)\bigr) \psi\biggl(\frac{\|x' - x\|}{h}\biggr) \,dQ(x') = \frac{h^{d + 2}}{d_{P,h}(x)} L_{P,h}f(x).
+\end{equation*}
+This expression reflects the known fact that the bias operator of kernel smoothing is equal to the non-local Laplacian, up to a rescaling by the population degree functional $d_{P,h}(x)$.  In the second equality, we are using the notation $L_{P,h}f(x)$ exactly as defined in~\eqref{eqn:nonlocal_laplacian}, but with the kernel $\psi$ instead of $\eta$. Note that $\psi$ satisfies all the same assumptions as $\eta$, except that of positivity; when $\psi$ is a higher-order kernel it may take negative values. 
+
+Now we provide a lower bound on $d_{P,h}(x)$ that holds uniformly over all $x \in \mc{X}$. Recall that by assumption the density $p$ is Lipschitz. Letting $L_p$ denote the Lipschitz constant of $p$, we have that
+\begin{align*}
+d_{P,h}(x) & = \int \psi\biggl(\frac{\|x' - x\|}{h}\biggr) p(x') \,dx' \\
+& = h^d \int \psi(\|z\|) p(hz + x) \1\Bigl\{ hz + x \in \mc{X} \Bigr\} \,dz \\
+& \geq h^d p(x) \int \psi(\|z\|) \1\Bigl\{ hz + x  \in \mc{X}\Bigr\} \,dz - L_p h^{d + 1} \|\psi\|_{\infty} \nu_d.
+\end{align*}
+Since by assumption $\mc{X}$ has Lipschitz boundary, setting $c_0$ to be a sufficiently small constant in~\ref{asmp:bandwidth}, we can further deduce that $\int \psi(\|z\|) \1\{hz + x \in \mc{X}\} \,dz \geq 1/3$, and consequently that
+\begin{equation}
+\label{eqn:degree_lower_bound}
+d_{P,h}(x) \geq \frac{p(x)}{3} h^d \geq \frac{p_{\min}}{3}h^d \quad \textrm{for all $x \in \mc{X}$.}
+\end{equation}
+
+\subsection{Proof of Lemma~\ref{lem:kernel_smoothing_insample}}
+\label{subsec:pf_kernel_smoothing_insample}
+
+To begin with, we apply the triangle inequality to upper bound $\|T_{n,h}\wc{f} - f_0\|_P$ by the sum of two terms,
+\begin{equation}
+\label{pf:kernel_smoothing_insample_1}
+\|T_{n,h}\wc{f} - f_0\|_P \leq \|T_{n,h}(\wc{f} - f_0)\|_P + \|T_{n,h}f_0 - f_0\|_P.
+\end{equation}
+We proceed by separately upper bounding each term on the right hand side of~\eqref{pf:kernel_smoothing_insample_1}. We will show that
+\begin{equation}
+\label{pf:kernel_smoothing_insample_2}
+\|T_{n,h}(\wc{f} - f_0)\|_P^2 \leq C \|\wc{f} - f_0\|_n^2
+\end{equation}
+and that 
+\begin{equation}
+\label{pf:kernel_smoothing_insample_3}
+\|T_{n,h}f_0 - f_0\|_P^2 \leq \frac{C}{\delta} \cdot \frac{h^2}{nh^d} |f|_{H^1(\mc{X})}^2 + \frac{C}{\delta}\|T_{h,P}f_0 - f_0\|_P^2,
+\end{equation}
+each with probability at least $1 - C\exp(-cnh^d)$. Together these will imply the claim. 
+
+\underline{\emph{Proof of~\eqref{pf:kernel_smoothing_insample_2}}.}
+Fix $x \in \mc{X}$. By the Cauchy-Schwarz inequality we have
+\begin{align*}
+\Bigl[T_{n,h}\bigl(\wc{f} - f_0\bigr)(x)\Bigr]^2 & = \Biggl[\frac{1}{d_{n,h}(x)^2}\int \psi\biggl(\frac{\|x' - x\|}{h}\biggr) \cdot \bigl(\wc{f}(x') - f_0(x')\bigr) \,dP_n(x')\Biggr]^2 \\
+& \leq \Biggl[\frac{1}{d_{n,h(x)}^2} \int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \,dP_n(x')\Biggr] \cdot \Biggl[\int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x')\Biggr] \\
+& = \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \frac{1}{|d_{n,h}(x)|} \Biggl[\int \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x')\Biggr].
+\end{align*}
+In the last line all we have done is written $d_{n,h}^{+}(x)$ for the degree functional computed with respect to the kernel $|\psi|$, recalling that $\psi$ may take negative values so $d_{n,h}^{+}(x)$ may not be equal to $d_{n,h}(x)$.
+
+Now we integrate over $x \in \mc{X}$ to get 
+\begin{align}
+\|T_{n,h}(\wc{f} - f_0)\|_P^2 & = \int \Bigl[T_{n,h}\bigl(\wc{f} - f_0\bigr)(x)\Bigr]^2 \,dP(x) \nonumber \\
+& \leq \int \int \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \frac{1}{|d_{n,h}(x)|} \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP_n(x') \,dP(x) \nonumber \\
+& \leq \sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x)}{|d_{n,h}(x)|} \cdot \int \int  \frac{1}{|d_{n,h}(x)|} \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \cdot \bigl(\wc{f}(x') - f_0(x')\bigr)^2 \,dP(x) \,dP_n(x') \nonumber \\
+& \leq \sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x) d_{P,h}^+(x)}{|d_{n,h}(x)|^2} \cdot \|\wc{f} - f_0\|_n^2. \label{pf:kernel_smoothing_insample_4}
+\end{align}
+Thus we have reduced the problem to showing that the various degree functionals $d_{n,h}^{+}, d_{P,h}^{+}$ and $d_{n,h}$ all put similar weight on a given point $x$. We use~\eqref{eqn:uniform_bound_empirical_degree_2}, which gives a uniform multiplicative bound on deviations of the empirical degree around its mean, to conclude that with probability at least $1 - C\exp\{-cnh^d\}$,
+\begin{equation*}
+d_{n,h}(x) \geq \frac{1}{2}d_{P,h}(x)~~ \textrm{and} ~~ d_{n,h}^{+}(x) \leq \frac{3}{2} d_{P,h}^{+}(x) \quad\textrm{for all $x \in \mc{X}$.}
+\end{equation*}
+Therefore,
+\begin{equation*}
+\sup_{x \in \mc{X}} \frac{d_{n,h}^{+}(x) d_{P,h}^+(x)}{|d_{n,h}(x)|^2} \leq 6 \cdot \sup_{x \in \mc{X}} \frac{|d_{P,h}^{+}(x)|^2}{|d_{P,h}(x)|^2} \leq 36 \biggl(\frac{\|\psi\|_{\infty} p_{\max} \nu_d}{p_{\min}}\biggr)^2
+\end{equation*}
+with the second inequality following from~\eqref{eqn:degree_lower_bound}. Plugging this back into~\eqref{pf:kernel_smoothing_insample_4} gives the claim.
+
+\underline{\emph{Proof of~\eqref{pf:kernel_smoothing_insample_3}}.}
+At a given point $x \in \mc{X}$, we have
+\begin{align*}
+T_{n,h}f_0(x) - f_0(x) & = \frac{1}{d_{n,h}(x)} \sum_{i = 1}^{n} \bigl(f_0(X_i) - f_0(x)\bigr) \psi\biggl(\frac{\|X_i - x\|}{h}\biggr) \\
+& = \frac{d_{P,h}(x)}{d_{n,h}(x)} \cdot \frac{1}{nd_{P,h}(x)} \sum_{i = 1}^{n} \bigl(f_0(X_i) - f_0(x)\bigr) \psi\biggl(\frac{\|X_i - x\|}{h}\biggr).
+\end{align*}
+Thus,
+\begin{equation}
+\label{pf:kernel_smoothing_insample_5}
+\Bigl[T_{n,h}f_0(x) - f_0(x)\Bigr]^2 = \biggl[\frac{d_{P,h}(x)}{d_{n,h}(x)}\biggr]^2 \cdot \biggl[\underbrace{\frac{1}{nd_{P,h}(x)}\sum_{i = 1}^{n} \bigl(f_0(X_i) - f_0(x)\bigr) \psi\biggl(\frac{\|X_i - x\|}{h}\biggr)}_{:= \wt{L}_{n,h}f_0(x)}\biggr]^2
+\end{equation}
+In the proof of~\eqref{pf:kernel_smoothing_insample_2} we have already given an upper bound on the ratio of population to empirical degree, which implies that
+\begin{equation*}
+\sup_{x \in \mc{X}} \biggl[\frac{d_{P,h}(x)}{d_{n,h}(x)}\biggr]^2 \leq 4,
+\end{equation*}
+with probability at least $1 - C\exp\{-cnh^d\}$. On the other hand, we note that the second term in the product in~\eqref{pf:kernel_smoothing_insample_5} has expectation
+\begin{equation*}
+\Ebb\Bigl[\wt{L}_{n,h}f_0(x)\Bigr] = T_{P,h}f_0(x) - f_0(x),
+\end{equation*} 
+and variance 
+\begin{equation*}
+\Var\Bigl[\wt{L}_{n,h}f_0(x)\Bigr] \leq \frac{1}{n(d_{P,h}(x))^2} \Ebb\biggl[(f_0(X) - f_0(x))^2 \cdot \biggl|\psi\biggl(\frac{\|X - x\|}{h}\biggr)\biggr|^2\biggr].
+\end{equation*}
+Integrating with respect to $P$ gives
+\begin{align*}
+\Ebb\biggl[\int \Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2 \,dP(x)\biggr] & = \int \Ebb\Bigl[\Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2\Bigr] \,dP(x) \\
+& \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{1}{n}\int \int \frac{1}{\bigl(d_{P,h}(x)\bigr)^2} \bigl(f_0(x') - f_0(x)\bigr)^2 \cdot \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr|^2 \,dP(x') \,dP(x) \\
+& \leq \| T_{P,h}f_0 - f_0\|_P^2 + \frac{3h^2}{p_{\min}n} \wt{E}_{P,h}(f_0;\psi^2).
+\end{align*}
+In the final inequality we have used the lower bound on $d_{P,h}(x)$ from~\eqref{eqn:degree_lower_bound}, and written $E_{P,h}(f_0;\psi^2)$ for the non-local Dirichlet energy defined with respect to the kernel $\psi^2$. 
+
+Putting the pieces together, we conclude that
+\begin{align*}
+\|T_{n,h}f_0(x) - f_0(x)\|_P^2 & = \int \bigl(T_{n,h}f_0(x) - f_0(x)\bigr)^2 \,dP(x) \\
+& \leq \sup_{x \in \mc{X}} \biggl[\frac{d_{P,h}(x)}{d_{n,h}(x)}\biggr]^2 \cdot \int \Bigl(\wt{L}_{n,h}f_0(x)\Bigr)^2 \,dP(x) \\
+& \overset{(i)}{\leq} 4\frac{\| T_{P,h}f_0 - f_0\|_P^2}{\delta} + \frac{12h^2}{\delta p_{\min}nh^d} {E}_{P,h}(f_0;\psi^2) \\
+& \overset{(ii)}{\leq}  4\frac{\| T_{P,h}f_0 - f_0\|_P^2}{\delta} + \frac{Ch^2}{\delta p_{\min}nh^d} |f_0|_{H^1(\mc{X})}^2,
+\end{align*}
+with probability at least $1 - \delta - C\exp(-cnh^d)$. In $(i)$ we have used Markov's inequality, and in $(ii)$ we have applied the estimate~\eqref{pf:estimate_nonlocal_seminorm_1} to the non-local Dirichlet energy ${E}_{P,h}(f_0;\psi^2)$. This establishes~\eqref{pf:kernel_smoothing_insample_3}.
+
+\subsection{Kernel smoothing bias}
+\label{subsec:pf_kernel_smoothing_bias}
+Lemma~\ref{lem:kernel_smoothing_bias} gives the necessary upper bounds on the bias of kernel smoothing.
+\begin{lemma}
+	\label{lem:kernel_smoothing_bias}
+	Suppose Model~\ref{def:model_flat_euclidean}, and that the kernel smoothing operator $T_{P,h}$ is computed with respect to a kernel $\eta$ that satisfies~\ref{asmp:kernel}.
+	\begin{itemize}
+		\item If $f_0 \in H^1(\mc{X})$, then there exists a constant $C$ which does not depend on $f_0$ such that
+		\begin{equation*}
+		\|T_{P,h}f_0 - f_0\|_P^2 \leq C h^{2} |f|_{H^1(\mc{X})}^2.
+		\end{equation*}
+		\item If $f_0 \in H_0^{s}(\mc{X})$, $p \in C^{s - 1}(\mc{X})$, and $\eta$ satisfies~\ref{asmp:ho_kernel}, then there exists a constant $C$ which does not depend on $f_0$ such that
+		\begin{equation*}
+		\|T_{P,h}f_0 - f_0\|_P^2 \leq C h^{2s} |f|_{H^s(\mc{X})}^2.
+		\end{equation*}
+	\end{itemize}
+\end{lemma}
+We separately prove the first-order ($s = 1$) and higher-order ($s > 1$) parts of Lemma~\ref{lem:kernel_smoothing_bias}. In both cases, the proof will rely heavily on results already established regarding the non-local Laplacian $L_{P,h}$ and non-local Dirichlet energy $E_{P,h}$, which we recall are given for a kernel function $\mc{K}$ by
+\begin{equation*}
+L_{P,h}f(x) = \frac{1}{h^{d + 2}} \int \bigl(f(x') - f(x)\bigr)\mc{K}\biggl(\frac{\|x' - x\|}{h}\biggr)\,dP(x'),
+\end{equation*}
+and $E_{P,h}(f;\mc{K}) = \dotp{L_{P,h}f}{f}_{P}$, respectively. 
+
+\paragraph{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $s = 1$.}
+Using the conclusions from Section~\ref{subsec:kernel_smoothing_preliminaries}, we have that
+\begin{equation}
+\label{pf:kernel_smoothing_bias_1}
+\|T_{P,h}f - f\|_P^2 \leq \frac{9h^4}{p_{\min}^2} \int \bigl[L_{P,h}f(x)\bigr]^2 \,dP(x).
+\end{equation}
+By the Cauchy-Schwarz inequality, we have that
+\begin{align*}
+\int \bigl[L_{P,h}f(x)\bigr]^2 \,dP(x) & = \frac{1}{h^{2d + 4}}\int \biggl[\int \bigl(f(x') - f(x)\bigr)\psi\biggl(\frac{\|x' - x\|}{h}\biggr) \,dP(x')\biggr]^2 \,dP(x) \\
+& \leq \frac{C}{h^{d + 4}} \int \int \bigl(f(x') - f(x)\bigr)^2 \cdot \biggl|\psi\biggl(\frac{\|x' - x\|}{h}\biggr)\biggr| \,dP(x') \,dP(x) \\
+& = \frac{C}{h^{2}} E_{P,h}(f;|\psi|).
+\end{align*}
+Applying the estimate~\eqref{pf:estimate_nonlocal_seminorm_1} to the non-local Dirichlet energy ${E}_{P,h}(f;|\psi|)$ and plugging back into~\eqref{pf:kernel_smoothing_bias_1} gives the claimed result.
+
+\paragraph{Proof of Lemma~\ref{lem:kernel_smoothing_bias}, $s > 1$.}
+Proceeding from~\eqref{pf:kernel_smoothing_bias_1}, we separate the integral into the portion sufficiently in the interior of $\mc{X}$ and that near the boundary, obtaining
+\begin{equation}
+\label{pf:kernel_smoothing_bias_2}
+\|T_{P,h}f - f\|_P^2 \leq\frac{9p_{\max}h^4}{p_{\min}^2}\Bigl(\|L_{P,h}f\|_{L^2(\mc{X}_h)}^2 + \|L_{P,h}f\|_{L^2(\partial_{h}(\mc{X}))}^2\Bigr).
+\end{equation}
+In Lemma~\ref{lem:approximation_error_nonlocal_laplacian_boundary}, we established a sufficient upper bound on the second term,
+\begin{equation*}
+\|L_{P,h}f\|_{L^2(\partial_{h}(\mc{X}))}^2 \leq Ch^{2(s - 2)} \|f\|_{H^s(\mc{X})}^2.
+\end{equation*}
+Thus it remains to upper bound the first term. Here we recall that at a given $x \in \mc{X}_h$, we can write
+\begin{align*}
+L_{P,h}f(x) & = \frac{1}{h^{2}}\sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1}\frac{h^{j_1 + j_2}}{j_1!j_2!}  \int d_x^{j_1}f(z) d_x^{j_2}p(z) \psi\bigl(\|z\|\bigr) \,dz \quad + \\
+& \quad \frac{1}{h^{2}} \sum_{j = 1}^{s - 1} \frac{h^j}{j!} \int d_x^jf(z)  r_{zh + x}^{q}(x;p) \psi\bigl(\|z\|\bigr) \,dz \quad  + \\
+& \quad \frac{1}{h^{2}} \int r_{zh + x}^j(x;f) \psi\bigl(\|z\|\bigr) p(zh + x)\,dz \\
+& = G_1(x) + G_2(x) + G_3(x).
+\end{align*}
+(Here $q = s - 1$.) 
+
+We have already given sufficient upper bounds on $\|G_j\|_{L^2(\mc{X}_{h})}$ for $j = 2,3$ in~\eqref{pf:approximation_error_nonlocal_laplacian_2}.  Thus it remains only to upper bound $\|G_1\|_{L^2(\mc{X}_h)}$. Recall the expansion of $G_1$ from~\eqref{pf:approximation_error_nonlocal_laplacian_3},
+\begin{equation*}
+G_1(x) = \sum_{j_1 = 1}^{s - 1} \sum_{j_2 = 0}^{q - 1} \frac{h^{j_1 + j_2 - 2}}{j_1!j_2!}  \underbrace{\int_{B(0,1)} d_x^{j_1}f(z) d_x^{j_2}p(z) \eta(\|z\|) \,dz}_{:= g_{j_1,j_2}(x)}.
+\end{equation*}
+Noting that $d_x^{j_1} \cdot d_x^{j_2}$ is a degree-$(j_1 + j_2)$ multivariate polynomial, and recalling that $\psi$ is an order-$s$ kernel, we have that 
+\begin{equation*}
+\int g_{j_1,j_2}(z) \psi\bigl(\|z\|\bigr) \,dz = 0,\quad \textrm{for all $j_1,j_2$ such that $j_1 + j_2 < s$.}
+\end{equation*}
+Otherwise, derivations similar to those used in the proof of Lemma~\ref{lem:approximation_error_nonlocal_laplacian} imply that
+\begin{equation*}
+\|g_{j_1,j_2}\|_{L^2(\mc{X}_h)} \leq C \|f\|_{H^s(\mc{X})} \|p\|_{C^{s - 1}(\mc{X})},\quad \textrm{for all $j_1,j_2$ such that $j_1 + j_2 \geq s$,}
+\end{equation*}
+from which it follows that
+\begin{equation*}
+\|G_1\|_{L^2(\mc{X}_h)}^2 \leq C  h^{2(s - 2)} \|f\|_{H^s(\mc{X})} \|p\|_{C^{s - 1}(\mc{X})}.
+\end{equation*}
+Together these upper bounds on $\|G_j\|_{L^2(\mc{X}_j)}$ for $j = 1,2,3$ imply that
+\begin{equation*}
+\|L_{P,h}f\|_{\mc{X}_h}^2 \leq Ch^{2(s - 2)} \|f\|_{H^s(\mc{X})}^2,
+\end{equation*}
+and plugging this back into~\eqref{pf:kernel_smoothing_bias_2} yields the claim.
+
+\end{document}
